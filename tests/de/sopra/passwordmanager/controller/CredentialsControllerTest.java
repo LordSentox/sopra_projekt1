@@ -32,7 +32,7 @@ public class CredentialsControllerTest
     @Test
     public void addSecurityQuestion()
     {
-    }
+    }   
 
     @Test
     public void removeSecurityQuestion()

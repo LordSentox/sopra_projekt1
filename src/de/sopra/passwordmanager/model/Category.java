@@ -1,5 +1,6 @@
 package de.sopra.passwordmanager.model;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 /**
@@ -21,6 +22,13 @@ public class Category {
      * Die nächsten Unterkategorien, welche dieser zugeordnet sind.
      */
     private Collection<Category> subCategories;
+
+    public Category( String name )
+    {
+        this.name = name;
+        this.credentials = new ArrayList<>();
+        this.subCategories = new ArrayList<>();
+    }
 
     public String getName() {
         return name;

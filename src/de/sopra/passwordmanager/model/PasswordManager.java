@@ -15,6 +15,10 @@ public class PasswordManager {
      */
     private Category rootCategory;
 
+    public PasswordManager() {
+        rootCategory = new Category("alle");
+    }
+
     public BasePassword getMasterPassword() {
         return masterPassword;
     }

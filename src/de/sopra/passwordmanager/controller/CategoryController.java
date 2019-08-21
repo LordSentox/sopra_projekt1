@@ -15,6 +15,10 @@ public class CategoryController {
      */
     private PasswordManagerController passwordManagerController;
 
+    public CategoryController(PasswordManagerController controller) {
+		this.passwordManagerController = controller;
+	}
+
     /**
      * createCategory erstellt eine neue Kategorie
      * die eine Oberkategorie und einen Namen haben muss.
