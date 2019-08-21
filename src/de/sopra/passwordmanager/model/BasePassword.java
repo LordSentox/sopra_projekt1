@@ -1,5 +1,7 @@
 package de.sopra.passwordmanager.model;
 
+import java.util.Date;
+
 /**
  * Die einfachsten Passwort-Funktionalitäten. Sie werden sowohl von dem Masterpasswort, als auch vom Passwortteil in den
  * Credentials gebraucht.
@@ -16,7 +18,7 @@ public class BasePassword {
     /**
      * Der Zeitpunkt, zu dem das Passwort das letzte Mal geändert wurde, gespeichert als lokaler Unix-Zeitstempel.
      */
-    private long lastChanged;
+    private Date lastChanged;
 
     /**
      * Die Zeit in Tagen, nach denen ein Passwort geändert werden soll. Kann mit lastChanged verglichen werden
@@ -24,7 +26,7 @@ public class BasePassword {
      */
     private Integer changeReminderDays;
 
-    public BasePassword(String password, long lastChanged, Integer changeReminderDays) {
+    public BasePassword(String password, Date lastChanged, Integer changeReminderDays) {
         this.password = password;
         this.lastChanged = lastChanged;
         this.changeReminderDays = changeReminderDays;
@@ -38,7 +40,7 @@ public class BasePassword {
         return changeReminderDays;
     }
 
-    public long getLastChanged() {
+    public Date getLastChanged() {
         return lastChanged;
     }
 
@@ -50,7 +52,7 @@ public class BasePassword {
         this.changeReminderDays = changeReminderDays;
     }
 
-    public void setLastChanged(long lastChanged) {
+    public void setLastChanged(Date lastChanged) {
         this.lastChanged = lastChanged;
     }
 
