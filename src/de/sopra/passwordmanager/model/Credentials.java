@@ -42,7 +42,7 @@ public class Credentials extends BasePassword {
      */
     private Collection<SecurityQuestion> securityQuestions;
 
-    public Credentials(String password, long lastChanged, Integer changeReminderDays,
+    public Credentials(String password, Date lastChanged, Integer changeReminderDays,
                        String name, String userName, URL website, String notes,
                        Date created, Collection<SecurityQuestion> securityQuestions) {
         super(password, lastChanged, changeReminderDays);
