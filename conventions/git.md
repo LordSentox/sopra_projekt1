@@ -14,14 +14,7 @@ Commit Messages sollen im Imperativ stehen, damit sie mit den üblichen
 git-Kommandos übereinstimmen. Zum Beispiel: "Fix bug" anstatt "Fixed bug". 
 ```
 
-### Example for a commit message
-```
-Add CPU arch filter scheduler support
-
-In a mixed environment of…
-```
-
-### A properly formed git commit subject line should always be able to complete the following sentence
+### Eine gute Commit-Message sollte immer den folgenden Englischen Satz vervollständigen können
 If applied, this commit will *\<your subject line here\>*
 
 ### Die goldenen Regeln für guten Stil in Commit-Messages
