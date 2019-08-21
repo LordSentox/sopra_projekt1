@@ -1,5 +1,6 @@
 package de.sopra.passwordmanager.model;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 public class Category
@@ -10,6 +11,13 @@ public class Category
     private Collection<Credentials> credentials;
 
     private Collection<Category> subCategories;
+
+    public Category( String name )
+    {
+        this.name = name;
+        this.credentials = new ArrayList<>();
+        this.subCategories = new ArrayList<>();
+    }
 
     public String getName()
     {

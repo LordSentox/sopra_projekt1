@@ -16,6 +16,11 @@ public class CredentialsController {
 
 	private PasswordManagerController passwordManagerController;
 
+	public CredentialsController( PasswordManagerController controller )
+	{
+		this.passwordManagerController = controller;
+	}
+
 	/**
 	 * Überschreibt alte Anmeldedaten mit Neuen im {@link PasswordManager}
 	 * @param oldCredentials Die zu überschreibenden Anmeldedaten

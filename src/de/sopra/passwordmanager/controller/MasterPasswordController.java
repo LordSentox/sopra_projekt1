@@ -11,8 +11,13 @@ public class MasterPasswordController {
 	 * Der GUI zugehörige PasswordManagerController 
 	 */
 	private PasswordManagerController passwordManagerController;
-	
-	/**
+
+	public MasterPasswordController( PasswordManagerController controller )
+	{
+		this.passwordManagerController = controller;
+	}
+
+    /**
 	 * Das alte Masterpasswort wird mit dem neuen Masterpasswort überschrieben. 
 	 * Ein neuer Timer wird eingerichtet.
 	 * @param newPassword Passwort, mit dem der Datensatz von hier an (neu) verschlüsselt wird
