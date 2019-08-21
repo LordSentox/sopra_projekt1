@@ -1,4 +1,4 @@
-package Model;
+package de.sopra.passwordmanager.model;
 
 import java.util.Collection;
 

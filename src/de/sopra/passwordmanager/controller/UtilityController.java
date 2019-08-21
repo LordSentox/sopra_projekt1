@@ -1,4 +1,6 @@
-package Model;
+package de.sopra.passwordmanager.controller;
+
+import java.io.File;
 
 public class UtilityController {
 

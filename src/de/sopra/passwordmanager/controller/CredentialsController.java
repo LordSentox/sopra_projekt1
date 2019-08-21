@@ -1,4 +1,7 @@
-package Model;
+package de.sopra.passwordmanager.controller;
+
+import de.sopra.passwordmanager.model.Credentials;
+import de.sopra.passwordmanager.model.SecurityQuestion;
 
 import java.util.ArrayList;
 
@@ -6,7 +9,7 @@ public class CredentialsController {
 
 	private PasswordManagerController passwordManagerController;
 
-	public void saveCredentials(Credentials oldCredentials, Credentials newCredentials) {
+	public void saveCredentials( Credentials oldCredentials, Credentials newCredentials) {
 
 	}
 
@@ -18,7 +21,7 @@ public class CredentialsController {
 
 	}
 
-	public void removeSecurityQuestion(SecurityQuestion securityQuestion, Credentials credentials) {
+	public void removeSecurityQuestion( SecurityQuestion securityQuestion, Credentials credentials) {
 
 	}
 

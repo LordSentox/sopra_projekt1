@@ -1,4 +1,6 @@
-package Model;
+package de.sopra.passwordmanager.controller;
+
+import de.sopra.passwordmanager.model.Category;
 
 import java.util.ArrayList;
 

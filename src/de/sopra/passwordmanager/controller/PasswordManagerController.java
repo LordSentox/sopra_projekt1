@@ -1,4 +1,11 @@
-package Model;
+package de.sopra.passwordmanager.controller;
+
+import de.sopra.passwordmanager.model.PasswordManager;
+import de.sopra.passwordmanager.view.LoginViewAUI;
+import de.sopra.passwordmanager.view.MainWindowAUI;
+import de.sopra.passwordmanager.view.MasterPasswordViewAUI;
+
+import java.io.File;
 
 public class PasswordManagerController {
 

@@ -1,4 +1,4 @@
-package Model;
+package de.sopra.passwordmanager.controller;
 
 public class MasterPasswordController {
 

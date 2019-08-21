@@ -1,4 +1,4 @@
-package Model;
+package de.sopra.passwordmanager.model;
 
 public class SecurityQuestion {
 

@@ -1,4 +1,4 @@
-package Model;
+package de.sopra.passwordmanager.view;
 
 public class SettingsViewController {
 

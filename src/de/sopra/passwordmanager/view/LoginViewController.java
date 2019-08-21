@@ -1,4 +1,4 @@
-package Model;
+package de.sopra.passwordmanager.view;
 
 public class LoginViewController implements LoginViewAUI {
 
@@ -9,9 +9,6 @@ public class LoginViewController implements LoginViewAUI {
 	}
 
 
-	/**
-	 * @see Model.LoginViewAUI#handleLoginResult(boolean)
-	 */
 	public void handleLoginResult(boolean result) {
 
 	}

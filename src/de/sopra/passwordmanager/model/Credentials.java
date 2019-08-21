@@ -1,5 +1,6 @@
-package Model;
+package de.sopra.passwordmanager.model;
 
+import java.net.URL;
 import java.util.Collection;
 
 public class Credentials extends BasePassword {
@@ -12,7 +13,7 @@ public class Credentials extends BasePassword {
 
 	private String notes;
 
-	private final long created;
+	private long created;
 
 	private Collection<SecurityQuestion> securityQuestions;
 

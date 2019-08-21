@@ -1,6 +1,6 @@
-package Model;
+package de.sopra.passwordmanager.view;
 
-public class CategoryEditViewController {
+public class SecurityQuestionViewController {
 
 	private MainWindowViewController mainWindowViewController;
 

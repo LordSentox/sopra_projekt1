@@ -1,4 +1,4 @@
-package Model;
+package de.sopra.passwordmanager.view;
 
 public class MasterPasswordViewController implements MasterPasswordViewAUI {
 
@@ -12,10 +12,6 @@ public class MasterPasswordViewController implements MasterPasswordViewAUI {
 
 	}
 
-
-	/**
-	 * @see Model.MasterPasswordViewAUI#refreshQuality(int)
-	 */
 	public void refreshQuality(int quality) {
 
 	}

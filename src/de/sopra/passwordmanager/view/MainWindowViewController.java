@@ -1,4 +1,6 @@
-package Model;
+package de.sopra.passwordmanager.view;
+
+import de.sopra.passwordmanager.controller.PasswordManagerController;
 
 import java.util.ArrayList;
 
@@ -85,47 +87,25 @@ public class MainWindowViewController implements MainWindowAUI {
 	}
 
 
-	/**
-	 * @see Model.MainWindowAUI#refreshEntryList(java.util.ArrayList)
-	 */
 	public void refreshEntryList(ArrayList entries) {
 
 	}
 
 
-	/**
-	 * @see Model.MainWindowAUI#refreshEntry()
-	 * 
-	 *  
-	 */
 	public void refreshEntry() {
 
 	}
 
-
-	/**
-	 * @see Model.MainWindowAUI#refreshEntry(java.lang.String)
-	 */
 	public void refreshEntry(String password) {
 
 	}
 
 
-	/**
-	 * @see Model.MainWindowAUI#refreshEntryPasswordQuality(int)
-	 * 
-	 *  
-	 */
 	public void refreshEntryPasswordQuality(int quality) {
 
 	}
 
 
-	/**
-	 * @see Model.MainWindowAUI#showError(java.lang.String)
-	 * 
-	 *  
-	 */
 	public void showError(String error) {
 
 	}
