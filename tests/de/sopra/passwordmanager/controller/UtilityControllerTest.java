@@ -1,7 +1,5 @@
 package de.sopra.passwordmanager.controller;
 
-import java.io.File;
-
 import org.junit.Before;
 import org.junit.Test;
 
