@@ -1,8 +1,6 @@
 package de.sopra.passwordmanager.model;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
+import java.util.*;
 
 /**
  * Die Daten, die zu einem Passwort zusätzlich als Anmeldedaten gespeichert werden und das Passwort selbst.
@@ -78,6 +76,18 @@ public class Credentials extends BasePassword {
         return created;
     }
 
+    /**
+     * Liefert alle {@link SecurityQuestion}, die diesem {@link Credentials} Objekt angehören
+     * Die gelieferte {@link Collection} ist unmodifizierbar. Zum {@link SecurityQuestion} hinzuzufügen oder zu entfernen,
+     * dienen andere Methoden
+     * @return Eine unmodifizierbare Sammlung aller Sicherheitsfragen
+     * @see #addSecurityQuestion(SecurityQuestion)
+     * @see #removeSecurityQuestion(SecurityQuestion)
+     */
+    public Collection<SecurityQuestion> getSecurityQuestions() {
+        return Collections.unmodifiableCollection(securityQuestions);
+    }
+
     public void setName(String name) {
         this.name = name;
     }
@@ -90,5 +100,46 @@ public class Credentials extends BasePassword {
 
     public void setNotes(String notes) {
         this.notes = notes;
+    }
+
+    public void addSecurityQuestion(SecurityQuestion securityQuestion) {
+        securityQuestions.add(securityQuestion);
+    }
+
+    public void withSecurityQuestion(String question, String answer) {
+        securityQuestions.add(new SecurityQuestion(question, answer));
+    }
+
+    public void addSecurityQuestions(Collection<SecurityQuestion> questions) {
+        securityQuestions.addAll(questions);
+    }
+
+    public void removeSecurityQuestion(SecurityQuestion securityQuestion) {
+        securityQuestions.remove(securityQuestion);
+    }
+
+    public void removeSecurityQuestions(Collection<SecurityQuestion> questions) {
+        securityQuestions.removeAll(questions);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Credentials that = (Credentials) o;
+        return name.equals(that.name) &&
+                userName.equals(that.userName) &&
+                website.equals(that.website) &&
+                notes.equals(that.notes) &&
+                created.equals(that.created) &&
+                getLastChanged().equals(that.getLastChanged()) &&
+                getChangeReminderDays().equals(that.getChangeReminderDays()) &&
+                getPassword().equals(that.getPassword()) &&
+                securityQuestions.equals(that.securityQuestions);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, userName, website, notes, created, securityQuestions, getLastChanged(), getPassword(), getChangeReminderDays());
     }
 }
