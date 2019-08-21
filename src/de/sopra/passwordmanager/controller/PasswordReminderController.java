@@ -18,8 +18,8 @@ public class PasswordReminderController {
 	 * Abfrage ob der Timer von einem Passwort abgelaufen ist/das passwort geändert werden muss.
 	 * 
 	 * @return <strong>true</strong> Timer ist abgelaufen/Passwort muss geändert werden,
-	 *      <br>
-	 *          <strong>false</strong> Timer ist nicht abgelaufen/Passwort muss nicht geändert werden.
+	 *         <br>
+	 *         <strong>false</strong> Timer ist nicht abgelaufen/Passwort muss nicht geändert werden.
 	 */
 	
 	boolean hasToBeChanged(BasePassword password) {
@@ -29,6 +29,7 @@ public class PasswordReminderController {
 	/**
 	 * Welche Passwörter müssen geändert werden/bei welchen Passwörtern ist der Timer abgelaufen.
 	 * @return Liste der Passwörter, wo der Timer abgelaufen ist/die geändert werden müssen.
+	 * 
 	 */
 	
 	ArrayList passwordsToBeChanged() {
