@@ -21,12 +21,20 @@ public class CredentialsControllerTest
     @Test
     public void saveCredentials()
     {
-
+        //valid
+        //case save..(null, newCred) - create new credentials
+        //case save..(oldCred, changedCred) - change credentials values
+        //case save..(oldCred, nameChangedCred) - change credentials name
+        //invalid
+        //case save..(null, null) - nothing to be saved
+        //case save..(oldCred, null) - nothing to change
+        //case save..(oldNonExistingCred, newCred) - old not found
     }
 
     @Test
     public void removeCredentials()
     {
+
     }
 
     @Test
