@@ -7,7 +7,6 @@ package de.sopra.passwordmanager.model;
  * @version 21.08.2019
  * @since 21.08.2019
  */
-public class CategoryTest
-{
+public class CategoryTest {
 
 }

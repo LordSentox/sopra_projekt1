@@ -10,62 +10,50 @@ import org.junit.Test;
  * @version 21.08.2019
  * @since 21.08.2019
  */
-public class CredentialsControllerTest
-{
+public class CredentialsControllerTest {
 
     @Before
-    public void setUp() throws Exception
-    {
+    public void setUp() throws Exception {
     }
 
     @Test
-    public void saveCredentials()
-    {
+    public void saveCredentials() {
 
     }
 
     @Test
-    public void removeCredentials()
-    {
+    public void removeCredentials() {
     }
 
     @Test
-    public void addSecurityQuestion()
-    {
-    }   
-
-    @Test
-    public void removeSecurityQuestion()
-    {
+    public void addSecurityQuestion() {
     }
 
     @Test
-    public void filterCredentials()
-    {
+    public void removeSecurityQuestion() {
     }
 
     @Test
-    public void copyPasswordToClipboard()
-    {
+    public void filterCredentials() {
     }
 
     @Test
-    public void setPasswordShown()
-    {
+    public void copyPasswordToClipboard() {
     }
 
     @Test
-    public void getCredentialsByCategoryName()
-    {
+    public void setPasswordShown() {
     }
 
     @Test
-    public void clearPasswordFromClipboard()
-    {
+    public void getCredentialsByCategoryName() {
     }
 
     @Test
-    public void reencryptAll()
-    {
+    public void clearPasswordFromClipboard() {
+    }
+
+    @Test
+    public void reencryptAll() {
     }
 }

@@ -15,36 +15,29 @@ import java.util.List;
  * @version 21.08.2019
  * @since 21.08.2019
  */
-public class PasswordManagerControllerDummy
-{
+public class PasswordManagerControllerDummy {
 
-    public static PasswordManagerController getNewController()
-    {
+    public static PasswordManagerController getNewController() {
         return create();
     }
 
-    private static PasswordManagerController create()
-    {
-        return new PasswordManagerController( createMainWindow(), createLogin(), createMasterPass() );
+    private static PasswordManagerController create() {
+        return new PasswordManagerController(createMainWindow(), createLogin(), createMasterPass());
     }
 
-    private static MasterPasswordViewAUI createMasterPass()
-    {
+    private static MasterPasswordViewAUI createMasterPass() {
         return new MasterPasswordView();
     }
 
-    private static LoginViewAUI createLogin()
-    {
+    private static LoginViewAUI createLogin() {
         return new LoginView();
     }
 
-    private static MainWindowAUI createMainWindow()
-    {
+    private static MainWindowAUI createMainWindow() {
         return new MainView();
     }
 
-    public static class MainView implements MainWindowAUI
-    {
+    public static class MainView implements MainWindowAUI {
 
         private List<Credentials> currentCredentialsList = null;
         private List<String> errorsShown = new ArrayList<>();
@@ -52,83 +45,76 @@ public class PasswordManagerControllerDummy
         private String passwordShown;
 
         @Override
-        public void refreshEntryList( List<Credentials> entries )
-        {
+        public void refreshEntryList(List<Credentials> entries) {
             this.currentCredentialsList = entries;
         }
 
         @Override
-        public void refreshEntry()
-        {
+        public void refreshEntry() {
             this.passwordShown = "";
         }
 
         @Override
-        public void refreshEntry( String password )
-        {
+        public void refreshEntry(String password) {
             this.passwordShown = password;
         }
 
         @Override
-        public void refreshEntryPasswordQuality( int quality )
-        {
+        public void refreshEntryPasswordQuality(int quality) {
             this.passwordQuality = quality;
         }
 
         @Override
-        public void showError( String error )
-        {
-            errorsShown.add( error );
+        public void showError(String error) {
+            errorsShown.add(error);
         }
 
         /**
          * Gibt die aktuelle Passwortqualität zurück.
+         *
          * @return die aktuelle Passwortqualität oder -1 falls die Qualität noch nicht geändert wurde
          */
-        public int getPasswordQuality()
-        {
+        public int getPasswordQuality() {
             return passwordQuality;
         }
 
         /**
          * Gibt das aktuell angezeigte Passwort repräsentativ zurück
+         *
          * @return das aktuell im Klartext angezeigte Passwort,
-         *        einen leeren String falls ein Passwort angezeigt wird, dass nicht im Klartext ist
-         *        oder null, falls noch kein gezeigt wird
+         * einen leeren String falls ein Passwort angezeigt wird, dass nicht im Klartext ist
+         * oder null, falls noch kein gezeigt wird
          */
-        public String getPasswordShown()
-        {
+        public String getPasswordShown() {
             return passwordShown;
         }
 
         /**
          * Gibt die Liste aller erschienen Fehlermeldungen seit Erstellung des Dummys zurück
+         *
          * @return eine Liste aller aufgerufenen Fehlermeldungen
          */
-        public List<String> getErrorsShown()
-        {
+        public List<String> getErrorsShown() {
             return errorsShown;
         }
 
         /**
          * Die aktuell gezeigt Liste der Credentials
+         *
          * @return die Liste der aktuell gezeigten Credentials oder null, falls keine Liste gesetzt wurde
          */
-        public List<Credentials> getCurrentCredentialsList()
-        {
+        public List<Credentials> getCurrentCredentialsList() {
             return currentCredentialsList;
         }
 
     }
 
-    public static class LoginView implements LoginViewAUI
-    {
+    public static class LoginView implements LoginViewAUI {
 
         private Boolean lastReceivedResult = null;
 
         @Override
-        public void handleLoginResult( boolean result )
-        {
+        public void handleLoginResult(boolean result) {
 
         }
 
@@ -137,20 +123,17 @@ public class PasswordManagerControllerDummy
          *
          * @return das zuletzt erhaltene Ergebnis oder null falls es noch keines gab
          */
-        public Boolean getLastReceivedResult()
-        {
+        public Boolean getLastReceivedResult() {
             return lastReceivedResult;
         }
     }
 
-    public static class MasterPasswordView implements MasterPasswordViewAUI
-    {
+    public static class MasterPasswordView implements MasterPasswordViewAUI {
 
         private int currentQuality = -1;
 
         @Override
-        public void refreshQuality( int quality )
-        {
+        public void refreshQuality(int quality) {
             this.currentQuality = quality;
         }
 
@@ -159,8 +142,7 @@ public class PasswordManagerControllerDummy
          *
          * @return die aktuelle Qualität oder -1 falls noch nichts in der GUI geändert wurde
          */
-        public int getCurrentQuality()
-        {
+        public int getCurrentQuality() {
             return currentQuality;
         }
 
