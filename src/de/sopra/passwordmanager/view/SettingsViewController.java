@@ -15,9 +15,11 @@ public class SettingsViewController {
 	public void onExportDataClicked() {
 
 	}
-
+    
 	public void onResetDataClicked() {
-
+		//TODO: Sicherheitsabfrage
+		mainWindowViewController.getPasswordManagerController()
+		.removeAll();
 	}
 
 }

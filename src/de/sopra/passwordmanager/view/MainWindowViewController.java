@@ -17,7 +17,37 @@ public class MainWindowViewController implements MainWindowAUI {
 	private LoginViewController loginViewController;
 
 	private MasterPasswordViewController masterPasswordViewController;
-
+	
+	public PasswordManagerController getPasswordManagerController()
+	{
+		return passwordManagerController;
+	}
+	
+	public SecurityQuestionViewController getSecurityQuestionViewController()
+	{
+		return securityQuestionViewController;
+	}
+	
+	public CategoryEditViewController getCategoryEditViewController()
+	{
+		return categoryEditViewController;
+	}
+	
+	public SettingsViewController getSettingsViewController()
+	{
+		return settingsViewController;
+	}
+	
+	public LoginViewController getLoginViewController()
+	{
+		return loginViewController;
+	}
+	
+	public MasterPasswordViewController getMasterPasswordViewController()
+	{
+		return masterPasswordViewController;
+	}
+	
 	public void onSettingsClicked() {
 
 	}
@@ -47,7 +77,7 @@ public class MainWindowViewController implements MainWindowAUI {
 	}
 
 	public void onGeneratePasswordClicked() {
-
+		passwordManagerController.getUtilityController().generatePassword();
 	}
 
 	public void onAddSecurityQuestionClicked() {
