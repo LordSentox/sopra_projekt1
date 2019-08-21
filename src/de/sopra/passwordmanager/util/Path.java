@@ -28,6 +28,11 @@ public class Path
 
     public Path( List<String> pathElements, int current ) {
         this.pathElements = pathElements;
+        //entfernt leere Elemente am Ende und Anfang des Paths
+        while(pathElements.get( 0 ).isEmpty())
+            this.pathElements = pathElements.subList( 1, pathElements.size() );
+        while(pathElements.get( pathElements.size()-1 ).isEmpty())
+            this.pathElements = pathElements.subList( 0, pathElements.size()-2 );
         navigate( current );
     }
 
@@ -53,7 +58,7 @@ public class Path
     }
 
     public Path absolutePath() {
-        return new Path( pathElements.subList( 0, current+1 ), current );
+        return subPath( 0, current+1 );
     }
 
     public Path subPath(int start, int target) {
