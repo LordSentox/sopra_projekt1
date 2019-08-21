@@ -7,6 +7,13 @@ import de.sopra.passwordmanager.view.MasterPasswordViewAUI;
 
 import java.io.File;
 
+/**
+ * Verwaltet die anderen Controller
+ * 
+ * @author Hannah, Jin
+ *
+ */
+
 public class PasswordManagerController
 {
 
@@ -83,15 +90,16 @@ public class PasswordManagerController
     //-------------------------------------------------------------------------------------------
 
 	/**
-	 * Setzt den PasswordManager zurück und löscht alle Passwörter und Kategorien.
+	 * Setzt den PasswordManager zurück und löscht alle Passwörter und Kategorien. Das Masterpasswort bleibt erhalten.
 	 */
 	public void removeAll() {
 
 	}
     
     /**
-	 * Einloggen im Pogramm mit Masterpasswort und Daten werden importiert/geladen.
+	 * Einloggen im Pogramm mit Masterpasswort und Daten werden importiert/geladen oder Daten werden für den Import geladen.
 	 * Überprüft, ob das Masterpasswort stimmt und lädt die Dateien falls es stimmt.
+	 * 
 	 * 
 	 * @param password eingegebenes Passwort zum einloggen, welches überprüft werden muss
 	 * @param file Daten, die geladen/importiert werden müssen 
