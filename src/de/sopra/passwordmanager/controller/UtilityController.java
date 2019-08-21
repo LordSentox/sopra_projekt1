@@ -13,7 +13,12 @@ public class UtilityController {
 	 * Referenz zum Passwortmanagercontroller
 	 */
 	private PasswordManagerController passwordManagerController;
-	
+
+	public UtilityController( PasswordManagerController controller )
+	{
+		this.passwordManagerController = controller;
+	}
+
 	/**
 	 * Generiert ein Passwort, welches den Sicherheitsanforderungen entspricht nd dieses wird dann in der GUI angezeigt
 	 */

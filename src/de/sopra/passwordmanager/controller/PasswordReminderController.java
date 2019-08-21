@@ -1,19 +1,25 @@
 package de.sopra.passwordmanager.controller;
 
 import de.sopra.passwordmanager.model.BasePassword;
+
+import java.util.ArrayList;
+
 /**
  * In PasswordreminderController werden die Passwörter, bei denen der Timer abgelaufen ist, verwaltet.
  *
- * @author 
+ * @author
  */
-
-import java.util.ArrayList;
 
 public class PasswordReminderController {
 
 
 	private PasswordManagerController passwordManagerController;
-	
+
+	public PasswordReminderController( PasswordManagerController controller )
+	{
+		this.passwordManagerController = controller;
+	}
+
 	/**
 	 * Abfrage, ob der Timer von einem Passwort abgelaufen ist und ob es geändert werden muss.
 	 * @param password Das Passwort was überprüft werden soll.

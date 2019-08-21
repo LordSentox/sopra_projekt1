@@ -35,8 +35,31 @@ public class PasswordManagerController
 
     private MasterPasswordViewAUI masterPasswordViewAUI;
 
+    public PasswordManagerController( PasswordManager passwordManager, CredentialsController credentialsController,
+                                      CategoryController categoryController, UtilityController utilityController,
+                                      MasterPasswordController masterPasswordController,
+                                      PasswordReminderController passwordReminderController, MainWindowAUI mainWindowAUI,
+                                      LoginViewAUI loginViewAUI, MasterPasswordViewAUI masterPasswordViewAUI )
+    {
+        this.passwordManager = passwordManager;
+        this.credentialsController = credentialsController;
+        this.categoryController = categoryController;
+        this.utilityController = utilityController;
+        this.masterPasswordController = masterPasswordController;
+        this.passwordReminderController = passwordReminderController;
+        this.mainWindowAUI = mainWindowAUI;
+        this.loginViewAUI = loginViewAUI;
+        this.masterPasswordViewAUI = masterPasswordViewAUI;
+    }
+
     public PasswordManagerController( MainWindowAUI mainWindowAUI, LoginViewAUI loginViewAUI, MasterPasswordViewAUI masterPasswordViewAUI )
     {
+        this.passwordManager = new PasswordManager();
+        this.credentialsController = new CredentialsController(this);
+        this.categoryController = new CategoryController(this);
+        this.utilityController = new UtilityController(this);
+        this.masterPasswordController = new MasterPasswordController(this);
+        this.passwordReminderController = new PasswordReminderController(this);
         this.mainWindowAUI = mainWindowAUI;
         this.loginViewAUI = loginViewAUI;
         this.masterPasswordViewAUI = masterPasswordViewAUI;
