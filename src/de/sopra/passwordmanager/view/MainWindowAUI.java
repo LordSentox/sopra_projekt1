@@ -5,6 +5,7 @@ import de.sopra.passwordmanager.model.Credentials;
 import java.util.List;
 
 /**
+ * @author Etienne
  * Bietet Methoden zum aktualisieren des Hauptfensters, sowie zum Anzeigen von Fehlermeldungen
  */
 public interface MainWindowAUI {

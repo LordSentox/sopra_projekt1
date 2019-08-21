@@ -1,6 +1,7 @@
 package de.sopra.passwordmanager.view;
 
 /**
+ * @author Etienne
  * Bietet eine Methode zum aktualisieren des Masterpasswort Fensters
  */
 public interface MasterPasswordViewAUI {

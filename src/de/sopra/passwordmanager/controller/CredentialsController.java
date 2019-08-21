@@ -9,6 +9,7 @@ import de.sopra.passwordmanager.view.MainWindowAUI;
 import java.util.List;
 
 /**
+ * @author Etienne
  * Kontrolliert alle Aktionen, die mit {@link Credentials} zusammenhängen
  * @see Credentials
  */
