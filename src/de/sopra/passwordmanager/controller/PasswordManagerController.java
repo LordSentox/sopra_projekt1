@@ -7,32 +7,87 @@ import de.sopra.passwordmanager.view.MasterPasswordViewAUI;
 
 import java.io.File;
 
-public class PasswordManagerController {
+public class PasswordManagerController
+{
 
-	private PasswordManager passwordManager;
+    private PasswordManager passwordManager;
 
-	private CredentialsController credentialsController;
+    private CredentialsController credentialsController;
 
-	private CategoryController categoryController;
+    private CategoryController categoryController;
 
-	private UtilityController utilityController;
+    private UtilityController utilityController;
 
-	private MasterPasswordController masterPasswordController;
+    private MasterPasswordController masterPasswordController;
 
-	private PasswordReminderController passwordReminderController;
+    private PasswordReminderController passwordReminderController;
 
-	private MainWindowAUI mainWindowAUI;
+    private MainWindowAUI mainWindowAUI;
 
-	private LoginViewAUI loginViewAUI;
+    private LoginViewAUI loginViewAUI;
 
-	private MasterPasswordViewAUI masterPasswordViewAUI;
+    private MasterPasswordViewAUI masterPasswordViewAUI;
 
-	public void removeAll() {
+    public PasswordManagerController( MainWindowAUI mainWindowAUI, LoginViewAUI loginViewAUI, MasterPasswordViewAUI masterPasswordViewAUI )
+    {
+        this.mainWindowAUI = mainWindowAUI;
+        this.loginViewAUI = loginViewAUI;
+        this.masterPasswordViewAUI = masterPasswordViewAUI;
+    }
 
-	}
+    public PasswordManager getPasswordManager()
+    {
+        return passwordManager;
+    }
 
-	public void requestLogin(String password, File file) {
+    public CredentialsController getCredentialsController()
+    {
+        return credentialsController;
+    }
 
-	}
+    public CategoryController getCategoryController()
+    {
+        return categoryController;
+    }
+
+    public UtilityController getUtilityController()
+    {
+        return utilityController;
+    }
+
+    public MasterPasswordController getMasterPasswordController()
+    {
+        return masterPasswordController;
+    }
+
+    public PasswordReminderController getPasswordReminderController()
+    {
+        return passwordReminderController;
+    }
+
+    public MainWindowAUI getMainWindowAUI()
+    {
+        return mainWindowAUI;
+    }
+
+    public LoginViewAUI getLoginViewAUI()
+    {
+        return loginViewAUI;
+    }
+
+    public MasterPasswordViewAUI getMasterPasswordViewAUI()
+    {
+        return masterPasswordViewAUI;
+    }
+
+    //-------------------------------------------------------------------------------------------
+
+    public void removeAll() {
+
+    }
+
+    public void requestLogin( String password, File file ) {
+
+    }
 
 }
