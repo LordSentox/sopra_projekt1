@@ -26,7 +26,7 @@ public class BasePassword {
      */
     private Integer changeReminderDays;
 
-    public BasePassword(String password, Date lastChanged, Integer changeReminderDays) {
+    public BasePassword(String password, Integer changeReminderDays, Date lastChanged) {
         this.password = password;
         this.lastChanged = lastChanged;
         this.changeReminderDays = changeReminderDays;
