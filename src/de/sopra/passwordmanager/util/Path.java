@@ -60,6 +60,10 @@ public class Path
         return new Path( pathElements.subList( start, target ), target-start-1);
     }
 
+    public int length() {
+        return pathElements.size();
+    }
+
     public void navigate(int layer) {
         //current wird auf den nächstmöglichen Wert gesetzt, wenn der gegebene Wert außerhalb der möglichen Werte liegt
         this.current = layer < 0 ? 0 : ( layer >= pathElements.size() ? pathElements.size() - 1 : layer );
