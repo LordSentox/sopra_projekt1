@@ -16,6 +16,7 @@ public class PasswordReminderController {
 	
 	/**
 	 * Abfrage ob der Timer von einem Passwort abgelaufen ist/das passwort geändert werden muss.
+	 * @param password Das Passwort was überprüft werden soll.
 	 * 
 	 * @return <strong>true</strong> Timer ist abgelaufen/Passwort muss geändert werden,
 	 *         <br>
