@@ -28,8 +28,7 @@ public class Path
 
     public Path( List<String> pathElements, int current ) {
         this.pathElements = pathElements;
-        //current wird auf den nächstmöglichen Wert gesetzt, wenn der gegebene Wert außerhalb der möglichen Werte liegt
-        this.current = current < 0 ? 0 : ( current >= pathElements.size() ? pathElements.size() - 1 : current );
+        navigate( current );
     }
 
 
@@ -55,6 +54,11 @@ public class Path
 
     public Path absolutePath() {
         return new Path( pathElements.subList( 0, current+1 ), current );
+    }
+
+    public void navigate(int layer) {
+        //current wird auf den nächstmöglichen Wert gesetzt, wenn der gegebene Wert außerhalb der möglichen Werte liegt
+        this.current = layer < 0 ? 0 : ( layer >= pathElements.size() ? pathElements.size() - 1 : layer );
     }
 
     @Override
