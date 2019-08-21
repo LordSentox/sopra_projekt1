@@ -30,8 +30,7 @@ public class Category {
         this.subCategories = new ArrayList<>();
     }
 
-    public String getName()
-    {
+    public String getName() {
         return name;
     }
 

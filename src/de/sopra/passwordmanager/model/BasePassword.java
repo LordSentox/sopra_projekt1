@@ -20,10 +20,6 @@ public class BasePassword {
      */
     private Date lastChanged;
 
-    /**
-     * Die Zeit in Tagen, nach denen ein Passwort geändert werden soll. Kann mit lastChanged verglichen werden
-     * <code>null</code>, falls nicht erinnert werden soll, also das Passwort ewig verwendet werden kann.
-     */
     private Integer changeReminderDays;
 
     public BasePassword(String password, Date lastChanged, Integer changeReminderDays) {
@@ -55,5 +51,4 @@ public class BasePassword {
     public void setLastChanged(Date lastChanged) {
         this.lastChanged = lastChanged;
     }
-
 }

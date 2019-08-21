@@ -7,8 +7,7 @@ import java.util.Date;
 /**
  * Die Daten, die zu einem Passwort zusätzlich als Anmeldedaten gespeichert werden und das Passwort selbst.
  */
-public class Credentials extends BasePassword
-{
+public class Credentials extends BasePassword {
     /**
      * Der eindeutige Name der Credentials. Auch in einer anderen Kategorie darf es kein Objekt mit diesem Namen geben
      * Darf nicht <code>null</code> sein.
@@ -44,10 +43,9 @@ public class Credentials extends BasePassword
     private Collection<SecurityQuestion> securityQuestions;
 
     public Credentials(String password, Date lastChanged, Integer changeReminderDays,
-                        String name, String userName, URL website, String notes,
-                        Date created, Collection<SecurityQuestion> securityQuestions)
-    {
-        super( password, lastChanged, changeReminderDays );
+                       String name, String userName, URL website, String notes,
+                       Date created, Collection<SecurityQuestion> securityQuestions) {
+        super(password, lastChanged, changeReminderDays);
         this.name = name;
         this.userName = userName;
         this.website = website;
@@ -56,21 +54,39 @@ public class Credentials extends BasePassword
         this.securityQuestions = securityQuestions;
     }
 
-    public String getName() { return name; }
+    public String getName() {
+        return name;
+    }
 
-    public String getUserName() { return userName; }
+    public String getUserName() {
+        return userName;
+    }
 
-    public URL getWebsite() { return website; }
+    public URL getWebsite() {
+        return website;
+    }
 
-    public String getNotes() { return notes; }
+    public String getNotes() {
+        return notes;
+    }
 
-    public Date getCreatedAt() { return created; }
+    public Date getCreatedAt() {
+        return created;
+    }
 
-    public void setName( String name ) { this.name = name; }
+    public void setName(String name) {
+        this.name = name;
+    }
 
-    public void setUserName( String userName ) { this.userName = userName; }
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
 
-    public void setWebsite( URL website ) { this.website = website; }
+    public void setWebsite(URL website) {
+        this.website = website;
+    }
 
-    public void setNotes( String notes ) { this.notes = notes; }
+    public void setNotes(String notes) {
+        this.notes = notes;
+    }
 }
