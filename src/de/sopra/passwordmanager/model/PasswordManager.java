@@ -15,9 +15,15 @@ public class PasswordManager {
      */
     private Category rootCategory;
 
-    public BasePassword getMasterPassword() { return masterPassword; }
+    public BasePassword getMasterPassword() {
+        return masterPassword;
+    }
 
-    public Category getRootCategory() { return rootCategory; }
+    public Category getRootCategory() {
+        return rootCategory;
+    }
 
-    public void setMasterPassword( BasePassword masterPassword ) { this.masterPassword = masterPassword; }
+    public void setMasterPassword(BasePassword masterPassword) {
+        this.masterPassword = masterPassword;
+    }
 }
