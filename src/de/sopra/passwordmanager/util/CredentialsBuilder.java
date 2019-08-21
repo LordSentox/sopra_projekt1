@@ -168,7 +168,7 @@ public class CredentialsBuilder {
      * Eine Exception, die bei einem Fehler im Buildprozess des {@link CredentialsBuilder} geworfen wird
      * @see #build()
      */
-    private static class CredentialsBuilderException extends RuntimeException {
+    public static class CredentialsBuilderException extends RuntimeException {
         CredentialsBuilderException(String msg) {
             super(msg);
         }
