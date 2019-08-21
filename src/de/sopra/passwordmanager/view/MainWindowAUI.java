@@ -1,10 +1,12 @@
 package de.sopra.passwordmanager.view;
 
-import java.util.ArrayList;
+import de.sopra.passwordmanager.model.Credentials;
+
+import java.util.List;
 
 public interface MainWindowAUI {
 
-	void refreshEntryList( ArrayList entries );
+	void refreshEntryList(List<Credentials> entries );
 
 	void refreshEntry();
 
