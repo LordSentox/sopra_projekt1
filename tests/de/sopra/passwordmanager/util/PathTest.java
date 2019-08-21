@@ -14,6 +14,7 @@ import static org.junit.Assert.*;
 public class PathTest
 {
 
+    //Hilfsmethode um einen Path zu bekommen
     private Path getPath()
     {
         return new Path( "root/test/path/is5/deep" );
@@ -33,8 +34,10 @@ public class PathTest
     @Test
     public void constructorTest()
     {
+        //einfacher Konstruktor Test
         assertEquals( "construction by string or toString failed",
                 getPath().toString(), "root/test/path/is5/deep" );
+        //Test: Führende und anhängende / (slashes) ignorieren und abschneiden
         assertEquals( "construction does not remove leading or ending slashes",
                 new Path( "/root/test/path/is5/deep/" ).toString(), "root/test/path/is5/deep" );
     }
@@ -44,6 +47,7 @@ public class PathTest
     {
         Path parent = getPath().getParent();
 
+        //naiver Test
         assertEquals( "parent has the wrong name", parent.getName(), "is5" );
         assertTrue( "parent should have a child", parent.hasChild() );
 
@@ -63,17 +67,28 @@ public class PathTest
     @Test
     public void subPathAndAbsolutePathTest()
     {
+        //absolutePath Tests
         assertEquals( "absolutePath does change the path itself",
                 getPath().toString(), getPath().absolutePath().toString() );
         assertEquals( "absolutePath does cut the path the wrong way",
                 getPath().getParent().absolutePath().toString(), "root/test/path/is5" );
         assertEquals( "absolutePath does not match the correct length",
                 getPath().getParent().absolutePath().length(), 4 );
+
+        //Ein Pfad am Anfang um den root kürzen
+        Path path = getPath().subPath( 1, getPath().length() );
+        assertEquals( "subPath wrongly cut length", path.length(), 4 );
+        assertEquals( "subPath wrongly cut prefix", path.toString(), "test/path/is5/deep" );
+        //Ein Pfad am Ende um zwei Children kürzen
+        path = getPath().subPath( 0, getPath().length()-2 );
+        assertEquals( "subPath wrongly cut length", path.length(), 3 );
+        assertEquals( "subPath wrongly cut suffix",path.toString(), "root/test/path" );
     }
 
     @Test
     public void navigate()
     {
+        //auf verschiedene Teile des Pfades navigieren und testen
         Path path = getPath();
         assertEquals( "start navigation failed", path.getName(), "deep" );
         path.navigate(2);

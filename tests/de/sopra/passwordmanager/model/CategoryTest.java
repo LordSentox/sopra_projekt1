@@ -19,13 +19,16 @@ public class CategoryTest
     @Test
     public void removeCategoryFromTreeTest()
     {
+        //credentials anlegen
         Credentials credentials = new Credentials( "name", "user", "pw", "web", 5, "" );
         Credentials credentials2 = new Credentials( "name2", "user2", "pw2", "web", 4, "" );
 
+        //categories anlegen
         Category category = new Category( "cat1" );
         Category categorySub1 = new Category( "catSub1" );
         Category categorySub2 = new Category( "catSub2" );
 
+        //Konstrukt zusammenbauen
         category.addSubCategory( categorySub1 );
         category.addSubCategory( categorySub2 );
         categorySub1.addCredentials( credentials );
@@ -33,27 +36,32 @@ public class CategoryTest
         categorySub2.addCredentials( credentials2 );
         category.removeCredentialsFromTree( credentials );
 
-        assertEquals( categorySub1.getCredentials().size(), 0 );
-        assertEquals( categorySub2.getCredentials().size(), 1 );
+        //Test
+        assertEquals( "category was not removed correctly", categorySub1.getCredentials().size(), 0 );
+        assertEquals( "category was not removed correctly", categorySub2.getCredentials().size(), 1 );
     }
 
     @Test
     public void getCategoryByPathTest()
     {
+        //categories anlegen
         Category root = new Category( "root" );
         Category categorySub1 = new Category( "layer" );
         Category categorySub2 = new Category( "sameLayer" );
         Category categorySubSub1 = new Category( "deeper" );
 
+        //Konstrukt zusammenbauen
         root.addSubCategory( categorySub1 );
         root.addSubCategory( categorySub2 );
         categorySub1.addSubCategory( categorySubSub1 );
 
+        //Testaufrufe
         Category deeper1 = root.getCategoryByPath( new Path( "root/layer/deeper" ) );
         Category notFound = root.getCategoryByPath( new Path( "root/sameLayer/deeper" ) );
 
-        assertEquals( deeper1, categorySubSub1 );
-        assertNull( notFound );
+        //Test der Ergebnisse
+        assertEquals( "category not found by path", deeper1, categorySubSub1 );
+        assertNull( "anything was found for a path pointing nowhere", notFound );
     }
 
 }
