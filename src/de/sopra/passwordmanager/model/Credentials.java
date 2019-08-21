@@ -1,6 +1,6 @@
 package de.sopra.passwordmanager.model;
 
-import java.net.URL;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 
@@ -24,7 +24,7 @@ public class Credentials extends BasePassword {
      * Die Netzseite, auf der der Nutzer sich mit den im Credentials-Objekt gespeicherten Daten anmelden kann.
      * Darf nicht <code>null</code> sein.
      */
-    private URL website;
+    private String website;
 
     /**
      * Mögliche Notizen, die vom Nutzer eingegeben werden können. Kann <code>null</code> sein, oder leer, wenn der Nutzer
@@ -42,10 +42,10 @@ public class Credentials extends BasePassword {
      */
     private Collection<SecurityQuestion> securityQuestions;
 
-    public Credentials(String password, Date lastChanged, Integer changeReminderDays,
-                       String name, String userName, URL website, String notes,
-                       Date created, Collection<SecurityQuestion> securityQuestions) {
-        super(password, lastChanged, changeReminderDays);
+    public Credentials(String name, String userName, String password, String website, Integer changeReminderDays, Date created, Date lastChanged,
+                       String notes, Collection<SecurityQuestion> securityQuestions)
+    {
+        super( password, changeReminderDays, lastChanged);
         this.name = name;
         this.userName = userName;
         this.website = website;
@@ -54,15 +54,19 @@ public class Credentials extends BasePassword {
         this.securityQuestions = securityQuestions;
     }
 
-    public String getName() {
-        return name;
+    public Credentials(String name, String userName, String password, String website, Integer changeReminderDays,
+                       String notes)
+    {
+        this(name, userName, password, website, changeReminderDays, new Date(), new Date(), notes, new ArrayList<>());
     }
+
+    public String getName() { return name; }
 
     public String getUserName() {
         return userName;
     }
 
-    public URL getWebsite() {
+    public String getWebsite() {
         return website;
     }
 
@@ -82,9 +86,7 @@ public class Credentials extends BasePassword {
         this.userName = userName;
     }
 
-    public void setWebsite(URL website) {
-        this.website = website;
-    }
+    public void setWebsite( String website ) { this.website = website; }
 
     public void setNotes(String notes) {
         this.notes = notes;
