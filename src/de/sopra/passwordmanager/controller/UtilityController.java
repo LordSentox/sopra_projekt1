@@ -4,7 +4,7 @@ import java.io.File;
 
 /**
  * Der UtilityController stellt verschiedene Hilfsdienste zur Verfuegung
- * @author sopr049
+ * @author sopr049, sopr043
  *
  */
 public class UtilityController {
