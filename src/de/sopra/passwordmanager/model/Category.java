@@ -4,7 +4,6 @@ import de.sopra.passwordmanager.util.Path;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Optional;
 
 /**
  * Enthält {@link Credentials} und Unterkategorien, die in die Kategorie einsortiert wurden. Es gibt eine rootCategory im
@@ -26,7 +25,7 @@ public class Category {
      */
     private Collection<Category> subCategories;
 
-    public Category( String name ) {
+    public Category(String name) {
         this.name = name;
         this.credentials = new ArrayList<>();
         this.subCategories = new ArrayList<>();
@@ -44,41 +43,41 @@ public class Category {
         return subCategories;
     }
 
-    public void addSubCategory( Category category ) {
-        subCategories.add( category );
+    public void addSubCategory(Category category) {
+        subCategories.add(category);
     }
 
-    public void removeSubCategory( Category category ) {
-        subCategories.remove( category );
+    public void removeSubCategory(Category category) {
+        subCategories.remove(category);
     }
 
     public void addCredentials(Credentials credentials) {
-        this.credentials.add( credentials );
+        this.credentials.add(credentials);
     }
 
     public void removeCredentials(Credentials credentials) {
-        this.credentials.remove( credentials );
+        this.credentials.remove(credentials);
     }
 
     public void removeCredentialsFromTree(Credentials credentials) {
-        removeCredentials( credentials );
-        subCategories.forEach( s -> s.removeCredentialsFromTree( credentials ) );
+        removeCredentials(credentials);
+        subCategories.forEach(s -> s.removeCredentialsFromTree(credentials));
     }
 
     public Category getCategoryByPath(Path path) {
-        path.navigate( 0 );
-        if(path.getName().equals( getName() )) {
-            if(path.length() == 1) {
+        path.navigate(0);
+        if (path.getName().equals(getName())) {
+            if (path.length() == 1) {
                 return this;
             } else {
-                Optional<Category> any = subCategories.stream()
-                        .filter( s -> s.getCategoryByPath( path.subPath( 1, path.length() ) ) != null )
-                        .findAny();
-                if(any.isPresent()) return any.get();
-                else return null;
+                for (Category cat : subCategories) {
+                    Category categoryByPath = cat.getCategoryByPath(path.subPath(1, path.length()));
+                    if (categoryByPath != null) return categoryByPath;
+                }
+                return null;
             }
         }
-        else return null;
+        return null;
     }
 
 }

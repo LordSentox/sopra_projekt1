@@ -60,7 +60,7 @@ public class CategoryTest
         Category notFound = root.getCategoryByPath( new Path( "root/sameLayer/deeper" ) );
 
         //Test der Ergebnisse
-        assertEquals( "category not found by path", deeper1, categorySubSub1 );
+        assertEquals( "category not found by path", categorySubSub1.getName(), deeper1.getName() );
         assertNull( "anything was found for a path pointing nowhere", notFound );
     }
 
