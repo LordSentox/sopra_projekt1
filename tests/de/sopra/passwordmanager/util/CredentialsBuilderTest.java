@@ -66,7 +66,7 @@ public class CredentialsBuilderTest {
                 .withWebsite(website)
                 .build();
 
-        Credentials cred2 = new Credentials(name, userName, password, website, null, LocalDateTime.now(), LocalDateTime.now(), "", new HashSet<>());
+        Credentials cred2 = new Credentials(name, userName, password, website, null, cred1.getCreatedAt(), cred1.getLastChanged(), "", new HashSet<>());
 
         Assert.assertEquals("Minimal built credentials not equal to expected", cred1, cred2);
     }
