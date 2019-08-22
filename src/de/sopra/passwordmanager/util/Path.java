@@ -3,7 +3,6 @@ package de.sopra.passwordmanager.util;
 import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 /**
  * <h1>projekt1</h1>
@@ -17,6 +16,7 @@ public class Path
 
     private List<String> pathElements;
     private int current;
+    public static final String ROOT_CATEGORY = "Alle";
 
     public Path( String path ) {
         this( Arrays.asList( path.split( Pattern.quote( "/" ) ) ) );
@@ -76,8 +76,7 @@ public class Path
 
     @Override
     public String toString() {
-        return pathElements.stream()
-                .collect( Collectors.joining("/") );
+        return String.join("/", pathElements);
     }
 
 }
