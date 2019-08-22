@@ -4,8 +4,8 @@ import de.sopra.passwordmanager.model.BasePassword;
 import de.sopra.passwordmanager.model.Credentials;
 import de.sopra.passwordmanager.model.SecurityQuestion;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashSet;
 
 /**
@@ -20,8 +20,8 @@ public class CredentialsBuilder {
     private String password = null;
     private String website = null;
     private Integer changeReminderDays = null;
-    private Date lastChanged = null;
-    private Date created = null;
+    private LocalDateTime lastChanged = null;
+    private LocalDateTime created = null;
     private String notes = "";
     private Collection<SecurityQuestion> securityQuestions = new HashSet<>();
 
@@ -65,14 +65,15 @@ public class CredentialsBuilder {
         if (password == null)   throw new CredentialsBuilderException("password is null");
         if (website == null)    throw new CredentialsBuilderException("website is null");
         if (changeReminderDays != null && changeReminderDays < 1) throw new CredentialsBuilderException("change reminder less than 1 day: " + changeReminderDays);
+        LocalDateTime now = LocalDateTime.now();
         if (created == null) {
-            created = new Date();
+            created = now;
         }
         if (lastChanged == null) {
-               lastChanged = new Date();
+               lastChanged = now;
         }
 
-        return new Credentials(name, userName, password, website, changeReminderDays, created, lastChanged, notes, securityQuestions);
+        return new Credentials(name, userName, password, website);
     }
 
     /**
@@ -130,7 +131,7 @@ public class CredentialsBuilder {
      * @param lastChanged Das zu setzende Datum
      * @return Den Builder selbst
      */
-    public CredentialsBuilder withLastChanged(Date lastChanged) {
+    public CredentialsBuilder withLastChanged(LocalDateTime lastChanged) {
         this.lastChanged = lastChanged;
         return this;
     }
@@ -141,7 +142,7 @@ public class CredentialsBuilder {
      * @param created Das zu setzende Datum
      * @return Den Builder selbst
      */
-    public CredentialsBuilder withCreated(Date created) {
+    public CredentialsBuilder withCreated(LocalDateTime created) {
         this.created = created;
         return this;
     }
