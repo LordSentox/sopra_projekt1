@@ -12,7 +12,7 @@ import org.junit.Test;
 
 import java.util.List;
 
-public class CredentialsControllerFilterTest {
+public class CredentialsControllerTreeTest {
     private PasswordManagerController pmc;
     private CredentialsController cc;
     private PasswordManager pm;
@@ -128,7 +128,7 @@ public class CredentialsControllerFilterTest {
         Assert.assertTrue("credentials list does not contain obar", list1.contains(obar));
         Assert.assertTrue("credentials list does not contain hbar", list1.contains(hbar));
         Assert.assertTrue("credentials list does not contain fbar", list1.contains(fbar));
-        Assert.assertEquals("credentials list does not contain exactly 3 element after filtering for 'bar'", 1, list1.size());
+        Assert.assertEquals("credentials list does not contain exactly 3 elements after filtering for 'bar'", 3, list1.size());
 
         cc.filterCredentials(null, "f");
         List<Credentials> list2 = mainView.getCurrentCredentialsList();
@@ -136,7 +136,7 @@ public class CredentialsControllerFilterTest {
         Assert.assertFalse("credentials list contains obar", list2.contains(obar));
         Assert.assertFalse("credentials list contains hbar", list2.contains(hbar));
         Assert.assertTrue("credentials list does not contain fbar", list2.contains(fbar));
-        Assert.assertEquals("credentials list does not contain exactly 2 elemente after filtering for 'f'", 1, list2.size());
+        Assert.assertEquals("credentials list does not contain exactly 1 element after filtering for 'f'", 1, list2.size());
     }
 
     @Test
@@ -155,7 +155,7 @@ public class CredentialsControllerFilterTest {
         Assert.assertFalse("credentials list contains obar", list2.contains(obar));
         Assert.assertFalse("credentials list contains hbar", list2.contains(hbar));
         Assert.assertFalse("credentials list contains fbar", list2.contains(fbar));
-        Assert.assertEquals("credentials list does not contain exactly 0 elements after filtering for category " +  Path.ROOT_CATEGORY + "/foo/beer, and pattern 'o'", 0, list2.size());
+        Assert.assertEquals("credentials list contains elements after filtering for category " +  Path.ROOT_CATEGORY + "/foo/beer, and pattern 'o'", 0, list2.size());
 
         cc.filterCredentials(Path.ROOT_CATEGORY + "/beb", "f");
         List<Credentials> list3 = mainView.getCurrentCredentialsList();
@@ -164,5 +164,10 @@ public class CredentialsControllerFilterTest {
         Assert.assertFalse("credentials list contains hbar", list3.contains(hbar));
         Assert.assertFalse("credentials list contains fbar", list3.contains(fbar));
         Assert.assertEquals("credentials list contains elements after filtering for category " +  Path.ROOT_CATEGORY + "/beb, and pattern 'f' (/beb does not exist)", 0, list3.size());
+    }
+
+    @Test
+    public void getCredentialsByCategoryPathTest() {
+
     }
 }

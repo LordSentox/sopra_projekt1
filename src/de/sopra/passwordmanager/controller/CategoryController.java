@@ -2,13 +2,10 @@ package de.sopra.passwordmanager.controller;
 
 import de.sopra.passwordmanager.model.Category;
 import de.sopra.passwordmanager.model.Credentials;
-import java.util.ArrayList;
-import java.util.Collection;
-import de.sopra.passwordmanager.model.Credentials;
 import de.sopra.passwordmanager.util.Path;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 
 /**
@@ -95,7 +92,7 @@ public class CategoryController {
 	 * @param name der Name der gesuchten Unterkategorien
 	 * @return die angelegte und (eventuell) gefüllte ArrayList<Category>
 	 */
-	ArrayList findCategory(String name) {
+	List<Category> findCategory(String name) {
 		return null;
 	}
 
