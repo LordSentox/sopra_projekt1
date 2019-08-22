@@ -10,6 +10,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Collection;
 import java.util.List;
 
 public class CredentialsControllerTreeTest {
@@ -168,6 +169,31 @@ public class CredentialsControllerTreeTest {
 
     @Test
     public void getCredentialsByCategoryPathTest() {
+        // Root Category
+        Collection<Credentials> creds1 = cc.getCredentialsByCategoryPath(Path.ROOT_CATEGORY);
+        Assert.assertTrue("credentials list does not contain obar", creds1.contains(obar));
+        Assert.assertTrue("credentials list does not contain hbar", creds1.contains(hbar));
+        Assert.assertTrue("credentials list does not contain fbar", creds1.contains(fbar));
+        Assert.assertEquals("credentials list does not contain exactly 3 elements after filtering for 'bar'", 3, creds1.size());
 
+        // Category "alle/beer" mit Eintrag "obar" und Category "alle/beer/foo" mit Eintrag
+        Collection<Credentials> creds2 = cc.getCredentialsByCategoryPath(Path.ROOT_CATEGORY + "/beer");
+        Assert.assertTrue("credentials list does not contain obar", creds2.contains(obar));
+        Assert.assertFalse("credentials list contains hbar", creds2.contains(hbar));
+        Assert.assertTrue("credentials list does not contain fbar", creds2.contains(fbar));
+        Assert.assertEquals("credentials list does not contain exactly 2 elements after filtering for 'bar'", 2, creds2.size());
+    }
+
+    @Test
+    public void getCredentialsByCategoryPathTestNonExistantCategory(){
+        // Kategorie, die nicht existiert
+        Collection<Credentials> creds = cc.getCredentialsByCategoryPath("lol");
+        Assert.assertTrue("collection non empty despite category not existing", creds.isEmpty());
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void getCredentialsByCategoryPathTestPathNull(){
+        // Kategorie, die nicht existiert
+        Collection<Credentials> creds = cc.getCredentialsByCategoryPath(null);
     }
 }

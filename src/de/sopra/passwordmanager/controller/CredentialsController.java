@@ -112,10 +112,11 @@ public class CredentialsController {
 	 * Gibt eine {@link List} aller {@link Credentials} zurück, die in der durch den gegebenen Pfad beschriebenen {@link Category} liegen
 	 * @param categoryPath Der Pfad der Kategorie, dessen Inhalt zurückgegeben werden soll. Darf nicht <code>null</code> sein
 	 * @return Eine {@link List} aller {@link Credentials}, die in der durch {@code categoryPath} beschriebenen {@link Category} liegen
-	 * @see Credentials
+	 * @throws NullPointerException Falls {@code categoryPath} <code>null</code> ist
+     * @see Credentials
 	 * @see Category
 	 */
-	List<Credentials> getCredentialsByCategoryPath(String categoryPath) {
+	List<Credentials> getCredentialsByCategoryPath(String categoryPath) throws NullPointerException{
 		return null;
 	}
 
