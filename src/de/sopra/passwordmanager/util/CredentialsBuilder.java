@@ -25,6 +25,27 @@ public class CredentialsBuilder {
     private String notes = "";
     private Collection<SecurityQuestion> securityQuestions = new HashSet<>();
 
+    /**
+     * Erstellt einen {@link CredentialsBuilder} für {@link Credentials}, der keine Daten enthält, eingeschlossen der Daten,
+     * die in jedem Fall benötigt sind.
+     * @see #build()
+     */
+    public CredentialsBuilder() {
+    }
+
+    /**
+     * Erstellt einen {@link CredentialsBuilder} für {@link Credentials}, der die in jedem Fall benötigten Daten enthält.
+     * @param name Name des Credentials-Objektes
+     * @param userName Nutzername zur Anmeldung auf der Netzseite
+     * @param password Passwort zur Anmeldung auf der Netzseite
+     * @param website Netzseite, auf die die Anmeldedaten zutreffen
+     */
+    public CredentialsBuilder(String name, String userName, String password, String website) {
+        this.name = name;
+        this.userName = userName;
+        this.password = password;
+        this.website = website;
+    }
 
     /**
      * Baut aus den hinzugefügte Daten ein {@link Credentials} Objekt.
@@ -44,9 +65,11 @@ public class CredentialsBuilder {
         if (password == null)   throw new CredentialsBuilderException("password is null");
         if (website == null)    throw new CredentialsBuilderException("website is null");
         if (changeReminderDays != null && changeReminderDays < 1) throw new CredentialsBuilderException("change reminder less than 1 day: " + changeReminderDays);
+        if (created == null) {
+            created = new Date();
+        }
         if (lastChanged == null) {
                lastChanged = new Date();
-               created = new Date();
         }
 
         return new Credentials(name, userName, password, website, changeReminderDays, created, lastChanged, notes, securityQuestions);
@@ -171,10 +194,6 @@ public class CredentialsBuilder {
     public static class CredentialsBuilderException extends RuntimeException {
         CredentialsBuilderException(String msg) {
             super(msg);
-        }
-
-        CredentialsBuilderException(String msg, Throwable e) {
-            super(msg, e);
         }
     }
 }
