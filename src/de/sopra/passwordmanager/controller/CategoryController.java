@@ -11,8 +11,11 @@ import java.util.ArrayList;
  */
 public class CategoryController {
 
-
 	private PasswordManagerController passwordManagerController;
+
+    public CategoryController(PasswordManagerController controller) {
+		this.passwordManagerController = controller;
+	}
 
 	/**
 	 * erstellt eine neue Kategorie
@@ -29,9 +32,7 @@ public class CategoryController {
 	 * 			   Wenn das der Fall ist, wird die MainWindowAUI geholt und darauf showError("Eingegebener Kategoriename ist schon vergeben") aufgerufen
 	 * @throws IllegalArgumentException wenn name null ist, wird die Exception geworfen
 	 */
-	public void createCategory(Category superCategory, String name) throws IllegalArgumentException{
-
-	}
+	public void createCategory(Category superCategory, String name) throws IllegalArgumentException {
 
 	/**
 	 * entfernt die Kategorie aus dem Datenmodell.
@@ -50,8 +51,8 @@ public class CategoryController {
 	 * Dann wird die Referenz auf die zu Löschende Kategorie entfernt. 
 	 */
 	public void removeCategory(Category category, boolean removeCredentialsToo) {
-
 	}
+	    
 
 	/**
 	 * holt sich mittels getCategory(oldPath) die zu verschiebende Kategorie [oldPath mit dem Namen der zu verschiebenden Kategorie] 
@@ -63,9 +64,8 @@ public class CategoryController {
 	 * @param newPath kompletter Pfad bis inkl. Kategoriename der verschobenen Kategorie
 	 * @throws IllegalArgumentException wenn einer der Pfade null ist, wird die Exception geworfen
 	 */
-	public void moveCategory(String oldPath, String newPath) throws IllegalArgumentException{
-
-	}
+	public void moveCategory(String oldPath, String newPath) throws IllegalArgumentException {
+    }
 
 	/**
 	 * holt sich vom passwordManagerController die rootCategory. 
