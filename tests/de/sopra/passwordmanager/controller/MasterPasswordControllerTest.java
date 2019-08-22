@@ -8,7 +8,6 @@ import org.junit.Test;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.Date;
 
 public class MasterPasswordControllerTest {
     private PasswordManagerController passwordManagerController;
@@ -22,18 +21,6 @@ public class MasterPasswordControllerTest {
 
     @Test
     public void changePasswordTest() {
-    	
-    	//ändert Masterpasswort
-    	//assertion, wenn das alte Passwort weiterhin gespeichert ist
-    	//assertion, wenn neues Passwort nicht gespeichert wurde
-    	Date sixDaysEarlier = new Date(System.currentTimeMillis() - daysToMillis(6));
-        this.passwordManager.setMasterPassword(new BasePassword("hello_there", 5, sixDaysEarlier));
-        this.passwordManagerController.getMasterPasswordController().changePassword("hello",10);
-        
-        
-        Assert.assertFalse("Passwort entspricht dem alten",this.passwordManagerController.getMasterPasswordController().checkPassword("hello_there"));
-        Assert.assertTrue(this.passwordManagerController.getMasterPasswordController().checkPassword("hello"));
-
         //ändert Masterpasswort
         //assertion, wenn das alte Passwort weiterhin gespeichert ist
         //assertion, wenn neues Passwort nicht gespeichert wurde
