@@ -1,26 +1,21 @@
 package de.sopra.passwordmanager.controller;
 
-import static org.junit.Assert.*;
-
-import java.util.Date;
-import java.util.*;
-
-import static org.junit.Assert.*;
+import de.sopra.passwordmanager.model.Credentials;
+import de.sopra.passwordmanager.model.PasswordManager;
+import de.sopra.passwordmanager.util.CredentialsBuilder;
 import org.junit.Before;
 import org.junit.Test;
 
-import de.sopra.passwordmanager.model.BasePassword;
-import de.sopra.passwordmanager.model.Credentials;
-import de.sopra.passwordmanager.model.PasswordManager;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+
+import static org.junit.Assert.*;
 
 public class PasswordReminderControllerTest {
 	
 	private PasswordManagerController passwordManagerController;
     private PasswordManager passwordManager;
-
-    private long daysToMillis(int days) {
-        return days * 3600 * 24 * 1000;
-    }
 
     @Before
     public void setUp() throws Exception {
@@ -36,18 +31,20 @@ public class PasswordReminderControllerTest {
 	@Test
 	public void testHasToBeChanged() {
 		//legt Passworteintrag an sowie Datum
-		Credentials credentials = new Credentials("Name", "Benutzername", "Hello_world", "URL", 5, "");
-		Date sixDaysEarlier = new Date(System.currentTimeMillis() - daysToMillis(6));
+		Credentials credentials = new CredentialsBuilder("Name", "Benutzername", "Hello_world", "URL")
+				.withChangeReminderDays(5)
+				.build();
+		LocalDateTime sixDaysEarlier = LocalDateTime.now().minus(6, ChronoUnit.DAYS);
 		//ändert LanstChanged-Datum des Passworteintrages auf vor 6 Tagen
 		credentials.setLastChanged(sixDaysEarlier);	
 		//prüft, ob hasToBeChanged für den Passworteintrag true zurückgibt
         assertTrue(this.passwordManagerController.getPasswordReminderController().hasToBeChanged(credentials));
-        
-        Date fourDaysEarlier = new Date(System.currentTimeMillis() - daysToMillis(4));
+
+		LocalDateTime fourDaysEarlier = LocalDateTime.now().minus(4, ChronoUnit.DAYS);
         credentials.setLastChanged(fourDaysEarlier);
         assertFalse(this.passwordManagerController.getPasswordReminderController().hasToBeChanged(credentials));
-        
-        Date fiveDaysEarlier = new Date(System.currentTimeMillis() - daysToMillis(5));
+
+		LocalDateTime fiveDaysEarlier = LocalDateTime.now().minus(5, ChronoUnit.DAYS);
         credentials.setLastChanged(fiveDaysEarlier);
         assertTrue("Grenzfall", this.passwordManagerController.getPasswordReminderController().hasToBeChanged(credentials));
         
@@ -56,16 +53,26 @@ public class PasswordReminderControllerTest {
 	@Test
 	public void testPasswordsToBeChanged() {
 		//legt Passworteinträge an
-		Credentials credentialsa = new Credentials("Namea", "Benutzernamea", "Hello_world", "URL", 3, "");
-		Credentials credentialsb = new Credentials("Nameb", "Benutzernameb", "Hello_world", "URL", 2, "");
-		Credentials credentialsc = new Credentials("Namec", "Benutzernamec", "Hello_world", "URL", 4, "");
-		Credentials credentialsd = new Credentials("Named", "Benutzernamed", "Hello_world", "URL", 6, "");
-		Credentials credentialse = new Credentials("Namee", "Benutzernamee", "Hello_world", "URL", 5, "");
+		Credentials credentialsa = new CredentialsBuilder("Namea", "Benutzernamea", "Hello_world", "URL")
+				.withChangeReminderDays(3)
+				.build();
+		Credentials credentialsb = new CredentialsBuilder("Nameb", "Benutzernameb", "Hello_world", "URL")
+				.withChangeReminderDays(2)
+				.build();
+		Credentials credentialsc = new CredentialsBuilder("Namec", "Benutzernamec", "Hello_world", "URL")
+				.withChangeReminderDays(4)
+				.build();
+		Credentials credentialsd = new CredentialsBuilder("Named", "Benutzernamed", "Hello_world", "URL")
+				.withChangeReminderDays(6)
+				.build();
+		Credentials credentialse = new CredentialsBuilder("Namee", "Benutzernamee", "Hello_world", "URL")
+				.withChangeReminderDays(5)
+				.build();
 		//legt Testdaten an
-		Date sevenDaysEarlier = new Date(System.currentTimeMillis() - daysToMillis(7));
-		Date fourDaysEarlier = new Date(System.currentTimeMillis() - daysToMillis(4));
+		LocalDateTime sevenDaysEarlier = LocalDateTime.now().minus(7, ChronoUnit.DAYS);
+		LocalDateTime fourDaysEarlier = LocalDateTime.now().minus(6, ChronoUnit.DAYS);
 		//legt ArrayListe mit Passworteinträgen an
-		ArrayList<Credentials> credentials = new ArrayList<Credentials>();
+		ArrayList<Credentials> credentials = new ArrayList<>();
 		credentials.add(credentialsa);
 		credentials.add(credentialsb);
 		credentials.add(credentialsc);

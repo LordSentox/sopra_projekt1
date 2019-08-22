@@ -1,11 +1,16 @@
 package de.sopra.passwordmanager.controller;
 
+import de.sopra.passwordmanager.controller.PasswordManagerControllerDummy.MainView;
 import de.sopra.passwordmanager.model.Credentials;
 import de.sopra.passwordmanager.model.PasswordManager;
+import de.sopra.passwordmanager.model.SecurityQuestion;
 import de.sopra.passwordmanager.util.CredentialsBuilder;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * <h1>projekt1</h1>
@@ -19,16 +24,20 @@ public class CredentialsControllerTest {
     private PasswordManagerController pmc;
     private CredentialsController cc;
     private PasswordManager pm;
+    // Liste im MainView eine Liste mit einem einzigen Eintrag und füge diesen auch ins Datenmodell ein
+    private MainView mainView;
 
     @Before
     public void setUp() throws Exception {
         pmc = PasswordManagerControllerDummy.getNewController();
         cc = pmc.getCredentialsController();
         pm = pmc.getPasswordManager();
+        mainView =  (MainView) this.pmc.getMainWindowAUI();
     }
 
+    //region Save Credentials
     @Test
-    public void saveCredentialsBasic() {
+    public void saveCredentialsTestBasic() {
         Credentials cred = new CredentialsBuilder()
                 .withName("cred1")
                 .withUserName("user1")
@@ -41,7 +50,7 @@ public class CredentialsControllerTest {
     }
 
     @Test
-    public void replaceCredentialsBasic() {
+    public void saveCredentialsTestReplace() {
         Credentials cred1 = new CredentialsBuilder()
                 .withName("cred1")
                 .withUserName("user1")
@@ -66,7 +75,7 @@ public class CredentialsControllerTest {
     }
 
     @Test
-    public void replaceCredentialsSameObject() {
+    public void saveCredentialsTestReplaceSameObject() {
         Credentials cred = new CredentialsBuilder()
                 .withName("cred")
                 .withUserName("user1")
@@ -83,7 +92,7 @@ public class CredentialsControllerTest {
     }
 
     @Test
-    public void saveCredentialsNull() {
+    public void saveCredentialsTestNull() {
         Credentials cred = new CredentialsBuilder()
                 .withName("cred1")
                 .withUserName("user1")
@@ -92,30 +101,246 @@ public class CredentialsControllerTest {
                 .build();
 
         cc.saveCredentials(cred, null);
-        Assert.assertEquals(0, pm.getRootCategory().getCredentials().size());
+        Assert.assertEquals("Entries changed while trying to replace Credentials with null Credentials",0, pm.getRootCategory().getCredentials().size());
         cc.saveCredentials(null, null);
-        Assert.assertEquals(0, pm.getRootCategory().getCredentials().size());
+        Assert.assertEquals("Entries changed while trying to insert null Credentials", 0, pm.getRootCategory().getCredentials().size());
     }
 
     @Test
-    public void removeCredentials() {
+    public void saveCredentialsTestOldCredentialsNotExist() {
+        Credentials cred1 = new CredentialsBuilder()
+                .withName("cred1")
+                .withUserName("user1")
+                .withPassword("passwort123")
+                .withWebsite("www.hallo.de")
+                .build();
 
+        Credentials cred2 = new CredentialsBuilder()
+                .withName("cred2")
+                .withUserName("user2")
+                .withPassword("456passwort")
+                .withWebsite("www.bye.com")
+                .build();
+
+        //Vorher, wie nachher darf kein Eintrag im Passwortmanager existieren, da cred1 nicht existiert
+        Assert.assertEquals("Entries not empty", 0, pm.getRootCategory().getCredentials().size());
+        cc.saveCredentials(cred1, cred2);
+        Assert.assertEquals("Entries changed after trying to replace Credentials, that do not exist", 0, pm.getRootCategory().getCredentials().size());
+    }
+    //endregion
+
+    //region  Remove Credentials
+    @Test
+    public void removeCredentialsTestView() {
+        // Werden Credentials aus dem MainView auch gelöscht?
+        Credentials credentials = new CredentialsBuilder()
+                .withName("Hello")
+                .withUserName("Hello")
+                .withWebsite("schmuddelseite_sieben.de")
+                .withPassword("wanken")
+                .build();
+
+        List<Credentials> credentialsList = new ArrayList<>();
+        credentialsList.add(credentials);
+        pm.getRootCategory().addCredentials(credentials);
+        mainView.refreshEntryList(credentialsList);
+
+        Assert.assertEquals("The Credentialslist does not contain exactly 1 entry after adding 1 Credentials object", 1, mainView.getCurrentCredentialsList().size());
+        Assert.assertTrue("CredentialsList does not contain the given Credentials object after adding", mainView.getCurrentCredentialsList().contains(credentials));
+
+        // Der Eintrag soll gelöscht werden und muss in der View aktualisiert worden sein
+        cc.removeCredentials(credentials);
+
+        Assert.assertTrue("Credentials object not removed from CredentialsList", mainView.getCurrentCredentialsList().isEmpty());
     }
 
     @Test
-    public void addSecurityQuestion() {
+    public void removeCredentialsTestNull() {
+        // Werden Credentials aus dem MainView auch gelöscht?
+        Credentials credentials = new CredentialsBuilder()
+                .withName("Hello")
+                .withUserName("Hello")
+                .withWebsite("schmuddelseite_neun.de")
+                .withPassword("wnken")
+                .build();
+
+        List<Credentials> credentialsList = new ArrayList<>();
+        credentialsList.add(credentials);
+        pm.getRootCategory().addCredentials(credentials);
+        mainView.refreshEntryList(credentialsList);
+
+        Assert.assertEquals("The Credentialslist does not contain exactly 1 entry after adding 1 Credentials object", 1, mainView.getCurrentCredentialsList().size());
+        Assert.assertTrue("CredentialsList does not contain the given Credentials object after adding", mainView.getCurrentCredentialsList().contains(credentials));
+
+        // Der Eintrag soll gelöscht werden und muss in der View aktualisiert worden sein
+        cc.removeCredentials(null);
+
+        Assert.assertEquals("The Credentialslist does not contain exactly 1 entry after removing null", 1, mainView.getCurrentCredentialsList().size());
+        Assert.assertTrue("CredentialsList does not contain the given Credentials object after removing null", mainView.getCurrentCredentialsList().contains(credentials));
     }
 
     @Test
-    public void removeSecurityQuestion() {
+    public void removeCredentialsTestNonExistant() {
+        // Werden Credentials aus dem MainView auch gelöscht?
+        Credentials credentials1 = new CredentialsBuilder()
+                .withName("Hello There")
+                .withUserName("Dies")
+                .withWebsite("ist.ein")
+                .withPassword("test")
+                .build();
+
+        Credentials credentials2 = new CredentialsBuilder()
+                .withName("General Kenobi")
+                .withUserName("Tschüss")
+                .withWebsite("Junge")
+                .withPassword("Warum")
+                .build();
+
+        List<Credentials> credentialsList = new ArrayList<>();
+        credentialsList.add(credentials1);
+        pm.getRootCategory().addCredentials(credentials1);
+        mainView.refreshEntryList(credentialsList);
+
+        Assert.assertEquals("The Credentialslist does not contain exactly 1 entry after adding 1 Credentials object", 1, mainView.getCurrentCredentialsList().size());
+        Assert.assertTrue("CredentialsList does not contain the given Credentials object after adding", mainView.getCurrentCredentialsList().contains(credentials1));
+
+        // Der Eintrag soll gelöscht werden und muss in der View aktualisiert worden sein
+        cc.removeCredentials(credentials2);
+
+        Assert.assertEquals("The CredentialsList does not contain exactly 1 entry after removing non existant Credentials object", 1, mainView.getCurrentCredentialsList().size());
+        Assert.assertTrue("CredentialsList does not contain the given Credentials object after removing null", mainView.getCurrentCredentialsList().contains(credentials1));
+    }
+    //endregion
+
+    //region Add Security Questions
+    @Test
+    public void addSecurityQuestionTest() {
+        Credentials credentials = new CredentialsBuilder()
+                .withName("Hello There")
+                .withUserName("Dies")
+                .withWebsite("ist.ein")
+                .withPassword("test")
+                .build();
+
+        cc.saveCredentials(null, credentials);
+
+        SecurityQuestion sq = new SecurityQuestion("Warum?", "Da so");
+        cc.addSecurityQuestion(sq, credentials);
+        cc.addSecurityQuestion("Was?", "Das", credentials);
+
+        Assert.assertTrue("Adding SecurityQuestion object failed", credentials.getSecurityQuestions().contains(sq));
+        Assert.assertTrue("Adding SecurityQuestion with question and answer failed", credentials.getSecurityQuestions().contains(new SecurityQuestion("Was?", "Das")));
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void addSecurityQuestionTestSecurityQuestionNull() {
+        Credentials credentials = new CredentialsBuilder()
+                .withName("Hello There")
+                .withUserName("Dies")
+                .withWebsite("ist.ein")
+                .withPassword("test")
+                .build();
+
+        cc.saveCredentials(null, credentials);
+        cc.addSecurityQuestion(null, credentials);
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void addSecurityQuestionTestQuestionNull() {
+        Credentials credentials = new CredentialsBuilder()
+                .withName("Hello There")
+                .withUserName("Dies")
+                .withWebsite("ist.ein")
+                .withPassword("test")
+                .build();
+
+        cc.saveCredentials(null, credentials);
+        cc.addSecurityQuestion(null, "Das", credentials);
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void addSecurityQuestionTestAnswerNull() {
+        Credentials credentials = new CredentialsBuilder()
+                .withName("Hello There")
+                .withUserName("Dies")
+                .withWebsite("ist.ein")
+                .withPassword("test")
+                .build();
+
+        cc.saveCredentials(null, credentials);
+        cc.addSecurityQuestion("Was", null, credentials);
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void addSecurityQuestionTestCredentialsNull() {
+        cc.addSecurityQuestion("Was", "Das", null);
+    }
+    //endregion
+
+    //region Remove Security Questions
+    @Test
+    public void removeSecurityQuestionTest() {
+        SecurityQuestion sq = new SecurityQuestion("Was", "Das");
+
+        Credentials credentials = new CredentialsBuilder()
+                .withName("Hello There")
+                .withUserName("Dies")
+                .withWebsite("ist.ein")
+                .withPassword("test")
+                .withSecurityQuestion(sq)
+                .build();
+
+        cc.saveCredentials(null, credentials);
+        Assert.assertTrue("Credential does not contain Security Question", credentials.getSecurityQuestions().contains(sq));
+        cc.removeSecurityQuestion(sq, credentials);
+        Assert.assertTrue("Removing SecurityQuestion failed", credentials.getSecurityQuestions().isEmpty());
     }
 
     @Test
-    public void filterCredentials() {
+    public void removeSecurityQuestionTestNotExist() {
+        SecurityQuestion sq1 = new SecurityQuestion("Was", "Das");
+        SecurityQuestion sq2 = new SecurityQuestion("Warum", "Darum");
+
+        Credentials credentials = new CredentialsBuilder()
+                .withName("Hello There")
+                .withUserName("Dies")
+                .withWebsite("ist.ein")
+                .withPassword("test")
+                .withSecurityQuestion(sq1)
+                .build();
+
+        cc.saveCredentials(null, credentials);
+        Assert.assertTrue("Credential does not contain Security Question", credentials.getSecurityQuestions().contains(sq1));
+        cc.removeSecurityQuestion(sq2, credentials);
+        Assert.assertEquals("A credential was added to/removed from the list", 1, credentials.getSecurityQuestions().size());
+        Assert.assertTrue("The wrong Security Question was removed", credentials.getSecurityQuestions().contains(sq1));
     }
+
+    @Test
+    public void removeSecurityQuestionTestNull() {
+        SecurityQuestion sq1 = new SecurityQuestion("Was", "Das");
+
+        Credentials credentials = new CredentialsBuilder()
+                .withName("Hello There")
+                .withUserName("Dies")
+                .withWebsite("ist.ein")
+                .withPassword("test")
+                .withSecurityQuestion(sq1)
+                .build();
+
+        cc.saveCredentials(null, credentials);
+        Assert.assertTrue("Credential does not contain Security Question", credentials.getSecurityQuestions().contains(sq1));
+        cc.removeSecurityQuestion(null, credentials);
+        Assert.assertEquals("A credential was added to/removed from the list", 1, credentials.getSecurityQuestions().size());
+        Assert.assertTrue("A Security Question was removed", credentials.getSecurityQuestions().contains(sq1));
+    }
+    //endregion
+
+    // Filter tests moved to CredentialControllerFilterTest
 
     @Test
     public void copyPasswordToClipboard() {
+
     }
 
     @Test
@@ -124,13 +349,16 @@ public class CredentialsControllerTest {
 
     @Test
     public void getCredentialsByCategoryName() {
+
     }
 
     @Test
     public void clearPasswordFromClipboard() {
+
     }
 
     @Test
     public void reencryptAll() {
+
     }
 }

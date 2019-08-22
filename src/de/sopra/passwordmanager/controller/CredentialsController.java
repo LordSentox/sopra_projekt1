@@ -26,6 +26,7 @@ public class CredentialsController {
 	 * Überschreibt alte Anmeldedaten mit Neuen im {@link PasswordManager}
 	 * Falls {@code oldCredentials} <code>null</code> ist, wird stattdessen ein neuer Eintrag mit den Daten von {@code newCredentials} erstellt
 	 * @param oldCredentials Die zu überschreibenden Anmeldedaten. Falls <code>null</code>, wird ein neuer Eintrag erstellt
+	 *                       Falls diese nicht im {@link PasswordManager} existieren, geschieht nichts.
 	 * @param newCredentials Die neuen Anmeldedaten, die die Alten überschreiben. Falls <code>null</code>, geschieht nichts
 	 * @see Credentials
 	 */
@@ -43,14 +44,27 @@ public class CredentialsController {
 	}
 
 	/**
-	 * Fügt dem Anmeldedatenobjekt eine {@link SecurityQuestion} hinzu
+	 * Fügt dem {@link Credentials} Objekt im {@link PasswordManager} eine {@link SecurityQuestion} hinzu
 	 * @param question Die Frage der {@link SecurityQuestion}. Darf nicht <code>null</code> sein
 	 * @param answer Die Antwort auf die Frage. Darf nicht <code>null</code> sein
 	 * @param credentials Das Anmeldedatenobjekt, dem die {@link SecurityQuestion} hinzugefügt werden soll. Darf nicht <code>null</code> sein
+	 * @throws NullPointerException falls {@code question}, {@code answer} oder {@code credentials} <code>null</code> sind
 	 * @see SecurityQuestion
 	 * @see Credentials
 	 */
-	public void addSecurityQuestion(String question, String answer, Credentials credentials) {
+	public void addSecurityQuestion(String question, String answer, Credentials credentials) throws NullPointerException {
+
+	}
+
+	/**
+	 * Fügt dem {@link Credentials} Objekt im {@link PasswordManager} eine {@link SecurityQuestion} hinzu
+	 * @param securityQuestion Die {@link SecurityQuestion}. Darf nicht <code>null</code> sein
+	 * @param credentials Das Anmeldedatenobjekt, dem die {@link SecurityQuestion} hinzugefügt werden soll. Darf nicht <code>null</code> sein
+	 * @throws NullPointerException falls {@code securityQuestion} oder {@code credentials} <code>null</code> sind
+	 * @see SecurityQuestion
+	 * @see Credentials
+	 */
+	public void addSecurityQuestion(SecurityQuestion securityQuestion, Credentials credentials) throws NullPointerException {
 
 	}
 

@@ -1,6 +1,6 @@
 package de.sopra.passwordmanager.model;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 /**
  * Die einfachsten Passwort-Funktionalitäten. Sie werden sowohl von dem Masterpasswort, als auch vom Passwortteil in den
@@ -18,11 +18,11 @@ public class BasePassword {
     /**
      * Der Zeitpunkt, zu dem das Passwort das letzte Mal geändert wurde, gespeichert als lokaler Unix-Zeitstempel.
      */
-    private Date lastChanged;
+    private LocalDateTime lastChanged;
 
     private Integer changeReminderDays;
 
-    public BasePassword(String password, Integer changeReminderDays, Date lastChanged) {
+    public BasePassword(String password, Integer changeReminderDays, LocalDateTime lastChanged) {
         this.password = password;
         this.lastChanged = lastChanged;
         this.changeReminderDays = changeReminderDays;
@@ -36,7 +36,7 @@ public class BasePassword {
         return changeReminderDays;
     }
 
-    public Date getLastChanged() {
+    public LocalDateTime getLastChanged() {
         return lastChanged;
     }
 
@@ -48,7 +48,7 @@ public class BasePassword {
         this.changeReminderDays = changeReminderDays;
     }
 
-    public void setLastChanged(Date lastChanged) {
+    public void setLastChanged(LocalDateTime lastChanged) {
         this.lastChanged = lastChanged;
     }
 }

@@ -1,10 +1,8 @@
 package de.sopra.passwordmanager.model;
 
-import org.junit.Test;
-
 import de.sopra.passwordmanager.util.CredentialsBuilder;
-
 import org.junit.Assert;
+import org.junit.Test;
 
 
 public class CredentialsTest {
@@ -17,11 +15,11 @@ public class CredentialsTest {
                 .withPassword("passwort123")
                 .withWebsite("www.hallo.de")
                 .build();
-		cred.setName("cred2");;
+		cred.setName("cred2");
 		Assert.assertEquals("retrieved value not equal to expected","cred2", cred.getName());
-		cred.setUserName("user2");;
+		cred.setUserName("user2");
 		Assert.assertEquals("retrieved value not equal to expected","user2", cred.getUserName());
-		cred.setPassword("Passwort321");;
+		cred.setPassword("Passwort321");
 		Assert.assertEquals("retrieved value not equal to expected","Passwort321", cred.getPassword());
 		cred.setWebsite("www.hallo.com");
 		Assert.assertEquals("retrieved value not equal to expected","www.hallo.com",cred.getWebsite());

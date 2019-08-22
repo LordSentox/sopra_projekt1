@@ -1,14 +1,14 @@
 package de.sopra.passwordmanager.controller;
 
-import java.util.Collection;
-
+import de.sopra.passwordmanager.controller.PasswordManagerControllerDummy.MainView;
+import de.sopra.passwordmanager.model.Category;
+import de.sopra.passwordmanager.model.Credentials;
+import de.sopra.passwordmanager.util.Path;
+import de.sopra.passwordmanager.view.MainWindowAUI;
 import org.junit.Before;
 import org.junit.Test;
 
-import de.sopra.passwordmanager.controller.PasswordManagerControllerDummy.MainView;
-import de.sopra.passwordmanager.model.*;
-import de.sopra.passwordmanager.util.Path;
-import de.sopra.passwordmanager.view.MainWindowAUI;
+import java.util.Collection;
 
 import static junit.framework.Assert.*;
 
@@ -19,8 +19,6 @@ import static junit.framework.Assert.*;
  * @version 21.08.2019
  * @since 21.08.2019
  */
-@SuppressWarnings("deprecation")
-
 public class CategoryControllerTest
 {
 	private CategoryController catController;

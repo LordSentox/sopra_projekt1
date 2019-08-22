@@ -1,10 +1,9 @@
 package de.sopra.passwordmanager.model;
 
+import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.Date;
-
-import org.junit.Assert;
+import java.time.LocalDateTime;
 
 
 public class PasswordManagerTest {
@@ -12,7 +11,7 @@ public class PasswordManagerTest {
 	@Test
 	public void getSetTest() {
 		PasswordManager pm= new PasswordManager();
-		Date now = new Date();
+		LocalDateTime now = LocalDateTime.now();
 		BasePassword bp = new BasePassword("pw",1,now);
 		pm.setMasterPassword(bp);	
 		Assert.assertEquals("retrieved value not equal to expected",bp, pm.getMasterPassword());

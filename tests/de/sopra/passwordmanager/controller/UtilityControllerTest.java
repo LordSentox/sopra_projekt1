@@ -4,16 +4,13 @@ import de.sopra.passwordmanager.controller.PasswordManagerControllerDummy.MainVi
 import de.sopra.passwordmanager.model.BasePassword;
 import de.sopra.passwordmanager.model.Category;
 import de.sopra.passwordmanager.model.Credentials;
-import de.sopra.passwordmanager.model.PasswordManager;
 import de.sopra.passwordmanager.util.CredentialsBuilder;
-import de.sopra.passwordmanager.view.MainWindowAUI;
-
-import java.io.File;
-import java.util.Date;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.io.File;
+import java.time.LocalDateTime;
 
 /**
  * @authors Niklas Falke, Mengcheng Jin
@@ -42,16 +39,20 @@ public class UtilityControllerTest {
     @Test
     public void exportImportFileTest() {
     	//daten in das Modell eintragen
-    	File file = null; //TODO: Dateipfad festlegen
+    	File file = null; //FIXME: Dateipfad festlegen
     	String masterPassword = "test";
-    	passwordManagerController.getPasswordManager().setMasterPassword(new BasePassword(masterPassword, 5, new Date()));
+    	passwordManagerController.getPasswordManager().setMasterPassword(new BasePassword(masterPassword, 5, LocalDateTime.now()));
     	Category root = passwordManagerController.getPasswordManager().getRootCategory();
     	Category sub = new Category("sub");
     	root.addSubCategory(sub);
     	Category sub1 = new Category("sub1");
     	sub.addSubCategory(sub1);
-    	Credentials c1 = new Credentials("c1", "c2", "pw", "url", 5, "");
-    	Credentials c2 = new Credentials("c21", "c22", "pw2", "url2", 6, "");
+    	Credentials c1 = new CredentialsBuilder("c1", "c2", "pw", "url")
+				.withChangeReminderDays(5)
+				.build();
+    	Credentials c2 = new CredentialsBuilder("c21", "c22", "pw2", "url2")
+				.withChangeReminderDays(6)
+				.build();
     	sub.addCredentials(c1);
     	sub.addCredentials(c2);
     	sub1.addCredentials(c2);

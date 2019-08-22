@@ -1,7 +1,11 @@
 package de.sopra.passwordmanager.model;
 
+import de.sopra.passwordmanager.util.CredentialsBuilder;
+
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Objects;
 
 /**
  * Die Daten, die zu einem Passwort zusätzlich als Anmeldedaten gespeichert werden und das Passwort selbst.
@@ -41,13 +45,39 @@ public class Credentials extends BasePassword {
      */
     private Collection<SecurityQuestion> securityQuestions;
 
-    public Credentials(String name, String userName, String password, String website)
-    {
+
+    /**
+     * @deprecated Benutzt stattdessen {@link CredentialsBuilder}.
+     * XXX Und der Konstruktor funktioniert nicht aus folgendem Grund:
+     * In jedem Fall wirft das Objekt eine {@link NullPointerException}, falls auf einem so erstellten Objekt irgendeine der folgenden Methoden aufgerufen wird:
+     * @see #addSecurityQuestion(SecurityQuestion)
+     * @see #addSecurityQuestion(String, String)
+     * @see #addSecurityQuestions(Collection)
+     * @see #removeSecurityQuestion(SecurityQuestion)
+     * @see #removeSecurityQuestions(Collection)
+     *
+     * Dies liegt daran, dass {@link #securityQuestions} <code>null</code> ist, und es keine Möglichkeit gibt
+     * das Attribut mit einer {@link Collection} zu füllen.
+     * Außerdem wird {@link #created} auf LocalDateTime.now() gesetzt, während lastChanged auf <code>null</code> gesetzt wird
+     */
+    @Deprecated
+    public Credentials(String name, String userName, String password, String website) {
     	super(password, null, null);
         this.name = name;
         this.userName = userName;
         this.website = website;
         this.created = LocalDateTime.now();
+    }
+
+    public Credentials(String name, String userName, String password, String website, Integer changeReminderDays,
+                       LocalDateTime created, LocalDateTime lastChanged, String notes, Collection<SecurityQuestion> securityQuestions) {
+        super(password, changeReminderDays, lastChanged);
+        this.name = name;
+        this.userName = userName;
+        this.website = website;
+        this.created = created;
+        this.notes = notes;
+        this.securityQuestions = securityQuestions;
     }
 
     public String getName() { return name; }
@@ -98,7 +128,7 @@ public class Credentials extends BasePassword {
         securityQuestions.add(securityQuestion);
     }
 
-    public void withSecurityQuestion(String question, String answer) {
+    public void addSecurityQuestion(String question, String answer) {
         securityQuestions.add(new SecurityQuestion(question, answer));
     }
 
@@ -124,8 +154,8 @@ public class Credentials extends BasePassword {
                 website.equals(that.website) &&
                 notes.equals(that.notes) &&
                 created.equals(that.created) &&
-                getLastChanged().equals(that.getLastChanged()) &&
-                getChangeReminderDays().equals(that.getChangeReminderDays()) &&
+                Objects.equals(getLastChanged(), that.getLastChanged()) &&
+                Objects.equals(getChangeReminderDays(), that.getChangeReminderDays()) &&
                 getPassword().equals(that.getPassword()) &&
                 securityQuestions.equals(that.securityQuestions);
     }

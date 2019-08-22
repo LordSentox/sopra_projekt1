@@ -1,11 +1,15 @@
 package de.sopra.passwordmanager.controller;
 
 import de.sopra.passwordmanager.model.Category;
-import de.sopra.passwordmanager.util.Path;
-=======
 import de.sopra.passwordmanager.model.Credentials;
 import java.util.ArrayList;
 import java.util.Collection;
+import de.sopra.passwordmanager.model.Credentials;
+import de.sopra.passwordmanager.util.Path;
+
+import java.util.ArrayList;
+import java.util.Collection;
+
 
 /**
  * sorgt für das Erstellen, Bearbeiten und Löschen. Intern kann nach Kategorien gesucht werden.
@@ -38,8 +42,6 @@ public class CategoryController {
 	public void createCategory(Category superCategory, String name) throws IllegalArgumentException {
 	}
 
-    }
-
 	/**
 	 * entfernt die Kategorie aus dem Datenmodell.
 	 * Je nach übergebenem Boolean werden die enthaltenen Credentials und Unterkategorien mit gelöscht oder nicht.
@@ -58,7 +60,6 @@ public class CategoryController {
 	 */
 	public void removeCategory(Category category, boolean removeCredentialsToo) {
 	}
-
 
 	/**
 	 * holt sich mittels getCategory(oldPath) die zu verschiebende Kategorie [oldPath mit dem Namen der zu verschiebenden Kategorie]
