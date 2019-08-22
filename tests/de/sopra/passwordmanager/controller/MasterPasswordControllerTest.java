@@ -27,11 +27,30 @@ public class MasterPasswordControllerTest {
 
     @Test
     public void changePasswordTest() {
+    	
+    	//ändert Masterpasswort
+    	//assertion, wenn das alte Passwort weiterhin gespeichert ist
+    	//assertion, wenn neues Passwort nicht gespeichert wurde
+    	Date sixDaysEarlier = new Date(System.currentTimeMillis() - daysToMillis(6));
+        this.passwordManager.setMasterPassword(new BasePassword("hello_there", 5, sixDaysEarlier));
+        this.passwordManagerController.getMasterPasswordController().changePassword("hello",10);
+        
+        
+        Assert.assertFalse("Passwort entspricht dem alten",this.passwordManagerController.getMasterPasswordController().checkPassword("hello_there"));
+        Assert.assertTrue(this.passwordManagerController.getMasterPasswordController().checkPassword("hello"));
 
     }
 
     @Test
     public void checkPasswordTest() {
+    	//legt Masterpasswort an
+    	//prüft, ob true ausgegeben wird, wenn dieses Passwort eingegeben wird
+    	//prüft, ob false ausgegeben wird, wenn dieses Passwort nicht eingegeben wird
+    	Date sixDaysEarlier = new Date(System.currentTimeMillis() - daysToMillis(6));
+        this.passwordManager.setMasterPassword(new BasePassword("hello_there", 5, sixDaysEarlier));
+        Assert.assertTrue(this.passwordManagerController.getMasterPasswordController().checkPassword("hello_there"));
+        
+        Assert.assertFalse(this.passwordManagerController.getMasterPasswordController().checkPassword("hello_tree"));
     }
 
     @Test

@@ -1,6 +1,7 @@
 package de.sopra.passwordmanager.controller;
 
 import de.sopra.passwordmanager.model.BasePassword;
+import de.sopra.passwordmanager.model.Credentials;
 
 import java.util.ArrayList;
 
@@ -39,7 +40,7 @@ public class PasswordReminderController {
 	 * 
 	 */
 	
-	ArrayList passwordsToBeChanged() {
+	ArrayList<Credentials> passwordsToBeChanged() {
 		return null;
 	}
 
