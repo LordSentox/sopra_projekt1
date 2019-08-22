@@ -5,7 +5,6 @@ import de.sopra.passwordmanager.model.SecurityQuestion;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -13,7 +12,7 @@ import java.util.Set;
 public class CredentialsBuilderTest {
 
     @Test
-    public void basicBuildTest() {
+    public void fullBuildTest() {
         String name = "cred1";
         String userName = "user1";
         String password = "passwort123";
@@ -29,7 +28,7 @@ public class CredentialsBuilderTest {
         Set<SecurityQuestion> questions = new HashSet<>();
         questions.add(sq3);
 
-
+        //Erstelle das erste Credentials mithilfe des Builders
         Credentials cred1 = new CredentialsBuilder()
                 .withName(name)
                 .withUserName(userName)
@@ -44,20 +43,32 @@ public class CredentialsBuilderTest {
                 .withSecurityQuestions(questions)
                 .build();
 
-        Assert.assertEquals(cred1.getName(), name);
-        Assert.assertEquals(cred1.getUserName(), userName);
-        Assert.assertEquals(cred1.getPassword(), password);
-        Assert.assertEquals(cred1.getWebsite(), website);
-        Assert.assertEquals(cred1.getChangeReminderDays(), new Integer(changeReminder));
-        Assert.assertEquals(cred1.getCreatedAt(), created);
-        Assert.assertEquals(cred1.getLastChanged(), lastChanged);
-        Assert.assertEquals(cred1.getNotes(), notes);
+        // Erstelle das zweite Credentials objekt mit denselben daten, aber hier mit dem Konstruktor
+        Credentials cred2 = new Credentials(name, userName, password, website, changeReminder, created, lastChanged, notes, new HashSet<>());
+        cred2.addSecurityQuestion(sq1);
+        cred2.addSecurityQuestion(question2, answer2);
+        cred2.addSecurityQuestion(sq3);
 
-        Collection<SecurityQuestion> questions1 = cred1.getSecurityQuestions();
+        Assert.assertEquals("Credentials not equal", cred1, cred2);
+    }
 
-        Assert.assertTrue(questions1.contains(sq1));
-        Assert.assertTrue(questions1.contains(new SecurityQuestion(question2, answer2)));
-        Assert.assertTrue(questions1.containsAll(questions));
+    @Test
+    public void testBuildMinimal(){
+        String name = "cred1";
+        String userName = "user1";
+        String password = "passwort123";
+        String website = "www.hallo.de";
+
+        Credentials cred1 = new CredentialsBuilder()
+                .withName(name)
+                .withUserName(userName)
+                .withPassword(password)
+                .withWebsite(website)
+                .build();
+
+        Credentials cred2 = new Credentials(name, userName, password, website, null, new Date(), new Date(), "", new HashSet<>());
+
+        Assert.assertEquals("Minimal built credentials not equal to expected", cred1, cred2);
     }
 
     @Test(expected = CredentialsBuilder.CredentialsBuilderException.class)
