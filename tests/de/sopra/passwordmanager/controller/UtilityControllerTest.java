@@ -10,7 +10,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 /**
  * @authors Niklas Falke, Mengcheng Jin
@@ -39,9 +39,9 @@ public class UtilityControllerTest {
     @Test
     public void exportImportFileTest() {
     	//daten in das Modell eintragen
-    	File file = null; //TODO: Dateipfad festlegen
+    	File file = null; //FIXME: Dateipfad festlegen
     	String masterPassword = "test";
-    	passwordManagerController.getPasswordManager().setMasterPassword(new BasePassword(masterPassword, 5, new Date()));
+    	passwordManagerController.getPasswordManager().setMasterPassword(new BasePassword(masterPassword, 5, LocalDateTime.now()));
     	Category root = passwordManagerController.getPasswordManager().getRootCategory();
     	Category sub = new Category("sub");
     	root.addSubCategory(sub);

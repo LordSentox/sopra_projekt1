@@ -48,10 +48,20 @@ public class Credentials extends BasePassword {
 
     /**
      * @deprecated Benutzt stattdessen {@link CredentialsBuilder}.
+     * XXX Und der Konstruktor funktioniert nicht aus folgendem Grund:
+     * In jedem Fall wirft das Objekt eine {@link NullPointerException}, falls auf einem so erstellten Objekt irgendeine der folgenden Methoden aufgerufen wird:
+     * @see #addSecurityQuestion(SecurityQuestion)
+     * @see #addSecurityQuestion(String, String)
+     * @see #addSecurityQuestions(Collection)
+     * @see #removeSecurityQuestion(SecurityQuestion)
+     * @see #removeSecurityQuestions(Collection)
+     *
+     * Dies liegt daran, dass {@link #securityQuestions} <code>null</code> ist, und es keine Möglichkeit gibt
+     * das Attribut mit einer {@link Collection} zu füllen.
+     * Außerdem wird {@link #created} auf LocalDateTime.now() gesetzt, während lastChanged auf <code>null</code> gesetzt wird
      */
     @Deprecated
-    public Credentials(String name, String userName, String password, String website)
-    {
+    public Credentials(String name, String userName, String password, String website) {
     	super(password, null, null);
         this.name = name;
         this.userName = userName;
@@ -60,8 +70,7 @@ public class Credentials extends BasePassword {
     }
 
     public Credentials(String name, String userName, String password, String website, Integer changeReminderDays,
-                       LocalDateTime created, LocalDateTime lastChanged, String notes, Collection<SecurityQuestion> securityQuestions)
-    {
+                       LocalDateTime created, LocalDateTime lastChanged, String notes, Collection<SecurityQuestion> securityQuestions) {
         super(password, changeReminderDays, lastChanged);
         this.name = name;
         this.userName = userName;
