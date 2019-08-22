@@ -5,8 +5,12 @@ import java.util.Collection;
 import org.junit.Before;
 import org.junit.Test;
 
+import de.sopra.passwordmanager.controller.PasswordManagerControllerDummy.MainView;
 import de.sopra.passwordmanager.model.*;
-import junit.framework.Assert;
+import de.sopra.passwordmanager.util.Path;
+import de.sopra.passwordmanager.view.MainWindowAUI;
+
+import static junit.framework.Assert.*;
 
 /**
  * <h1>projekt1</h1>
@@ -15,19 +19,24 @@ import junit.framework.Assert;
  * @version 21.08.2019
  * @since 21.08.2019
  */
+@SuppressWarnings("deprecation")
+
 public class CategoryControllerTest
 {
 	private CategoryController catController;
 	private PasswordManagerControllerDummy dummy ;
 	private PasswordManagerController pmc;
 	private Category root;
+	private MainWindowAUI mwaui;
+	private MainView mv;
 
     @Before
     public void setUp() throws Exception
     {
     	dummy = new PasswordManagerControllerDummy();
     	pmc = dummy.getNewController();
-    	
+    	mwaui = pmc.getMainWindowAUI();
+    	mv = ((MainView) mwaui);
     	catController = pmc.getCategoryController();
     	
     }
@@ -44,19 +53,19 @@ public class CategoryControllerTest
     	 catController.createCategory(root, "category without children and credentials");
     	 Collection<Category> subCategories = root.getSubCategories();
     	 
-    	 Assert.assertTrue("Kategorie wurde nicht an Wurzel angehängt", subCategories.contains(catController.getCategory("root/category without children and credentials")));
+    	 assertTrue("Kategorie wurde nicht an Wurzel angehängt", subCategories.contains(catController.getCategory("root/category without children and credentials")));
     	 
-    	 Category categoryWithoutCredentials = new Category();
-    	 Category categoryWithoutChildren = new Category();
+    	 Category categoryWithoutCredentials = new Category("categoryWithoutCredentials");
+    	 Category categoryWithoutChildren = new Category("categoryWithoutChildren");
     	 
-    	 root.getSubCategories().add(categoryWithoutCredentials);
-    	 categoryWithoutCredentials.getSubCategories().add(categoryWithoutChildren);
+    	 root.addSubCategory(categoryWithoutCredentials);
+    	 categoryWithoutCredentials.addSubCategory(categoryWithoutChildren);
     	 
     	//neue Unterkategorie
     	 catController.createCategory(categoryWithoutChildren, "childCategory");
     	 subCategories = categoryWithoutCredentials.getSubCategories();
     	 
-    	 Assert.assertTrue("Kategorie wurde nicht an Wurzel angehängt", 
+    	 assertTrue("Kategorie wurde nicht an Wurzel angehängt", 
     			 			subCategories.contains(catController.getCategory("root/categoryWithoutCredentials/categoryWithoutChildren/childCategory")));
     	    	
     	
@@ -64,13 +73,15 @@ public class CategoryControllerTest
     	 //nicht valide Kategorieerstellung    	 
     	 //kein Name eingegeben
     	 catController.createCategory(root, "");
-    	 //--> showError
-    	 //--> Assert
+
+    	 Collection<String> errors = mv.getErrorsShown();
+    	 assertTrue("Fehler hätte aufgerufen werden müssen",errors.contains("Eingegebener Kategoriename darf nicht leer sein"));
     	 
     	 //Kategorie soll gleichen Namen haben, wie schon existierendes Kind
     	 catController.createCategory(root, "category without children and credentials");
-    	 //--> showError
-    	 //--> Assert
+
+    	 errors = mv.getErrorsShown();
+    	 assertTrue("Fehler hätte aufgerufen werden müssen",errors.contains("Eingegebener Kategoriename ist schon vergeben"));
     	 
 
     }
@@ -80,27 +91,26 @@ public class CategoryControllerTest
     {
     	
     	root = pmc.getPasswordManager().getRootCategory();
-    	Category childCategoryWithContent = new Category();
-    	Category childCategoryWithSubCategories = new Category();
-    	Category childCategoryWithoutContent = new Category();
-    	Category childCategoryWithCredentialsAndSubCat = new Category();
-    	Category emptyChildCategoryDontDelete = new Category();
-    	Category emptyChildCategoryDoDelete = new Category();
+    	Category childCategoryWithContent = new Category("childCategoryWithContent");
+    	Category childCategoryWithSubCategories = new Category("childCategoryWithSubCategories");
+    	Category childCategoryWithoutContent = new Category("childCategoryWithoutContent");
+    	Category childCategoryWithCredentialsAndSubCat = new Category("childCategoryWithCredentialsAndSubCat");
+    	Category emptyChildCategoryDontDelete = new Category("emptyChildCategoryDontDelete");
+    	Category emptyChildCategoryDoDelete = new Category("emptyChildCategoryDoDelete");
     	
-    	Credentials credentialsDummyNotInDeletedSubCategory = new Credentials("pwcredentialsDummyNotInDeletedSubCategory", 0, 2, "credentialsDummyNotInDeletedSubCategory", "credentialsDummyNotInDeletedSubCategoryUser", null, null, 0, null);
-    	Credentials credentialsDummyDoDelete = new Credentials("pwDoDelete", 0, 2, "credentialsDummyDoDelete", "credentialsDummyDoDeleteUser", null, null, 0, null);
-    	Credentials credentialsDummyDoDelete2 = new Credentials("pwDoDelete2", 0, 2, "credentialsDummyDoDelete2", "credentialsDummyDoDeleteUser2", null, null, 0, null);
-
-    	Credentials credentialsDummyDontDelete = new Credentials("pwDontDelete", 0, 2, "credentialsDummyDontDelete", "credentialsDummyDontDeleteUser", null, null, 0, null);
+    	Credentials credentialsDummyNotInDeletedSubCategory = new Credentials("credentialsDummyNotInDeletedSubCategory", "credentialsDummyNotInDeletedSubCategoryUser", "PWcredentialsDummyNotInDeletedSubCategory", "website");
+    	Credentials credentialsDummyDoDelete = new Credentials("DoDelete", "credentialsDummyDoDeleteUser", "PWcredentialsDummyDoDelete", "website");
+    	Credentials credentialsDummyDoDelete2 = new Credentials("DoDelete2", "credentialsDummyDoDeleteUser2", "PWcredentialsDummyDoDelete2", "website");
+    	Credentials credentialsDummyDontDelete = new Credentials("DontDelete", "credentialsDummyDontDeleteUser", "PWcredentialsDummyDontDelete", "website");
     	
-    	root.getSubCategories().add(childCategoryWithoutContent);
-    	root.getSubCategories().add(childCategoryWithSubCategories);
+    	root.addSubCategory(childCategoryWithoutContent);
+    	root.addSubCategory(childCategoryWithSubCategories);
     	
-    	childCategoryWithSubCategories.getSubCategories().add(childCategoryWithContent);
-    	childCategoryWithSubCategories.getSubCategories().add(childCategoryWithCredentialsAndSubCat);
+    	childCategoryWithSubCategories.addSubCategory(childCategoryWithContent);
+    	childCategoryWithSubCategories.addSubCategory(childCategoryWithCredentialsAndSubCat);
     	
     	childCategoryWithCredentialsAndSubCat.getCredentials().add(credentialsDummyDontDelete);
-    	childCategoryWithCredentialsAndSubCat.getSubCategories().add(emptyChildCategoryDontDelete);
+    	childCategoryWithCredentialsAndSubCat.addSubCategory(emptyChildCategoryDontDelete);
     	
     	childCategoryWithContent.getCredentials().add(credentialsDummyNotInDeletedSubCategory);
     	
@@ -114,10 +124,10 @@ public class CategoryControllerTest
     	credentialsToCheck = childCategoryWithContent.getCredentials();
     	catsToCheck = childCategoryWithContent.getSubCategories();
     	
-    	Assert.assertTrue("Credentials wurden fälschlicherweise entfernt", credentialsToCheck.contains(credentialsDummyDontDelete));
-    	Assert.assertTrue("Credentials wurden fälschlicherweise entfernt", credentialsToCheck.contains(credentialsDummyNotInDeletedSubCategory));
-    	Assert.assertTrue("Kategorie fälschlicherweise entfernt", catsToCheck.contains(emptyChildCategoryDontDelete));
-    	Assert.assertFalse("Kategorie fälschlicherweise nicht entfernt", catsToCheck.contains(childCategoryWithCredentialsAndSubCat));
+    	assertTrue("Credentials wurden fälschlicherweise entfernt", credentialsToCheck.contains(credentialsDummyDontDelete));
+    	assertTrue("Credentials wurden fälschlicherweise entfernt", credentialsToCheck.contains(credentialsDummyNotInDeletedSubCategory));
+    	assertTrue("Kategorie fälschlicherweise entfernt", catsToCheck.contains(emptyChildCategoryDontDelete));
+    	assertFalse("Kategorie fälschlicherweise nicht entfernt", catsToCheck.contains(childCategoryWithCredentialsAndSubCat));
     	
     	
     	//nur Kategorie, kein Inhalt löschen, aber kein Inhalt vorhanden
@@ -125,14 +135,14 @@ public class CategoryControllerTest
     	credentialsToCheck = root.getCredentials();
     	catsToCheck = root.getSubCategories();
     	
-    	Assert.assertFalse("Kategorie fälschlicherweise nicht entfernt", catsToCheck.contains(childCategoryWithoutContent));
+    	assertFalse("Kategorie fälschlicherweise nicht entfernt", catsToCheck.contains(childCategoryWithoutContent));
     	
     	
     	root.getSubCategories().add(childCategoryWithoutContent);
-    	childCategoryWithSubCategories.getSubCategories().add(childCategoryWithCredentialsAndSubCat);
+    	childCategoryWithSubCategories.addSubCategory(childCategoryWithCredentialsAndSubCat);
     	childCategoryWithoutContent.getSubCategories().remove(emptyChildCategoryDontDelete);
     	
-    	childCategoryWithCredentialsAndSubCat.getSubCategories().add(emptyChildCategoryDoDelete);
+    	childCategoryWithCredentialsAndSubCat.addSubCategory(emptyChildCategoryDoDelete);
     	childCategoryWithCredentialsAndSubCat.getCredentials().add(credentialsDummyDoDelete);
     	childCategoryWithCredentialsAndSubCat.getCredentials().add(credentialsDummyDoDelete2);
     	
@@ -141,11 +151,11 @@ public class CategoryControllerTest
     	credentialsToCheck = childCategoryWithContent.getCredentials();
     	catsToCheck = childCategoryWithContent.getSubCategories();
 
-    	Assert.assertFalse("Credentials wurden fälschlicherweise nicht entfernt", credentialsToCheck.contains(credentialsDummyDoDelete));
-    	Assert.assertFalse("Credentials wurden fälschlicherweise nicht entfernt", credentialsToCheck.contains(credentialsDummyDoDelete2));
-    	Assert.assertFalse("Kategorie fälschlicherweise nicht entfernt", credentialsToCheck.contains(emptyChildCategoryDoDelete));
-    	Assert.assertTrue("Credentials wurden fälschlicherweise entfernt", credentialsToCheck.contains(credentialsDummyNotInDeletedSubCategory));
-    	Assert.assertFalse("Kategorie fälschlicherweise nicht entfernt", catsToCheck.contains(childCategoryWithCredentialsAndSubCat));
+    	assertFalse("Credentials wurden fälschlicherweise nicht entfernt", credentialsToCheck.contains(credentialsDummyDoDelete));
+    	assertFalse("Credentials wurden fälschlicherweise nicht entfernt", credentialsToCheck.contains(credentialsDummyDoDelete2));
+    	assertFalse("Kategorie fälschlicherweise nicht entfernt", credentialsToCheck.contains(emptyChildCategoryDoDelete));
+    	assertTrue("Credentials wurden fälschlicherweise entfernt", credentialsToCheck.contains(credentialsDummyNotInDeletedSubCategory));
+    	assertFalse("Kategorie fälschlicherweise nicht entfernt", catsToCheck.contains(childCategoryWithCredentialsAndSubCat));
     	
     	
     	
@@ -154,36 +164,77 @@ public class CategoryControllerTest
     	credentialsToCheck = root.getCredentials();
     	catsToCheck = root.getSubCategories();
 
-    	Assert.assertFalse("Kategorie fälschlicherweise nicht entfernt", catsToCheck.contains(childCategoryWithoutContent));
+    	assertFalse("Kategorie fälschlicherweise nicht entfernt", catsToCheck.contains(childCategoryWithoutContent));
     	
     	
     	
     	//nicht valides Löschen
     	//gewählte Kategorie null
-    	//--> showError
-    	//--> Assert    	
+    	catController.removeCategory(null, false);
+   	 	
+    	Collection<String> errors = mv.getErrorsShown();
+   	 	assertTrue("Fehler hätte aufgerufen werden müssen",errors.contains("Es muss eine Kategorie ausgewählt sein"));
+   	 
     	
     }
 
-    @Test
+    @Test (expected = IllegalArgumentException.class)
     public void moveCategory()
     {
     	
     	root = pmc.getPasswordManager().getRootCategory();
+    	Category moveTo = new Category("moveTo");
+    	Category moveFrom = new Category("moveFrom");
+    	Category toMoveRenameEmpty = new Category("toMoveRenameEmpty");
+    	Category toMoveRenameContent = new Category("toMoveRenameContent");
+    	Category subToMove = new Category("subToMove");
+    	Category dontMove = new Category("dontMove");
+    	
+    	Credentials credentialsDontMove = new Credentials("credentialsDontMove", "credentialsDontMoveUser", "PWcredentialsDontMove", "website");
+    	Credentials credentialsToMove = new Credentials("credentialsToMove", "credentialsToMoveUser", "PWcredentialsToMove", "website");
+    	
+    	root.addSubCategory(moveFrom);
+    	root.addSubCategory(moveTo);
+    	moveFrom.addSubCategory(toMoveRenameContent);
+    	moveFrom.addSubCategory(toMoveRenameEmpty);
+    	moveFrom.addSubCategory(dontMove);
+    	toMoveRenameContent.addSubCategory(subToMove);
+    	toMoveRenameContent.addCredentials(credentialsToMove);
+    	moveFrom.addCredentials(credentialsDontMove);
+    	dontMove.addCredentials(credentialsDontMove);
     	
     	
     	//valides Move
     	//tatsächlich verschieben, kein umbenennen
+    	catController.moveCategory(new Path("root/moveFrom/toMoveRenameContent"), new Path("root/moveTo/toMoveRenameContent"));
+    	assertTrue("Kategorie hätte hierhin verschoben werden sollen",moveTo.getSubCategories().contains(toMoveRenameContent));
+    	assertTrue("Kategorie sollte nach Verschieben die Unterkategorie enthalten",toMoveRenameContent.getSubCategories().contains(subToMove));
+    	assertTrue("Kategorie sollte nach Verschieben die Credentials enthalten",toMoveRenameContent.getCredentials().contains(credentialsToMove));
+    	assertTrue("Kategorie hätte nicht verschoben werden sollen",moveFrom.getSubCategories().contains(dontMove));
+    	assertTrue("Credentials hätte nicht verschoben werden sollen",moveFrom.getCredentials().contains(credentialsDontMove));
+    	assertFalse("Kategorie hätte verschoben werden sollen",moveFrom.getSubCategories().contains(toMoveRenameContent));
     	
     	//nur umbenennen
+    	catController.moveCategory(new Path("root/moveTo/toMoveRenameContent"), new Path("root/moveTo/toMoveContentRenamed"));
+    	assertTrue("Kategorie hätte hierhin verschoben werden sollen",moveTo.getSubCategories().contains(toMoveRenameContent));
+    	assertEquals("Kategorie falsch umbenannt", "toMoveContentRenamed", toMoveRenameContent.getName());
+    	assertTrue("Kategorie sollte nach Verschieben die Unterkategorie enthalten",toMoveRenameContent.getSubCategories().contains(subToMove));
+    	assertTrue("Kategorie sollte nach Verschieben die Credentials enthalten",toMoveRenameContent.getCredentials().contains(credentialsToMove));
     	
     	//verschieben und umbenennen
-    	
+    	catController.moveCategory(new Path("root/moveTo/toMoveContentRenamed"), new Path("root/moveFrom/toMoveRenameContent"));
+    	assertTrue("Kategorie hätte hierhin verschoben werden sollen",moveFrom.getSubCategories().contains(toMoveRenameContent));
+    	assertEquals("toMoveRenameContent", toMoveRenameContent.getName());
+    	assertTrue("Kategorie sollte nach Verschieben die Unterkategorie enthalten",toMoveRenameContent.getSubCategories().contains(subToMove));
+    	assertTrue("Kategorie sollte nach Verschieben die Credentials enthalten",toMoveRenameContent.getCredentials().contains(credentialsToMove));
+    	assertTrue("Kategorie hätte nicht verschoben werden sollen",moveFrom.getSubCategories().contains(dontMove));
+    	assertTrue("Credentials hätte nicht verschoben werden sollen",moveFrom.getCredentials().contains(credentialsDontMove));
+    	assertFalse("Kategorie hätte verschoben werden sollen",moveTo.getSubCategories().contains(toMoveRenameContent));
     	
     	
     	//nicht valides move
-    	//eienr der Pfade ist null --> Exception wurde geworfen
-    	
+    	//einer der Pfade ist null --> Exception wurde geworfen
+    	catController.moveCategory(null, new Path("root/moveFrom/toMoveRenameContent"));
     }
 //---------------------------------
     @Test

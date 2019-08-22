@@ -20,8 +20,8 @@ public class CategoryTest
     public void removeCategoryFromTreeTest()
     {
         //credentials anlegen
-        Credentials credentials = new Credentials( "name", "user", "pw", "web", 5, "" );
-        Credentials credentials2 = new Credentials( "name2", "user2", "pw2", "web", 4, "" );
+        Credentials credentials = new Credentials( "name", "user", "pw", "web" );
+        Credentials credentials2 = new Credentials( "name2", "user2", "pw2", "web" );
 
         //categories anlegen
         Category category = new Category( "cat1" );

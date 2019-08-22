@@ -1,5 +1,6 @@
 package de.sopra.passwordmanager.model;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 /**
@@ -33,29 +34,20 @@ public class Credentials extends BasePassword {
     /**
      * Das Datum, zu dem das Credentials-Objekt zum ersten Mal angelegt wurde.
      */
-    private final Date created;
+    private final LocalDateTime created;
 
     /**
      * Mögliche Sicherheitsfragen, die der Nutzer auf der Netzseite eingegeben hat.
      */
     private Collection<SecurityQuestion> securityQuestions;
 
-    public Credentials(String name, String userName, String password, String website, Integer changeReminderDays, Date created, Date lastChanged,
-                       String notes, Collection<SecurityQuestion> securityQuestions)
+    public Credentials(String name, String userName, String password, String website)
     {
-        super( password, changeReminderDays, lastChanged);
+    	super(password, null, null);
         this.name = name;
         this.userName = userName;
         this.website = website;
-        this.notes = notes;
-        this.created = created;
-        this.securityQuestions = securityQuestions;
-    }
-
-    public Credentials(String name, String userName, String password, String website, Integer changeReminderDays,
-                       String notes)
-    {
-        this(name, userName, password, website, changeReminderDays, new Date(), new Date(), notes, new ArrayList<>());
+        this.created = LocalDateTime.now();
     }
 
     public String getName() { return name; }
@@ -72,7 +64,7 @@ public class Credentials extends BasePassword {
         return notes;
     }
 
-    public Date getCreatedAt() {
+    public LocalDateTime getCreatedAt() {
         return created;
     }
 
@@ -87,7 +79,7 @@ public class Credentials extends BasePassword {
     public Collection<SecurityQuestion> getSecurityQuestions() {
         return Collections.unmodifiableCollection(securityQuestions);
     }
-
+    
     public void setName(String name) {
         this.name = name;
     }

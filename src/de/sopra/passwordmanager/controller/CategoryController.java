@@ -1,8 +1,9 @@
 package de.sopra.passwordmanager.controller;
 
 import de.sopra.passwordmanager.model.Category;
+import de.sopra.passwordmanager.util.Path;
+=======
 import de.sopra.passwordmanager.model.Credentials;
-
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -35,6 +36,7 @@ public class CategoryController {
 	 * @throws IllegalArgumentException wenn name null ist, wird die Exception geworfen
 	 */
 	public void createCategory(Category superCategory, String name) throws IllegalArgumentException {
+	}
 
     }
 
@@ -68,7 +70,7 @@ public class CategoryController {
 	 * @param newPath kompletter Pfad bis inkl. Kategoriename der verschobenen Kategorie
 	 * @throws IllegalArgumentException wenn einer der Pfade null ist, wird die Exception geworfen
 	 */
-	public void moveCategory(String oldPath, String newPath) throws IllegalArgumentException {
+	public void moveCategory(Path oldPath, Path newPath) throws IllegalArgumentException {
     }
 
 	/**
