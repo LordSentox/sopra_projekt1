@@ -6,7 +6,6 @@ import de.sopra.passwordmanager.util.CredentialsBuilder;
 
 import org.junit.Assert;
 
-import java.util.Date;
 
 public class CredentialsTest {
 
