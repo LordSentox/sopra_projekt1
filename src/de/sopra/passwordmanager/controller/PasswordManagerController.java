@@ -1,11 +1,14 @@
 package de.sopra.passwordmanager.controller;
 
+import de.sopra.passwordmanager.model.Category;
+import de.sopra.passwordmanager.model.Credentials;
 import de.sopra.passwordmanager.model.PasswordManager;
 import de.sopra.passwordmanager.view.LoginViewAUI;
 import de.sopra.passwordmanager.view.MainWindowAUI;
 import de.sopra.passwordmanager.view.MasterPasswordViewAUI;
 
 import java.io.File;
+import java.util.Collection;
 
 /**
  * Verwaltet die anderen Controller
@@ -120,6 +123,18 @@ public class PasswordManagerController {
      */
     public void requestLogin(String password, File file) {
 
+    }
+
+    /**
+     * //TODO
+     * @param oldCredentials
+     * @param newCredentials
+     * @param newCategories
+     */
+    public void saveEntry( Credentials oldCredentials, Credentials newCredentials, Collection<Category> newCategories ) {
+        categoryController.removeCredentialsFromCategories( oldCredentials );
+        credentialsController.saveCredentials( oldCredentials, newCredentials );
+        categoryController.addCredentialsToCategories( newCredentials, newCategories );
     }
 
 }
