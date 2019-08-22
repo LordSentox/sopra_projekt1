@@ -1,6 +1,15 @@
-Diese Richtlinien sind schamlos fast unverändert übernommen und nur übersetzt aus [diesen Guidelines](https://gist.github.com/robertpainsi/b632364184e70900af4ab688decf6f53) weil gut und einfach.
+## Branch Bennennungsrichtlinien
+Den Git-conventions vom Atlassian-Team folgend werden Branches in
+Kleinbuchstaben mit Bindestrichen benannt. Wenn man zum Beispiel eine
+Test-Branch für den CredentialsController hinzufügt wird daraus:
+
+```
+credentials-controller-tests
+```
 
 ## Commit Message Guidelines
+Diese Richtlinien sind schamlos fast unverändert übernommen und nur übersetzt aus [diesen Guidelines](https://gist.github.com/robertpainsi/b632364184e70900af4ab688decf6f53) weil gut und einfach.
+
 ```
 Kurze Zusammenfassung (72 Zeichen oder weniger)
 

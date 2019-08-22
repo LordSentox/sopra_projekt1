@@ -5,7 +5,7 @@ import de.sopra.passwordmanager.model.SecurityQuestion;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -18,8 +18,8 @@ public class CredentialsBuilderTest {
         String password = "passwort123";
         String website = "www.hallo.de";
         int changeReminder = 3;
-        Date created = new Date();
-        Date lastChanged = new Date();
+        LocalDateTime created = LocalDateTime.now();
+        LocalDateTime lastChanged = LocalDateTime.now();
         String notes = "Dies ist ein Debug Eintrag";
         SecurityQuestion sq1 = new SecurityQuestion("Warum?", "Da so");
         String question2 = "Was machen Sachen?";
@@ -66,7 +66,7 @@ public class CredentialsBuilderTest {
                 .withWebsite(website)
                 .build();
 
-        Credentials cred2 = new Credentials(name, userName, password, website, null, new Date(), new Date(), "", new HashSet<>());
+        Credentials cred2 = new Credentials(name, userName, password, website, null, LocalDateTime.now(), LocalDateTime.now(), "", new HashSet<>());
 
         Assert.assertEquals("Minimal built credentials not equal to expected", cred1, cred2);
     }
