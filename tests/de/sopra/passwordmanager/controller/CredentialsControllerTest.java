@@ -1,6 +1,7 @@
 package de.sopra.passwordmanager.controller;
 
 import de.sopra.passwordmanager.controller.PasswordManagerControllerDummy.MainView;
+import de.sopra.passwordmanager.model.BasePassword;
 import de.sopra.passwordmanager.model.Credentials;
 import de.sopra.passwordmanager.model.PasswordManager;
 import de.sopra.passwordmanager.model.SecurityQuestion;
@@ -9,6 +10,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -345,6 +347,7 @@ public class CredentialsControllerTest {
 
     @Test
     public void setPasswordShown() {
+
     }
 
     @Test
@@ -353,12 +356,35 @@ public class CredentialsControllerTest {
     }
 
     @Test
-    public void clearPasswordFromClipboard() {
+    public void clearPasswordFromClipboardTest() {
+        // Das Passwort muss aus der Zwischenablage gelöscht werden, wenn es in ihr enthalten ist
+        String rawPassword = "Passwort123";
+        String encPassword = this.pmc.getUtilityController().encryptText(rawPassword);
+        Credentials credentials = new CredentialsBuilder("Super Secret", "bonehead27", encPassword, "lol5.org").build();
+        setClipboardContents(encPassword);
 
+        this.cc.clearPasswordFromClipboard(credentials);
+        Assert.assertNotEquals("Password was not removed from clipboard", rawPassword, getClipboardContents());
+
+        // Die Zwischenablage darf nicht verändert werden, wenn sich das Passwort nicht in ihr befindet
+        rawPassword = "MeinPasswort";
+        encPassword = this.pmc.getUtilityController().encryptText(rawPassword);
+        credentials = new CredentialsBuilder("Super Secret", "bonehead27", encPassword, "lol5.org").build();
+        setClipboardContents("NichtMeinPasswort");
+
+        this.cc.clearPasswordFromClipboard(credentials);
+        Assert.assertEquals("Clipboard was changed, eventhough it did not contain the password", "NichtMeinPasswort", getClipboardContents());
     }
 
     @Test
     public void reencryptAll() {
 
+    }
+
+    private static String getClipboardContents() {
+        return null;
+    }
+
+    private static void setClipboardContents(String contents) {
     }
 }
