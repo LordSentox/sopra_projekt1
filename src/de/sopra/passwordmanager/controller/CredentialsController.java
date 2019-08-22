@@ -6,6 +6,7 @@ import de.sopra.passwordmanager.model.PasswordManager;
 import de.sopra.passwordmanager.model.SecurityQuestion;
 import de.sopra.passwordmanager.view.MainWindowAUI;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -102,7 +103,7 @@ public class CredentialsController {
 	 * @see Credentials
 	 * @see Category
 	 */
-	List<Credentials> getCredentialsByCategoryPath(String categoryPath) {
+	Collection<Credentials> getCredentialsByCategoryPath(String categoryPath) {
 		return null;
 	}
 
