@@ -170,4 +170,9 @@ public class CredentialsControllerTreeTest {
     public void getCredentialsByCategoryPathTest() {
 
     }
+
+    @Test
+    public void reencryptAllTest() {
+
+    }
 }

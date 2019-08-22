@@ -393,12 +393,6 @@ public class CredentialsControllerTest {
         Assert.assertEquals("Clipboard was changed, eventhough it did not contain the password", "NichtMeinPasswort", getClipboardContents());
     }
 
-    @Test
-    public void reencryptAll() {
-
-    }
-
-
     private static void setClipboardContents(String contents) {
         Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(contents), null);
     }
