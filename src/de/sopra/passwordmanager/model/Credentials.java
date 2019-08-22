@@ -106,7 +106,7 @@ public class Credentials extends BasePassword {
         securityQuestions.add(securityQuestion);
     }
 
-    public void withSecurityQuestion(String question, String answer) {
+    public void addSecurityQuestion(String question, String answer) {
         securityQuestions.add(new SecurityQuestion(question, answer));
     }
 
@@ -132,8 +132,8 @@ public class Credentials extends BasePassword {
                 website.equals(that.website) &&
                 notes.equals(that.notes) &&
                 created.equals(that.created) &&
-                getLastChanged().equals(that.getLastChanged()) &&
-                getChangeReminderDays().equals(that.getChangeReminderDays()) &&
+                Objects.equals(getLastChanged(), that.getLastChanged()) &&
+                Objects.equals(getChangeReminderDays(), that.getChangeReminderDays()) &&
                 getPassword().equals(that.getPassword()) &&
                 securityQuestions.equals(that.securityQuestions);
     }

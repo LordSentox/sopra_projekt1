@@ -1,8 +1,9 @@
 package de.sopra.passwordmanager.controller;
 
 import de.sopra.passwordmanager.model.BasePassword;
+import de.sopra.passwordmanager.model.Credentials;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * In PasswordreminderController werden die Passwörter, bei denen der Timer abgelaufen ist, verwaltet.
@@ -39,7 +40,7 @@ public class PasswordReminderController {
 	 * 
 	 */
 	
-	ArrayList passwordsToBeChanged() {
+	List<Credentials> passwordsToBeChanged() {
 		return null;
 	}
 
