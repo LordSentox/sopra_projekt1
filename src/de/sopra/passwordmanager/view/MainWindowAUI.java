@@ -24,7 +24,7 @@ public interface MainWindowAUI {
 	/**
 	 * Aktualisiert den momentan bearbeiteten Eintrag in der GUI.
 	 * Hier besteht noch die Möglichkeit ein Passwort zu übergeben, etwa um dieses in der UI anzuzeigen.
-	 * @param password Das anzuzeigende Passwort
+	 * @param password Das anzuzeigende Passwort. Falls <code>null</code>, wird das momentan angezeigte Password versteckt
 	 */
 	void refreshEntry(String password);
 

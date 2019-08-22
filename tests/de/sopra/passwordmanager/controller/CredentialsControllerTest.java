@@ -9,6 +9,11 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.awt.*;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.StringSelection;
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -336,21 +341,34 @@ public class CredentialsControllerTest {
     }
     //endregion
 
-    // Filter tests moved to CredentialControllerFilterTest
+    // Filter tests moved to CredentialControllerTreeTest
 
+    //region Copy Password To Clipboard
     @Test
-    public void copyPasswordToClipboard() {
+    public void copyPasswordToClipboardTest() {
+        String password = "pass1";
+        Credentials cred = new CredentialsBuilder("cred1", "user1", password, "site1").build();
+        cc.copyPasswordToClipboard(cred);
 
+        Assert.assertEquals("clipboard contents do not equal the password", password, getClipboardContents());
     }
+    //endregion
 
+    //region Set Password Shown
     @Test
-    public void setPasswordShown() {
-    }
+    public void setPasswordShownTest() {
+        String password = "pass1";
+        Credentials cred = new CredentialsBuilder("cred1", "user1", password, "site1").build();
 
-    @Test
-    public void getCredentialsByCategoryName() {
+        cc.setPasswordShown(cred, true);
+        Assert.assertEquals("password is not shown", password, mainView.getPasswordShown());
 
+        cc.setPasswordShown(cred, false);
+        Assert.assertNull("password is shown", mainView.getPasswordShown());
     }
+    //endregion
+
+    //Tests for getCredentialsByCategoryPath() in CredentialsControllerTreeTest
 
     @Test
     public void clearPasswordFromClipboard() {
@@ -360,5 +378,19 @@ public class CredentialsControllerTest {
     @Test
     public void reencryptAll() {
 
+    }
+
+
+    private static void setClipboardContents(String contents) {
+        Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(contents), null);
+    }
+
+    private static String getClipboardContents() {
+        try {
+            return (String) Toolkit.getDefaultToolkit().getSystemClipboard().getData(DataFlavor.stringFlavor);
+        } catch (UnsupportedFlavorException | IOException e) {
+            e.printStackTrace();
+        }
+        return "";
     }
 }

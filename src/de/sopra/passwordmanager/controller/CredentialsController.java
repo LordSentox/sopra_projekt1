@@ -91,8 +91,7 @@ public class CredentialsController {
 	}
 
 	/**
-	 * Kopiert, das in den {@link Credentials} enthaltene Passwort unverschlüsselt in die Zwischenablage.
-	 * Nach 10 Sekunden wird es automatisch wieder aus der Zwischenablage entfernt
+	 * Kopiert das in den {@link Credentials} enthaltene Passwort unverschlüsselt in die Zwischenablage.
 	 * @param credentials Die {@link Credentials}, dessen Passwort kopiert werden soll. Falls <code>null</code>, geschieht nichts
 	 * @see Credentials
 	 */
