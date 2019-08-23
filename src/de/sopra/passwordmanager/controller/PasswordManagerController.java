@@ -17,11 +17,11 @@ import java.util.Collection;
  */
 
 public class PasswordManagerController {
-	
-	/**
-	 * Minimale Qualität, die ein Passwort benötigt um als sicher zu gelten
-	 */
-	public static final int MINUM_SAFE_QUALITY = 50;
+
+    /**
+     * Minimale Qualität, die ein Passwort benötigt um als sicher zu gelten
+     */
+    public static final int MINUM_SAFE_QUALITY = 50;
 
     private PasswordManager passwordManager;
 
@@ -41,32 +41,13 @@ public class PasswordManagerController {
 
     private MasterPasswordViewAUI masterPasswordViewAUI;
 
-    public PasswordManagerController(PasswordManager passwordManager, CredentialsController credentialsController,
-                                     CategoryController categoryController, UtilityController utilityController,
-                                     MasterPasswordController masterPasswordController,
-                                     PasswordReminderController passwordReminderController, MainWindowAUI mainWindowAUI,
-                                     LoginViewAUI loginViewAUI, MasterPasswordViewAUI masterPasswordViewAUI) {
-        this.passwordManager = passwordManager;
-        this.credentialsController = credentialsController;
-        this.categoryController = categoryController;
-        this.utilityController = utilityController;
-        this.masterPasswordController = masterPasswordController;
-        this.passwordReminderController = passwordReminderController;
-        this.mainWindowAUI = mainWindowAUI;
-        this.loginViewAUI = loginViewAUI;
-        this.masterPasswordViewAUI = masterPasswordViewAUI;
-    }
-
-    public PasswordManagerController(MainWindowAUI mainWindowAUI, LoginViewAUI loginViewAUI, MasterPasswordViewAUI masterPasswordViewAUI) {
+    public PasswordManagerController() {
         this.passwordManager = new PasswordManager();
         this.credentialsController = new CredentialsController(this);
         this.categoryController = new CategoryController(this);
         this.utilityController = new UtilityController(this);
         this.masterPasswordController = new MasterPasswordController(this);
         this.passwordReminderController = new PasswordReminderController(this);
-        this.mainWindowAUI = mainWindowAUI;
-        this.loginViewAUI = loginViewAUI;
-        this.masterPasswordViewAUI = masterPasswordViewAUI;
     }
 
     public PasswordManager getPasswordManager() {
@@ -105,6 +86,18 @@ public class PasswordManagerController {
         return masterPasswordViewAUI;
     }
 
+    public void setLoginViewAUI(LoginViewAUI loginViewAUI) {
+        this.loginViewAUI = loginViewAUI;
+    }
+
+    public void setMasterPasswordViewAUI(MasterPasswordViewAUI masterPasswordViewAUI) {
+        this.masterPasswordViewAUI = masterPasswordViewAUI;
+    }
+
+    public void setMainWindowAUI(MainWindowAUI mainWindowAUI) {
+        this.mainWindowAUI = mainWindowAUI;
+    }
+
     //-------------------------------------------------------------------------------------------
 
     /**
@@ -127,14 +120,15 @@ public class PasswordManagerController {
 
     /**
      * //TODO
+     *
      * @param oldCredentials
      * @param newCredentials
      * @param newCategories
      */
-    public void saveEntry( Credentials oldCredentials, Credentials newCredentials, Collection<Category> newCategories ) {
-        categoryController.removeCredentialsFromCategories( oldCredentials );
-        credentialsController.saveCredentials( oldCredentials, newCredentials );
-        categoryController.addCredentialsToCategories( newCredentials, newCategories );
+    public void saveEntry(Credentials oldCredentials, Credentials newCredentials, Collection<Category> newCategories) {
+        categoryController.removeCredentialsFromCategories(oldCredentials);
+        credentialsController.saveCredentials(oldCredentials, newCredentials);
+        categoryController.addCredentialsToCategories(newCredentials, newCategories);
     }
 
 }

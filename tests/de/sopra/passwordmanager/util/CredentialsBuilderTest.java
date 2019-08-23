@@ -44,7 +44,11 @@ public class CredentialsBuilderTest {
                 .build();
 
         // Erstelle das zweite Credentials objekt mit denselben daten, aber hier mit dem Konstruktor
-        Credentials cred2 = new Credentials(name, userName, password, website, changeReminder, created, lastChanged, notes, new HashSet<>());
+        Credentials cred2 = new Credentials(name, userName, password, created);
+        cred2.setWebsite(website);
+        cred2.setChangeReminderDays(changeReminder);
+        cred2.setLastChanged(lastChanged);
+        cred2.setNotes(notes);
         cred2.addSecurityQuestion(sq1);
         cred2.addSecurityQuestion(question2, answer2);
         cred2.addSecurityQuestion(sq3);
@@ -66,7 +70,10 @@ public class CredentialsBuilderTest {
                 .withWebsite(website)
                 .build();
 
-        Credentials cred2 = new Credentials(name, userName, password, website, null, cred1.getCreatedAt(), cred1.getLastChanged(), "", new HashSet<>());
+        Credentials cred2 = new Credentials(name, userName, password, cred1.getCreatedAt());
+        cred2.setLastChanged(cred1.getLastChanged());
+        cred2.setWebsite(website);
+        cred2.setNotes("");
 
         Assert.assertEquals("Minimal built credentials not equal to expected", cred1, cred2);
     }

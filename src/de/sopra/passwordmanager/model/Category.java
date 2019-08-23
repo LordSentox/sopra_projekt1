@@ -61,13 +61,13 @@ public class Category {
 
     public void removeCredentialsFromTree(Credentials credentials) {
         removeCredentials(credentials);
-        subCategories.forEach(s -> s.removeCredentialsFromTree(credentials));
+        subCategories.forEach(subCategory -> subCategory.removeCredentialsFromTree(credentials));
     }
 
     public Category getCategoryByPath(Path path) {
         path.navigate(0);
         if (path.getName().equals(getName())) {
-            if (path.length() == 1) {
+            if (!path.hasParent() && !path.hasChild()) {
                 return this;
             } else {
                 for (Category cat : subCategories) {

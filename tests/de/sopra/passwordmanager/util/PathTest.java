@@ -46,7 +46,7 @@ public class PathTest {
         //naiver Test
         assertEquals("parent has the wrong name", parent.getName(), "is5");
         assertTrue("parent should have a child", parent.hasChild());
-        assertFalse("path should have parent", parent.hasParent());
+        assertTrue("path should have parent", parent.hasParent());
 
         Path path = getPath();
 

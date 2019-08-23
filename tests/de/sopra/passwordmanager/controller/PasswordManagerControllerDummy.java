@@ -22,7 +22,11 @@ public class PasswordManagerControllerDummy {
     }
 
     private static PasswordManagerController create() {
-        return new PasswordManagerController(createMainWindow(), createLogin(), createMasterPass());
+        PasswordManagerController controller = new PasswordManagerController();
+        controller.setLoginViewAUI(createLogin());
+        controller.setMainWindowAUI(createMainWindow());
+        controller.setMasterPasswordViewAUI(createMasterPass());
+        return controller;
     }
 
     private static MasterPasswordViewAUI createMasterPass() {

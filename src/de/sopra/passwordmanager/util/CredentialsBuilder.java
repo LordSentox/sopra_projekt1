@@ -73,7 +73,13 @@ public class CredentialsBuilder {
                lastChanged = now;
         }
 
-        return new Credentials(name, userName, password, website, changeReminderDays, created, lastChanged, notes, securityQuestions);
+        Credentials credentials = new Credentials(name, userName, password, created);
+        credentials.setNotes(notes);
+        credentials.setWebsite(website);
+        credentials.setChangeReminderDays(changeReminderDays);
+        credentials.setLastChanged(lastChanged);
+        credentials.addSecurityQuestions(securityQuestions);
+        return credentials;
     }
 
     /**

@@ -1,11 +1,7 @@
 package de.sopra.passwordmanager.model;
 
-import de.sopra.passwordmanager.util.CredentialsBuilder;
-
 import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * Die Daten, die zu einem Passwort zusätzlich als Anmeldedaten gespeichert werden und das Passwort selbst.
@@ -43,41 +39,14 @@ public class Credentials extends BasePassword {
     /**
      * Mögliche Sicherheitsfragen, die der Nutzer auf der Netzseite eingegeben hat.
      */
-    private Collection<SecurityQuestion> securityQuestions;
+    private Set<SecurityQuestion> securityQuestions;
 
-
-    /**
-     * @deprecated Benutzt stattdessen {@link CredentialsBuilder}.
-     * XXX Und der Konstruktor funktioniert nicht aus folgendem Grund:
-     * In jedem Fall wirft das Objekt eine {@link NullPointerException}, falls auf einem so erstellten Objekt irgendeine der folgenden Methoden aufgerufen wird:
-     * @see #addSecurityQuestion(SecurityQuestion)
-     * @see #addSecurityQuestion(String, String)
-     * @see #addSecurityQuestions(Collection)
-     * @see #removeSecurityQuestion(SecurityQuestion)
-     * @see #removeSecurityQuestions(Collection)
-     *
-     * Dies liegt daran, dass {@link #securityQuestions} <code>null</code> ist, und es keine Möglichkeit gibt
-     * das Attribut mit einer {@link Collection} zu füllen.
-     * Außerdem wird {@link #created} auf LocalDateTime.now() gesetzt, während lastChanged auf <code>null</code> gesetzt wird
-     */
-    @Deprecated
-    public Credentials(String name, String userName, String password, String website) {
-    	super(password, null, null);
+    public Credentials(String name, String userName, String password, LocalDateTime created) {
+    	super(password, null, LocalDateTime.now());
         this.name = name;
         this.userName = userName;
-        this.website = website;
-        this.created = LocalDateTime.now();
-    }
-
-    public Credentials(String name, String userName, String password, String website, Integer changeReminderDays,
-                       LocalDateTime created, LocalDateTime lastChanged, String notes, Collection<SecurityQuestion> securityQuestions) {
-        super(password, changeReminderDays, lastChanged);
-        this.name = name;
-        this.userName = userName;
-        this.website = website;
         this.created = created;
-        this.notes = notes;
-        this.securityQuestions = securityQuestions;
+        this.securityQuestions = new HashSet<>();
     }
 
     public String getName() { return name; }
@@ -145,10 +114,10 @@ public class Credentials extends BasePassword {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Credentials that = (Credentials) o;
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+        Credentials that = (Credentials) object;
         return name.equals(that.name) &&
                 userName.equals(that.userName) &&
                 website.equals(that.website) &&

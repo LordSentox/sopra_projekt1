@@ -3,6 +3,7 @@ package de.sopra.passwordmanager.controller;
 import de.sopra.passwordmanager.controller.PasswordManagerControllerDummy.MainView;
 import de.sopra.passwordmanager.model.Category;
 import de.sopra.passwordmanager.model.Credentials;
+import de.sopra.passwordmanager.util.CredentialsBuilder;
 import de.sopra.passwordmanager.util.Path;
 import de.sopra.passwordmanager.view.MainWindowAUI;
 import org.junit.Before;
@@ -96,10 +97,10 @@ public class CategoryControllerTest
     	Category emptyChildCategoryDontDelete = new Category("emptyChildCategoryDontDelete");
     	Category emptyChildCategoryDoDelete = new Category("emptyChildCategoryDoDelete");
     	
-    	Credentials credentialsDummyNotInDeletedSubCategory = new Credentials("credentialsDummyNotInDeletedSubCategory", "credentialsDummyNotInDeletedSubCategoryUser", "PWcredentialsDummyNotInDeletedSubCategory", "website");
-    	Credentials credentialsDummyDoDelete = new Credentials("DoDelete", "credentialsDummyDoDeleteUser", "PWcredentialsDummyDoDelete", "website");
-    	Credentials credentialsDummyDoDelete2 = new Credentials("DoDelete2", "credentialsDummyDoDeleteUser2", "PWcredentialsDummyDoDelete2", "website");
-    	Credentials credentialsDummyDontDelete = new Credentials("DontDelete", "credentialsDummyDontDeleteUser", "PWcredentialsDummyDontDelete", "website");
+    	Credentials credentialsDummyNotInDeletedSubCategory = new CredentialsBuilder("credentialsDummyNotInDeletedSubCategory", "credentialsDummyNotInDeletedSubCategoryUser", "PWcredentialsDummyNotInDeletedSubCategory", "website").build();
+    	Credentials credentialsDummyDoDelete = new CredentialsBuilder("DoDelete", "credentialsDummyDoDeleteUser", "PWcredentialsDummyDoDelete", "website").build();
+    	Credentials credentialsDummyDoDelete2 = new CredentialsBuilder("DoDelete2", "credentialsDummyDoDeleteUser2", "PWcredentialsDummyDoDelete2", "website").build();
+    	Credentials credentialsDummyDontDelete = new CredentialsBuilder("DontDelete", "credentialsDummyDontDeleteUser", "PWcredentialsDummyDontDelete", "website").build();
     	
     	root.addSubCategory(childCategoryWithoutContent);
     	root.addSubCategory(childCategoryWithSubCategories);
@@ -188,8 +189,8 @@ public class CategoryControllerTest
     	Category subToMove = new Category("subToMove");
     	Category dontMove = new Category("dontMove");
     	
-    	Credentials credentialsDontMove = new Credentials("credentialsDontMove", "credentialsDontMoveUser", "PWcredentialsDontMove", "website");
-    	Credentials credentialsToMove = new Credentials("credentialsToMove", "credentialsToMoveUser", "PWcredentialsToMove", "website");
+    	Credentials credentialsDontMove = new CredentialsBuilder("credentialsDontMove", "credentialsDontMoveUser", "PWcredentialsDontMove", "website").build();
+    	Credentials credentialsToMove = new CredentialsBuilder("credentialsToMove", "credentialsToMoveUser", "PWcredentialsToMove", "website").build();
     	
     	root.addSubCategory(moveFrom);
     	root.addSubCategory(moveTo);
