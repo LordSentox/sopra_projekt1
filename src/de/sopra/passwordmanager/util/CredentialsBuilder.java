@@ -6,6 +6,7 @@ import de.sopra.passwordmanager.model.SecurityQuestion;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 
 /**
@@ -77,6 +78,8 @@ public class CredentialsBuilder {
         if (lastChanged == null) {
             lastChanged = now;
         }
+
+
 
         Credentials credentials = new Credentials(name, userName, password, created);
         credentials.setNotes(notes);
@@ -208,6 +211,42 @@ public class CredentialsBuilder {
     public CredentialsBuilder withSecurityQuestions(Collection<SecurityQuestion> questions) {
         securityQuestions.addAll(questions);
         return this;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public String getWebsite() {
+        return website;
+    }
+
+    public Integer getChangeReminderDays() {
+        return changeReminderDays;
+    }
+
+    public LocalDateTime getLastChanged() {
+        return lastChanged;
+    }
+
+    public LocalDateTime getCreated() {
+        return created;
+    }
+
+    public String getNotes() {
+        return notes;
+    }
+
+    public Collection<SecurityQuestion> getSecurityQuestions() {
+        return Collections.unmodifiableCollection(securityQuestions);
     }
 
     /**
