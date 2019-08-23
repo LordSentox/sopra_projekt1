@@ -42,14 +42,16 @@ public class Credentials extends BasePassword {
     private Set<SecurityQuestion> securityQuestions;
 
     public Credentials(String name, String userName, String password, LocalDateTime created) {
-    	super(password, null, LocalDateTime.now());
+        super(password, null, LocalDateTime.now());
         this.name = name;
         this.userName = userName;
         this.created = created;
         this.securityQuestions = new HashSet<>();
     }
 
-    public String getName() { return name; }
+    public String getName() {
+        return name;
+    }
 
     public String getUserName() {
         return userName;
@@ -71,6 +73,7 @@ public class Credentials extends BasePassword {
      * Liefert alle {@link SecurityQuestion}, die diesem {@link Credentials} Objekt angehören
      * Die gelieferte {@link Collection} ist unmodifizierbar. Zum {@link SecurityQuestion} hinzuzufügen oder zu entfernen,
      * dienen andere Methoden
+     *
      * @return Eine unmodifizierbare Sammlung aller Sicherheitsfragen
      * @see #addSecurityQuestion(SecurityQuestion)
      * @see #removeSecurityQuestion(SecurityQuestion)
@@ -78,7 +81,7 @@ public class Credentials extends BasePassword {
     public Collection<SecurityQuestion> getSecurityQuestions() {
         return Collections.unmodifiableCollection(securityQuestions);
     }
-    
+
     public void setName(String name) {
         this.name = name;
     }
@@ -87,7 +90,9 @@ public class Credentials extends BasePassword {
         this.userName = userName;
     }
 
-    public void setWebsite( String website ) { this.website = website; }
+    public void setWebsite(String website) {
+        this.website = website;
+    }
 
     public void setNotes(String notes) {
         this.notes = notes;

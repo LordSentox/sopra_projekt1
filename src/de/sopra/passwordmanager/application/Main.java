@@ -1,5 +1,4 @@
 package de.sopra.passwordmanager.application;
-	
 
 
 public class Main {

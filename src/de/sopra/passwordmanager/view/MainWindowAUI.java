@@ -10,34 +10,38 @@ import java.util.List;
  */
 public interface MainWindowAUI {
 
-	/**
-	 * Aktualisiert die Liste der anzuzeigenden {@link Credentials}
-	 * @param entries Die {@link List} von {@link Credentials}, die zum Anzeigen in der UI zur Verfügung gestellt werden soll
-	 */
-	void refreshEntryList(List<Credentials> entries );
+    /**
+     * Aktualisiert die Liste der anzuzeigenden {@link Credentials}
+     *
+     * @param entries Die {@link List} von {@link Credentials}, die zum Anzeigen in der UI zur Verfügung gestellt werden soll
+     */
+    void refreshEntryList(List<Credentials> entries);
 
-	/**
-	 * Aktualisiert den momentan bearbeiteten Eintrag in der GUI
-	 */
-	void refreshEntry();
+    /**
+     * Aktualisiert den momentan bearbeiteten Eintrag in der GUI
+     */
+    void refreshEntry();
 
-	/**
-	 * Aktualisiert den momentan bearbeiteten Eintrag in der GUI.
-	 * Hier besteht noch die Möglichkeit ein Passwort zu übergeben, etwa um dieses in der UI anzuzeigen.
-	 * @param password Das anzuzeigende Passwort. Falls <code>null</code>, wird das momentan angezeigte Password versteckt
-	 */
-	void refreshEntry(String password);
+    /**
+     * Aktualisiert den momentan bearbeiteten Eintrag in der GUI.
+     * Hier besteht noch die Möglichkeit ein Passwort zu übergeben, etwa um dieses in der UI anzuzeigen.
+     *
+     * @param password Das anzuzeigende Passwort. Falls <code>null</code>, wird das momentan angezeigte Password versteckt
+     */
+    void refreshEntry(String password);
 
-	/**
-	 * Aktualisiert die Elemente, die zum Anzeigen der Passwortqualität erforderlich sind
-	 * @param quality Die Qualität des Passworts
-	 */
-	void refreshEntryPasswordQuality(int quality);
+    /**
+     * Aktualisiert die Elemente, die zum Anzeigen der Passwortqualität erforderlich sind
+     *
+     * @param quality Die Qualität des Passworts
+     */
+    void refreshEntryPasswordQuality(int quality);
 
-	/**
-	 * Zeigt eine Fehlermeldung an
-	 * @param error Die Nachricht der Fehlermeldung
-	 */
-	void showError(String error);
+    /**
+     * Zeigt eine Fehlermeldung an
+     *
+     * @param error Die Nachricht der Fehlermeldung
+     */
+    void showError(String error);
 
 }
