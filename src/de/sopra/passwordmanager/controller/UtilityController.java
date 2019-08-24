@@ -41,7 +41,7 @@ public class UtilityController {
      * @param text Der zu entschlüsselnde Text, dabei kann es sich um Passwörter oder die Sicherheitsfragen handeln
      * @return Der zurückgegebene String ist die entschlüsselte Version des eingegebenen Textes
      */
-    String decryptText(String text) {
+    public String decryptText(String text) {
         return null;
     }
 
@@ -51,7 +51,7 @@ public class UtilityController {
      * @param text Der zu verschlüsselnde Text, dabei kann es sich um Passwörter oder die Sicherheitsfragen handeln
      * @return Der zurückgegebene String ist die verschlüsselte Version des eingegebenen Textes
      */
-    String encryptText(String text) {
+    public String encryptText(String text) {
         return null;
     }
 

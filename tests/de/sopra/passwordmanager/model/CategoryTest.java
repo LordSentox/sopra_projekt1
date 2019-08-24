@@ -1,7 +1,11 @@
 package de.sopra.passwordmanager.model;
 
+import de.sopra.passwordmanager.controller.PasswordManagerController;
+import de.sopra.passwordmanager.controller.PasswordManagerControllerDummy;
+import de.sopra.passwordmanager.controller.UtilityController;
 import de.sopra.passwordmanager.util.CredentialsBuilder;
 import de.sopra.passwordmanager.util.Path;
+import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -15,11 +19,20 @@ import static org.junit.Assert.*;
  */
 public class CategoryTest {
 
+    private PasswordManagerController pmc;
+    private UtilityController uc;
+
+    @Before
+    public void setUp() {
+        pmc = PasswordManagerControllerDummy.getNewController();
+        uc = pmc.getUtilityController();
+    }
+
     @Test
     public void structureIntegrityTest() {
         Credentials credentials = new CredentialsBuilder("name", "user", "pw", "web")
                 .withChangeReminderDays(5)
-                .build();
+                .build(uc);
 
         Category category = new Category("sample");
         Category categorySub = new Category("sampleSub");
@@ -41,10 +54,10 @@ public class CategoryTest {
         //credentials anlegen
         Credentials credentials = new CredentialsBuilder("name", "user", "pw", "web")
                 .withChangeReminderDays(5)
-                .build();
+                .build(uc);
         Credentials credentials2 = new CredentialsBuilder("name2", "user2", "pw2", "web")
                 .withChangeReminderDays(4)
-                .build();
+                .build(uc);
 
         //categories anlegen
         Category category = new Category("cat1");

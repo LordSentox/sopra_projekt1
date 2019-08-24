@@ -33,6 +33,7 @@ public class CredentialsControllerTest {
     private PasswordManager pm;
     // Liste im MainView eine Liste mit einem einzigen Eintrag und füge diesen auch ins Datenmodell ein
     private MainView mainView;
+    private UtilityController uc;
 
     @Before
     public void setUp() throws Exception {
@@ -40,6 +41,7 @@ public class CredentialsControllerTest {
         cc = pmc.getCredentialsController();
         pm = pmc.getPasswordManager();
         mainView =  (MainView) this.pmc.getMainWindowAUI();
+        uc = pmc.getUtilityController();
     }
 
     //region Save Credentials
@@ -50,7 +52,7 @@ public class CredentialsControllerTest {
                 .withUserName("user1")
                 .withPassword("passwort123")
                 .withWebsite("www.hallo.de")
-                .build();
+                .build(uc);
 
         cc.saveCredentials(null, cred);
         Assert.assertTrue(pmc.getPasswordManager().getRootCategory().getCredentials().contains(cred));
@@ -63,22 +65,22 @@ public class CredentialsControllerTest {
                 .withUserName("user1")
                 .withPassword("passwort123")
                 .withWebsite("www.hallo.de")
-                .build();
+                .build(uc);
 
         Credentials cred2 = new CredentialsBuilder()
                 .withName("cred2")
                 .withUserName("user2")
                 .withPassword("456passwort")
                 .withWebsite("www.hi.com")
-                .build();
+                .build(uc);
 
         cc.saveCredentials(null, cred1);
-        Assert.assertTrue(pm.getRootCategory().getCredentials().contains(cred1));
+        Assert.assertTrue("Credentials not saved", pm.getRootCategory().getCredentials().contains(cred1));
         cc.saveCredentials(cred1, cred2);
 
         //Nach dem ersetzen darf nur 1 Eintrag im Passwortmanager existieren und dieser muss mit cred2 übereinstimmen
-        Assert.assertEquals(1, pm.getRootCategory().getCredentials().size());
-        Assert.assertTrue(pm.getRootCategory().getCredentials().contains(cred2));
+        Assert.assertEquals("Not exactly 1 Credentials saved after replacing",1, pm.getRootCategory().getCredentials().size());
+        Assert.assertTrue("Credentials not replaced", pm.getRootCategory().getCredentials().contains(cred2));
     }
 
     @Test
@@ -88,7 +90,7 @@ public class CredentialsControllerTest {
                 .withUserName("user1")
                 .withPassword("passwort123")
                 .withWebsite("www.hallo.de")
-                .build();
+                .build(uc);
         cc.saveCredentials(null, cred);
         Assert.assertTrue(pm.getRootCategory().getCredentials().contains(cred));
         cc.saveCredentials(cred, cred);
@@ -105,7 +107,7 @@ public class CredentialsControllerTest {
                 .withUserName("user1")
                 .withPassword("passwort123")
                 .withWebsite("www.hallo.de")
-                .build();
+                .build(uc);
 
         cc.saveCredentials(cred, null);
         Assert.assertEquals("Entries changed while trying to replace Credentials with null Credentials",0, pm.getRootCategory().getCredentials().size());
@@ -120,14 +122,14 @@ public class CredentialsControllerTest {
                 .withUserName("user1")
                 .withPassword("passwort123")
                 .withWebsite("www.hallo.de")
-                .build();
+                .build(uc);
 
         Credentials cred2 = new CredentialsBuilder()
                 .withName("cred2")
                 .withUserName("user2")
                 .withPassword("456passwort")
                 .withWebsite("www.bye.com")
-                .build();
+                .build(uc);
 
         //Vorher, wie nachher darf kein Eintrag im Passwortmanager existieren, da cred1 nicht existiert
         Assert.assertEquals("Entries not empty", 0, pm.getRootCategory().getCredentials().size());
@@ -145,7 +147,7 @@ public class CredentialsControllerTest {
                 .withUserName("Hello")
                 .withWebsite("schmuddelseite_sieben.de")
                 .withPassword("wanken")
-                .build();
+                .build(uc);
 
         List<Credentials> credentialsList = new ArrayList<>();
         credentialsList.add(credentials);
@@ -169,7 +171,7 @@ public class CredentialsControllerTest {
                 .withUserName("Hello")
                 .withWebsite("schmuddelseite_neun.de")
                 .withPassword("wnken")
-                .build();
+                .build(uc);
 
         List<Credentials> credentialsList = new ArrayList<>();
         credentialsList.add(credentials);
@@ -194,14 +196,14 @@ public class CredentialsControllerTest {
                 .withUserName("Dies")
                 .withWebsite("ist.ein")
                 .withPassword("test")
-                .build();
+                .build(uc);
 
         Credentials credentials2 = new CredentialsBuilder()
                 .withName("General Kenobi")
                 .withUserName("Tschüss")
                 .withWebsite("Junge")
                 .withPassword("Warum")
-                .build();
+                .build(uc);
 
         List<Credentials> credentialsList = new ArrayList<>();
         credentialsList.add(credentials1);
@@ -227,7 +229,7 @@ public class CredentialsControllerTest {
                 .withUserName("Dies")
                 .withWebsite("ist.ein")
                 .withPassword("test")
-                .build();
+                .build(uc);
 
         cc.saveCredentials(null, credentials);
 
@@ -246,7 +248,7 @@ public class CredentialsControllerTest {
                 .withUserName("Dies")
                 .withWebsite("ist.ein")
                 .withPassword("test")
-                .build();
+                .build(uc);
 
         cc.saveCredentials(null, credentials);
         cc.addSecurityQuestion(null, credentials);
@@ -259,7 +261,7 @@ public class CredentialsControllerTest {
                 .withUserName("Dies")
                 .withWebsite("ist.ein")
                 .withPassword("test")
-                .build();
+                .build(uc);
 
         cc.saveCredentials(null, credentials);
         cc.addSecurityQuestion(null, "Das", credentials);
@@ -272,7 +274,7 @@ public class CredentialsControllerTest {
                 .withUserName("Dies")
                 .withWebsite("ist.ein")
                 .withPassword("test")
-                .build();
+                .build(uc);
 
         cc.saveCredentials(null, credentials);
         cc.addSecurityQuestion("Was", null, credentials);
@@ -295,7 +297,7 @@ public class CredentialsControllerTest {
                 .withWebsite("ist.ein")
                 .withPassword("test")
                 .withSecurityQuestion(sq)
-                .build();
+                .build(uc);
 
         cc.saveCredentials(null, credentials);
         Assert.assertTrue("Credential does not contain Security Question", credentials.getSecurityQuestions().contains(sq));
@@ -314,7 +316,7 @@ public class CredentialsControllerTest {
                 .withWebsite("ist.ein")
                 .withPassword("test")
                 .withSecurityQuestion(sq1)
-                .build();
+                .build(uc);
 
         cc.saveCredentials(null, credentials);
         Assert.assertTrue("Credential does not contain Security Question", credentials.getSecurityQuestions().contains(sq1));
@@ -333,7 +335,7 @@ public class CredentialsControllerTest {
                 .withWebsite("ist.ein")
                 .withPassword("test")
                 .withSecurityQuestion(sq1)
-                .build();
+                .build(uc);
 
         cc.saveCredentials(null, credentials);
         Assert.assertTrue("Credential does not contain Security Question", credentials.getSecurityQuestions().contains(sq1));
@@ -349,7 +351,7 @@ public class CredentialsControllerTest {
     @Test
     public void copyPasswordToClipboardTest() {
         String password = "pass1";
-        Credentials cred = new CredentialsBuilder("cred1", "user1", password, "site1").build();
+        Credentials cred = new CredentialsBuilder("cred1", "user1", password, "site1").build(uc);
         cc.copyPasswordToClipboard(cred);
 
         Assert.assertEquals("clipboard contents do not equal the password", password, getClipboardContents());
@@ -360,7 +362,7 @@ public class CredentialsControllerTest {
     @Test
     public void setPasswordShownTest() {
         String password = "pass1";
-        Credentials cred = new CredentialsBuilder("cred1", "user1", password, "site1").build();
+        Credentials cred = new CredentialsBuilder("cred1", "user1", password, "site1").build(uc);
 
         cc.setPasswordShown(cred, true);
         Assert.assertEquals("password is not shown", password, mainView.getPasswordShown());
@@ -377,7 +379,7 @@ public class CredentialsControllerTest {
         // Das Passwort muss aus der Zwischenablage gelöscht werden, wenn es in ihr enthalten ist
         String rawPassword = "Passwort123";
         String encPassword = this.pmc.getUtilityController().encryptText(rawPassword);
-        Credentials credentials = new CredentialsBuilder("Super Secret", "bonehead27", encPassword, "lol5.org").build();
+        Credentials credentials = new CredentialsBuilder("Super Secret", "bonehead27", encPassword, "lol5.org").build(uc);
         setClipboardContents(encPassword);
 
         this.cc.clearPasswordFromClipboard(credentials);
@@ -386,7 +388,7 @@ public class CredentialsControllerTest {
         // Die Zwischenablage darf nicht verändert werden, wenn sich das Passwort nicht in ihr befindet
         rawPassword = "MeinPasswort";
         encPassword = this.pmc.getUtilityController().encryptText(rawPassword);
-        credentials = new CredentialsBuilder("Super Secret", "bonehead27", encPassword, "lol5.org").build();
+        credentials = new CredentialsBuilder("Super Secret", "bonehead27", encPassword, "lol5.org").build(uc);
         setClipboardContents("NichtMeinPasswort");
 
         this.cc.clearPasswordFromClipboard(credentials);

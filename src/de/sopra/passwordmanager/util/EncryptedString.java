@@ -19,9 +19,8 @@ public final class EncryptedString {
         return encryptedContent;
     }
 
+    @Override
+    public String toString() {
+        return "EncryptedString{" + encryptedContent + "}";
+    }
 }
-/***********************************************************************************************
- *
- *                  All rights reserved, SpaceParrots UG (c) copyright 2019
- *
- ***********************************************************************************************/

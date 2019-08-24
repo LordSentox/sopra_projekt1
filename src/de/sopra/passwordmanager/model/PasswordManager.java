@@ -41,12 +41,19 @@ public class PasswordManager {
         this.masterPasswordReminderDays = masterPasswordReminderDays;
     }
 
-    public void setMasterPassordLastChanged(LocalDateTime masterPassordLastChanged) {
+    public void setMasterPasswordLastChanged(LocalDateTime masterPassordLastChanged) {
         this.masterPassordLastChanged = masterPassordLastChanged;
     }
 
-    public void setMasterPassordLastChanged() {
-        setMasterPassordLastChanged(LocalDateTime.now());
+    public void setMasterPasswordLastChanged() {
+        setMasterPasswordLastChanged(LocalDateTime.now());
     }
 
+    public LocalDateTime getMasterPasswordLastChanged() {
+        return masterPassordLastChanged;
+    }
+
+    public int getMasterPasswordReminderDays() {
+        return masterPasswordReminderDays;
+    }
 }

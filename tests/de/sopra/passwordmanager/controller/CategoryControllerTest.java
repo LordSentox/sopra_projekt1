@@ -11,7 +11,8 @@ import org.junit.Test;
 
 import java.util.Collection;
 
-import static junit.framework.Assert.*;
+import static org.junit.Assert.*;
+
 
 /**
  * <h1>projekt1</h1>
@@ -23,21 +24,18 @@ import static junit.framework.Assert.*;
 public class CategoryControllerTest
 {
 	private CategoryController catController;
-	private PasswordManagerControllerDummy dummy ;
 	private PasswordManagerController pmc;
 	private Category root;
-	private MainWindowAUI mwaui;
 	private MainView mv;
+	private UtilityController uc;
 
     @Before
     public void setUp() throws Exception
     {
-    	dummy = new PasswordManagerControllerDummy();
-    	pmc = dummy.getNewController();
-    	mwaui = pmc.getMainWindowAUI();
-    	mv = ((MainView) mwaui);
+    	pmc = PasswordManagerControllerDummy.getNewController();
+    	mv = ((MainView) pmc.getMainWindowAUI());
     	catController = pmc.getCategoryController();
-    	
+    	uc = pmc.getUtilityController();
     }
 
     @Test
@@ -97,10 +95,10 @@ public class CategoryControllerTest
     	Category emptyChildCategoryDontDelete = new Category("emptyChildCategoryDontDelete");
     	Category emptyChildCategoryDoDelete = new Category("emptyChildCategoryDoDelete");
     	
-    	Credentials credentialsDummyNotInDeletedSubCategory = new CredentialsBuilder("credentialsDummyNotInDeletedSubCategory", "credentialsDummyNotInDeletedSubCategoryUser", "PWcredentialsDummyNotInDeletedSubCategory", "website").build();
-    	Credentials credentialsDummyDoDelete = new CredentialsBuilder("DoDelete", "credentialsDummyDoDeleteUser", "PWcredentialsDummyDoDelete", "website").build();
-    	Credentials credentialsDummyDoDelete2 = new CredentialsBuilder("DoDelete2", "credentialsDummyDoDeleteUser2", "PWcredentialsDummyDoDelete2", "website").build();
-    	Credentials credentialsDummyDontDelete = new CredentialsBuilder("DontDelete", "credentialsDummyDontDeleteUser", "PWcredentialsDummyDontDelete", "website").build();
+    	Credentials credentialsDummyNotInDeletedSubCategory = new CredentialsBuilder("credentialsDummyNotInDeletedSubCategory", "credentialsDummyNotInDeletedSubCategoryUser", "PWcredentialsDummyNotInDeletedSubCategory", "website").build(uc);
+    	Credentials credentialsDummyDoDelete = new CredentialsBuilder("DoDelete", "credentialsDummyDoDeleteUser", "PWcredentialsDummyDoDelete", "website").build(uc);
+    	Credentials credentialsDummyDoDelete2 = new CredentialsBuilder("DoDelete2", "credentialsDummyDoDeleteUser2", "PWcredentialsDummyDoDelete2", "website").build(uc);
+    	Credentials credentialsDummyDontDelete = new CredentialsBuilder("DontDelete", "credentialsDummyDontDeleteUser", "PWcredentialsDummyDontDelete", "website").build(uc);
     	
     	root.addSubCategory(childCategoryWithoutContent);
     	root.addSubCategory(childCategoryWithSubCategories);
@@ -189,8 +187,8 @@ public class CategoryControllerTest
     	Category subToMove = new Category("subToMove");
     	Category dontMove = new Category("dontMove");
     	
-    	Credentials credentialsDontMove = new CredentialsBuilder("credentialsDontMove", "credentialsDontMoveUser", "PWcredentialsDontMove", "website").build();
-    	Credentials credentialsToMove = new CredentialsBuilder("credentialsToMove", "credentialsToMoveUser", "PWcredentialsToMove", "website").build();
+    	Credentials credentialsDontMove = new CredentialsBuilder("credentialsDontMove", "credentialsDontMoveUser", "PWcredentialsDontMove", "website").build(uc);
+    	Credentials credentialsToMove = new CredentialsBuilder("credentialsToMove", "credentialsToMoveUser", "PWcredentialsToMove", "website").build(uc);
     	
     	root.addSubCategory(moveFrom);
     	root.addSubCategory(moveTo);

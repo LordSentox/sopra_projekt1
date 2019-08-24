@@ -21,9 +21,12 @@ public class CredentialsControllerTreeTest {
     private MainView mainView;
     private Category rootCategory;
 
+
+
     private Credentials obar;
     private Credentials hbar;
     private Credentials fbar;
+    private UtilityController uc;
 
     @Before
     public void setUp() throws Exception {
@@ -32,6 +35,7 @@ public class CredentialsControllerTreeTest {
         pm = pmc.getPasswordManager();
         mainView = (MainView) this.pmc.getMainWindowAUI();
         rootCategory = pm.getRootCategory();
+        uc = pmc.getUtilityController();
 
         // Oberkategorien an die root-Kategorie anhängen
         Category rootFoo = new Category("foo");
@@ -50,9 +54,9 @@ public class CredentialsControllerTreeTest {
         rootBeer.addSubCategory(beerFoo);
 
         // Credentials zum Baum hinzufügen
-        this.obar = new CredentialsBuilder("obar", "Hodor", "hoDor", "schmo.de").build();
-        this.hbar = new CredentialsBuilder("hbar", "Hodor", "hoDor", "hodortmund.de").build();
-        this.fbar = new CredentialsBuilder("fbar", "Hodor", "hoDor", "zwergenfreun.de").build();
+        this.obar = new CredentialsBuilder("obar", "Hodor", "hoDor", "schmo.de").build(uc);
+        this.hbar = new CredentialsBuilder("hbar", "Hodor", "hoDor", "hodortmund.de").build(uc);
+        this.fbar = new CredentialsBuilder("fbar", "Hodor", "hoDor", "zwergenfreun.de").build(uc);
 
         rootBeer.addCredentials(obar);
         fooBeer.addCredentials(hbar);
@@ -199,6 +203,7 @@ public class CredentialsControllerTreeTest {
 
     @Test
     public void reencryptAllTest() {
-
+        //TODO: Test for reencryptAll
+        Assert.fail("Not yet implemented");
     }
 }
