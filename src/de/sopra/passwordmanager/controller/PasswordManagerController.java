@@ -3,6 +3,7 @@ package de.sopra.passwordmanager.controller;
 import de.sopra.passwordmanager.model.Category;
 import de.sopra.passwordmanager.model.Credentials;
 import de.sopra.passwordmanager.model.PasswordManager;
+import de.sopra.passwordmanager.util.CredentialsBuilder;
 import de.sopra.passwordmanager.view.LoginViewAUI;
 import de.sopra.passwordmanager.view.MainWindowAUI;
 import de.sopra.passwordmanager.view.MasterPasswordViewAUI;
@@ -125,10 +126,10 @@ public class PasswordManagerController {
      * @param newCredentials
      * @param newCategories
      */
-    public void saveEntry(Credentials oldCredentials, Credentials newCredentials, Collection<Category> newCategories) {
-        categoryController.removeCredentialsFromCategories(oldCredentials);
-        credentialsController.saveCredentials(oldCredentials, newCredentials);
-        categoryController.addCredentialsToCategories(newCredentials, newCategories);
+    public void saveEntry(Credentials oldCredentials, CredentialsBuilder newCredentials, Collection<Category> newCategories) {
+//        categoryController.removeCredentialsFromCategories(oldCredentials);
+//        credentialsController.saveCredentials(oldCredentials, newCredentials);
+//        categoryController.addCredentialsToCategories(newCredentials, newCategories);
     }
 
 }

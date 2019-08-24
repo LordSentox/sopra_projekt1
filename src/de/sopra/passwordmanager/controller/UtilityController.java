@@ -1,5 +1,7 @@
 package de.sopra.passwordmanager.controller;
 
+import de.sopra.passwordmanager.util.EncryptedString;
+
 import java.io.File;
 
 /**
@@ -41,7 +43,7 @@ public class UtilityController {
      * @param text Der zu entschlüsselnde Text, dabei kann es sich um Passwörter oder die Sicherheitsfragen handeln
      * @return Der zurückgegebene String ist die entschlüsselte Version des eingegebenen Textes
      */
-    String decryptText(String text) {
+    String decryptText(EncryptedString text) {
         return null;
     }
 
@@ -51,7 +53,7 @@ public class UtilityController {
      * @param text Der zu verschlüsselnde Text, dabei kann es sich um Passwörter oder die Sicherheitsfragen handeln
      * @return Der zurückgegebene String ist die verschlüsselte Version des eingegebenen Textes
      */
-    String encryptText(String text) {
+    EncryptedString encryptText(String text) {
         return null;
     }
 
