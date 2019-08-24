@@ -83,7 +83,7 @@ public class CategoryController {
      *             wenn der Pfad null oder leerer String ist, wird die rootCategory zurükgegeben.
      * @return gibt die letzte Kategorie des angegebenen Pfades zurück
      */
-    Category getCategory(String path) {
+    Category getCategory(Path path) {
         return null;
     }
 
