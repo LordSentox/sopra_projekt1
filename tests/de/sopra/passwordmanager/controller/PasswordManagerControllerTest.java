@@ -1,19 +1,13 @@
 package de.sopra.passwordmanager.controller;
 
 import de.sopra.passwordmanager.model.Credentials;
-
-import static org.junit.Assert.*;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
+import de.sopra.passwordmanager.model.PasswordManager;
 import de.sopra.passwordmanager.util.CredentialsBuilder;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.Assert;
 
-import de.sopra.passwordmanager.model.PasswordManager;
+import java.util.Collection;
 
 public class PasswordManagerControllerTest {
     private PasswordManagerController passwordManagerController;
