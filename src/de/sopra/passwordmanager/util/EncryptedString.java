@@ -1,5 +1,8 @@
 package de.sopra.passwordmanager.util;
 
+import java.util.Collection;
+import java.util.Objects;
+
 /**
  * <h1>projekt1</h1>
  *
@@ -17,6 +20,22 @@ public final class EncryptedString {
 
     public String getEncryptedContent() {
         return encryptedContent;
+    }
+
+    /**
+     * Unsafe, aber nötig, damit etwa {@link Collection#contains(Object)} funktioniert
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        EncryptedString that = (EncryptedString) o;
+        return Objects.equals(encryptedContent, that.encryptedContent);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(encryptedContent);
     }
 
     @Override
