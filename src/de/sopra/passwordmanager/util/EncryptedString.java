@@ -19,4 +19,8 @@ public final class EncryptedString {
         return encryptedContent;
     }
 
+    @Override
+    public String toString() {
+        return "EncryptedString{" + encryptedContent + "}";
+    }
 }

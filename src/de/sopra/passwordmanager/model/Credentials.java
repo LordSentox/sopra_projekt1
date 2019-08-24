@@ -174,14 +174,28 @@ public class Credentials {
                 website.equals(that.website) &&
                 notes.equals(that.notes) &&
                 created.equals(that.created) &&
-                Objects.equals(getLastChanged(), that.getLastChanged()) &&
-                Objects.equals(getChangeReminderDays(), that.getChangeReminderDays()) &&
-                getPassword().equals(that.getPassword()) &&
+                Objects.equals(lastChanged, that.lastChanged) &&
+                Objects.equals(changeReminderDays, that.changeReminderDays) &&
                 securityQuestions.equals(that.securityQuestions);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, userName, website, notes, created, securityQuestions, getLastChanged(), getPassword(), getChangeReminderDays());
+        return Objects.hash(name, userName, website, notes, created, securityQuestions, lastChanged, changeReminderDays);
+    }
+
+    @Override
+    public String toString() {
+        return "Credentials{" +
+                "name='" + name + '\'' +
+                ", userName='" + userName + '\'' +
+                ", password=" + password.toString() +
+                ", website='" + website + '\'' +
+                ", changeReminderDays=" + changeReminderDays +
+                ", created=" + created +
+                ", lastChanged=" + lastChanged +
+                ", notes='" + notes + '\'' +
+                ", securityQuestions=" + securityQuestions +
+                '}';
     }
 }

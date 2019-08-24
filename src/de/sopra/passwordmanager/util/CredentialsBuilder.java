@@ -1,11 +1,13 @@
 package de.sopra.passwordmanager.util;
 
+import de.sopra.passwordmanager.controller.UtilityController;
 import de.sopra.passwordmanager.model.BasePassword;
 import de.sopra.passwordmanager.model.Credentials;
 import de.sopra.passwordmanager.model.SecurityQuestion;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 
 /**
@@ -30,7 +32,7 @@ public class CredentialsBuilder {
      * Erstellt einen {@link CredentialsBuilder} für {@link Credentials}, der keine Daten enthält, eingeschlossen der Daten,
      * die in jedem Fall benötigt sind.
      *
-     * @see #build()
+     * @see #build(UtilityController)
      */
     public CredentialsBuilder() {
     }
@@ -42,6 +44,8 @@ public class CredentialsBuilder {
      * @param userName Nutzername zur Anmeldung auf der Netzseite
      * @param password Passwort zur Anmeldung auf der Netzseite
      * @param website  Netzseite, auf die die Anmeldedaten zutreffen
+     *
+     * @see #build(UtilityController)
      */
     public CredentialsBuilder(String name, String userName, String password, String website) {
         this.name = name;
@@ -58,27 +62,24 @@ public class CredentialsBuilder {
      * - Passwort
      * - Website
      *
+     * @param utilityController Der {@link UtilityController}, der die zum verschlüsseln benötigten Methoden bereitstellt
      * @return {@link Credentials}, die die zuvor hinzugefügten Daten enthalten
      * @throws CredentialsBuilderException wenn:
      *                                     - Erforderliche Daten fehlen
-     *                                     - {@code changeReminderDays}, falls angegeben, weniger als 1 Tag ist
+     *                                     - {@code #changeReminderDays}, falls angegeben, weniger als 1 Tag ist
      */
-    public Credentials build() throws CredentialsBuilderException {
-        if (name == null) throw new CredentialsBuilderException("name is null");
-        if (userName == null) throw new CredentialsBuilderException("user name is null");
-        if (password == null) throw new CredentialsBuilderException("password is null");
-        if (website == null) throw new CredentialsBuilderException("website is null");
+    public Credentials build(UtilityController utilityController) throws CredentialsBuilderException {
+        if (name == null || userName == null || password == null || website == null) throw new CredentialsBuilderException("required data missing");
         if (changeReminderDays != null && changeReminderDays < 1)
             throw new CredentialsBuilderException("change reminder less than 1 day: " + changeReminderDays);
-        LocalDateTime now = LocalDateTime.now();
-        if (created == null) {
-            created = now;
-        }
-        if (lastChanged == null) {
-            lastChanged = now;
-        }
 
-        Credentials credentials = new Credentials(name, userName, password, created);
+        LocalDateTime now = LocalDateTime.now();
+        created = created == null ? now : created;
+        lastChanged = lastChanged == null ? now : lastChanged;
+
+        EncryptedString encryptedPassword = utilityController.encryptText(password);
+
+        Credentials credentials = new Credentials(name, userName, encryptedPassword, created);
         credentials.setNotes(notes);
         credentials.setWebsite(website);
         credentials.setChangeReminderDays(changeReminderDays);
@@ -210,10 +211,46 @@ public class CredentialsBuilder {
         return this;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public String getWebsite() {
+        return website;
+    }
+
+    public Integer getChangeReminderDays() {
+        return changeReminderDays;
+    }
+
+    public LocalDateTime getLastChanged() {
+        return lastChanged;
+    }
+
+    public LocalDateTime getCreated() {
+        return created;
+    }
+
+    public String getNotes() {
+        return notes;
+    }
+
+    public Collection<SecurityQuestion> getSecurityQuestions() {
+        return Collections.unmodifiableCollection(securityQuestions);
+    }
+
     /**
      * Eine Exception, die bei einem Fehler im Buildprozess des {@link CredentialsBuilder} geworfen wird
      *
-     * @see #build()
+     * @see #build(UtilityController)
      */
     public static class CredentialsBuilderException extends RuntimeException {
         CredentialsBuilderException(String msg) {

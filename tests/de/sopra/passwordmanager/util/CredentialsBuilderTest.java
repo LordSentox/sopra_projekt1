@@ -1,8 +1,12 @@
 package de.sopra.passwordmanager.util;
 
+import de.sopra.passwordmanager.controller.PasswordManagerController;
+import de.sopra.passwordmanager.controller.PasswordManagerControllerDummy;
+import de.sopra.passwordmanager.controller.UtilityController;
 import de.sopra.passwordmanager.model.Credentials;
 import de.sopra.passwordmanager.model.SecurityQuestion;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.time.LocalDateTime;
@@ -11,11 +15,21 @@ import java.util.Set;
 
 public class CredentialsBuilderTest {
 
+    private PasswordManagerController pmc;
+    private UtilityController uc;
+
+    @Before
+    public void setUp() {
+        pmc = PasswordManagerControllerDummy.getNewController();
+        uc = pmc.getUtilityController();
+    }
+
     @Test
     public void fullBuildTest() {
         String name = "cred1";
         String userName = "user1";
         String password = "passwort123";
+        EncryptedString encryptedPassword = uc.encryptText(password);
         String website = "www.hallo.de";
         int changeReminder = 3;
         LocalDateTime created = LocalDateTime.now();
@@ -41,10 +55,10 @@ public class CredentialsBuilderTest {
                 .withSecurityQuestion(sq1)
                 .withSecurityQuestion(question2, answer2)
                 .withSecurityQuestions(questions)
-                .build();
+                .build(uc);
 
         // Erstelle das zweite Credentials objekt mit denselben daten, aber hier mit dem Konstruktor
-        Credentials cred2 = new Credentials(name, userName, password, created);
+        Credentials cred2 = new Credentials(name, userName, encryptedPassword, created);
         cred2.setWebsite(website);
         cred2.setChangeReminderDays(changeReminder);
         cred2.setLastChanged(lastChanged);
@@ -61,6 +75,7 @@ public class CredentialsBuilderTest {
         String name = "cred1";
         String userName = "user1";
         String password = "passwort123";
+        EncryptedString encryptedPassword = uc.encryptText(password);
         String website = "www.hallo.de";
 
         Credentials cred1 = new CredentialsBuilder()
@@ -68,9 +83,9 @@ public class CredentialsBuilderTest {
                 .withUserName(userName)
                 .withPassword(password)
                 .withWebsite(website)
-                .build();
+                .build(uc);
 
-        Credentials cred2 = new Credentials(name, userName, password, cred1.getCreatedAt());
+        Credentials cred2 = new Credentials(name, userName, encryptedPassword, cred1.getCreatedAt());
         cred2.setLastChanged(cred1.getLastChanged());
         cred2.setWebsite(website);
         cred2.setNotes("");
@@ -89,7 +104,7 @@ public class CredentialsBuilderTest {
                 .withUserName(userName)
                 .withPassword(password)
                 .withWebsite(website)
-                .build();
+                .build(uc);
     }
 
     @Test(expected = CredentialsBuilder.CredentialsBuilderException.class)
@@ -103,7 +118,7 @@ public class CredentialsBuilderTest {
                 .withName(name)
                 .withPassword(password)
                 .withWebsite(website)
-                .build();
+                .build(uc);
     }
 
 
@@ -118,7 +133,7 @@ public class CredentialsBuilderTest {
                 .withName(name)
                 .withUserName(userName)
                 .withWebsite(website)
-                .build();
+                .build(uc);
     }
 
     @Test(expected = CredentialsBuilder.CredentialsBuilderException.class)
@@ -132,7 +147,7 @@ public class CredentialsBuilderTest {
                 .withName(name)
                 .withUserName(userName)
                 .withPassword(password)
-                .build();
+                .build(uc);
     }
 
     @Test(expected = CredentialsBuilder.CredentialsBuilderException.class)
@@ -150,6 +165,6 @@ public class CredentialsBuilderTest {
                 .withPassword(password)
                 .withWebsite(website)
                 .withChangeReminderDays(changeReminder)
-                .build();
+                .build(uc);
     }
 }

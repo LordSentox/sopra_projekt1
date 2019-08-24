@@ -32,6 +32,7 @@ public class PasswordReminderController {
         return false;
     }
 
+
     /**
      * Erstellt eine Liste mit Passwörtern bei denen der Timer abgelaufen ist und geändert werden müssen.
      *
