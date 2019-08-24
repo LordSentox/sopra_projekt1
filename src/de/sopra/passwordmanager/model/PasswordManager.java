@@ -33,6 +33,14 @@ public class PasswordManager {
         return rootCategory;
     }
 
+    public int getMasterPasswordReminderDays() {
+        return masterPasswordReminderDays;
+    }
+
+    public LocalDateTime getMasterPassordLastChanged() {
+        return masterPassordLastChanged;
+    }
+
     public void setMasterPassword(String masterPassword) {
         this.masterPassword = masterPassword;
     }
