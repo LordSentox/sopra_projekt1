@@ -4,6 +4,8 @@ import de.sopra.passwordmanager.model.Category;
 import de.sopra.passwordmanager.model.Credentials;
 import de.sopra.passwordmanager.model.PasswordManager;
 import de.sopra.passwordmanager.model.SecurityQuestion;
+import de.sopra.passwordmanager.util.CredentialsBuilder;
+import de.sopra.passwordmanager.util.Path;
 import de.sopra.passwordmanager.view.MainWindowAUI;
 
 import java.util.Collection;
@@ -31,7 +33,7 @@ public class CredentialsController {
      * @param newCredentials Die neuen Anmeldedaten, die die Alten überschreiben. Falls <code>null</code>, geschieht nichts
      * @see Credentials
      */
-    public void saveCredentials(Credentials oldCredentials, Credentials newCredentials) {
+    public void saveCredentials(Credentials oldCredentials, CredentialsBuilder newCredentials) {
 
     }
 
@@ -55,7 +57,7 @@ public class CredentialsController {
      * @see SecurityQuestion
      * @see Credentials
      */
-    public void addSecurityQuestion(String question, String answer, Credentials credentials) throws NullPointerException {
+    public void addSecurityQuestion(String question, String answer, CredentialsBuilder credentials) throws NullPointerException {
 
     }
 
@@ -68,7 +70,7 @@ public class CredentialsController {
      * @see SecurityQuestion
      * @see Credentials
      */
-    public void addSecurityQuestion(SecurityQuestion securityQuestion, Credentials credentials) throws NullPointerException {
+    public void addSecurityQuestion(SecurityQuestion securityQuestion, CredentialsBuilder credentials) throws NullPointerException {
 
     }
 
@@ -80,7 +82,7 @@ public class CredentialsController {
      * @see SecurityQuestion
      * @see Credentials
      */
-    public void removeSecurityQuestion(SecurityQuestion securityQuestion, Credentials credentials) {
+    public void removeSecurityQuestion(SecurityQuestion securityQuestion, CredentialsBuilder credentials) {
 
     }
 
@@ -92,7 +94,7 @@ public class CredentialsController {
      * @param pattern      Ein String, der im Namen der {@link Credentials} enthalten sein soll. Falls <code>null</code>, wird nicht nach Eintragsnamen gesucht
      * @see Credentials
      */
-    public void filterCredentials(String categoryPath, String pattern) {
+    public void filterCredentials(Path categoryPath, String pattern) {
 
     }
 
@@ -102,7 +104,7 @@ public class CredentialsController {
      * @param credentials Die {@link Credentials}, dessen Passwort kopiert werden soll. Falls <code>null</code>, geschieht nichts
      * @see Credentials
      */
-    public void copyPasswordToClipboard(Credentials credentials) {
+    public void copyPasswordToClipboard(CredentialsBuilder credentials) {
 
     }
 
@@ -112,7 +114,7 @@ public class CredentialsController {
      * @param credentials Die {@link Credentials}, dessen Passwort (nicht) angezeigt werden soll. Falls <code>null</code> geschieht nichts
      * @param visible     Falls 'true', soll das Passwort im Klartext angezeigt werden, sonst nur Sternchen
      */
-    public void setPasswordShown(Credentials credentials, boolean visible) {
+    public void setPasswordShown(CredentialsBuilder credentials, boolean visible) {
 
     }
 
@@ -125,7 +127,7 @@ public class CredentialsController {
      * @see Credentials
      * @see Category
      */
-    Collection<Credentials> getCredentialsByCategoryPath(String categoryPath) {
+    Collection<Credentials> getCredentialsByCategoryPath(Path categoryPath) {
         return null;
     }
 
@@ -134,7 +136,7 @@ public class CredentialsController {
      *
      * @param credentials Die {@link Credentials}, dessen Passwort aus der Zwischenablage entfernt werden soll. Falls <code>null</code> geschieht nichts
      */
-    void clearPasswordFromClipboard(Credentials credentials) {
+    void clearPasswordFromClipboard(CredentialsBuilder credentials) {
 
     }
 
