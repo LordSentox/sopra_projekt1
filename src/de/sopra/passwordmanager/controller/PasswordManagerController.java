@@ -120,6 +120,18 @@ public class PasswordManagerController {
     }
 
     /**
+     * Überprüft die Qualität des im übergebenen {@link CredentialsBuilder} enthaltenen Passwortes und aktualisiert den
+     * Qualitätsbalken im {@link de.sopra.passwordmanager.view.MainWindowViewController}.
+     * Ist das Passwort im {@link CredentialsBuilder} <code>null</code> soll <b>keine</b> NullPointerException geworfen
+     * werden
+     *
+     * @param credentials Der {@link CredentialsBuilder}, welcher das zu prüfende Passwort beinhaltet
+     * @throws NullPointerException falls statt eines {@link CredentialsBuilder} <code>null</code> übergeben wird
+     */
+    public void checkQuality(CredentialsBuilder credentials) throws NullPointerException {
+    }
+
+    /**
      * //TODO
      *
      * @param oldCredentials
