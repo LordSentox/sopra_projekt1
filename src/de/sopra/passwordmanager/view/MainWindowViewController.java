@@ -2,6 +2,7 @@ package de.sopra.passwordmanager.view;
 
 import de.sopra.passwordmanager.controller.PasswordManagerController;
 import de.sopra.passwordmanager.model.Credentials;
+import de.sopra.passwordmanager.util.CredentialsBuilder;
 
 import java.util.List;
 
@@ -118,6 +119,11 @@ public class MainWindowViewController implements MainWindowAUI {
     }
 
     public void refreshEntry() {
+
+    }
+
+    @Override
+    public void refreshEntry(CredentialsBuilder credentials) {
 
     }
 

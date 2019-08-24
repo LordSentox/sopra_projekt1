@@ -33,7 +33,7 @@ public class CredentialsTest {
 		Assert.assertEquals("retrieved value not equal to expected","cred2", cred.getName());
 		cred.setUserName("user2");
 		Assert.assertEquals("retrieved value not equal to expected","user2", cred.getUserName());
-		EncryptedString encryptedPassword = new EncryptedString(uc.encryptText("Passwort123"));
+		EncryptedString encryptedPassword = uc.encryptText("Passwort123");
 		cred.setPassword(encryptedPassword);
 		Assert.assertEquals("retrieved value not equal to expected",encryptedPassword, cred.getPassword());
 		cred.setWebsite("www.hallo.com");

@@ -3,6 +3,7 @@ package de.sopra.passwordmanager.controller;
 import de.sopra.passwordmanager.model.Category;
 import de.sopra.passwordmanager.model.Credentials;
 import de.sopra.passwordmanager.model.PasswordManager;
+import de.sopra.passwordmanager.util.CredentialsBuilder;
 import de.sopra.passwordmanager.view.LoginViewAUI;
 import de.sopra.passwordmanager.view.MainWindowAUI;
 import de.sopra.passwordmanager.view.MasterPasswordViewAUI;
@@ -119,16 +120,28 @@ public class PasswordManagerController {
     }
 
     /**
+     * Überprüft die Qualität des im übergebenen {@link CredentialsBuilder} enthaltenen Passwortes und aktualisiert den
+     * Qualitätsbalken im {@link de.sopra.passwordmanager.view.MainWindowViewController}.
+     * Ist das Passwort im {@link CredentialsBuilder} <code>null</code> soll <b>keine</b> NullPointerException geworfen
+     * werden
+     *
+     * @param credentials Der {@link CredentialsBuilder}, welcher das zu prüfende Passwort beinhaltet
+     * @throws NullPointerException falls statt eines {@link CredentialsBuilder} <code>null</code> übergeben wird
+     */
+    public void checkQuality(CredentialsBuilder credentials) throws NullPointerException {
+    }
+
+    /**
      * //TODO
      *
      * @param oldCredentials
      * @param newCredentials
      * @param newCategories
      */
-    public void saveEntry(Credentials oldCredentials, Credentials newCredentials, Collection<Category> newCategories) {
-        categoryController.removeCredentialsFromCategories(oldCredentials);
-        credentialsController.saveCredentials(oldCredentials, newCredentials);
-        categoryController.addCredentialsToCategories(newCredentials, newCategories);
+    public void saveEntry(Credentials oldCredentials, CredentialsBuilder newCredentials, Collection<Category> newCategories) {
+//        categoryController.removeCredentialsFromCategories(oldCredentials);
+//        credentialsController.saveCredentials(oldCredentials, newCredentials);
+//        categoryController.addCredentialsToCategories(newCredentials, newCategories);
     }
 
 }

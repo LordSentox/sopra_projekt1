@@ -1,5 +1,7 @@
 package de.sopra.passwordmanager.model;
 
+import de.sopra.passwordmanager.util.Path;
+
 import java.time.LocalDateTime;
 
 /**
@@ -22,7 +24,7 @@ public class PasswordManager {
     private Category rootCategory;
 
     public PasswordManager() {
-        rootCategory = new Category("alle");
+        rootCategory = new Category(Path.ROOT_CATEGORY);
     }
 
     public String getMasterPassword() {
@@ -31,6 +33,14 @@ public class PasswordManager {
 
     public Category getRootCategory() {
         return rootCategory;
+    }
+
+    public int getMasterPasswordReminderDays() {
+        return masterPasswordReminderDays;
+    }
+
+    public LocalDateTime getMasterPassordLastChanged() {
+        return masterPassordLastChanged;
     }
 
     public void setMasterPassword(String masterPassword) {
@@ -51,9 +61,5 @@ public class PasswordManager {
 
     public LocalDateTime getMasterPasswordLastChanged() {
         return masterPassordLastChanged;
-    }
-
-    public int getMasterPasswordReminderDays() {
-        return masterPasswordReminderDays;
     }
 }

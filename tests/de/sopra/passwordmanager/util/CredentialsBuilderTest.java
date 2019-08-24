@@ -29,7 +29,7 @@ public class CredentialsBuilderTest {
         String name = "cred1";
         String userName = "user1";
         String password = "passwort123";
-        EncryptedString encryptedPassword = new EncryptedString(uc.encryptText(password));
+        EncryptedString encryptedPassword = uc.encryptText(password);
         String website = "www.hallo.de";
         int changeReminder = 3;
         LocalDateTime created = LocalDateTime.now();
@@ -75,7 +75,7 @@ public class CredentialsBuilderTest {
         String name = "cred1";
         String userName = "user1";
         String password = "passwort123";
-        EncryptedString encryptedPassword = new EncryptedString(uc.encryptText(password));
+        EncryptedString encryptedPassword = uc.encryptText(password);
         String website = "www.hallo.de";
 
         Credentials cred1 = new CredentialsBuilder()

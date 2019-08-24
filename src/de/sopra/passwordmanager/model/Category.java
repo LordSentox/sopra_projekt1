@@ -11,7 +11,7 @@ import java.util.Collection;
  */
 public class Category {
     /**
-     * Der Name der Kategorie. Nicht zu verwechseln mit dem Pfad, welcher nur von der Wurzel aus gefunden werden kann.
+     * Der Name der Kategorie. Entspricht nicht dem gesamten Pfad der Kategorie.
      */
     private String name;
 
@@ -21,7 +21,7 @@ public class Category {
     private Collection<Credentials> credentials;
 
     /**
-     * Die nächsten Unterkategorien, welche dieser zugeordnet sind.
+     * Die Liste aller Kategorien, welche der aktuellen Kategorie untergeordnet sind.
      */
     private Collection<Category> subCategories;
 
@@ -43,27 +43,66 @@ public class Category {
         return subCategories;
     }
 
+    /**
+     * Fügt eine Kategorie in die Liste der untergeordneten Kategorien ein
+     *
+     * @param category die einzufügende Kategorie
+     */
     public void addSubCategory(Category category) {
         subCategories.add(category);
     }
 
+    /**
+     * Entfernt eine Kategorie aus der Liste der untergeordneten Kategorien
+     *
+     * @param category die zu entfernende Kategorie
+     */
     public void removeSubCategory(Category category) {
         subCategories.remove(category);
     }
 
+    /**
+     * Ordnete ein existierendes Credentials Objekt der aktuellen Kategorie Instanz zu
+     *
+     * @param credentials die zuzuordnenden Credentials
+     */
     public void addCredentials(Credentials credentials) {
         this.credentials.add(credentials);
     }
 
+    /**
+     * Entfernt die Zuordnung von einer Credentials Instanz zu dieser Kategorie.
+     * Ist ein Credentials Objekt keiner Kategorie zugeordnet gilt es bis zur erneuten Zuordnung als gelöscht.
+     *
+     * @param credentials die von dieser Kategorie zu entfernende Credentials Instanz
+     */
     public void removeCredentials(Credentials credentials) {
         this.credentials.remove(credentials);
     }
 
+    /**
+     * Entfernt die Zuordnung von einer Credentials Instanz zu dieser Kategorie und allen untergeordneten Kategorien.
+     *
+     * @param credentials die von dieser Kategorie und untergeordneten Kategorien zu entfernende Credentials Instanz
+     * @see #removeCredentials(Credentials)
+     */
     public void removeCredentialsFromTree(Credentials credentials) {
         removeCredentials(credentials);
         subCategories.forEach(subCategory -> subCategory.removeCredentialsFromTree(credentials));
     }
 
+    /**
+     * Bestimmt eine Kategorie über ihren absoluten Pfad.
+     * Ein absoluter Pfad beginnt bei einer root-Kategorie und endet bei der Zielkategorie.
+     * Die Funktionalität dieser Methode ist gewährleistet, wenn die aktuelle Kategorie als root im Pfad behandelt wird.
+     * Ein Pfad ohne Child Element {@link Path#hasChild()} und ohne Parent Element {@link Path#hasParent()}
+     * führt zu der aktuellen Kategorie, wenn der name {@link Path#getName()} mit dem Namen der Kategorie übereinstimmt.
+     * Wenn der Pfad falsch ist oder die Kategorie nicht existiert, dann ist das Ergebnis null.
+     * Das übergebene {@link Path} Objekt sollte eine Kopie des original Pfades darstellen, da die Methode Änderungen an der Instanz vornimmt.
+     *
+     * @param path die Kopie des Pfades zu der die entsprechende Kategorie ermittelt werden soll
+     * @return die Kategorie, auf welche der Pfad zeigt oder <code>null</code> wenn die Kategorie fehlt oder der Pfad falsch ist
+     */
     public Category getCategoryByPath(Path path) {
         path.navigate(0);
         if (path.getName().equals(getName())) {

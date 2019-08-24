@@ -1,6 +1,5 @@
 package de.sopra.passwordmanager.controller;
 
-import de.sopra.passwordmanager.model.BasePassword;
 import de.sopra.passwordmanager.model.Credentials;
 
 import java.util.List;
@@ -29,22 +28,10 @@ public class PasswordReminderController {
      * <strong>false</strong> Timer ist nicht abgelaufen/Passwort muss nicht geändert werden.
      */
 
-    boolean hasToBeChanged(BasePassword password) {
-        return false;
-    }
-
-    /**
-     * Abfrage, ob der Timer von einem Passwort abgelaufen ist und ob es geändert werden muss.
-     *
-     * @param password Das Passwort was überprüft werden soll.
-     * @return <strong>true</strong> Timer ist abgelaufen/Passwort muss geändert werden,
-     * <br>
-     * <strong>false</strong> Timer ist nicht abgelaufen/Passwort muss nicht geändert werden.
-     */
-
     boolean hasToBeChanged(Credentials password) {
         return false;
     }
+
 
     /**
      * Erstellt eine Liste mit Passwörtern bei denen der Timer abgelaufen ist und geändert werden müssen.

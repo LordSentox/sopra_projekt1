@@ -1,12 +1,10 @@
 package de.sopra.passwordmanager.util;
 
-import aes.AES;
 import de.sopra.passwordmanager.controller.UtilityController;
 import de.sopra.passwordmanager.model.BasePassword;
 import de.sopra.passwordmanager.model.Credentials;
 import de.sopra.passwordmanager.model.SecurityQuestion;
 
-import javax.rmi.CORBA.Util;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Collections;
@@ -79,7 +77,7 @@ public class CredentialsBuilder {
         created = created == null ? now : created;
         lastChanged = lastChanged == null ? now : lastChanged;
 
-        EncryptedString encryptedPassword = new EncryptedString(utilityController.encryptText(password));
+        EncryptedString encryptedPassword = utilityController.encryptText(password);
 
         Credentials credentials = new Credentials(name, userName, encryptedPassword, created);
         credentials.setNotes(notes);

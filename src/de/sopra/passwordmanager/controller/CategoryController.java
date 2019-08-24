@@ -83,7 +83,7 @@ public class CategoryController {
      *             wenn der Pfad null oder leerer String ist, wird die rootCategory zurükgegeben.
      * @return gibt die letzte Kategorie des angegebenen Pfades zurück
      */
-    Category getCategory(String path) {
+    Category getCategory(Path path) {
         return null;
     }
 
@@ -101,19 +101,23 @@ public class CategoryController {
     }
 
     /**
-     * //TODO
+     * Fügt die übergebenen {@link Credentials} in jede übergebene {@link Category} ein und aktualisiert gegebenenfalls
+     * die Liste im {@link de.sopra.passwordmanager.view.MainWindowViewController}
      *
-     * @param credentials
-     * @param categories
+     * @param credentials Die {@link Credentials}, die hinzugefügt werden sollen. Ist das Objekt <code>null</code> passiert
+     *                    nichts.
+     * @param categories Die Liste von {@link Category}-Objekten, in die die Credentials übergeben werden sollen
+     * @throws NullPointerException falls die übergebene {@link Collection<Category>} <code>null</code> ist.
      */
-    void addCredentialsToCategories(Credentials credentials, Collection<Category> categories) {
+    void addCredentialsToCategories(Credentials credentials, Collection<Category> categories) throws NullPointerException {
 
     }
 
     /**
-     * //TODO
+     * Entfernt die übergebenen {@link Credentials} aus allen Kategorien im {@link de.sopra.passwordmanager.model.PasswordManager}.
+     * Das Objekt taucht anschließend nicht mehr im Datenmodell auf.
      *
-     * @param credentials
+     * @param credentials Die {@link Credentials}, die aus dem Datenmodell entfernt werden sollen
      */
     void removeCredentialsFromCategories(Credentials credentials) {
 

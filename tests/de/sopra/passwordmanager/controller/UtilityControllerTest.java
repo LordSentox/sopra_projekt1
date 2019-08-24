@@ -1,11 +1,11 @@
 package de.sopra.passwordmanager.controller;
 
 import de.sopra.passwordmanager.controller.PasswordManagerControllerDummy.MainView;
-import de.sopra.passwordmanager.model.BasePassword;
 import de.sopra.passwordmanager.model.Category;
 import de.sopra.passwordmanager.model.Credentials;
 import de.sopra.passwordmanager.model.PasswordManager;
 import de.sopra.passwordmanager.util.CredentialsBuilder;
+import de.sopra.passwordmanager.util.EncryptedString;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -22,7 +22,7 @@ public class UtilityControllerTest {
 	private UtilityController utilityController;
 	private MainView mainWindowAUI;
 	private PasswordManager passwordManager;
-	
+
     @Before
     public void setUp() throws Exception {
     	passwordManagerController = PasswordManagerControllerDummy.getNewController();
@@ -33,10 +33,10 @@ public class UtilityControllerTest {
 
     @Test
     public void generatePasswordTest() {
-    	utilityController.generatePassword();
-    	String password = mainWindowAUI.getPasswordShown();
-    	
-    	Assert.assertTrue(utilityController.checkQuality(password) > PasswordManagerController.MINUM_SAFE_QUALITY);
+        utilityController.generatePassword();
+        String password = mainWindowAUI.getPasswordShown();
+
+        Assert.assertTrue(utilityController.checkQuality(password) > PasswordManagerController.MINUM_SAFE_QUALITY);
     }
 
     @Test
@@ -62,11 +62,11 @@ public class UtilityControllerTest {
     	sub.addCredentials(c1);
     	sub.addCredentials(c2);
     	sub1.addCredentials(c2);
-    	
+
     	//Test
     	utilityController.exportFile(file);
     	utilityController.importFile(file, masterPassword);
-    	
+
     	// Daten testen, ob diese im Modell vorhanden sind
     	root = passwordManager.getRootCategory();
     	Assert.assertFalse(root.getSubCategories().isEmpty());
@@ -100,16 +100,18 @@ public class UtilityControllerTest {
 
     @Test
     public void encryptDecryptTextTest() {
-    	String text = "password1";
-    	String encrypted = utilityController.encryptText(text);
-    	String decrypted = utilityController.decryptText(encrypted);
-    	Assert.assertEquals(text, decrypted);
+        String text = "password1";
+        EncryptedString encrypted = utilityController.encryptText(text);
+        String decrypted = utilityController.decryptText(encrypted);
+        Assert.assertEquals(text, decrypted);
+        Assert.assertNotEquals("encryption does not encrypt", text, encrypted.getEncryptedContent());
+        Assert.assertNotEquals("decryption does not decrypt", decrypted, encrypted.getEncryptedContent());
     }
 
 
     @Test
     public void checkQuality() {
-    	 //TODO:Braucht jetzt nicht.
+        //TODO:Braucht jetzt nicht.
 
     }
 }

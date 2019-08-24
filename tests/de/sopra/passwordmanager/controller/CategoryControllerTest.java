@@ -5,7 +5,6 @@ import de.sopra.passwordmanager.model.Category;
 import de.sopra.passwordmanager.model.Credentials;
 import de.sopra.passwordmanager.util.CredentialsBuilder;
 import de.sopra.passwordmanager.util.Path;
-import de.sopra.passwordmanager.view.MainWindowAUI;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -50,7 +49,7 @@ public class CategoryControllerTest
     	 catController.createCategory(root, "category without children and credentials");
     	 Collection<Category> subCategories = root.getSubCategories();
     	 
-    	 assertTrue("Kategorie wurde nicht an Wurzel angehängt", subCategories.contains(catController.getCategory("root/category without children and credentials")));
+    	 assertTrue("Kategorie wurde nicht an Wurzel angehängt", subCategories.contains(catController.getCategory(new Path("root/category without children and credentials"))));
     	 
     	 Category categoryWithoutCredentials = new Category("categoryWithoutCredentials");
     	 Category categoryWithoutChildren = new Category("categoryWithoutChildren");
@@ -63,7 +62,7 @@ public class CategoryControllerTest
     	 subCategories = categoryWithoutCredentials.getSubCategories();
     	 
     	 assertTrue("Kategorie wurde nicht an Wurzel angehängt", 
-    			 			subCategories.contains(catController.getCategory("root/categoryWithoutCredentials/categoryWithoutChildren/childCategory")));
+    			 			subCategories.contains(catController.getCategory(new Path("root/categoryWithoutCredentials/categoryWithoutChildren/childCategory"))));
     	    	
     	
     	 

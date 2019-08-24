@@ -1,6 +1,5 @@
 package de.sopra.passwordmanager.controller;
 
-import de.sopra.passwordmanager.model.BasePassword;
 import de.sopra.passwordmanager.model.PasswordManager;
 import org.junit.Assert;
 import org.junit.Before;
