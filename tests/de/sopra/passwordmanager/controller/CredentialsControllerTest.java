@@ -2,10 +2,10 @@ package de.sopra.passwordmanager.controller;
 
 import de.sopra.passwordmanager.controller.PasswordManagerControllerDummy.MainView;
 import de.sopra.passwordmanager.model.Credentials;
+import de.sopra.passwordmanager.model.EncryptedString;
 import de.sopra.passwordmanager.model.PasswordManager;
 import de.sopra.passwordmanager.model.SecurityQuestion;
 import de.sopra.passwordmanager.util.CredentialsBuilder;
-import de.sopra.passwordmanager.util.EncryptedString;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

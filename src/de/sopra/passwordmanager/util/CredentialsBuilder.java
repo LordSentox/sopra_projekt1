@@ -3,13 +3,11 @@ package de.sopra.passwordmanager.util;
 import de.sopra.passwordmanager.controller.UtilityController;
 import de.sopra.passwordmanager.model.BasePassword;
 import de.sopra.passwordmanager.model.Credentials;
+import de.sopra.passwordmanager.model.EncryptedString;
 import de.sopra.passwordmanager.model.SecurityQuestion;
 
 import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Builder für {@link Credentials}. Attribute sind gleich denen von {@link Credentials}
@@ -53,6 +51,30 @@ public class CredentialsBuilder {
         this.userName = userName;
         this.password = password;
         this.website = website;
+    }
+
+    /**
+     * Erstellt einen {@link CredentialsBuilder} für {@link Credentials}, der alle Daten, der gegebenen Credentials enthält.
+     *
+
+     *
+     * @see #build(UtilityController)
+     */
+    public CredentialsBuilder(Credentials cred, UtilityController uc) {
+        this.name = cred.getName();
+        this.userName = cred.getUserName();
+        this.password = uc.decryptText(cred.getPassword());
+        this.website = cred.getWebsite();
+        this.changeReminderDays = cred.getChangeReminderDays();
+        this.created = cred.getCreatedAt();
+        this.lastChanged = cred.getLastChanged();
+        this.notes = cred.getNotes();
+        this.securityQuestions = new HashMap<>();
+        cred.getSecurityQuestions().forEach(securityQuestion -> {
+            String decryptedQuestion = uc.decryptText(securityQuestion.getQuestion());
+            String decryptedAnswer = uc.decryptText(securityQuestion.getAnswer());
+            securityQuestions.put(decryptedQuestion, decryptedAnswer);
+        });
     }
 
     /**
@@ -228,7 +250,7 @@ public class CredentialsBuilder {
         return lastChanged;
     }
 
-    public LocalDateTime getCreated() {
+    public LocalDateTime getCreatedAt() {
         return created;
     }
 
@@ -236,7 +258,6 @@ public class CredentialsBuilder {
         return notes;
     }
 
-    //TODO: uff das hier resolven
     public Map<String, String> getSecurityQuestions() {
         return Collections.unmodifiableMap(securityQuestions);
     }
@@ -250,5 +271,21 @@ public class CredentialsBuilder {
         CredentialsBuilderException(String msg) {
             super(msg);
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CredentialsBuilder that = (CredentialsBuilder) o;
+        return Objects.equals(name, that.name) &&
+                Objects.equals(userName, that.userName) &&
+                Objects.equals(password, that.password) &&
+                Objects.equals(website, that.website) &&
+                Objects.equals(changeReminderDays, that.changeReminderDays) &&
+                Objects.equals(lastChanged, that.lastChanged) &&
+                Objects.equals(created, that.created) &&
+                Objects.equals(notes, that.notes) &&
+                Objects.equals(securityQuestions, that.securityQuestions);
     }
 }

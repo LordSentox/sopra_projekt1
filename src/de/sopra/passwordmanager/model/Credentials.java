@@ -1,7 +1,5 @@
 package de.sopra.passwordmanager.model;
 
-import de.sopra.passwordmanager.util.EncryptedString;
-
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -95,10 +93,6 @@ public class Credentials {
         return password;
     }
 
-    public LocalDateTime getCreated() {
-        return created;
-    }
-
     public LocalDateTime getLastChanged() {
         return lastChanged;
     }
@@ -182,20 +176,5 @@ public class Credentials {
     @Override
     public int hashCode() {
         return Objects.hash(name, userName, website, notes, created, securityQuestions, lastChanged, changeReminderDays);
-    }
-
-    @Override
-    public String toString() {
-        return "Credentials{" +
-                "name='" + name + '\'' +
-                ", userName='" + userName + '\'' +
-                ", password=" + password.toString() +
-                ", website='" + website + '\'' +
-                ", changeReminderDays=" + changeReminderDays +
-                ", created=" + created +
-                ", lastChanged=" + lastChanged +
-                ", notes='" + notes + '\'' +
-                ", securityQuestions=" + securityQuestions +
-                '}';
     }
 }

@@ -1,4 +1,4 @@
-package de.sopra.passwordmanager.util;
+package de.sopra.passwordmanager.model;
 
 import java.util.Collection;
 import java.util.Objects;
@@ -35,7 +35,7 @@ public final class EncryptedString {
 
     @Override
     public int hashCode() {
-        return Objects.hash(encryptedContent);
+        return encryptedContent.hashCode();
     }
 
     @Override

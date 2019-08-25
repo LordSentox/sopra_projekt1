@@ -1,7 +1,5 @@
 package de.sopra.passwordmanager.model;
 
-import de.sopra.passwordmanager.util.EncryptedString;
-
 import java.util.Objects;
 
 /**

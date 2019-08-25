@@ -1,6 +1,6 @@
 package de.sopra.passwordmanager.controller;
 
-import de.sopra.passwordmanager.util.EncryptedString;
+import de.sopra.passwordmanager.model.EncryptedString;
 
 import java.io.File;
 
