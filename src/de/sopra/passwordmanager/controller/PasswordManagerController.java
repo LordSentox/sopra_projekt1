@@ -132,11 +132,13 @@ public class PasswordManagerController {
     }
 
     /**
-     * //TODO
+     * Ersetzt die alten {@link Credentials} mit den Neuen.
      *
-     * @param oldCredentials
-     * @param newCredentials
-     * @param newCategories
+     * @param oldCredentials Die zu ersetzenden {@link Credentials}
+     * @param newCredentials Die {@link Credentials}, die die alten ersetzen
+     * @param newCategories Die Kategorien, in die die neuen {@link Credentials} eingefügt werden sollen. Waren die
+     *                      oldCredentials davor in anderen Kategorien, werden sie aus den nicht angegebenen entfernt.
+     * @see Category
      */
     public void saveEntry(Credentials oldCredentials, CredentialsBuilder newCredentials, Collection<Category> newCategories) {
 //        categoryController.removeCredentialsFromCategories(oldCredentials);
