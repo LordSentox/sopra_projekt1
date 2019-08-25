@@ -22,7 +22,7 @@ public class PasswordManagerController {
     /**
      * Minimale Qualität, die ein Passwort benötigt um als sicher zu gelten
      */
-    public static final int MINUM_SAFE_QUALITY = 50;
+    public static final int MINIMUM_SAFE_QUALITY = 50;
 
     private PasswordManager passwordManager;
 
