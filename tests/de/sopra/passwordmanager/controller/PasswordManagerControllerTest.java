@@ -7,7 +7,9 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 public class PasswordManagerControllerTest {
     private PasswordManagerController passwordManagerController;
@@ -62,11 +64,25 @@ public class PasswordManagerControllerTest {
     }
 
     @Test
-    public void saveEntryTest() {
-        //TODO doc fehlt
+    public void checkQualityTest() {
+        CredentialsBuilder builder = new CredentialsBuilder("My Account", "Leonidas", "Sparta did nothing wrong", "this-is.sparta");
+        List<String> passwords = Arrays.asList("Stratzenbl1tz", "123", "", "Hello, there", "142aB5][9p5assw15ort!5xD", "aA53]@`");
+
+        for (String password : passwords) {
+            // TODO: Sollten hier feste Werte angegeben werden, statt einen Aufruf auf checkQuality zu tätigen?
+            int passwordQuality = this.passwordManagerController.getUtilityController().checkQuality(password);
+
+            builder.withPassword(password);
+            this.passwordManagerController.checkQuality(builder);
+
+            PasswordManagerControllerDummy.MainView mainView =
+                    (PasswordManagerControllerDummy.MainView) this.passwordManagerController.getMainWindowAUI();
+            Assert.assertEquals(passwordQuality, mainView.getPasswordQuality());
+        }
     }
 
     @Test
-    public void checkQualityTest() {
+    public void saveEntryTest() {
+        //TODO doc fehlt
     }
 }
