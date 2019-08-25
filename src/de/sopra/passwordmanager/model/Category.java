@@ -4,6 +4,8 @@ import de.sopra.passwordmanager.util.Path;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Enthält {@link Credentials} und Unterkategorien, die in die Kategorie einsortiert wurden. Es gibt eine rootCategory im
@@ -117,6 +119,22 @@ public class Category {
             }
         }
         return null;
+    }
+
+    /**
+     * Erstellt eine Map mit dieser und allen untergeordneten Kategorien.
+     * Die Kategorien sind gegenüber dem angegebenen parent Path mit ihrem absoluten Pfad als Key aus der Map zu erhalten.
+     * Wird diese Methode mit einem relativen parent Path aufgerufen, so werden auch alle Pfade in der Ergebnis Map zu relativen Pfaden.
+     *
+     * @return eine Map die von der aktuellen Kategorie ausgehend alle Kategorien und die dazugehörigen Pfade enthält
+     */
+    public Map<Path, Category> createPathMap(Path parent) {
+        HashMap<Path, Category> categoryHashMap = new HashMap<>();
+        Path childPath = parent.createChildPath(getName());
+        categoryHashMap.put(childPath, this);
+        for (Category sub : subCategories)
+            categoryHashMap.putAll(sub.createPathMap(childPath));
+        return categoryHashMap;
     }
 
 }

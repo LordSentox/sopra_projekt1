@@ -1,7 +1,9 @@
 package de.sopra.passwordmanager.util;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 /**
@@ -56,9 +58,9 @@ public class Path {
      */
     public Path(List<String> pathElements, int current) {
         //entfernt leere Elemente am Ende und Anfang des Paths
-        while (pathElements.get(0).isEmpty())
+        while (pathElements.get(0).isEmpty() && pathElements.size() > 0)
             pathElements = pathElements.subList(1, pathElements.size());
-        while (pathElements.get(pathElements.size() - 1).isEmpty())
+        while (pathElements.get(pathElements.size() - 1).isEmpty() && pathElements.size() > 0)
             pathElements = pathElements.subList(0, pathElements.size() - 2);
         this.pathElements = pathElements;
         navigate(current);
@@ -86,6 +88,15 @@ public class Path {
      */
     public String getName() {
         return pathElements.get(current);
+    }
+
+    /**
+     * Prüft ob der Pfad keine Elemente enthält
+     *
+     * @return <code>true</code> wenn der Pfad keine Elemente enthält, sonst <code>false</code>
+     */
+    public boolean isEmpty() {
+        return pathElements.isEmpty();
     }
 
     /**
@@ -144,6 +155,20 @@ public class Path {
     }
 
     /**
+     * Erstellt einen neuen Pfad, der den aktuellen Pfad unabhängig des Zeigers enthält
+     * und ein neues Element als Child anhängt. Der Zeiger des neuen Pfades zeigt auf das neue Child Element.
+     *
+     * @param newChild das neue Child Element
+     * @return einen neuen erweiterten Pfad
+     */
+    public Path createChildPath(String newChild) {
+        return new Path(new ArrayList<String>() {{
+            addAll(pathElements);
+            add(newChild);
+        }}, pathElements.size());
+    }
+
+    /**
      * Die Anzahl der Elemente im Pfad unabhängig des Zeigers auf das aktuelle Element
      *
      * @return die Anzahl der Elemente des Pfades
@@ -176,4 +201,17 @@ public class Path {
         return String.join("/", pathElements);
     }
 
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+        Path path = (Path) object;
+        return current == path.current &&
+                pathElements.equals(path.pathElements);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(pathElements, current);
+    }
 }
