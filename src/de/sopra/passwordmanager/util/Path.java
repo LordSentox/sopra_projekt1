@@ -1,9 +1,6 @@
 package de.sopra.passwordmanager.util;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.regex.Pattern;
 
 /**
@@ -25,6 +22,15 @@ public class Path {
      * Der aktuelle Zeiger auf ein Element im Path
      */
     private int current;
+
+    /**
+     * Erstellt einen leeren Pfad
+     *
+     * @see #isEmpty()
+     */
+    public Path() {
+        this(Collections.emptyList());
+    }
 
     /**
      * Generiert ein Path Objekt aus seiner String Repräsentation.
