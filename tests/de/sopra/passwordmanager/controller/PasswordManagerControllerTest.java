@@ -1,12 +1,15 @@
 package de.sopra.passwordmanager.controller;
 
+import de.sopra.passwordmanager.model.Category;
 import de.sopra.passwordmanager.model.Credentials;
 import de.sopra.passwordmanager.model.PasswordManager;
 import de.sopra.passwordmanager.util.CredentialsBuilder;
+import de.sopra.passwordmanager.util.Path;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -60,7 +63,45 @@ public class PasswordManagerControllerTest {
 
     @Test
     public void requestLoginTest() {
-        //TODO was soll passieren?
+        // Fülle den Passwortmanager mit ein paar Daten und exportiere diese
+        String masterPassword = "PasswörterSindSchwerZuMerkenL@wl";
+        this.passwordManager.setMasterPassword(masterPassword);
+        Credentials credentials = new CredentialsBuilder("Masterpasswort", "Ich", masterPassword, "MoePse-secure.de").build(uc);
+        this.passwordManager.getRootCategory().addCredentials(credentials);
+        this.passwordManager.getRootCategory().addSubCategory(new Category("null"));
+        File file = new File("requestLoginTestFile.xml");
+        this.uc.exportFile(file);
+
+        String newMasterPassword = "このパスワードをググったらリスに変わる";
+        this.passwordManager.setMasterPassword(newMasterPassword);
+        this.passwordManagerController.removeAll();
+
+        // Neue Credentials, da das Masterpasswort sich geändert hat.
+        credentials = new CredentialsBuilder("Masterpasswort", "Ich", masterPassword, "MoePse-secure.de").build(uc);
+
+        // TODO: Versuche mit dem falschen Passwort zu laden. Der Login muss richtig abgelehnt werden.
+        // Dies geht aber erst, wenn geklärt ist, wie genau festgestellt wird, wann ein Erststart erfolgt ist und damit
+        // der MasterPasswordViewController geöffnet ist und wann es sich um einen Import oder Normalstart handelt, in
+        // welchem Fall der LoginViewController zuständig ist.
+        this.passwordManagerController.requestLogin(newMasterPassword, file);
+
+        // TODO: Versuche mit dem richtigen Passwort zu laden. Der Login muss richtig angenommen werden und die Daten
+        // sollen geladen werden.
+        this.passwordManagerController.requestLogin(masterPassword, file);
+
+        // Wurden die Daten korrekt gelesen? Außerdem darf das MasterPasswort nicht verändert worden sein.
+        Assert.assertEquals(newMasterPassword, this.passwordManager.getMasterPassword());
+        Collection<Credentials> rootCredentials = this.passwordManagerController.getCredentialsController().getCredentialsByCategoryPath(new Path(Path.ROOT_CATEGORY));
+        Assert.assertEquals(1, rootCredentials.size());
+        for (Credentials readCredentials: rootCredentials) {
+            Assert.assertEquals(credentials, readCredentials);
+        }
+
+        Collection<Category> categories = this.passwordManager.getRootCategory().getSubCategories();
+        Assert.assertEquals(1, categories.size());
+        for (Category category: categories) {
+            Assert.assertEquals(new Category("null"), category);
+        }
     }
 
     @Test
@@ -84,5 +125,10 @@ public class PasswordManagerControllerTest {
     @Test
     public void saveEntryTest() {
         //TODO doc fehlt
+    }
+
+    @Test
+    public void getLoginViewAUITestCovOnly() {
+        this.passwordManagerController.getLoginViewAUI();
     }
 }
