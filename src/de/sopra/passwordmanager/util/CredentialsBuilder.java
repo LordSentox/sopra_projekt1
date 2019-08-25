@@ -8,7 +8,8 @@ import de.sopra.passwordmanager.model.SecurityQuestion;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Builder für {@link Credentials}. Attribute sind gleich denen von {@link Credentials}
@@ -26,7 +27,7 @@ public class CredentialsBuilder {
     private LocalDateTime lastChanged = null;
     private LocalDateTime created = null;
     private String notes = "";
-    private Collection<SecurityQuestion> securityQuestions = new HashSet<>();
+    private Map<String, String> securityQuestions = new HashMap<>();
 
     /**
      * Erstellt einen {@link CredentialsBuilder} für {@link Credentials}, der keine Daten enthält, eingeschlossen der Daten,
@@ -84,7 +85,10 @@ public class CredentialsBuilder {
         credentials.setWebsite(website);
         credentials.setChangeReminderDays(changeReminderDays);
         credentials.setLastChanged(lastChanged);
-        credentials.addSecurityQuestions(securityQuestions);
+        securityQuestions.forEach((question, answer) -> credentials.addSecurityQuestion(
+                    new SecurityQuestion(utilityController.encryptText(question), utilityController.encryptText(answer))
+            )
+        );
         return credentials;
     }
 
@@ -180,23 +184,12 @@ public class CredentialsBuilder {
     /**
      * Fügt den {@link Credentials} eine {@link SecurityQuestion} hinzu
      *
-     * @param securityQuestion Die hinzuzufügende Sicherheitsfrage
-     * @return Den Builder selbst
-     */
-    public CredentialsBuilder withSecurityQuestion(SecurityQuestion securityQuestion) {
-        this.securityQuestions.add(securityQuestion);
-        return this;
-    }
-
-    /**
-     * Fügt den {@link Credentials} eine {@link SecurityQuestion} hinzu
-     *
      * @param question Die Frage der hinzuzufügenden Sicherheitsfrage
      * @param answer   Die Antwort der hinzuzufügenden Sicherheitsfrage
      * @return Den Builder selbst
      */
     public CredentialsBuilder withSecurityQuestion(String question, String answer) {
-        this.securityQuestions.add(new SecurityQuestion(question, answer));
+        this.securityQuestions.put(question, answer);
         return this;
     }
 
@@ -206,8 +199,8 @@ public class CredentialsBuilder {
      * @param questions Eine {@link Collection} aller hinzuzufügenden Sicherheitsfragen
      * @return Den Builder selbst
      */
-    public CredentialsBuilder withSecurityQuestions(Collection<SecurityQuestion> questions) {
-        securityQuestions.addAll(questions);
+    public CredentialsBuilder withSecurityQuestions(Map<String, String> questions) {
+        securityQuestions.putAll(questions);
         return this;
     }
 
@@ -243,8 +236,9 @@ public class CredentialsBuilder {
         return notes;
     }
 
-    public Collection<SecurityQuestion> getSecurityQuestions() {
-        return Collections.unmodifiableCollection(securityQuestions);
+    //TODO: uff das hier resolven
+    public Map<String, String> getSecurityQuestions() {
+        return Collections.unmodifiableMap(securityQuestions);
     }
 
     /**

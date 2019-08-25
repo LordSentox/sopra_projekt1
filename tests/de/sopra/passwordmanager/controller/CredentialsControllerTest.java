@@ -224,26 +224,8 @@ public class CredentialsControllerTest {
                 .withWebsite("ist.ein")
                 .withPassword("test");
 
-        cc.saveCredentials(null, credBuilder);
-
-        SecurityQuestion sq = new SecurityQuestion("Warum?", "Da so");
-        cc.addSecurityQuestion(sq, credBuilder);
         cc.addSecurityQuestion("Was?", "Das", credBuilder);
-
-        Assert.assertTrue("Adding SecurityQuestion object failed", credBuilder.getSecurityQuestions().contains(sq));
-        Assert.assertTrue("Adding SecurityQuestion with question and answer failed", credBuilder.getSecurityQuestions().contains(new SecurityQuestion("Was?", "Das")));
-    }
-
-    @Test(expected = NullPointerException.class)
-    public void addSecurityQuestionTestSecurityQuestionNull() {
-        CredentialsBuilder credBuilder = new CredentialsBuilder()
-                .withName("Hello There")
-                .withUserName("Dies")
-                .withWebsite("ist.ein")
-                .withPassword("test");
-
-        cc.saveCredentials(null, credBuilder);
-        cc.addSecurityQuestion(null, credBuilder);
+        Assert.assertEquals("Adding SecurityQuestion with question and answer failed", "Das", credBuilder.getSecurityQuestions().getOrDefault("Was?", null));
     }
 
     @Test(expected = NullPointerException.class)
@@ -254,7 +236,6 @@ public class CredentialsControllerTest {
                 .withWebsite("ist.ein")
                 .withPassword("test");
 
-        cc.saveCredentials(null, credBuilder);
         cc.addSecurityQuestion(null, "Das", credBuilder);
     }
 
@@ -266,7 +247,6 @@ public class CredentialsControllerTest {
                 .withWebsite("ist.ein")
                 .withPassword("test");
 
-        cc.saveCredentials(null, credBuilder);
         cc.addSecurityQuestion("Was", null, credBuilder);
     }
 
@@ -279,56 +259,49 @@ public class CredentialsControllerTest {
     //region Remove Security Questions
     @Test
     public void removeSecurityQuestionTest() {
-        SecurityQuestion sq = new SecurityQuestion("Was", "Das");
-
         CredentialsBuilder credBuilder = new CredentialsBuilder()
                 .withName("Hello There")
                 .withUserName("Dies")
                 .withWebsite("ist.ein")
                 .withPassword("test")
-                .withSecurityQuestion(sq);
+                .withSecurityQuestion("Was", "Das");
 
-        cc.saveCredentials(null, credBuilder);
-        Assert.assertTrue("Credential does not contain Security Question", credBuilder.getSecurityQuestions().contains(sq));
-        cc.removeSecurityQuestion(sq, credBuilder);
+        Assert.assertEquals("Credential does not contain Security Question", "Das", credBuilder.getSecurityQuestions().getOrDefault("Was", null));
+        cc.removeSecurityQuestion("Was", "Das", credBuilder);
         Assert.assertTrue("Removing SecurityQuestion failed", credBuilder.getSecurityQuestions().isEmpty());
     }
 
     @Test
     public void removeSecurityQuestionTestNotExist() {
-        SecurityQuestion sq1 = new SecurityQuestion("Was", "Das");
-        SecurityQuestion sq2 = new SecurityQuestion("Warum", "Darum");
+        SecurityQuestion sq1 = securityQuestionFromStrings("Was", "Das");
+        SecurityQuestion sq2 = securityQuestionFromStrings("Warum", "Darum");
 
         CredentialsBuilder credBuilder = new CredentialsBuilder()
                 .withName("Hello There")
                 .withUserName("Dies")
                 .withWebsite("ist.ein")
                 .withPassword("test")
-                .withSecurityQuestion(sq1);
+                .withSecurityQuestion("Was", "Das");
 
-        cc.saveCredentials(null, credBuilder);
-        Assert.assertTrue("Credential does not contain Security Question", credBuilder.getSecurityQuestions().contains(sq1));
-        cc.removeSecurityQuestion(sq2, credBuilder);
+        Assert.assertEquals("Credential does not contain Security Question", "Das", credBuilder.getSecurityQuestions().getOrDefault("Was", null));
+        cc.removeSecurityQuestion("Warum", "Darum", credBuilder);
         Assert.assertEquals("A credential was added to/removed from the list", 1, credBuilder.getSecurityQuestions().size());
-        Assert.assertTrue("The wrong Security Question was removed", credBuilder.getSecurityQuestions().contains(sq1));
+        Assert.assertEquals("The wrong Security Question was removed", "Das", credBuilder.getSecurityQuestions().getOrDefault("Was", null));
     }
 
     @Test
-    public void removeSecurityQuestionTestNull() {
-        SecurityQuestion sq1 = new SecurityQuestion("Was", "Das");
-
+    public void removeSecurityQuestionTestQuestionNull() {
         CredentialsBuilder credBuilder = new CredentialsBuilder()
                 .withName("Hello There")
                 .withUserName("Dies")
                 .withWebsite("ist.ein")
                 .withPassword("test")
-                .withSecurityQuestion(sq1);
+                .withSecurityQuestion("Was", "Das");
 
-        cc.saveCredentials(null, credBuilder);
-        Assert.assertTrue("Credential does not contain Security Question", credBuilder.getSecurityQuestions().contains(sq1));
-        cc.removeSecurityQuestion(null, credBuilder);
+        Assert.assertEquals("Credential does not contain Security Question", "Das", credBuilder.getSecurityQuestions().getOrDefault("Was", null));
+        cc.removeSecurityQuestion(null,"Dies", credBuilder);
         Assert.assertEquals("A credential was added to/removed from the list", 1, credBuilder.getSecurityQuestions().size());
-        Assert.assertTrue("A Security Question was removed", credBuilder.getSecurityQuestions().contains(sq1));
+        Assert.assertEquals("A Security Question was removed", "Das", credBuilder.getSecurityQuestions().getOrDefault("Was", null));
     }
     //endregion
 
@@ -393,5 +366,9 @@ public class CredentialsControllerTest {
             e.printStackTrace();
         }
         return "";
+    }
+
+    private SecurityQuestion securityQuestionFromStrings(String question, String answer) {
+        return new SecurityQuestion(uc.encryptText(question), uc.encryptText(answer));
     }
 }

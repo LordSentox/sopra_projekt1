@@ -63,28 +63,17 @@ public class CredentialsController {
     }
 
     /**
-     * Fügt dem momentan im {@link de.sopra.passwordmanager.view.MainWindowViewController} angezeigten Entry eine
-     * Sicherheitsfrage hinzu
+     * Entfernt das gegebene Paar von Frage und Antwort von dem gegebenen {@link CredentialsBuilder}
+     * Ist Frage oder Antwort null, so geschieht nichts
      *
-     * @param securityQuestion Die {@link SecurityQuestion}. Darf nicht <code>null</code> sein
-     * @param credentials      Das Anmeldedatenobjekt, dem die {@link SecurityQuestion} hinzugefügt werden soll. Darf nicht <code>null</code> sein
-     * @throws NullPointerException falls {@code securityQuestion} oder {@code credentials} <code>null</code> sind
-     * @see SecurityQuestion
-     * @see Credentials
-     */
-    public void addSecurityQuestion(SecurityQuestion securityQuestion, CredentialsBuilder credentials) throws NullPointerException {
-
-    }
-
-    /**
-     * Entfernt die gegebene {@link SecurityQuestion} von den gegebenen {@link CredentialsBuilder}
-     *
-     * @param securityQuestion Die {@link SecurityQuestion}, die von den gegebenen {@link Credentials} entfernt werden sollen. Falls <code>null</code>, geschieht nichts
+     * @param question Die Frage der {@link SecurityQuestion}, die von den gegebenen {@link Credentials} entfernt werden sollen.
+     * @param answer Die Antwort der {@link SecurityQuestion}, die von den gegebenen {@link Credentials} entfernt werden sollen.
      * @param credentials      Die {@link CredentialsBuilder}, von der die {@link SecurityQuestion} entfernt werden soll. Darf nicht <code>null</code> sein
+     * @throws NullPointerException Falls {@code #credentials} <code>null</code> ist
      * @see SecurityQuestion
      * @see CredentialsBuilder
      */
-    public void removeSecurityQuestion(SecurityQuestion securityQuestion, CredentialsBuilder credentials) {
+    public void removeSecurityQuestion(String question, String answer, CredentialsBuilder credentials) throws NullPointerException{
 
     }
 

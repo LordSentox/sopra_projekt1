@@ -10,8 +10,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
 
 public class CredentialsBuilderTest {
 
@@ -35,12 +35,13 @@ public class CredentialsBuilderTest {
         LocalDateTime created = LocalDateTime.now();
         LocalDateTime lastChanged = LocalDateTime.now();
         String notes = "Dies ist ein Debug Eintrag";
-        SecurityQuestion sq1 = new SecurityQuestion("Warum?", "Da so");
+        String question1 = "Warum?";
+        String answer1 = "Da so";
         String question2 = "Was machen Sachen?";
         String answer2 = "Dinge";
-        SecurityQuestion sq3 = new SecurityQuestion("Was ist die Antwort auf alles?", "42");
-        Set<SecurityQuestion> questions = new HashSet<>();
-        questions.add(sq3);
+        SecurityQuestion sq2 = securityQuestionFromStrings(question2, answer2);
+        Map<String, String> questions = new HashMap<>();
+        questions.put(question2, answer2);
 
         //Erstelle das erste Credentials mithilfe des Builders
         Credentials cred1 = new CredentialsBuilder()
@@ -52,8 +53,7 @@ public class CredentialsBuilderTest {
                 .withCreated(created)
                 .withLastChanged(lastChanged)
                 .withNotes(notes)
-                .withSecurityQuestion(sq1)
-                .withSecurityQuestion(question2, answer2)
+                .withSecurityQuestion(question1, answer1)
                 .withSecurityQuestions(questions)
                 .build(uc);
 
@@ -63,9 +63,8 @@ public class CredentialsBuilderTest {
         cred2.setChangeReminderDays(changeReminder);
         cred2.setLastChanged(lastChanged);
         cred2.setNotes(notes);
-        cred2.addSecurityQuestion(sq1);
-        cred2.addSecurityQuestion(question2, answer2);
-        cred2.addSecurityQuestion(sq3);
+        cred2.addSecurityQuestion(uc.encryptText(question1), uc.encryptText(question2));
+        cred2.addSecurityQuestion(sq2);
 
         Assert.assertEquals("Credentials not equal", cred1, cred2);
     }
@@ -166,5 +165,9 @@ public class CredentialsBuilderTest {
                 .withWebsite(website)
                 .withChangeReminderDays(changeReminder)
                 .build(uc);
+    }
+
+    private SecurityQuestion securityQuestionFromStrings(String question, String answer) {
+        return new SecurityQuestion(uc.encryptText(question), uc.encryptText(answer));
     }
 }

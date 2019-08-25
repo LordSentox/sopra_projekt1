@@ -1,5 +1,7 @@
 package de.sopra.passwordmanager.model;
 
+import de.sopra.passwordmanager.util.EncryptedString;
+
 import java.util.Objects;
 
 /**
@@ -10,23 +12,23 @@ public class SecurityQuestion {
     /**
      * Die Frage, welche der Nutzer beantworten muss
      */
-    private String question;
+    private EncryptedString question;
 
     /**
      * Die Antwort auf die Frage.
      */
-    private String answer;
+    private EncryptedString answer;
 
-    public SecurityQuestion(String question, String answer) {
+    public SecurityQuestion(EncryptedString question, EncryptedString answer) {
         this.question = question;
         this.answer = answer;
     }
 
-    public String getQuestion() {
+    public EncryptedString getQuestion() {
         return question;
     }
 
-    public String getAnswer() {
+    public EncryptedString getAnswer() {
         return answer;
     }
 

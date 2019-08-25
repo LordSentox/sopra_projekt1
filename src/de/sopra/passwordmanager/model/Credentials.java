@@ -148,7 +148,7 @@ public class Credentials {
         securityQuestions.add(securityQuestion);
     }
 
-    public void addSecurityQuestion(String question, String answer) {
+    public void addSecurityQuestion(EncryptedString question, EncryptedString answer) {
         securityQuestions.add(new SecurityQuestion(question, answer));
     }
 
