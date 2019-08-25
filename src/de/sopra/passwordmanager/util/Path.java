@@ -58,9 +58,9 @@ public class Path {
      */
     public Path(List<String> pathElements, int current) {
         //entfernt leere Elemente am Ende und Anfang des Paths
-        while (pathElements.get(0).isEmpty() && pathElements.size() > 0)
+        while (pathElements.size() > 0 && pathElements.get(0).isEmpty())
             pathElements = pathElements.subList(1, pathElements.size());
-        while (pathElements.get(pathElements.size() - 1).isEmpty() && pathElements.size() > 0)
+        while (pathElements.size() > 0 && pathElements.get(pathElements.size() - 1).isEmpty())
             pathElements = pathElements.subList(0, pathElements.size() - 2);
         this.pathElements = pathElements;
         navigate(current);

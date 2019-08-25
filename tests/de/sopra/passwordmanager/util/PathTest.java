@@ -1,6 +1,9 @@
 package de.sopra.passwordmanager.util;
 
+import org.junit.Assert;
 import org.junit.Test;
+
+import java.util.Collections;
 
 import static org.junit.Assert.*;
 
@@ -82,7 +85,7 @@ public class PathTest {
     }
 
     @Test
-    public void navigate() {
+    public void navigationTest() {
         //auf verschiedene Teile des Pfades navigieren und testen
         Path path = getPath();
         assertEquals("start navigation failed", path.getName(), "deep");
@@ -94,6 +97,21 @@ public class PathTest {
         assertEquals("over end navigation failed", path.getName(), "deep");
         path.navigate(-1);
         assertEquals("before root navigation failed", path.getName(), "root");
+    }
+
+    @Test
+    public void createChildPathTest() {
+        Path path = getPath();
+        Path childPath = path.createChildPath("child");
+        Assert.assertEquals("added child is missing", "child", childPath.getName());
+        Assert.assertEquals("path length varies", path.length() + 1, childPath.length());
+        Assert.assertEquals("method does not act as a counter", path, childPath.getParent().absolutePath());
+    }
+
+    @Test
+    public void emptyPathTest() {
+        Path path = new Path(Collections.emptyList());
+        Assert.assertTrue("path should be empty", path.isEmpty());
     }
 
 }
