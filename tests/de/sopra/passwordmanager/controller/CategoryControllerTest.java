@@ -5,10 +5,14 @@ import de.sopra.passwordmanager.model.Category;
 import de.sopra.passwordmanager.model.Credentials;
 import de.sopra.passwordmanager.util.CredentialsBuilder;
 import de.sopra.passwordmanager.util.Path;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -221,17 +225,124 @@ public class CategoryControllerTest {
     //---------------------------------
     @Test
     public void getCategory() {
+        // Erstellen eines Testbaumes
+        this.root = pmc.getPasswordManager().getRootCategory();
+        Category regret = new Category("regret");
+        Category life = new Category("is life");
+        regret.addSubCategory(life);
+        root.addSubCategory(new Category("re"));
+        root.addSubCategory(new Category("gret"));
+        root.addSubCategory(regret);
+
+        // Können hinzugefügte Kategorien bekommen werden?
+        Assert.assertEquals(root, this.catController.getCategory(new Path(Path.ROOT_CATEGORY)));
+        Assert.assertEquals(regret, this.catController.getCategory(new Path(Path.ROOT_CATEGORY + "/regret")));
+        Assert.assertEquals(life, this.catController.getCategory(new Path(Path.ROOT_CATEGORY + "/regret/is life")));
+
+        // Nicht existierende Kategorien bzw. Pfade und null sollen null zurückgeben
+        Assert.assertNull(this.catController.getCategory(new Path("")));
+        Assert.assertNull(this.catController.getCategory(null));
+        Assert.assertNull(this.catController.getCategory(new Path(Path.ROOT_CATEGORY + "/is life/regret")));
+        Assert.assertNull(this.catController.getCategory(new Path("regret")));
     }
 
     @Test
     public void findCategory() {
+        // Erstellen eines Testbaumes
+        this.root = pmc.getPasswordManager().getRootCategory();
+        Category hello = new Category("hello");
+        Category there = new Category("there");
+        Category hello_hello = new Category("hello");
+
+        this.root.addSubCategory(there);
+        this.root.addSubCategory(hello);
+        hello.addSubCategory(hello_hello);
+
+        // Finde eine oder mehrere Kategorien wie angegeben
+        Assert.assertEquals(Collections.singletonList(there), catController.findCategory("there"));
+        List<Category> hellos = this.catController.findCategory("hello");
+        Assert.assertEquals(2, hellos.size());
+        Assert.assertTrue(hellos.contains(hello));
+        Assert.assertTrue(hellos.contains(hello_hello));
+        // Wird auch die root-Kategorie gefunden?
+        Assert.assertEquals(Collections.singletonList(this.root), this.catController.findCategory(Path.ROOT_CATEGORY));
+
+        // Null oder falsche Kategorie soll nicht gefunden werden
+        Assert.assertEquals(0, this.catController.findCategory(null).size());
+        Assert.assertEquals(0, this.catController.findCategory("").size());
+        Assert.assertEquals(0, this.catController.findCategory("変な名").size());
+        Assert.assertEquals(0, this.catController.findCategory(Path.ROOT_CATEGORY + "/hello").size());
     }
 
     @Test
     public void addCredentialsToCategories() {
+        // Erstellen eines Testbaumes
+        this.root = pmc.getPasswordManager().getRootCategory();
+        Category one = new Category("one");
+        Category two = new Category("two");
+        Category three = new Category("three");
+
+        this.root.addSubCategory(one);
+        one.addSubCategory(two);
+        this.root.addSubCategory(three);
+
+        // Die hinzuzufügenden Credentials-Objekte
+        Credentials credentials = new CredentialsBuilder("name", "legend27", "IAMGOD", "xd.net").build(uc);
+        Credentials credentials2 = new CredentialsBuilder("Geht niemand an was", "Hugo", "Hugo", "dx.xd").build(uc);
+
+        // Teste das hinzufügen zu einer und zu mehreren Kategorien
+        this.catController.addCredentialsToCategories(credentials, Collections.singletonList(one));
+        Assert.assertFalse(this.root.getCredentials().contains(credentials));
+        Assert.assertTrue(one.getCredentials().contains(credentials));
+        Assert.assertFalse(two.getCredentials().contains(credentials));
+        Assert.assertFalse(three.getCredentials().contains(credentials));
+
+        this.catController.addCredentialsToCategories(credentials2, Arrays.asList(two, three));
+        Assert.assertFalse(this.root.getCredentials().contains(credentials2));
+        Assert.assertTrue(one.getCredentials().contains(credentials));
+        Assert.assertFalse(one.getCredentials().contains(credentials2));
+        Assert.assertTrue(two.getCredentials().contains(credentials2));
+        Assert.assertTrue(three.getCredentials().contains(credentials2));
     }
 
     @Test
     public void removeCredentialsFromCategories() {
+        // Erstellen eines Testbaumes
+        this.root = pmc.getPasswordManager().getRootCategory();
+        Category one = new Category("one");
+        Category two = new Category("two");
+        Category three = new Category("three");
+
+        this.root.addSubCategory(one);
+        one.addSubCategory(two);
+        this.root.addSubCategory(three);
+
+        // Die zu löschenden Credentials
+        Credentials credentials = new CredentialsBuilder("name", "legend27", "IAMGOD", "xd.net").build(uc);
+        Credentials credentials2 = new CredentialsBuilder("Geht niemand an was", "Hugo", "Hugo", "dx.xd").build(uc);
+
+        one.addCredentials(credentials);
+        one.addCredentials(credentials2);
+        two.addCredentials(credentials2);
+
+        catController.removeCredentialsFromCategories(credentials);
+
+        // Stelle sicher, dass credentials2 noch im Baum vorhanden ist, aber credentials nicht mehr
+        Assert.assertFalse(one.getCredentials().contains(credentials));
+        Assert.assertTrue(one.getCredentials().contains(credentials2));
+        Assert.assertFalse(two.getCredentials().contains(credentials));
+        Assert.assertTrue(two.getCredentials().contains(credentials2));
+        Assert.assertFalse(three.getCredentials().contains(credentials));
+        Assert.assertFalse(three.getCredentials().contains(credentials2));
+
+        catController.removeCredentialsFromCategories(credentials2);
+
+        // Keine Credentials dürfen mehr im Baum sein
+        Assert.assertFalse(one.getCredentials().contains(credentials));
+        Assert.assertFalse(one.getCredentials().contains(credentials2));
+        Assert.assertFalse(two.getCredentials().contains(credentials));
+        Assert.assertFalse(two.getCredentials().contains(credentials2));
+        Assert.assertFalse(three.getCredentials().contains(credentials));
+        Assert.assertFalse(three.getCredentials().contains(credentials2));
     }
 }
