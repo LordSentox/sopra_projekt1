@@ -57,13 +57,16 @@ public class PasswordManagerControllerTest {
     }
 
     @Test
-    public void testRequestLogin() {
+    public void requestLoginTest() {
         //TODO was soll passieren?
     }
 
     @Test
-    public void testSaveEntry() {
+    public void saveEntryTest() {
         //TODO doc fehlt
     }
 
+    @Test
+    public void checkQualityTest() {
+    }
 }
