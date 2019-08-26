@@ -26,10 +26,10 @@ public final class EncryptedString {
      * Unsafe, aber nötig, damit etwa {@link Collection#contains(Object)} funktioniert
      */
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        EncryptedString that = (EncryptedString) o;
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+        EncryptedString that = (EncryptedString) object;
         return Objects.equals(encryptedContent, that.encryptedContent);
     }
 
