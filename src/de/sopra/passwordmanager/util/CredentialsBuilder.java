@@ -1,19 +1,18 @@
 package de.sopra.passwordmanager.util;
 
 import de.sopra.passwordmanager.controller.UtilityController;
-import de.sopra.passwordmanager.model.BasePassword;
 import de.sopra.passwordmanager.model.Credentials;
 import de.sopra.passwordmanager.model.EncryptedString;
 import de.sopra.passwordmanager.model.SecurityQuestion;
 
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Builder für {@link Credentials}. Attribute sind gleich denen von {@link Credentials}
  *
  * @see Credentials
- * @see BasePassword
  */
 public class CredentialsBuilder {
 
@@ -226,6 +225,11 @@ public class CredentialsBuilder {
         return this;
     }
 
+    public CredentialsBuilder withoutSecurityQuestion(String question, String answer) {
+        securityQuestions.remove(question, answer);
+        return this;
+    }
+
     public String getName() {
         return name;
     }
@@ -263,14 +267,26 @@ public class CredentialsBuilder {
     }
 
     /**
-     * Eine Exception, die bei einem Fehler im Buildprozess des {@link CredentialsBuilder} geworfen wird
-     *
-     * @see #build(UtilityController)
+     * Kopiert die Daten dieses {@link CredentialsBuilder} in das gegebene Credentials objekt. Die daten werden überschrieben
+     * @param uc Der zum verschlüsseln benötigte {@link UtilityController}
      */
-    public static class CredentialsBuilderException extends RuntimeException {
-        CredentialsBuilderException(String msg) {
-            super(msg);
-        }
+    public void copyTo(Credentials cred, UtilityController uc) {
+        cred.setName(name);
+        cred.setUserName(userName);
+        cred.setPassword(uc.encryptText(password));
+        cred.setWebsite(website);
+        cred.setLastChanged(lastChanged);
+        cred.setNotes(notes);
+        cred.setChangeReminderDays(changeReminderDays);
+        cred.clearSecurityQuesions();
+        cred.addSecurityQuestions(
+                securityQuestions.entrySet().stream()
+                        .map(seqQuestion -> new SecurityQuestion(
+                                uc.encryptText(seqQuestion.getKey()),
+                                uc.encryptText(seqQuestion.getValue())
+                        ))
+                        .collect(Collectors.toSet())
+        );
     }
 
     @Override
@@ -287,5 +303,16 @@ public class CredentialsBuilder {
                 Objects.equals(created, that.created) &&
                 Objects.equals(notes, that.notes) &&
                 Objects.equals(securityQuestions, that.securityQuestions);
+    }
+
+    /**
+     * Eine Exception, die bei einem Fehler im Buildprozess des {@link CredentialsBuilder} geworfen wird
+     *
+     * @see #build(UtilityController)
+     */
+    public static class CredentialsBuilderException extends RuntimeException {
+        CredentialsBuilderException(String msg) {
+            super(msg);
+        }
     }
 }

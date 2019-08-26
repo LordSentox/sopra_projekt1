@@ -4,6 +4,7 @@ import de.sopra.passwordmanager.controller.PasswordManagerControllerDummy.MainVi
 import de.sopra.passwordmanager.model.Category;
 import de.sopra.passwordmanager.model.Credentials;
 import de.sopra.passwordmanager.model.PasswordManager;
+import de.sopra.passwordmanager.model.SecurityQuestion;
 import de.sopra.passwordmanager.util.CredentialsBuilder;
 import de.sopra.passwordmanager.util.Path;
 import org.junit.Assert;
@@ -54,7 +55,8 @@ public class CredentialsControllerTreeTest {
         rootBeer.addSubCategory(beerFoo);
 
         // Credentials zum Baum hinzufügen
-        this.obar = new CredentialsBuilder("obar", "Hodor", "hoDor", "schmo.de").build(uc);
+        this.obar = new CredentialsBuilder("obar", "Hodor", "hoDor", "schmo.de")
+                .withoutSecurityQuestion("Hey?", "Ja").build(uc);
         this.hbar = new CredentialsBuilder("hbar", "Hodor", "hoDor", "hodortmund.de").build(uc);
         this.fbar = new CredentialsBuilder("fbar", "Hodor", "hoDor", "zwergenfreun.de").build(uc);
 
@@ -64,6 +66,7 @@ public class CredentialsControllerTreeTest {
         beerFoo.addCredentials(fbar);
     }
 
+    //region Filter
     @Test
     public void filterCredentialsTestNoFilter() {
         cc.filterCredentials(null, null);
@@ -170,6 +173,7 @@ public class CredentialsControllerTreeTest {
         Assert.assertFalse("credentials list contains fbar", list3.contains(fbar));
         Assert.assertEquals("credentials list contains elements after filtering for category " +  Path.ROOT_CATEGORY + "/beb, and pattern 'f' (/beb does not exist)", 0, list3.size());
     }
+    //endregion
 
     @Test
     public void getCredentialsByCategoryPathTest() {
@@ -203,7 +207,15 @@ public class CredentialsControllerTreeTest {
 
     @Test
     public void reencryptAllTest() {
-        //TODO: Test for reencryptAll
-        Assert.fail("Not yet implemented");
+        String masterPassword = pm.getMasterPassword();
+
+        cc.reencryptAll(masterPassword, "Hallo");
+        pm.setMasterPassword("Hallo");
+        Category rootBeer = pmc.getPasswordManager().getRootCategory().getCategoryByPath(Path.ROOT_CATEGORY_PATH.createChildPath("beer"));
+        Credentials obar = rootBeer.getCredentials().stream().findFirst().get();
+        SecurityQuestion question = obar.getSecurityQuestions().stream().findFirst().get();
+        Assert.assertEquals("reencrypting password failed", "hoDor", uc.decryptText(obar.getPassword()));
+        Assert.assertEquals("reencrypting security question failed", "Hey?", uc.decryptText(question.getQuestion()));
+        Assert.assertEquals("reencrypting security question failed", "Hey?", uc.decryptText(question.getAnswer()));
     }
 }

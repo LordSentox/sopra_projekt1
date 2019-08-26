@@ -13,12 +13,14 @@ public class Main extends Application{
 		
 	@Override
 	public void start(Stage primaryStage) {
+		
 		try {
 			/* Hauptfenster */
 			AnchorPane mainPane = new AnchorPane();
 			FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("../view/Hauptfenster.fxml"));
 			mainPane = fxmlLoader.load();
 			MainWindowViewController mainWindowViewController = (MainWindowViewController) fxmlLoader.getController();
+			mainWindowViewController.init();
 			mainWindowViewController.setPasswordManagerController(new PasswordManagerController());
 			
 			Stage mainStage = new Stage();

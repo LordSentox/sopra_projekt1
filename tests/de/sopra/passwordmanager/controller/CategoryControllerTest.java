@@ -217,7 +217,7 @@ public class CategoryControllerTest {
     }
 
     //---------------------------------
-    @Test
+    @Test(expected = NullPointerException.class)
     public void getCategory() {
         // Erstellen eines Testbaumes
         this.root = pmc.getPasswordManager().getRootCategory();
@@ -234,8 +234,8 @@ public class CategoryControllerTest {
         Assert.assertEquals(life, this.catController.getCategory(new Path(Path.ROOT_CATEGORY + "/regret/is life")));
 
         // Nicht existierende Kategorien bzw. Pfade und null sollen null zurückgeben
-        Assert.assertNull(this.catController.getCategory(new Path("")));
-        Assert.assertNull(this.catController.getCategory(null));
+        Assert.assertEquals(root, this.catController.getCategory(new Path("")));
+        Assert.assertEquals(root, this.catController.getCategory(null));
         Assert.assertNull(this.catController.getCategory(new Path(Path.ROOT_CATEGORY + "/is life/regret")));
         Assert.assertNull(this.catController.getCategory(new Path("regret")));
     }
@@ -297,6 +297,19 @@ public class CategoryControllerTest {
         Assert.assertFalse(one.getCredentials().contains(credentials2));
         Assert.assertTrue(two.getCredentials().contains(credentials2));
         Assert.assertTrue(three.getCredentials().contains(credentials2));
+    }
+
+    @Test
+    public void getPathForCategoryTest() {
+        this.root = pmc.getPasswordManager().getRootCategory();
+        Category one = new Category("one");
+        Category two = new Category("two");
+        Category three = new Category("three");
+
+        this.root.addSubCategory(one);
+        one.addSubCategory(two);
+        two.addSubCategory(three);
+        assertEquals(root.getCategoryByPath(catController.getPathForCategory(three)), three);
     }
 
     @Test

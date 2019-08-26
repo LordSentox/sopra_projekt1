@@ -1,15 +1,23 @@
 package de.sopra.passwordmanager.controller;
 
-import de.sopra.passwordmanager.model.Category;
-import de.sopra.passwordmanager.model.Credentials;
-import de.sopra.passwordmanager.model.PasswordManager;
-import de.sopra.passwordmanager.model.SecurityQuestion;
+import aes.AES;
+import de.sopra.passwordmanager.model.*;
 import de.sopra.passwordmanager.util.CredentialsBuilder;
 import de.sopra.passwordmanager.util.Path;
+import de.sopra.passwordmanager.util.Validate;
 import de.sopra.passwordmanager.view.MainWindowAUI;
+import exceptions.DecryptionException;
+import exceptions.EncryptionException;
 
-import java.util.Collection;
+import java.awt.*;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.StringSelection;
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.io.IOException;
 import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author Etienne
@@ -28,13 +36,35 @@ public class CredentialsController {
      * Überschreibt alte Anmeldedaten mit Neuen im {@link PasswordManager}
      * Falls {@code oldCredentials} <code>null</code> ist, wird stattdessen ein neuer Eintrag mit den Daten von {@code newCredentials} erstellt
      *
-     * @param oldCredentials Die zu überschreibenden Anmeldedaten. Falls <code>null</code>, wird ein neuer Eintrag erstellt
+     * @param oldCredentials Die zu überschreibenden Anmeldedaten. Darf nicht <code>null</code> sein
      *                       Falls diese nicht im {@link PasswordManager} existieren, geschieht nichts.
      * @param newCredentials Die neuen Anmeldedaten, die die Alten überschreiben. Falls <code>null</code>, geschieht nichts
+     * @param categories Die Kategorien in denen die {@link Credentials} liegen sollen
+     * @throws NullPointerException falls {@code oldCredentials} oder {@code categories} null sind
      * @see Credentials
      */
-    public void saveCredentials(Credentials oldCredentials, CredentialsBuilder newCredentials) {
+    public void updateCredentials(Credentials oldCredentials, CredentialsBuilder newCredentials, Collection<Category> categories) throws NullPointerException {
+        if (newCredentials == null) return;
+        passwordManagerController.getPasswordManager().getRootCategory().removeCredentialsFromTree(oldCredentials);
+        newCredentials.copyTo(oldCredentials, passwordManagerController.getUtilityController());
+        for (Category category : categories) {
+            category.addCredentials(oldCredentials);
+        }
+    }
 
+    /**
+     * Speichert neue {@link Credentials} im {@link PasswordManager}
+     * @param newCredentials Die neuen Anmeldedaten. Falls <code>null</code>, geschieht nichts
+     * @param categories Die Kategorien in denen die {@link Credentials} liegen sollen
+     * @see Credentials
+     * @see CredentialsBuilder
+     */
+    public void addCredentials(CredentialsBuilder newCredentials, Collection<Category> categories) {
+        Credentials credentials = newCredentials.build(passwordManagerController.getUtilityController());
+        for (Category category : categories) {
+            category.addCredentials(credentials);
+        }
+        //TODO: refresh
     }
 
     /**
@@ -44,7 +74,8 @@ public class CredentialsController {
      * @see Credentials
      */
     public void removeCredentials(Credentials credentials) {
-
+        passwordManagerController.getPasswordManager().getRootCategory().removeCredentialsFromTree(credentials);
+        //TODO: refresh
     }
 
     /**
@@ -59,7 +90,10 @@ public class CredentialsController {
      * @see Credentials
      */
     public void addSecurityQuestion(String question, String answer, CredentialsBuilder credentials) throws NullPointerException {
-
+        Validate.notNull(question, "question is null");
+        Validate.notNull(answer, "answer is null");
+        Validate.notNull(credentials, "credentials object is null");
+        credentials.withSecurityQuestion(question, answer);
     }
 
     /**
@@ -74,7 +108,7 @@ public class CredentialsController {
      * @see CredentialsBuilder
      */
     public void removeSecurityQuestion(String question, String answer, CredentialsBuilder credentials) throws NullPointerException{
-
+        credentials.withoutSecurityQuestion(question, answer);
     }
 
     /**
@@ -86,7 +120,20 @@ public class CredentialsController {
      * @see CredentialsBuilder
      */
     public void filterCredentials(Path categoryPath, String pattern) {
-
+        Collection<Credentials> credentials = passwordManagerController.getPasswordManager().getRootCategory().getAllCredentials();
+        Stream<Credentials> credentialsStream = credentials.stream();
+        if(categoryPath != null) {
+            Category category = passwordManagerController.getPasswordManager().getRootCategory().getCategoryByPath(categoryPath);
+            if(category == null) {
+                passwordManagerController.getMainWindowAUI().refreshEntryList(new ArrayList<>());
+                return;
+            }
+            credentialsStream = credentialsStream.filter(cred -> category.getAllCredentials().contains(cred));
+        }
+        if(pattern != null) {
+            credentialsStream = credentialsStream.filter(cred -> cred.getName().contains(pattern));
+        }
+        passwordManagerController.getMainWindowAUI().refreshEntryList(credentialsStream.collect(Collectors.toList()));
     }
 
     /**
@@ -97,7 +144,7 @@ public class CredentialsController {
      * @see CredentialsBuilder
      */
     public void copyPasswordToClipboard(CredentialsBuilder credentials) {
-
+        setClipboardContents(credentials.getPassword());
     }
 
     /**
@@ -108,20 +155,28 @@ public class CredentialsController {
      * @param visible     Falls 'true', soll das Passwort im Klartext angezeigt werden, sonst nur Sternchen
      */
     public void setPasswordShown(CredentialsBuilder credentials, boolean visible) {
-
+        if (visible) {
+            passwordManagerController.getMainWindowAUI().refreshEntry(credentials);
+        } else {
+            passwordManagerController.getMainWindowAUI().refreshEntry();
+        }
     }
 
     /**
-     * Gibt eine {@link List} aller {@link Credentials} zurück, die in der durch den gegebenen Pfad beschriebenen {@link Category} liegen
+     * Gibt eine {@link Collection} aller {@link Credentials} zurück, die in der durch den gegebenen Pfad beschriebenen {@link Category} liegen
      *
      * @param categoryPath Der Pfad der Kategorie, dessen Inhalt zurückgegeben werden soll. Darf nicht <code>null</code> sein
-     * @return Eine {@link List} aller {@link Credentials}, die in der durch {@code categoryPath} beschriebenen {@link Category} liegen
+     * @return Eine {@link Collection} aller {@link Credentials}, die in der durch {@code categoryPath} beschriebenen {@link Category} liegen
      * @throws NullPointerException Falls {@code categoryPath} <code>null</code> ist
      * @see Credentials
      * @see Category
      */
     Collection<Credentials> getCredentialsByCategoryPath(Path categoryPath) {
-        return null;
+        Category category = passwordManagerController.getPasswordManager().getRootCategory().getCategoryByPath(categoryPath);
+        if (category == null) {
+            return Collections.emptySet();
+        }
+        return category.getAllCredentials();
     }
 
     /**
@@ -130,7 +185,9 @@ public class CredentialsController {
      * @param credentials Der {@link CredentialsBuilder}, dessen Passwort aus der Zwischenablage entfernt werden soll. Falls <code>null</code> geschieht nichts
      */
     void clearPasswordFromClipboard(CredentialsBuilder credentials) {
-
+        if(credentials.getPassword().equals(getClipboardContents())) {
+            setClipboardContents("*****");
+        }
     }
 
     /**
@@ -141,6 +198,38 @@ public class CredentialsController {
      * @param newMasterPassword Das neue Masterpasswort, mit dem die Daten verschlüsselt werden sollen. Darf nicht <code>null</code> sein
      */
     void reencryptAll(String oldMasterPassword, String newMasterPassword) {
+        Collection<Credentials> credentials = passwordManagerController.getPasswordManager().getRootCategory().getAllCredentials();
 
+        credentials.forEach(cred -> {
+            cred.setPassword(reencryptText(cred.getPassword(), oldMasterPassword, newMasterPassword));
+            Set<SecurityQuestion> newQuestions = cred.getSecurityQuestions().stream().map(securityQuestion -> new SecurityQuestion(
+                    reencryptText(securityQuestion.getQuestion(), oldMasterPassword, newMasterPassword),
+                    reencryptText(securityQuestion.getAnswer(), oldMasterPassword, newMasterPassword)
+            )).collect(Collectors.toSet());
+            cred.clearSecurityQuesions();
+            cred.addSecurityQuestions(newQuestions);
+        });
+    }
+
+    private static void setClipboardContents(String contents) {
+        Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(contents), null);
+    }
+
+    private static String getClipboardContents() {
+        try {
+            return (String) Toolkit.getDefaultToolkit().getSystemClipboard().getData(DataFlavor.stringFlavor);
+        } catch (UnsupportedFlavorException | IOException e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
+    private static EncryptedString reencryptText(EncryptedString text, String oldKey, String newKey) {
+        try {
+            return new EncryptedString(AES.encrypt(AES.decrypt(text.getEncryptedContent(), oldKey), newKey));
+        } catch (EncryptionException | DecryptionException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

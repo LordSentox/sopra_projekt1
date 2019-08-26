@@ -235,6 +235,43 @@ public class CredentialsBuilderTest {
     }
 
     @Test
+    public void copyToTest(){
+        String name = "cred1";
+        String userName = "user1";
+        String password = "passwort123";
+        EncryptedString encryptedPassword = uc.encryptText(password);
+        String website = "www.hallo.de";
+        int changeReminder = 3;
+        LocalDateTime created = LocalDateTime.now();
+        LocalDateTime lastChanged = LocalDateTime.now();
+        String notes = "Dies ist ein Debug Eintrag";
+        String question1 = "Warum?";
+        String answer1 = "Da so";
+
+        Credentials cred = new Credentials("Name", "userName", uc.encryptText("saaswort"), created);
+        cred.setLastChanged(LocalDateTime.now());
+        cred.setNotes("sooos");
+        cred.setWebsite("");
+        cred.setChangeReminderDays(1);
+        cred.addSecurityQuestion(securityQuestionFromStrings("Huh?", "oof"));
+
+        CredentialsBuilder credBuilder1 = new CredentialsBuilder()
+                .withName(name)
+                .withUserName(userName)
+                .withPassword(password)
+                .withWebsite(website)
+                .withChangeReminderDays(changeReminder)
+                .withCreated(created)
+                .withLastChanged(lastChanged)
+                .withNotes(notes)
+                .withSecurityQuestion(question1, answer1);
+        credBuilder1.copyTo(cred, uc);
+        Credentials cred2 = credBuilder1.build(uc);
+
+        Assert.assertEquals("copyTo failed", cred, cred2);
+    }
+
+    @Test
     public void getterTest() {
         String name = "cred1";
         String userName = "user1";
