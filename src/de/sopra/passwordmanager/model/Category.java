@@ -18,17 +18,17 @@ public class Category {
     /**
      * Alle Credentials, die dieser Kategorie zugeordnet sind.
      */
-    private Collection<Credentials> credentials;
+    private Set<Credentials> credentials;
 
     /**
      * Die Liste aller Kategorien, welche der aktuellen Kategorie untergeordnet sind.
      */
-    private Collection<Category> subCategories;
+    private Set<Category> subCategories;
 
     public Category(String name) {
         this.name = name;
-        this.credentials = new ArrayList<>();
-        this.subCategories = new ArrayList<>();
+        this.credentials = new HashSet<>();
+        this.subCategories = new HashSet<>();
     }
 
     public String getName() {
@@ -155,6 +155,11 @@ public class Category {
         return categoryHashMap;
     }
 
+    public Set<Credentials> getAllCredentials() {
+        Set<Credentials> theseCredentials = new HashSet<>(credentials);
+        subCategories.forEach(category -> theseCredentials.addAll(category.getAllCredentials()));
+        return theseCredentials;
+    }
     /**
      * Durchsucht alle untergeordneten Kategorien nach Kategorien mit dem gegebenen Namen
      *
@@ -171,4 +176,8 @@ public class Category {
         return collect;
     }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, subCategories);
+    }
 }

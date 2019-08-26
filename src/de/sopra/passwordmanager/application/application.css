@@ -3,3 +3,7 @@
 .text-area *.text {
     -fx-text-alignment: center;
 }
+
+.button {
+	-fx-background-color: #aaaaaa;
+}	
