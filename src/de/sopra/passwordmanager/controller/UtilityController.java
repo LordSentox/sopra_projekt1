@@ -2,10 +2,13 @@ package de.sopra.passwordmanager.controller;
 
 import aes.AES;
 import de.sopra.passwordmanager.model.EncryptedString;
+import de.sopra.passwordmanager.util.CredentialsBuilder;
 import exceptions.DecryptionException;
 import exceptions.EncryptionException;
 
 import java.io.File;
+import java.security.SecureRandom;
+import java.util.Random;
 
 /**
  * Der UtilityController stellt verschiedene Hilfsdienste zur Verfügung
@@ -13,6 +16,24 @@ import java.io.File;
  * @author sopr049, sopr043
  */
 public class UtilityController {
+    public enum Charset {
+        CHARSET_LOWERCASE (new char[] {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o',
+                                      'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'}),
+        CHARSET_UPPERCASE (new char[] {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O',
+                                       'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'}),
+        CHARSET_NUMBER    (new char[] {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'}),
+        CHARSET_SPECIAL   (new char[] {'$', '!', '^', '@', '?', '#', '[', '&', '{', '}', '(', '=', '*', ')', '+', ']'});
+
+        private char[] chars;
+
+        Charset(char[] chars) {
+            this.chars = chars;
+        }
+
+        char[] getChars() {
+            return this.chars;
+        }
+    }
 
     /**
      * Referenz zum Passwortmanagercontroller
@@ -23,11 +44,74 @@ public class UtilityController {
         this.passwordManagerController = controller;
     }
 
-    /**
-     * Generiert ein Passwort, welches den Sicherheitsanforderungen entspricht nd dieses wird dann in der GUI angezeigt
-     */
-    public void generatePassword() {
+    // Überprüfe, ob alle Elemente im Array den gleichen, angegebenen Wert haben
+    private boolean allHaveValue(int expected, int[] values) {
+        for (int value: values) {
+            if (value != expected) {
+                return false;
+            }
+        }
 
+        return true;
+    }
+
+    // Gibt den Index des charsets zurück, welches für den nächsten Buchstaben benutzt werden sollte.
+    private int decideNextCharset(Random random, int[] missingChars) {
+        int next = random.nextInt(Charset.values().length);
+
+        // Erlaube dieses charset nur, wenn es noch benutzt werden muss oder alle charsets schon genug benutzt wurden
+        boolean accepted = false;
+        while (!accepted) {
+            if (missingChars[next] > 0) {
+                accepted = true;
+            }
+            else if (allHaveValue(0, missingChars)) {
+                accepted = true;
+            }
+            else {
+                next = random.nextInt(Charset.values().length);
+            }
+        }
+
+        return next;
+    }
+
+    private char randomCharacter(Random random, Charset charset) {
+        return charset.getChars()[random.nextInt(charset.getChars().length)];
+    }
+
+    /**
+     * Generiert ein Passwort, welches den Sicherheitsanforderungen entspricht und dieses wird dann in der GUI angezeigt
+     */
+    public void generatePassword(CredentialsBuilder credentials) {
+        Random random = new Random();
+        String password = null;
+        do {
+            // Setze die Passwortlänge zufällig zwischen 12 und 18
+            int length = 12 + random.nextInt(6);
+            System.out.println("Generating password length " + length + ".");
+
+            // Stellt sicher, dass jedes Charset mindestens drei mal benutzt wird. Jeder Eintrag steht für die Anzahl die
+            // das an dieser Stelle stehende Charset noch verwendet werden muss. z.B. Eintrag 1 für Majuskel-Charset.
+            int[] missingChars = {3, 3, 3, 3};
+
+            StringBuilder passwordBuilder = new StringBuilder();
+            for (int i = 0; i < length; ++i) {
+                // Das nächste Charset feststellen und ein Zeichen an das Resultat anhängen.
+                int charsetNum = decideNextCharset(random, missingChars);
+
+                passwordBuilder.append(randomCharacter(random, Charset.values()[charsetNum]));
+                missingChars[charsetNum]--;
+            }
+
+            password = passwordBuilder.toString();
+        } while (checkQuality(password) < 100);
+
+        credentials.withPassword(password);
+
+        // Aktualisieren der Anzeige im MainWindowViewController
+        passwordManagerController.getMainWindowAUI().refreshEntry();
+        passwordManagerController.getMainWindowAUI().refreshEntryPasswordQuality(100);
     }
 
     /**
@@ -52,6 +136,7 @@ public class UtilityController {
             return AES.decrypt(text.getEncryptedContent(), passwordManagerController.getPasswordManager().getMasterPassword());
         } catch (DecryptionException e) {
             System.out.println(text.getEncryptedContent() + " konnte nicht entschlüsselt werden.");
+            System.out.println(e.toString());
             return null;
         }
     }
