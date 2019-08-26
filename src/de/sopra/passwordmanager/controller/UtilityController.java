@@ -159,14 +159,28 @@ public class UtilityController {
         }
     }
 
-    /**
-     * Diese Methode überprüft die Qualität eines Passwortes und gibt eine Zahl zwischen 0 und 100 zurück ,wobei mehr besser ist
-     *
-     * @param text Das zu überprüfende Passwort
-     * @return Es wird ein Wert von 0 bis 100 geliefert, der die Qualität des Passwortes angibt, dabei steht 0 für sehr schlecht und 100 für sehr sicher
-     */
-    // TODO: Sollte noch den Nutzernamen bekommen, um es mit dem Passwort zu vergleichen
-    int checkQuality(String text) {
+    // Helferklasse, um die Qualität des Passwortes auf bestimmte Merkmale zu überprüfen, die unterschiedlich gewichtet
+    // sind.
+    private final class WeighedRule {
+        private final Rule rule;
+        private final double weight;
+
+        public WeighedRule(Rule rule, double weight) {
+            this.rule = rule;
+            this.weight = weight;
+        }
+
+        public Rule getRule() {
+            return rule;
+        }
+
+        public double getWeight() {
+            return weight;
+        }
+    }
+
+    // Generiert die Gesichtspunkte, nach denen ein Passwort beurteilt werden soll
+    private List<WeighedRule> generateRules() {
         // Stelle sicher, dass mindestens ein kleiner und ein großer Buchstabe vorkommt
         CharacterCharacteristicsRule characterOrdinaryRule = new CharacterCharacteristicsRule();
         characterOrdinaryRule.getRules().add(new CharacterRule(EnglishCharacterData.LowerCase, 1));
@@ -186,27 +200,37 @@ public class UtilityController {
         // Gibt es ein bestimmtes Doppelzeichen drei oder mehr mal?
         RepeatCharactersRule repeatCharacters = new RepeatCharactersRule(2, 3);
 
-        Rule[] rules = {characterOrdinaryRule,
-                characterSpecialRule,
-                notAllTheSame,
-                minimumLength,
-                repeatCharacters};
-        double[] weights = {0.5f, 0.75f, 0.5f, 1.0f, 0.75f};
+        return Arrays.asList(new WeighedRule(characterOrdinaryRule, 0.5),
+                new WeighedRule(characterSpecialRule, 0.75),
+                new WeighedRule(notAllTheSame, 0.5),
+                new WeighedRule(minimumLength, 1.0),
+                new WeighedRule(repeatCharacters, 0.75));
+    }
 
+    /**
+     * Diese Methode überprüft die Qualität eines Passwortes und gibt eine Zahl zwischen 0 und 100 zurück ,wobei mehr besser ist
+     *
+     * @param text Das zu überprüfende Passwort
+     * @return Es wird ein Wert von 0 bis 100 geliefert, der die Qualität des Passwortes angibt, dabei steht 0 für sehr schlecht und 100 für sehr sicher
+     */
+    // TODO: Sollte noch den Nutzernamen bekommen, um es mit dem Passwort zu vergleichen
+    int checkQuality(String text) {
         PasswordData pwData = new PasswordData(text);
 
+        List<WeighedRule> rules = generateRules();
+
         // Für jede Regel die eingehalten wird, wird das Gewicht als Wert der unangepassten Qualität hinzugefügt
-        double quality = 0.f;
-        for (int i = 0; i < rules.length; ++i) {
-            if (rules[i].validate(pwData).isValid()) {
-                quality += weights[i];
+        double quality = 0.0;
+        for (WeighedRule rule: rules) {
+            if (rule.getRule().validate(pwData).isValid()) {
+                quality += rule.getWeight();
             }
         }
 
         // Die Qualität auf einen int im Bereich von 0 bis 100 anpassen.
         double totalWeight = 0.f;
-        for (double weight: weights) {
-            totalWeight += weight;
+        for (WeighedRule rule: rules) {
+            totalWeight += rule.getWeight();
         }
         double percent = quality / totalWeight * 100.f;
 
