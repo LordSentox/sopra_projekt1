@@ -3,6 +3,7 @@ package de.sopra.passwordmanager.controller;
 import de.sopra.passwordmanager.model.Category;
 import de.sopra.passwordmanager.model.Credentials;
 import de.sopra.passwordmanager.model.PasswordManager;
+import de.sopra.passwordmanager.util.CredentialsBuilder;
 import de.sopra.passwordmanager.view.LoginViewAUI;
 import de.sopra.passwordmanager.view.MainWindowAUI;
 import de.sopra.passwordmanager.view.MasterPasswordViewAUI;
@@ -21,7 +22,7 @@ public class PasswordManagerController {
     /**
      * Minimale Qualität, die ein Passwort benötigt um als sicher zu gelten
      */
-    public static final int MINUM_SAFE_QUALITY = 50;
+    public static final int MINIMUM_SAFE_QUALITY = 50;
 
     private PasswordManager passwordManager;
 
@@ -119,16 +120,30 @@ public class PasswordManagerController {
     }
 
     /**
-     * //TODO
+     * Überprüft die Qualität des im übergebenen {@link CredentialsBuilder} enthaltenen Passwortes und aktualisiert den
+     * Qualitätsbalken im {@link de.sopra.passwordmanager.view.MainWindowViewController}.
+     * Ist das Passwort im {@link CredentialsBuilder} <code>null</code> soll <b>keine</b> NullPointerException geworfen
+     * werden
      *
-     * @param oldCredentials
-     * @param newCredentials
-     * @param newCategories
+     * @param credentials Der {@link CredentialsBuilder}, welcher das zu prüfende Passwort beinhaltet
+     * @throws NullPointerException falls statt eines {@link CredentialsBuilder} <code>null</code> übergeben wird
      */
-    public void saveEntry(Credentials oldCredentials, Credentials newCredentials, Collection<Category> newCategories) {
-        categoryController.removeCredentialsFromCategories(oldCredentials);
-        credentialsController.saveCredentials(oldCredentials, newCredentials);
-        categoryController.addCredentialsToCategories(newCredentials, newCategories);
+    public void checkQuality(CredentialsBuilder credentials) throws NullPointerException {
+    }
+
+    /**
+     * Ersetzt die alten {@link Credentials} mit den Neuen.
+     *
+     * @param oldCredentials Die zu ersetzenden {@link Credentials}
+     * @param newCredentials Die {@link Credentials}, die die alten ersetzen
+     * @param newCategories Die Kategorien, in die die neuen {@link Credentials} eingefügt werden sollen. Waren die
+     *                      oldCredentials davor in anderen Kategorien, werden sie aus den nicht angegebenen entfernt.
+     * @see Category
+     */
+    public void saveEntry(Credentials oldCredentials, CredentialsBuilder newCredentials, Collection<Category> newCategories) {
+//        categoryController.removeCredentialsFromCategories(oldCredentials);
+//        credentialsController.saveCredentials(oldCredentials, newCredentials);
+//        categoryController.addCredentialsToCategories(newCredentials, newCategories);
     }
 
 }

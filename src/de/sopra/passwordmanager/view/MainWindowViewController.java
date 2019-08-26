@@ -6,18 +6,23 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import de.sopra.passwordmanager.util.CredentialsBuilder;
 
 import java.util.List;
 
 public class MainWindowViewController implements MainWindowAUI {
 
     private PasswordManagerController passwordManagerController;
+
     private SecurityQuestionViewController securityQuestionViewController;
+
     private CategoryEditViewController categoryEditViewController;
+
     private SettingsViewController settingsViewController;
+
     private LoginViewController loginViewController;
+
     private MasterPasswordViewController masterPasswordViewController;
-    
 
     public void setPasswordManagerController(PasswordManagerController passwordManagerController) {
 		this.passwordManagerController = passwordManagerController;

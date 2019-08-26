@@ -5,3 +5,5 @@
 /bin/
 *.iml
 target/
+out/
+.vscode
