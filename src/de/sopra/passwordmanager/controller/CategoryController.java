@@ -5,8 +5,10 @@ import de.sopra.passwordmanager.model.Credentials;
 import de.sopra.passwordmanager.util.Path;
 import de.sopra.passwordmanager.util.Validate;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -58,7 +60,7 @@ public class CategoryController {
      * Entfernt die Kategorie aus dem Datenmodell.
      * Je nach übergebenem Boolean werden die enthaltenen Credentials und Unterkategorien mit gelöscht oder nicht.
      *
-     * @param category             Der absolute Pfad zur zu löschenden Kategorie, darf nicht Null sein
+     * @param categoryPath         Der absolute Pfad zur zu löschenden Kategorie, darf nicht Null sein
      * @param removeCredentialsToo gibt an, ob die enthaltenen Credentials und Unterkategorien mit gelöscht werden oder nicht.
      *                             <p>
      *                             Wenn nur die Kategorie gelöscht werden soll, dann müssen die enthaltenen Unterkategorien und Anmeldedaten
@@ -70,14 +72,13 @@ public class CategoryController {
      *                             <p>
      *                             Dann wird die Referenz auf die zu Löschende Kategorie entfernt.
      */
-    public void removeCategory(Path category, boolean removeCredentialsToo) {
-        Validate.notNull(category, "CategoryController: category is null");
+    public void removeCategory(Path categoryPath, boolean removeCredentialsToo) {
+        Validate.notNull(categoryPath, "CategoryController: path to category is null");
         if (removeCredentialsToo) {
             Category categoryByPath = passwordManagerController.getPasswordManager().getRootCategory()
-                    .getCategoryByPath(category.getParent());
-            categoryByPath.removeSubCategory(category.getName());
-            passwordManagerController.getMainWindowAUI().refreshEntry();
-            passwordManagerController.getMainWindowAUI().refreshEntryList(null);
+                    .getCategoryByPath(categoryPath.getParent());
+            categoryByPath.removeSubCategory(categoryPath.getName());
+            //TODO: proper refresh
         } else {
             //TODO
         }
@@ -124,7 +125,12 @@ public class CategoryController {
      * @return die angelegte und (eventuell) gefüllte ArrayList<Category>
      */
     List<Category> findCategory(String name) {
-        return null;
+        List<Category> categories = new ArrayList<>();
+        Category rootCategory = passwordManagerController.getPasswordManager().getRootCategory();
+        if (rootCategory.getName().equals(name))
+            categories.add(rootCategory);
+        categories.addAll(rootCategory.findCategories(name));
+        return categories;
     }
 
     /**
@@ -137,7 +143,8 @@ public class CategoryController {
      * @throws NullPointerException falls die übergebene {@link Collection<Category>} <code>null</code> ist.
      */
     void addCredentialsToCategories(Credentials credentials, Collection<Category> categories) throws NullPointerException {
-
+        categories.forEach(category -> category.addCredentials(credentials));
+        //TODO: proper refresh
     }
 
     /**
@@ -147,7 +154,24 @@ public class CategoryController {
      * @param credentials Die {@link Credentials}, die aus dem Datenmodell entfernt werden sollen
      */
     void removeCredentialsFromCategories(Credentials credentials) {
+        passwordManagerController.getPasswordManager().getRootCategory().removeCredentialsFromTree(credentials);
+        //TODO: proper refresh
+    }
 
+    /**
+     * Erstellt ein Path Objekt, das den absoluten Pfad zu der gegebenen Kategorie angibt
+     *
+     * @param category die Kategorie, für welche der Pfad generiert werden soll
+     * @return der abolute Pfad zu der Kategorie
+     */
+    Path getPathForCategory(Category category) {
+        Category rootCategory = passwordManagerController.getPasswordManager().getRootCategory();
+        Map<Path, Category> allPaths = rootCategory.createPathMap(new Path());
+        for (Map.Entry<Path, Category> entry : allPaths.entrySet()) {
+            if (entry.getValue().equals(category))
+                return entry.getKey();
+        }
+        return null;
     }
 
 }
