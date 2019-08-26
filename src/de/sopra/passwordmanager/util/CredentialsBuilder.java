@@ -1,7 +1,6 @@
 package de.sopra.passwordmanager.util;
 
 import de.sopra.passwordmanager.controller.UtilityController;
-import de.sopra.passwordmanager.model.BasePassword;
 import de.sopra.passwordmanager.model.Credentials;
 import de.sopra.passwordmanager.model.EncryptedString;
 import de.sopra.passwordmanager.model.SecurityQuestion;
@@ -13,7 +12,6 @@ import java.util.*;
  * Builder für {@link Credentials}. Attribute sind gleich denen von {@link Credentials}
  *
  * @see Credentials
- * @see BasePassword
  */
 public class CredentialsBuilder {
 
