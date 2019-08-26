@@ -9,10 +9,13 @@ import de.sopra.passwordmanager.util.Path;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.Spinner;
+import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import de.sopra.passwordmanager.util.CredentialsBuilder;
 
+import com.jfoenix.controls.JFXCheckBox;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
@@ -31,7 +34,14 @@ public class MainWindowViewController implements MainWindowAUI {
     private MasterPasswordViewController masterPasswordViewController;
     @FXML private JFXTextField textFieldSearch;
     @FXML private JFXComboBox<Category> comboBoxCategorySelectionMain;
+    @FXML private Spinner<Integer> spinnerCredentialsReminderDays;
+    @FXML private JFXCheckBox checkBoxCredentialsUseReminder;
 
+    public void init(){
+        spinnerCredentialsReminderDays.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1,999));
+        spinnerCredentialsReminderDays.setDisable(true);
+    }
+    
     public void setPasswordManagerController(PasswordManagerController passwordManagerController) {
 		this.passwordManagerController = passwordManagerController;
 	}
@@ -72,7 +82,8 @@ public class MainWindowViewController implements MainWindowAUI {
 			Scene settingsScene = new Scene(settingsPane);
 			//settingsScene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 			settingsStage.setScene(settingsScene);
-			//settingsViewController.setStage(settingsStage);
+			settingsViewController.setStage(settingsStage);
+			settingsViewController.setMainWindowViewController(this);
 			settingsStage.show();
 		}
 		catch(Exception e) {
@@ -104,7 +115,8 @@ public class MainWindowViewController implements MainWindowAUI {
 			Scene categoryEditScene = new Scene(categoryEditPane);
 			//categoryEditScene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 			categoryEditStage.setScene(categoryEditScene);
-			//categoryEditViewController.setStage(categoryEditStage);
+			categoryEditViewController.setStage(categoryEditStage);
+			categoryEditStage.show();
 		}
 		catch(Exception e) {
 			throw new RuntimeException(e);
@@ -124,7 +136,8 @@ public class MainWindowViewController implements MainWindowAUI {
 			Scene categoryEditScene = new Scene(categoryEditPane);
 			//categoryEditScene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 			categoryEditStage.setScene(categoryEditScene);
-			//categoryEditViewController.setStage(categoryEditStage);
+			categoryEditViewController.setStage(categoryEditStage);
+			categoryEditStage.show();
 		}
 		catch(Exception e) {
 			throw new RuntimeException(e);
@@ -147,12 +160,21 @@ public class MainWindowViewController implements MainWindowAUI {
     public void onGeneratePasswordClicked() {
         passwordManagerController.getUtilityController().generatePassword();
     }
+    
+    public void onCheckBoxClicked(){
+        boolean checkBoxSelected = checkBoxCredentialsUseReminder.isSelected();
+        if(checkBoxSelected){            
+            spinnerCredentialsReminderDays.setDisable(false);
+        } else{
+            spinnerCredentialsReminderDays.setDisable(true);
+        }
+    }
 
     public void onAddSecurityQuestionClicked() {
 		try{
 			/* Sicherheitsfrage hinzufügen */
 			AnchorPane securityQuestionAddPane = new AnchorPane();
-			FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("../view/Kategorie_anlegen-aendern.fxml"));
+			FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("../view/Sicherheitsfrage-und-Antwort.fxml"));
 			securityQuestionAddPane = fxmlLoader.load();
 			securityQuestionViewController = (SecurityQuestionViewController) fxmlLoader.getController();
 		
@@ -160,7 +182,8 @@ public class MainWindowViewController implements MainWindowAUI {
 			Scene securityQuestionAddScene = new Scene(securityQuestionAddPane);
 			//securityQuestionAddScene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 			securityQuestionAddStage.setScene(securityQuestionAddScene);
-			//securityQuestionViewController.setStage(securityQuestionAddStage);
+			securityQuestionViewController.setStage(securityQuestionAddStage);
+			securityQuestionAddStage.show();
 		}
 		catch(Exception e) {
 			throw new RuntimeException(e);

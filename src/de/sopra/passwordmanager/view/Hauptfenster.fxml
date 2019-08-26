@@ -30,7 +30,7 @@
       <Label layoutX="315.0" layoutY="152.0" text="Passwort" />
       <Label layoutX="315.0" layoutY="225.0" text="Webseite" />
       <JFXTextField fx:id="textFieldCredentialsUserName" layoutX="430.0" layoutY="116.0" />
-      <JFXCheckBox fx:id="checkBoxCredentialsUseReminder" layoutX="315.0" layoutY="251.0" mnemonicParsing="false" text="Erinnern an Passwortänderung in" />
+      <JFXCheckBox fx:id="checkBoxCredentialsUseReminder" layoutX="315.0" layoutY="251.0" mnemonicParsing="false" text="Erinnern an Passwortänderung in" onAction="#onCheckBoxClicked"/>
       <Label layoutX="544.0" layoutY="279.0" text="Tagen" />
       <Label layoutX="315.0" layoutY="398.0" text="Notizen" />
       <JFXProgressBar fx:id="progressBarCredentialsQuality" layoutX="430.0" layoutY="183.0" prefHeight="20.0" prefWidth="171.0" progress="0.0" />

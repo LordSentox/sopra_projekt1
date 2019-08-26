@@ -21,6 +21,11 @@ public class SettingsViewController {
 	private MainWindowViewController mainWindowViewController;
 	private Stage settingsStage, masterPasswordStage;
 
+
+    public void setMainWindowViewController(MainWindowViewController mainWindowViewController) {
+        this.mainWindowViewController = mainWindowViewController;
+    }
+	
 	public void onChangeMasterpasswordClicked() {
 		try {
 			/* MasterpasswortSetzenFenster */
@@ -32,8 +37,10 @@ public class SettingsViewController {
 
 			masterPasswordStage = new Stage();
 			Scene setMasterPasswordScene = new Scene(setMasterPasswordPane);
-			setMasterPasswordScene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+			//setMasterPasswordScene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 			masterPasswordStage.setScene(setMasterPasswordScene);
+			masterPasswordViewController.setStage(masterPasswordStage);
+			masterPasswordViewController.setMainWindowViewController(mainWindowViewController);
 			masterPasswordStage.show();
 
 		} catch (Exception e) {

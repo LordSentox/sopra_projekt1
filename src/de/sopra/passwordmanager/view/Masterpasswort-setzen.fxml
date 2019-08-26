@@ -15,10 +15,10 @@
       <Label layoutX="40.0" layoutY="22.0" text="Passwort eingeben:" />
       <Label layoutX="40.0" layoutY="111.0" text="Passwort wiederholen:" />
       <JFXProgressBar fx:id="progressBarQuality" layoutX="40.0" layoutY="83.0" prefHeight="20.0" prefWidth="242.0" progress="0.0" />
-      <JFXButton fx:id="buttonSave" layoutX="99.0" layoutY="250.0" mnemonicParsing="false" text="Speichern" />
-      <JFXButton fx:id="buttonCancel" layoutX="193.0" layoutY="250.0" mnemonicParsing="false" text="Abbrechen" />
-      <Label fx:id="labelError" layoutX="40.0" layoutY="226.0" text="Warnung oder Fehlermeldung" />
-      <JFXSpinner fx:id="spinnerReminderDays"  layoutX="40.0" layoutY="190.0" prefHeight="26.0" prefWidth="104.0" />
+      <JFXButton fx:id="buttonSave" layoutX="99.0" layoutY="250.0" mnemonicParsing="false" text="Speichern" onAction="#onSaveClicked"/>
+      <JFXButton fx:id="buttonCancel" layoutX="193.0" layoutY="250.0" mnemonicParsing="false" text="Abbrechen" onAction="#onMasterPasswordCancelClicked" />
+      <Label fx:id="labelError" layoutX="40.0" layoutY="226.0" visible="false" text="Warnung oder Fehlermeldung" />
+      <Spinner fx:id="spinnerReminderDays"  layoutX="40.0" layoutY="190.0" prefHeight="26.0" prefWidth="104.0" editable="true" />
       <Label layoutX="40.0" layoutY="174.0" text="An Änderung erinnern in:" />
       <Label layoutX="161.0" layoutY="195.0" prefHeight="0.0" prefWidth="41.0" text="Tagen" />
    </children>
