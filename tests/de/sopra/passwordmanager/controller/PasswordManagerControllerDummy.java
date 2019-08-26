@@ -1,7 +1,10 @@
 package de.sopra.passwordmanager.controller;
 
+import de.sopra.passwordmanager.model.Category;
 import de.sopra.passwordmanager.model.Credentials;
 import de.sopra.passwordmanager.util.CredentialsBuilder;
+import de.sopra.passwordmanager.util.EntryListOrderStrategy;
+import de.sopra.passwordmanager.util.EntryListSelectionStrategy;
 import de.sopra.passwordmanager.view.LoginViewAUI;
 import de.sopra.passwordmanager.view.MainWindowAUI;
 import de.sopra.passwordmanager.view.MasterPasswordViewAUI;
@@ -25,7 +28,7 @@ public class PasswordManagerControllerDummy {
     private static PasswordManagerController create() {
         PasswordManagerController controller = new PasswordManagerController();
         controller.setLoginViewAUI(createLogin());
-        controller.setMainWindowAUI(createMainWindow());
+        controller.setMainWindowAUI(createMainWindow(controller));
         controller.setMasterPasswordViewAUI(createMasterPass());
         return controller;
     }
@@ -38,8 +41,8 @@ public class PasswordManagerControllerDummy {
         return new LoginView();
     }
 
-    private static MainWindowAUI createMainWindow() {
-        return new MainView();
+    private static MainWindowAUI createMainWindow(PasswordManagerController controller) {
+        return new MainView(controller);
     }
 
     public static class MainView implements MainWindowAUI {
@@ -47,24 +50,36 @@ public class PasswordManagerControllerDummy {
         private List<Credentials> currentCredentialsList = null;
         private List<String> errorsShown = new ArrayList<>();
         private int passwordQuality = -1;
-        private String passwordShown;
+        private EntryListSelectionStrategy strategy = identity -> identity;
+        private EntryListOrderStrategy orderStrategy = identity -> identity;
         private CredentialsBuilder currentCredentials = null;
+        private Category currentSelectedCategory = null;
+        private PasswordManagerController controller;
+
+        public MainView(PasswordManagerController controller) {
+            this.controller = controller;
+        }
 
         @Override
-        public void refreshEntryList(List<Credentials> entries) {
-            this.currentCredentialsList = entries;
+        public void refreshLists() {
+            Category category = controller.getPasswordManager().getRootCategory();
+            //TODO get all credentials in currently selected category
+            List<Credentials> credentials = null;
+            List<Credentials> selected = strategy.select(credentials);
+            List<Credentials> ordered = orderStrategy.order(selected);
+            this.currentCredentialsList = ordered;
+        }
+
+        @Override
+        public void refreshListStrategies(EntryListSelectionStrategy selection, EntryListOrderStrategy order) {
+            this.strategy = selection;
+            this.orderStrategy = order;
+            refreshLists();
         }
 
         @Override
         public void refreshEntry() {
-            passwordShown = "";
-            currentCredentials = null;
-        }
 
-        @Override
-        public void refreshEntry(CredentialsBuilder credentials) {
-            currentCredentials = credentials;
-            passwordShown = credentials.getPassword();
         }
 
         @Override
@@ -94,7 +109,25 @@ public class PasswordManagerControllerDummy {
          * oder null, falls noch kein gezeigt wird
          */
         public String getPasswordShown() {
-            return passwordShown;
+            return currentCredentials.getPassword();
+        }
+
+        /**
+         * Simulates the user to select a category on the left side of the view
+         *
+         * @param currentSelectedCategory the selected category
+         */
+        public void setCurrentSelectedCategory(Category currentSelectedCategory) {
+            this.currentSelectedCategory = currentSelectedCategory;
+        }
+
+        /**
+         * Gets the currently selected category
+         *
+         * @return the currently selected category or <code>null</code> if none is selected
+         */
+        public Category getCurrentSelectedCategory() {
+            return currentSelectedCategory;
         }
 
         /**

@@ -146,7 +146,7 @@ public class CredentialsControllerTest {
         List<Credentials> credentialsList = new ArrayList<>();
         credentialsList.add(credentials);
         pm.getRootCategory().addCredentials(credentials);
-        mainView.refreshEntryList(credentialsList);
+        mainView.refreshLists();
 
         Assert.assertEquals("The Credentialslist does not contain exactly 1 entry after adding 1 Credentials object", 1, mainView.getCurrentCredentialsList().size());
         Assert.assertTrue("CredentialsList does not contain the given Credentials object after adding", mainView.getCurrentCredentialsList().contains(credentials));
@@ -170,7 +170,7 @@ public class CredentialsControllerTest {
         List<Credentials> credentialsList = new ArrayList<>();
         credentialsList.add(credentials);
         pm.getRootCategory().addCredentials(credentials);
-        mainView.refreshEntryList(credentialsList);
+        mainView.refreshLists();
 
         Assert.assertEquals("The Credentialslist does not contain exactly 1 entry after adding 1 Credentials object", 1, mainView.getCurrentCredentialsList().size());
         Assert.assertTrue("CredentialsList does not contain the given Credentials object after adding", mainView.getCurrentCredentialsList().contains(credentials));
@@ -202,7 +202,7 @@ public class CredentialsControllerTest {
         List<Credentials> credentialsList = new ArrayList<>();
         credentialsList.add(credentials1);
         pm.getRootCategory().addCredentials(credentials1);
-        mainView.refreshEntryList(credentialsList);
+        mainView.refreshLists();
 
         Assert.assertEquals("The Credentialslist does not contain exactly 1 entry after adding 1 Credentials object", 1, mainView.getCurrentCredentialsList().size());
         Assert.assertTrue("CredentialsList does not contain the given Credentials object after adding", mainView.getCurrentCredentialsList().contains(credentials1));
