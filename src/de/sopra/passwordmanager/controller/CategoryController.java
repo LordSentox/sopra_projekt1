@@ -5,6 +5,7 @@ import de.sopra.passwordmanager.model.Credentials;
 import de.sopra.passwordmanager.util.Path;
 import de.sopra.passwordmanager.util.Validate;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -124,7 +125,12 @@ public class CategoryController {
      * @return die angelegte und (eventuell) gefüllte ArrayList<Category>
      */
     List<Category> findCategory(String name) {
-        return null;
+        List<Category> categories = new ArrayList<>();
+        Category rootCategory = passwordManagerController.getPasswordManager().getRootCategory();
+        if (rootCategory.getName().equals(name))
+            categories.add(rootCategory);
+        categories.addAll(rootCategory.findCategories(name));
+        return categories;
     }
 
     /**
