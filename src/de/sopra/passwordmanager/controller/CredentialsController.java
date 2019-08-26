@@ -16,6 +16,7 @@ import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -57,6 +58,7 @@ public class CredentialsController {
     public void addCredentials(CredentialsBuilder newCredentials, Collection<Category> categories) {
         Credentials credentials = newCredentials.build(passwordManagerController.getUtilityController());
         categories.forEach(category -> category.addCredentials(credentials));
+        //TODO: refresh
     }
 
     /**
@@ -67,6 +69,7 @@ public class CredentialsController {
      */
     public void removeCredentials(Credentials credentials) {
         passwordManagerController.getPasswordManager().getRootCategory().removeCredentialsFromTree(credentials);
+        //TODO: refresh
     }
 
     /**
@@ -154,16 +157,20 @@ public class CredentialsController {
     }
 
     /**
-     * Gibt eine {@link List} aller {@link Credentials} zurück, die in der durch den gegebenen Pfad beschriebenen {@link Category} liegen
+     * Gibt eine {@link Collection} aller {@link Credentials} zurück, die in der durch den gegebenen Pfad beschriebenen {@link Category} liegen
      *
      * @param categoryPath Der Pfad der Kategorie, dessen Inhalt zurückgegeben werden soll. Darf nicht <code>null</code> sein
-     * @return Eine {@link List} aller {@link Credentials}, die in der durch {@code categoryPath} beschriebenen {@link Category} liegen
+     * @return Eine {@link Collection} aller {@link Credentials}, die in der durch {@code categoryPath} beschriebenen {@link Category} liegen
      * @throws NullPointerException Falls {@code categoryPath} <code>null</code> ist
      * @see Credentials
      * @see Category
      */
     Collection<Credentials> getCredentialsByCategoryPath(Path categoryPath) {
-        return null;
+        Category category = passwordManagerController.getPasswordManager().getRootCategory().getCategoryByPath(categoryPath);
+        if (category == null) {
+            return Collections.emptySet();
+        }
+        return category.getAllCredentials();
     }
 
     /**
