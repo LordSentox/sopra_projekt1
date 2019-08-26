@@ -1,5 +1,9 @@
 package de.sopra.passwordmanager.controller;
 
+import aes.AES;
+import de.sopra.passwordmanager.model.EncryptedString;
+import exceptions.DecryptionException;
+
 import java.io.File;
 
 /**
@@ -39,10 +43,16 @@ public class UtilityController {
      * Die Methode entschlüsselt einen eingegebenen text mit dem Masterpasswort
      *
      * @param text Der zu entschlüsselnde Text, dabei kann es sich um Passwörter oder die Sicherheitsfragen handeln
-     * @return Der zurückgegebene String ist die entschlüsselte Version des eingegebenen Textes
+     * @return Der zurückgegebene String ist die entschlüsselte Version des eingegebenen Textes oder <code>null</code>,
+     * wenn er nicht entschlüsselt werden konnte
      */
-    String decryptText(String text) {
-        return null;
+    public String decryptText(EncryptedString text) {
+        try {
+            return AES.decrypt(text.getEncryptedContent(), passwordManagerController.getPasswordManager().getMasterPassword());
+        } catch (DecryptionException e) {
+            System.out.println(text.getEncryptedContent() + " konnte nicht entschlüsselt werden.");
+            return null;
+        }
     }
 
     /**
@@ -51,7 +61,7 @@ public class UtilityController {
      * @param text Der zu verschlüsselnde Text, dabei kann es sich um Passwörter oder die Sicherheitsfragen handeln
      * @return Der zurückgegebene String ist die verschlüsselte Version des eingegebenen Textes
      */
-    String encryptText(String text) {
+    public EncryptedString encryptText(String text) {
         return null;
     }
 

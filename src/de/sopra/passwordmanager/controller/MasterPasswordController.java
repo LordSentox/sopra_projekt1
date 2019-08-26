@@ -27,6 +27,16 @@ public class MasterPasswordController {
     }
 
     /**
+     * Überprüft die Qualität des übergebenen Passwortes und aktualisiert den Qualitätsbalken in dem
+     * {@link de.sopra.passwordmanager.view.MasterPasswordViewController}
+     *
+     * @param password Das Passwort, welches nach den festgelegten Qualitätsmerkmalen untersucht werden soll
+     * @throws NullPointerException falls statt eines Passwortstrings <code>null</code> übergeben wird
+     */
+    public void checkQuality(String password) throws NullPointerException {
+    }
+
+    /**
      * Überprüft, ob das übergebene Passwort mit dem momentanen Masterpasswort übereinstimmt.
      *
      * @param password Das zu überprüfende Passwort

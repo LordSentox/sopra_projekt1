@@ -16,15 +16,18 @@ public class PasswordReminderControllerTest {
 	
 	private PasswordManagerController passwordManagerController;
     private PasswordManager passwordManager;
+	private UtilityController uc;
 
-    @Before
+	@Before
     public void setUp() throws Exception {
         this.passwordManagerController = PasswordManagerControllerDummy.getNewController();
         this.passwordManager = this.passwordManagerController.getPasswordManager();
+        uc = passwordManagerController.getUtilityController();
     }
 
 	@Test
 	public void testPasswordReminderController() {
+		//TODO: testPasswordReminderController
 		fail("Not yet implemented");
 	}
 
@@ -33,7 +36,7 @@ public class PasswordReminderControllerTest {
 		//legt Passworteintrag an sowie Datum
 		Credentials credentials = new CredentialsBuilder("Name", "Benutzername", "Hello_world", "URL")
 				.withChangeReminderDays(5)
-				.build();
+				.build(uc);
 		LocalDateTime sixDaysEarlier = LocalDateTime.now().minus(6, ChronoUnit.DAYS);
 		//ändert LanstChanged-Datum des Passworteintrages auf vor 6 Tagen
 		credentials.setLastChanged(sixDaysEarlier);	
@@ -55,19 +58,19 @@ public class PasswordReminderControllerTest {
 		//legt Passworteinträge an
 		Credentials credentialsa = new CredentialsBuilder("Namea", "Benutzernamea", "Hello_world", "URL")
 				.withChangeReminderDays(3)
-				.build();
+				.build(uc);
 		Credentials credentialsb = new CredentialsBuilder("Nameb", "Benutzernameb", "Hello_world", "URL")
 				.withChangeReminderDays(2)
-				.build();
+				.build(uc);
 		Credentials credentialsc = new CredentialsBuilder("Namec", "Benutzernamec", "Hello_world", "URL")
 				.withChangeReminderDays(4)
-				.build();
+				.build(uc);
 		Credentials credentialsd = new CredentialsBuilder("Named", "Benutzernamed", "Hello_world", "URL")
 				.withChangeReminderDays(6)
-				.build();
+				.build(uc);
 		Credentials credentialse = new CredentialsBuilder("Namee", "Benutzernamee", "Hello_world", "URL")
 				.withChangeReminderDays(5)
-				.build();
+				.build(uc);
 		//legt Testdaten an
 		LocalDateTime sevenDaysEarlier = LocalDateTime.now().minus(7, ChronoUnit.DAYS);
 		LocalDateTime fourDaysEarlier = LocalDateTime.now().minus(6, ChronoUnit.DAYS);

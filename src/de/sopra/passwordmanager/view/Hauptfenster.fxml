@@ -14,52 +14,53 @@
 <?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.shape.Rectangle?>
+<?import com.jfoenix.controls.*?>
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="576.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1"  fx:controller="de.sopra.passwordmanager.view.MainWindowViewController">
    <children>
       <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="450.0" layoutX="310.0" layoutY="80.0" stroke="BLACK" strokeType="INSIDE" width="480.0" />
-      <TextField id="textFieldSearch" layoutX="10.0" layoutY="10.0" />
-      <ComboBox id="comboBoxCategorySelectionMain" layoutX="10.0" layoutY="44.0" prefWidth="171.0" />
-      <ListView id="listViewCredentialsList" layoutX="10.0" layoutY="80.0" prefHeight="450.0" prefWidth="290.0" />
-      <Button id="buttonAddCredentials" layoutX="10.0" layoutY="540.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="124.0" text="Neuer Eintrag" />
-      <Button id="buttonRemoveCredentials" layoutX="163.0" layoutY="540.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="137.0" text="Eintrag löschen" />
-      <TextField id="textFieldCredentialsName" layoutX="430.0" layoutY="85.0" />
+      <JFXTextField fx:id="textFieldSearch" layoutX="10.0" layoutY="10.0" />
+      <JFXComboBox fx:id="comboBoxCategorySelectionMain" layoutX="10.0" layoutY="44.0" prefWidth="171.0" />
+      <JFXListView fx:id="listViewCredentialsList" layoutX="10.0" layoutY="80.0" prefHeight="450.0" prefWidth="290.0" />
+      <JFXButton fx:id="buttonAddCredentials" layoutX="10.0" layoutY="540.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="124.0" text="Neuer Eintrag" />
+      <JFXButton fx:id="buttonRemoveCredentials" layoutX="163.0" layoutY="540.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="137.0" text="Eintrag löschen" />
+      <JFXTextField fx:id="textFieldCredentialsName" layoutX="430.0" layoutY="85.0" />
       <Label layoutX="315.0" layoutY="90.0" text="Name" />
       <Label layoutX="315.0" layoutY="121.0" text="Benutzername" />
       <Label layoutX="315.0" layoutY="152.0" text="Passwort" />
       <Label layoutX="315.0" layoutY="225.0" text="Webseite" />
-      <TextField id="textFieldCredentialsUserName" layoutX="430.0" layoutY="116.0" />
-      <CheckBox id="checkBoxCredentialsUseReminder" layoutX="315.0" layoutY="251.0" mnemonicParsing="false" text="Erinnern an Passwortänderung in" />
+      <JFXTextField fx:id="textFieldCredentialsUserName" layoutX="430.0" layoutY="116.0" />
+      <JFXCheckBox fx:id="checkBoxCredentialsUseReminder" layoutX="315.0" layoutY="251.0" mnemonicParsing="false" text="Erinnern an Passwortänderung in" />
       <Label layoutX="544.0" layoutY="279.0" text="Tagen" />
       <Label layoutX="315.0" layoutY="398.0" text="Notizen" />
-      <ProgressBar id="progressBarCredentialsQuality" layoutX="430.0" layoutY="183.0" prefHeight="20.0" prefWidth="171.0" progress="0.0" />
+      <JFXProgressBar fx:id="progressBarCredentialsQuality" layoutX="430.0" layoutY="183.0" prefHeight="20.0" prefWidth="171.0" progress="0.0" />
       <Label layoutX="315.0" layoutY="310.0" text="Sicherheitsfrage" />
-      <ComboBox id="comboBoxCredentialsSecurityQuestion" layoutX="430.0" layoutY="305.0" prefWidth="171.0" />
-      <Button id="buttonCredentialsAddSecurityQuestion" layoutX="606.0" layoutY="305.0" mnemonicParsing="false" text="+" />
-      <Button id="buttonCredentialsRemoveSecurityQuestion" layoutX="640.0" layoutY="305.0" mnemonicParsing="false" prefWidth="29.0" text="-" />
-      <Label id="labelCredentialsSecurityAnswer" layoutX="430.0" layoutY="336.0" prefWidth="171.0" text="Antwort" />
-      <TextArea id="textFieldCredentialsNotes" layoutX="430.0" layoutY="393.0" prefHeight="132.0" prefWidth="336.0" />
-      <PasswordField id="passwordFieldCredentialsPassword" layoutX="430.0" layoutY="147.0" />
-      <ToggleButton id="buttonCredentialsShowPassword" layoutX="606.0" layoutY="147.0" mnemonicParsing="false" text="Anzeigen" />
-      <Button id="buttonCredentialsCopy" layoutX="690.0" layoutY="147.0" mnemonicParsing="false" text="Kopieren" />
-      <TextField id="textFieldCredentialsWebsite" layoutX="430.0" layoutY="220.0" />
-      <Button id="buttonAddCategoryMain" layoutX="186.0" layoutY="44.0" mnemonicParsing="false" text="+" />
-      <Button id="buttonRemoveCategoryMain" layoutX="271.0" layoutY="44.0" mnemonicParsing="false" prefWidth="29.0" text="-" />
-      <Button id="buttonSearch" layoutX="186.0" layoutY="10.0" mnemonicParsing="false" prefWidth="114.0" text="Lupe" />
-      <Button id="buttonCredentialsGeneratePassword" layoutX="606.0" layoutY="179.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="160.0" text="Neu generieren" />
-      <Button id="buttonEditCredentials" layoutX="310.0" layoutY="540.0" mnemonicParsing="false" text="Eintrag bearbeiten" />
-      <Button id="buttonSaveCredentials" layoutX="604.0" layoutY="540.0" mnemonicParsing="false" text="Änderungen übernehmen" />
-      <ChoiceBox id="choiceBoxCredentialsCategories" layoutX="430.0" layoutY="362.0" prefWidth="171.0" />
+      <JFXComboBox fx:id="comboBoxCredentialsSecurityQuestion" layoutX="430.0" layoutY="305.0" prefWidth="171.0" />
+      <JFXButton fx:id="buttonCredentialsAddSecurityQuestion" layoutX="606.0" layoutY="305.0" mnemonicParsing="false" text="+" />
+      <JFXButton fx:id="buttonCredentialsRemoveSecurityQuestion" layoutX="640.0" layoutY="305.0" mnemonicParsing="false" prefWidth="29.0" text="-" />
+      <Label fx:id="labelCredentialsSecurityAnswer" layoutX="430.0" layoutY="336.0" prefWidth="171.0" text="Antwort" />
+      <TextArea fx:id="textFieldCredentialsNotes" layoutX="430.0" layoutY="393.0" prefHeight="132.0" prefWidth="336.0" />
+      <JFXPasswordField fx:id="passwordFieldCredentialsPassword" layoutX="430.0" layoutY="147.0" />
+      <JFXToggleButton fx:id="buttonCredentialsShowPassword" layoutX="606.0" layoutY="140.0" mnemonicParsing="false" text="Anzeigen" />
+      <JFXButton fx:id="buttonCredentialsCopy" layoutX="690.0" layoutY="147.0" mnemonicParsing="false" text="Kopieren" />
+      <JFXTextField fx:id="textFieldCredentialsWebsite" layoutX="430.0" layoutY="220.0" />
+      <JFXButton fx:id="buttonAddCategoryMain" layoutX="186.0" layoutY="44.0" mnemonicParsing="false" text="+" />
+      <JFXButton fx:id="buttonRemoveCategoryMain" layoutX="271.0" layoutY="44.0" mnemonicParsing="false" prefWidth="29.0" text="-" />
+      <JFXButton fx:id="buttonSearch" layoutX="186.0" layoutY="10.0" mnemonicParsing="false" prefWidth="114.0" text="Lupe" />
+      <JFXButton fx:id="buttonCredentialsGeneratePassword" layoutX="606.0" layoutY="179.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="160.0" text="Neu generieren" />
+      <JFXButton fx:id="buttonEditCredentials" layoutX="310.0" layoutY="540.0" mnemonicParsing="false" text="Eintrag bearbeiten" />
+      <JFXButton fx:id="buttonSaveCredentials" layoutX="604.0" layoutY="540.0" mnemonicParsing="false" text="Änderungen übernehmen" />
+      <ChoiceBox fx:id="choiceBoxCredentialsCategories" layoutX="430.0" layoutY="362.0" prefWidth="171.0" />
       <Label layoutX="315.0" layoutY="367.0" text="Kategorien" />
-      <Button id="buttonCredentialsRemoveCategories" layoutX="688.0" layoutY="362.0" mnemonicParsing="false" prefWidth="29.0" text="-" />
-      <Button id="buttonCredentialsAddCategories" layoutX="606.0" layoutY="362.0" mnemonicParsing="false" text="+" />
-      <Button id="buttonSettings" layoutX="717.0" layoutY="10.0" mnemonicParsing="false" text="Zahnrad" />
+      <JFXButton fx:id="buttonCredentialsRemoveCategories" layoutX="688.0" layoutY="362.0" mnemonicParsing="false" prefWidth="29.0" text="-" />
+      <JFXButton fx:id="buttonCredentialsAddCategories" layoutX="606.0" layoutY="362.0" mnemonicParsing="false" text="+" />
+      <JFXButton fx:id="buttonSettings" layoutX="717.0" layoutY="10.0" mnemonicParsing="false" text="Zahnrad" />
       <Label layoutX="648.0" layoutY="251.0" text="zuletzt geändert am:" />
-      <Label id="lableCredentialsLastChanged" layoutX="648.0" layoutY="272.0" text="Datum" />
+      <Label fx:id="lableCredentialsLastChanged" layoutX="648.0" layoutY="272.0" text="Datum" />
       <Label layoutX="698.0" layoutY="85.0" text="angelegt am:" />
-      <Label id="lableCredentialsCreated" layoutX="698.0" layoutY="104.0" text="Datum" />
-      <Button id="buttonCredentialsEditCategories" layoutX="640.0" layoutY="362.0" mnemonicParsing="false" text="edit" />
-      <Button id="buttonEditCategoryMain" layoutX="220.0" layoutY="44.0" mnemonicParsing="false" prefWidth="46.0" text="edit" />
-      <Spinner id="spinnerCredentialsReminderDays" layoutX="430.0" layoutY="274.0" prefHeight="26.0" prefWidth="100.0" />
+      <Label fx:id="lableCredentialsCreated" layoutX="698.0" layoutY="104.0" text="Datum" />
+      <JFXButton fx:id="buttonCredentialsEditCategories" layoutX="640.0" layoutY="362.0" mnemonicParsing="false" text="edit" />
+      <JFXButton fx:id="buttonEditCategoryMain" layoutX="220.0" layoutY="44.0" mnemonicParsing="false" prefWidth="46.0" text="edit" />
+      <Spinner fx:id="spinnerCredentialsReminderDays" layoutX="430.0" layoutY="274.0" prefHeight="26.0" prefWidth="100.0" />
    </children>
 </AnchorPane>

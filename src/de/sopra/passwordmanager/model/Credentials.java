@@ -6,7 +6,21 @@ import java.util.*;
 /**
  * Die Daten, die zu einem Passwort zusätzlich als Anmeldedaten gespeichert werden und das Passwort selbst.
  */
-public class Credentials extends BasePassword {
+public class Credentials {
+
+    /**
+     * Der tatsächliche Passwortstring. Er liegt nur verschlüsselt im Speicher, außer beim Masterpasswort. In diesem Fall
+     * ist es das tatsächliche Passwort.
+     */
+    private EncryptedString password;
+
+    /**
+     * Der Zeitpunkt, zu dem das Passwort das letzte Mal geändert wurde, gespeichert als lokaler Unix-Zeitstempel.
+     */
+    private LocalDateTime lastChanged;
+
+    private Integer changeReminderDays;
+
     /**
      * Der eindeutige Name der Credentials. Auch in einer anderen Kategorie darf es kein Objekt mit diesem Namen geben
      * Darf nicht <code>null</code> sein.
@@ -41,11 +55,13 @@ public class Credentials extends BasePassword {
      */
     private Set<SecurityQuestion> securityQuestions;
 
-    public Credentials(String name, String userName, String password, LocalDateTime created) {
-        super(password, null, LocalDateTime.now());
+    public Credentials(String name, String userName, EncryptedString password, LocalDateTime created) {
+        this.password = password;
         this.name = name;
         this.userName = userName;
         this.created = created;
+        this.lastChanged = created;
+        this.changeReminderDays = null;
         this.securityQuestions = new HashSet<>();
     }
 
@@ -69,6 +85,18 @@ public class Credentials extends BasePassword {
         return created;
     }
 
+    public Integer getChangeReminderDays() {
+        return changeReminderDays;
+    }
+
+    public EncryptedString getPassword() {
+        return password;
+    }
+
+    public LocalDateTime getLastChanged() {
+        return lastChanged;
+    }
+
     /**
      * Liefert alle {@link SecurityQuestion}, die diesem {@link Credentials} Objekt angehören
      * Die gelieferte {@link Collection} ist unmodifizierbar. Zum {@link SecurityQuestion} hinzuzufügen oder zu entfernen,
@@ -84,6 +112,18 @@ public class Credentials extends BasePassword {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public void setPassword(EncryptedString password) {
+        this.password = password;
+    }
+
+    public void setLastChanged(LocalDateTime lastChanged) {
+        this.lastChanged = lastChanged;
+    }
+
+    public void setChangeReminderDays(Integer changeReminderDays) {
+        this.changeReminderDays = changeReminderDays;
     }
 
     public void setUserName(String userName) {
@@ -102,7 +142,7 @@ public class Credentials extends BasePassword {
         securityQuestions.add(securityQuestion);
     }
 
-    public void addSecurityQuestion(String question, String answer) {
+    public void addSecurityQuestion(EncryptedString question, EncryptedString answer) {
         securityQuestions.add(new SecurityQuestion(question, answer));
     }
 
@@ -128,14 +168,13 @@ public class Credentials extends BasePassword {
                 website.equals(that.website) &&
                 notes.equals(that.notes) &&
                 created.equals(that.created) &&
-                Objects.equals(getLastChanged(), that.getLastChanged()) &&
-                Objects.equals(getChangeReminderDays(), that.getChangeReminderDays()) &&
-                getPassword().equals(that.getPassword()) &&
+                Objects.equals(lastChanged, that.lastChanged) &&
+                Objects.equals(changeReminderDays, that.changeReminderDays) &&
                 securityQuestions.equals(that.securityQuestions);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, userName, website, notes, created, securityQuestions, getLastChanged(), getPassword(), getChangeReminderDays());
+        return Objects.hash(name, userName, website, notes, created, securityQuestions, lastChanged, changeReminderDays);
     }
 }

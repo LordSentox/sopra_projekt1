@@ -1,12 +1,13 @@
 package de.sopra.passwordmanager.util;
 
+import de.sopra.passwordmanager.controller.UtilityController;
 import de.sopra.passwordmanager.model.BasePassword;
 import de.sopra.passwordmanager.model.Credentials;
+import de.sopra.passwordmanager.model.EncryptedString;
 import de.sopra.passwordmanager.model.SecurityQuestion;
 
 import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.HashSet;
+import java.util.*;
 
 /**
  * Builder für {@link Credentials}. Attribute sind gleich denen von {@link Credentials}
@@ -24,13 +25,13 @@ public class CredentialsBuilder {
     private LocalDateTime lastChanged = null;
     private LocalDateTime created = null;
     private String notes = "";
-    private Collection<SecurityQuestion> securityQuestions = new HashSet<>();
+    private Map<String, String> securityQuestions = new HashMap<>();
 
     /**
      * Erstellt einen {@link CredentialsBuilder} für {@link Credentials}, der keine Daten enthält, eingeschlossen der Daten,
      * die in jedem Fall benötigt sind.
      *
-     * @see #build()
+     * @see #build(UtilityController)
      */
     public CredentialsBuilder() {
     }
@@ -42,12 +43,35 @@ public class CredentialsBuilder {
      * @param userName Nutzername zur Anmeldung auf der Netzseite
      * @param password Passwort zur Anmeldung auf der Netzseite
      * @param website  Netzseite, auf die die Anmeldedaten zutreffen
+     * @see #build(UtilityController)
      */
     public CredentialsBuilder(String name, String userName, String password, String website) {
         this.name = name;
         this.userName = userName;
         this.password = password;
         this.website = website;
+    }
+
+    /**
+     * Erstellt einen {@link CredentialsBuilder} für {@link Credentials}, der alle Daten, der gegebenen Credentials enthält.
+     *
+     * @see #build(UtilityController)
+     */
+    public CredentialsBuilder(Credentials cred, UtilityController uc) {
+        this.name = cred.getName();
+        this.userName = cred.getUserName();
+        this.password = uc.decryptText(cred.getPassword());
+        this.website = cred.getWebsite();
+        this.changeReminderDays = cred.getChangeReminderDays();
+        this.created = cred.getCreatedAt();
+        this.lastChanged = cred.getLastChanged();
+        this.notes = cred.getNotes();
+        this.securityQuestions = new HashMap<>();
+        cred.getSecurityQuestions().forEach(securityQuestion -> {
+            String decryptedQuestion = uc.decryptText(securityQuestion.getQuestion());
+            String decryptedAnswer = uc.decryptText(securityQuestion.getAnswer());
+            securityQuestions.put(decryptedQuestion, decryptedAnswer);
+        });
     }
 
     /**
@@ -58,32 +82,35 @@ public class CredentialsBuilder {
      * - Passwort
      * - Website
      *
+     * @param utilityController Der {@link UtilityController}, der die zum verschlüsseln benötigten Methoden bereitstellt
      * @return {@link Credentials}, die die zuvor hinzugefügten Daten enthalten
      * @throws CredentialsBuilderException wenn:
      *                                     - Erforderliche Daten fehlen
-     *                                     - {@code changeReminderDays}, falls angegeben, weniger als 1 Tag ist
+     *                                     - {@code #changeReminderDays}, falls angegeben, weniger als 1 Tag ist
      */
-    public Credentials build() throws CredentialsBuilderException {
-        if (name == null) throw new CredentialsBuilderException("name is null");
-        if (userName == null) throw new CredentialsBuilderException("user name is null");
-        if (password == null) throw new CredentialsBuilderException("password is null");
-        if (website == null) throw new CredentialsBuilderException("website is null");
+    public Credentials build(UtilityController utilityController) throws CredentialsBuilderException {
+        Validate.notNull(name, "CredentialsBuilder: name is null");
+        Validate.notNull(userName, "CredentialsBuilder: userName is null");
+        Validate.notNull(password, "CredentialsBuilder: password is null");
+        Validate.notNull(website, "CredentialsBuilder: website is null");
         if (changeReminderDays != null && changeReminderDays < 1)
             throw new CredentialsBuilderException("change reminder less than 1 day: " + changeReminderDays);
-        LocalDateTime now = LocalDateTime.now();
-        if (created == null) {
-            created = now;
-        }
-        if (lastChanged == null) {
-            lastChanged = now;
-        }
 
-        Credentials credentials = new Credentials(name, userName, password, created);
+        LocalDateTime now = LocalDateTime.now();
+        created = created == null ? now : created;
+        lastChanged = lastChanged == null ? now : lastChanged;
+
+        EncryptedString encryptedPassword = utilityController.encryptText(password);
+
+        Credentials credentials = new Credentials(name, userName, encryptedPassword, created);
         credentials.setNotes(notes);
         credentials.setWebsite(website);
         credentials.setChangeReminderDays(changeReminderDays);
         credentials.setLastChanged(lastChanged);
-        credentials.addSecurityQuestions(securityQuestions);
+        securityQuestions.forEach((question, answer) -> credentials.addSecurityQuestion(
+                new SecurityQuestion(utilityController.encryptText(question), utilityController.encryptText(answer))
+                )
+        );
         return credentials;
     }
 
@@ -179,23 +206,12 @@ public class CredentialsBuilder {
     /**
      * Fügt den {@link Credentials} eine {@link SecurityQuestion} hinzu
      *
-     * @param securityQuestion Die hinzuzufügende Sicherheitsfrage
-     * @return Den Builder selbst
-     */
-    public CredentialsBuilder withSecurityQuestion(SecurityQuestion securityQuestion) {
-        this.securityQuestions.add(securityQuestion);
-        return this;
-    }
-
-    /**
-     * Fügt den {@link Credentials} eine {@link SecurityQuestion} hinzu
-     *
      * @param question Die Frage der hinzuzufügenden Sicherheitsfrage
      * @param answer   Die Antwort der hinzuzufügenden Sicherheitsfrage
      * @return Den Builder selbst
      */
     public CredentialsBuilder withSecurityQuestion(String question, String answer) {
-        this.securityQuestions.add(new SecurityQuestion(question, answer));
+        this.securityQuestions.put(question, answer);
         return this;
     }
 
@@ -205,19 +221,71 @@ public class CredentialsBuilder {
      * @param questions Eine {@link Collection} aller hinzuzufügenden Sicherheitsfragen
      * @return Den Builder selbst
      */
-    public CredentialsBuilder withSecurityQuestions(Collection<SecurityQuestion> questions) {
-        securityQuestions.addAll(questions);
+    public CredentialsBuilder withSecurityQuestions(Map<String, String> questions) {
+        securityQuestions.putAll(questions);
         return this;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public String getWebsite() {
+        return website;
+    }
+
+    public Integer getChangeReminderDays() {
+        return changeReminderDays;
+    }
+
+    public LocalDateTime getLastChanged() {
+        return lastChanged;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return created;
+    }
+
+    public String getNotes() {
+        return notes;
+    }
+
+    public Map<String, String> getSecurityQuestions() {
+        return Collections.unmodifiableMap(securityQuestions);
     }
 
     /**
      * Eine Exception, die bei einem Fehler im Buildprozess des {@link CredentialsBuilder} geworfen wird
      *
-     * @see #build()
+     * @see #build(UtilityController)
      */
     public static class CredentialsBuilderException extends RuntimeException {
         CredentialsBuilderException(String msg) {
             super(msg);
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CredentialsBuilder that = (CredentialsBuilder) o;
+        return Objects.equals(name, that.name) &&
+                Objects.equals(userName, that.userName) &&
+                Objects.equals(password, that.password) &&
+                Objects.equals(website, that.website) &&
+                Objects.equals(changeReminderDays, that.changeReminderDays) &&
+                Objects.equals(lastChanged, that.lastChanged) &&
+                Objects.equals(created, that.created) &&
+                Objects.equals(notes, that.notes) &&
+                Objects.equals(securityQuestions, that.securityQuestions);
     }
 }
