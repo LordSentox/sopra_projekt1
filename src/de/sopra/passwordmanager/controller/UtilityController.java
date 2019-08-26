@@ -5,9 +5,12 @@ import de.sopra.passwordmanager.model.EncryptedString;
 import de.sopra.passwordmanager.util.CredentialsBuilder;
 import exceptions.DecryptionException;
 import exceptions.EncryptionException;
+import org.passay.*;
 
 import java.io.File;
 import java.security.SecureRandom;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -17,12 +20,12 @@ import java.util.Random;
  */
 public class UtilityController {
     public enum Charset {
-        CHARSET_LOWERCASE (new char[] {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o',
-                                      'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'}),
-        CHARSET_UPPERCASE (new char[] {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O',
-                                       'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'}),
-        CHARSET_NUMBER    (new char[] {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'}),
-        CHARSET_SPECIAL   (new char[] {'$', '!', '^', '@', '?', '#', '[', '&', '{', '}', '(', '=', '*', ')', '+', ']'});
+        CHARSET_LOWERCASE(new char[]{'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o',
+                'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'}),
+        CHARSET_UPPERCASE(new char[]{'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O',
+                'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'}),
+        CHARSET_NUMBER(new char[]{'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'}),
+        CHARSET_SPECIAL(new char[]{'$', '!', '^', '@', '?', '#', '[', '&', '{', '}', '(', '=', '*', ')', '+', ']'});
 
         private char[] chars;
 
@@ -46,7 +49,7 @@ public class UtilityController {
 
     // Überprüfe, ob alle Elemente im Array den gleichen, angegebenen Wert haben
     private boolean allHaveValue(int expected, int[] values) {
-        for (int value: values) {
+        for (int value : values) {
             if (value != expected) {
                 return false;
             }
@@ -64,11 +67,9 @@ public class UtilityController {
         while (!accepted) {
             if (missingChars[next] > 0) {
                 accepted = true;
-            }
-            else if (allHaveValue(0, missingChars)) {
+            } else if (allHaveValue(0, missingChars)) {
                 accepted = true;
-            }
-            else {
+            } else {
                 next = random.nextInt(Charset.values().length);
             }
         }
@@ -83,6 +84,7 @@ public class UtilityController {
     /**
      * Generiert ein Passwort, welches den Sicherheitsanforderungen entspricht und dieses wird dann in der GUI angezeigt
      */
+    // TODO: Benutze den PasswordGenerator aus der Bibliothek
     public void generatePassword(CredentialsBuilder credentials) {
         Random random = new Random();
         String password = null;
@@ -163,8 +165,62 @@ public class UtilityController {
      * @param text Das zu überprüfende Passwort
      * @return Es wird ein Wert von 0 bis 100 geliefert, der die Qualität des Passwortes angibt, dabei steht 0 für sehr schlecht und 100 für sehr sicher
      */
+    // TODO: Sollte noch den Nutzernamen bekommen, um es mit dem Passwort zu vergleichen
     int checkQuality(String text) {
-        return 0;
+        // Stelle sicher, dass mindestens ein kleiner und ein großer Buchstabe vorkommt
+        CharacterCharacteristicsRule characterOrdinaryRule = new CharacterCharacteristicsRule();
+        characterOrdinaryRule.getRules().add(new CharacterRule(EnglishCharacterData.LowerCase, 1));
+        characterOrdinaryRule.getRules().add(new CharacterRule(EnglishCharacterData.UpperCase, 1));
+
+        // Höher gewertete Zeichengruppen sind Sonderzeichen und Zahlen
+        CharacterCharacteristicsRule characterSpecialRule = new CharacterCharacteristicsRule();
+        characterSpecialRule.getRules().add(new CharacterRule(EnglishCharacterData.Special, 1));
+        characterSpecialRule.getRules().add(new CharacterRule(EnglishCharacterData.Digit, 1));
+
+        // Es soll nicht zu oft der gleiche Buchstabe benutzt werden.
+        CharacterOccurrencesRule notAllTheSame = new CharacterOccurrencesRule(3);
+
+        // Stelle sicher, dass die Länge nicht zu kurz ist.
+        LengthRule minimumLength = new LengthRule(8, 256);
+
+        // Gibt es ein bestimmtes Doppelzeichen drei oder mehr mal?
+        RepeatCharactersRule repeatCharacters = new RepeatCharactersRule(2, 3);
+
+        Rule[] rules = {characterOrdinaryRule,
+                characterSpecialRule,
+                notAllTheSame,
+                minimumLength,
+                repeatCharacters};
+        Float[] weights = {0.5f, 0.75f, 0.5f, 1.0f, 0.75f};
+
+        PasswordData pwData = new PasswordData(text);
+
+        // Für jede Regel die eingehalten wird, wird das Gewicht als Wert der unangepassten Qualität hinzugefügt
+        float quality = 0.f;
+        for (int i = 0; i < rules.length; ++i) {
+            if (rules[i].validate(pwData).isValid()) {
+                quality += weights[i];
+            }
+        }
+
+        // Die Qualität auf einen int im Bereich von 0 bis 100 anpassen.
+        float totalWeight = 0.f;
+        for (float weight: weights) {
+            totalWeight += weight;
+        }
+        float percent = quality / totalWeight * 100.f;
+
+        // Überprüfe auf Bereichsüberschreitungen und gebe den entsprechenden Wert zurück
+        int wholePercent;
+        if (percent <= 0.5f) {
+            wholePercent = 0;
+        } else if (percent >= 99.5f) {
+            wholePercent = 100;
+        } else {
+            wholePercent = (int) percent;
+        }
+
+        return wholePercent;
     }
 
     /**
