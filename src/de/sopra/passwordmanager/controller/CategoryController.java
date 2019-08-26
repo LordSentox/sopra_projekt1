@@ -52,7 +52,7 @@ public class CategoryController {
         Category category = new Category(name);
         superCategory.addSubCategory(category);
         passwordManagerController.getMainWindowAUI().refreshEntry();
-        passwordManagerController.getMainWindowAUI().refreshEntryList(null);
+        passwordManagerController.getMainWindowAUI().refreshLists();
     }
 
     /**
