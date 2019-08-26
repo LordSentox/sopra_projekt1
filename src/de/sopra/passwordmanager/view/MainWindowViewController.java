@@ -1,7 +1,9 @@
 package de.sopra.passwordmanager.view;
 
+import de.sopra.passwordmanager.controller.CategoryController;
 import de.sopra.passwordmanager.controller.CredentialsController;
 import de.sopra.passwordmanager.controller.PasswordManagerController;
+import de.sopra.passwordmanager.model.Category;
 import de.sopra.passwordmanager.model.Credentials;
 import de.sopra.passwordmanager.util.Path;
 import javafx.fxml.FXML;
@@ -11,10 +13,13 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import de.sopra.passwordmanager.util.CredentialsBuilder;
 
+import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
 
 import java.util.List;
+
+import org.junit.Assert;
 
 public class MainWindowViewController implements MainWindowAUI {
 
@@ -25,6 +30,7 @@ public class MainWindowViewController implements MainWindowAUI {
     private LoginViewController loginViewController;
     private MasterPasswordViewController masterPasswordViewController;
     @FXML private JFXTextField textFieldSearch;
+    @FXML private JFXComboBox<Category> comboBoxCategorySelectionMain;
 
     public void setPasswordManagerController(PasswordManagerController passwordManagerController) {
 		this.passwordManagerController = passwordManagerController;
@@ -61,12 +67,13 @@ public class MainWindowViewController implements MainWindowAUI {
 			FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("../view/Einstellungen.fxml"));
 			settingsPane = fxmlLoader.load();
 			settingsViewController = (SettingsViewController) fxmlLoader.getController();
-		
+			
 			Stage settingsStage = new Stage();
 			Scene settingsScene = new Scene(settingsPane);
-			settingsScene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+			//settingsScene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 			settingsStage.setScene(settingsScene);
 			//settingsViewController.setStage(settingsStage);
+			settingsStage.show();
 		}
 		catch(Exception e) {
 			throw new RuntimeException(e);
@@ -75,12 +82,14 @@ public class MainWindowViewController implements MainWindowAUI {
 
     public void onSearchClicked() {
     	
-    	CredentialsController cController = passwordManagerController.getCredentialsController();
+    	CredentialsController credentialsController = passwordManagerController.getCredentialsController();
+    	CategoryController categoryController = passwordManagerController.getCategoryController();
     	
     	//TODO: Add correct Method
-    	Path categoryPath = new Path("");
+    	Category category = comboBoxCategorySelectionMain.getValue();
+    	Path categoryPath = categoryController.getPathForCategory(category);
     	String pattern = textFieldSearch.getText();
-    	cController.filterCredentials(categoryPath, pattern);
+    	credentialsController.filterCredentials(categoryPath, pattern);
     }
 
     public void onAddCategoryClicked() {
@@ -93,7 +102,7 @@ public class MainWindowViewController implements MainWindowAUI {
 		
 			Stage categoryEditStage = new Stage();
 			Scene categoryEditScene = new Scene(categoryEditPane);
-			categoryEditScene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+			//categoryEditScene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 			categoryEditStage.setScene(categoryEditScene);
 			//categoryEditViewController.setStage(categoryEditStage);
 		}
@@ -113,7 +122,7 @@ public class MainWindowViewController implements MainWindowAUI {
 		
 			Stage categoryEditStage = new Stage();
 			Scene categoryEditScene = new Scene(categoryEditPane);
-			categoryEditScene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+			//categoryEditScene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 			categoryEditStage.setScene(categoryEditScene);
 			//categoryEditViewController.setStage(categoryEditStage);
 		}
@@ -149,7 +158,7 @@ public class MainWindowViewController implements MainWindowAUI {
 		
 			Stage securityQuestionAddStage = new Stage();
 			Scene securityQuestionAddScene = new Scene(securityQuestionAddPane);
-			securityQuestionAddScene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+			//securityQuestionAddScene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 			securityQuestionAddStage.setScene(securityQuestionAddScene);
 			//securityQuestionViewController.setStage(securityQuestionAddStage);
 		}
