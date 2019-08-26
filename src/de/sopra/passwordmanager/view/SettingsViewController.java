@@ -48,7 +48,7 @@ public class SettingsViewController {
 		fileChooser.getExtensionFilters().addAll(new ExtensionFilter("XML", "*.xml"));
 		File fileToOpen = fileChooser.showOpenDialog(null);
 		//TODO UtilityController -> import
-		//nutzt gleiche onLoginClicked() Methode wie Hauptlogin, muss entsprechend überschrieben werden
+		//Login Fenster wird geöffnet und richtige Vorraussetzungen müssen für onLoginClicked gegeben sein
 		
 	}
 
