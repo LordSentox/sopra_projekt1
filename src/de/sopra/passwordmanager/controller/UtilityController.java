@@ -3,6 +3,7 @@ package de.sopra.passwordmanager.controller;
 import aes.AES;
 import de.sopra.passwordmanager.model.EncryptedString;
 import exceptions.DecryptionException;
+import exceptions.EncryptionException;
 
 import java.io.File;
 
@@ -62,7 +63,13 @@ public class UtilityController {
      * @return Der zurückgegebene String ist die verschlüsselte Version des eingegebenen Textes
      */
     public EncryptedString encryptText(String text) {
-        return null;
+        try {
+            return new EncryptedString(AES.encrypt(text, passwordManagerController.getPasswordManager().getMasterPassword()));
+        } catch (EncryptionException e) {
+            System.out.println("Ein Text konnte nicht verschlüsselt werden.");
+            System.out.println(e.toString());
+            return null;
+        }
     }
 
     /**
