@@ -9,8 +9,11 @@ import de.sopra.passwordmanager.util.Path;
 import de.sopra.passwordmanager.util.Validate;
 import de.sopra.passwordmanager.view.MainWindowAUI;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author Etienne
@@ -90,7 +93,20 @@ public class CredentialsController {
      * @see CredentialsBuilder
      */
     public void filterCredentials(Path categoryPath, String pattern) {
-
+        Collection<Credentials> credentials = passwordManagerController.getPasswordManager().getRootCategory().getAllCredentials();
+        Stream<Credentials> credentialsStream = credentials.stream();
+        if(categoryPath != null) {
+            Category category = passwordManagerController.getPasswordManager().getRootCategory().getCategoryByPath(categoryPath);
+            if(category == null) {
+                passwordManagerController.getMainWindowAUI().refreshEntryList(new ArrayList<>());
+                return;
+            }
+            credentialsStream = credentialsStream.filter(cred -> category.getAllCredentials().contains(cred));
+        }
+        if(pattern != null) {
+            credentialsStream = credentialsStream.filter(cred -> cred.getName().contains(pattern));
+        }
+        passwordManagerController.getMainWindowAUI().refreshEntryList(credentialsStream.collect(Collectors.toList()));
     }
 
     /**

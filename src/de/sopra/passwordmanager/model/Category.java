@@ -2,10 +2,7 @@ package de.sopra.passwordmanager.model;
 
 import de.sopra.passwordmanager.util.Path;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Enthält {@link Credentials} und Unterkategorien, die in die Kategorie einsortiert wurden. Es gibt eine rootCategory im
@@ -157,4 +154,9 @@ public class Category {
         return categoryHashMap;
     }
 
+    public Set<Credentials> getAllCredentials() {
+        Set<Credentials> theseCredentials = new HashSet<>(credentials);
+        subCategories.forEach(category -> theseCredentials.addAll(category.getAllCredentials()));
+        return theseCredentials;
+    }
 }
