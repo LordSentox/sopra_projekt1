@@ -1,28 +1,30 @@
 package de.sopra.passwordmanager.view;
 
+import de.sopra.passwordmanager.controller.CredentialsController;
 import de.sopra.passwordmanager.controller.PasswordManagerController;
 import de.sopra.passwordmanager.model.Credentials;
+import de.sopra.passwordmanager.util.Path;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import de.sopra.passwordmanager.util.CredentialsBuilder;
 
+import com.jfoenix.controls.JFXPasswordField;
+import com.jfoenix.controls.JFXTextField;
+
 import java.util.List;
 
 public class MainWindowViewController implements MainWindowAUI {
 
     private PasswordManagerController passwordManagerController;
-
     private SecurityQuestionViewController securityQuestionViewController;
-
     private CategoryEditViewController categoryEditViewController;
-
     private SettingsViewController settingsViewController;
-
     private LoginViewController loginViewController;
-
     private MasterPasswordViewController masterPasswordViewController;
+    @FXML private JFXTextField textFieldSearch;
 
     public void setPasswordManagerController(PasswordManagerController passwordManagerController) {
 		this.passwordManagerController = passwordManagerController;
@@ -72,7 +74,13 @@ public class MainWindowViewController implements MainWindowAUI {
     }
 
     public void onSearchClicked() {
-
+    	
+    	CredentialsController cController = passwordManagerController.getCredentialsController();
+    	
+    	//TODO: Add correct Method
+    	Path categoryPath = new Path("");
+    	String pattern = textFieldSearch.getText();
+    	cController.filterCredentials(categoryPath, pattern);
     }
 
     public void onAddCategoryClicked() {
@@ -206,5 +214,11 @@ public class MainWindowViewController implements MainWindowAUI {
     public void showError(String error) {
 
     }
+
+	@Override
+	public void refreshEntry(CredentialsBuilder credentials) {
+		// TODO Auto-generated method stub
+		
+	}
 
 }
