@@ -10,10 +10,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
 public class Main extends Application{
-	
-	private Stage mainStage;
-	private MainWindowViewController mainWindowViewController;
-	
+		
 	@Override
 	public void start(Stage primaryStage) {
 		try {
@@ -21,10 +18,10 @@ public class Main extends Application{
 			AnchorPane mainPane = new AnchorPane();
 			FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("../view/Hauptfenster.fxml"));
 			mainPane = fxmlLoader.load();
-			mainWindowViewController = (MainWindowViewController) fxmlLoader.getController();
+			MainWindowViewController mainWindowViewController = (MainWindowViewController) fxmlLoader.getController();
 			mainWindowViewController.setPasswordManagerController(new PasswordManagerController());
 			
-			mainStage = new Stage();
+			Stage mainStage = new Stage();
 			Scene mainScene = new Scene(mainPane);
 			mainScene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 			mainStage.setScene(mainScene);
