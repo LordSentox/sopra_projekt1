@@ -43,7 +43,6 @@ public class CredentialsBuilder {
      * @param userName Nutzername zur Anmeldung auf der Netzseite
      * @param password Passwort zur Anmeldung auf der Netzseite
      * @param website  Netzseite, auf die die Anmeldedaten zutreffen
-     *
      * @see #build(UtilityController)
      */
     public CredentialsBuilder(String name, String userName, String password, String website) {
@@ -55,8 +54,6 @@ public class CredentialsBuilder {
 
     /**
      * Erstellt einen {@link CredentialsBuilder} für {@link Credentials}, der alle Daten, der gegebenen Credentials enthält.
-     *
-
      *
      * @see #build(UtilityController)
      */
@@ -92,7 +89,10 @@ public class CredentialsBuilder {
      *                                     - {@code #changeReminderDays}, falls angegeben, weniger als 1 Tag ist
      */
     public Credentials build(UtilityController utilityController) throws CredentialsBuilderException {
-        if (name == null || userName == null || password == null || website == null) throw new CredentialsBuilderException("required data missing");
+        Validate.notNull(name, "CredentialsBuilder: name is null");
+        Validate.notNull(userName, "CredentialsBuilder: userName is null");
+        Validate.notNull(password, "CredentialsBuilder: password is null");
+        Validate.notNull(website, "CredentialsBuilder: website is null");
         if (changeReminderDays != null && changeReminderDays < 1)
             throw new CredentialsBuilderException("change reminder less than 1 day: " + changeReminderDays);
 
@@ -108,8 +108,8 @@ public class CredentialsBuilder {
         credentials.setChangeReminderDays(changeReminderDays);
         credentials.setLastChanged(lastChanged);
         securityQuestions.forEach((question, answer) -> credentials.addSecurityQuestion(
-                    new SecurityQuestion(utilityController.encryptText(question), utilityController.encryptText(answer))
-            )
+                new SecurityQuestion(utilityController.encryptText(question), utilityController.encryptText(answer))
+                )
         );
         return credentials;
     }
