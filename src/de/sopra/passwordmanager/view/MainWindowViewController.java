@@ -19,6 +19,10 @@ public class MainWindowViewController implements MainWindowAUI {
 
     private MasterPasswordViewController masterPasswordViewController;
 
+    public void setPasswordManagerController(PasswordManagerController passwordManagerController) {
+		this.passwordManagerController = passwordManagerController;
+	}
+    
     public PasswordManagerController getPasswordManagerController() {
         return passwordManagerController;
     }
