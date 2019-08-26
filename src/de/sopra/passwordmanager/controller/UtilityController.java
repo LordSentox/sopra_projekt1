@@ -191,12 +191,12 @@ public class UtilityController {
                 notAllTheSame,
                 minimumLength,
                 repeatCharacters};
-        Float[] weights = {0.5f, 0.75f, 0.5f, 1.0f, 0.75f};
+        double[] weights = {0.5f, 0.75f, 0.5f, 1.0f, 0.75f};
 
         PasswordData pwData = new PasswordData(text);
 
         // Für jede Regel die eingehalten wird, wird das Gewicht als Wert der unangepassten Qualität hinzugefügt
-        float quality = 0.f;
+        double quality = 0.f;
         for (int i = 0; i < rules.length; ++i) {
             if (rules[i].validate(pwData).isValid()) {
                 quality += weights[i];
@@ -204,17 +204,19 @@ public class UtilityController {
         }
 
         // Die Qualität auf einen int im Bereich von 0 bis 100 anpassen.
-        float totalWeight = 0.f;
-        for (float weight: weights) {
+        double totalWeight = 0.f;
+        for (double weight: weights) {
             totalWeight += weight;
         }
-        float percent = quality / totalWeight * 100.f;
+        double percent = quality / totalWeight * 100.f;
 
         // Überprüfe auf Bereichsüberschreitungen und gebe den entsprechenden Wert zurück
         int wholePercent;
-        if (percent <= 0.5f) {
+        final double LOWEST_POINTS = 0.5;
+        final double HIGHEST_POINTS = 99.5;
+        if (percent <= LOWEST_POINTS) {
             wholePercent = 0;
-        } else if (percent >= 99.5f) {
+        } else if (percent >= HIGHEST_POINTS) {
             wholePercent = 100;
         } else {
             wholePercent = (int) percent;
