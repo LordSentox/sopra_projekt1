@@ -1,7 +1,6 @@
 package de.sopra.passwordmanager.view;
 
 import com.jfoenix.controls.JFXTextField;
-
 import javafx.fxml.FXML;
 import javafx.stage.Stage;
 

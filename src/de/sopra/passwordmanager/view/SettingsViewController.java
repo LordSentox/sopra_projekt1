@@ -1,20 +1,14 @@
 package de.sopra.passwordmanager.view;
 
-import java.io.File;
-
-import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
-
-import javax.swing.JDialog;
-import javax.swing.JOptionPane;
-
-import de.sopra.passwordmanager.controller.PasswordManagerController;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
+
+import javax.swing.*;
+import java.io.File;
 
 public class SettingsViewController {
 

@@ -1,11 +1,12 @@
 package de.sopra.passwordmanager.controller;
 
 import de.sopra.passwordmanager.controller.PasswordManagerControllerDummy.MainView;
+import de.sopra.passwordmanager.model.Category;
 import de.sopra.passwordmanager.model.Credentials;
-import de.sopra.passwordmanager.model.EncryptedString;
 import de.sopra.passwordmanager.model.PasswordManager;
 import de.sopra.passwordmanager.model.SecurityQuestion;
 import de.sopra.passwordmanager.util.CredentialsBuilder;
+import de.sopra.passwordmanager.util.Path;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -16,7 +17,9 @@ import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * <h1>projekt1</h1>
@@ -41,23 +44,51 @@ public class CredentialsControllerTest {
         pm = pmc.getPasswordManager();
         mainView =  (MainView) this.pmc.getMainWindowAUI();
         uc = pmc.getUtilityController();
+
+        Category sub = new Category("sub");
+        pm.getRootCategory().addSubCategory(sub);
+        Category bus = new Category("bus");
+        pm.getRootCategory().addSubCategory(bus);
     }
 
-    //region Save Credentials
+    //region Add Credentials
     @Test
-    public void saveCredentialsTestBasic() {
+    public void addCredentialsTest() {
         CredentialsBuilder credBuilder = new CredentialsBuilder()
                 .withName("cred1")
                 .withUserName("user1")
                 .withPassword("passwort123")
                 .withWebsite("www.hallo.de");
 
-        cc.saveCredentials(null, credBuilder);
-        Assert.assertTrue(pmc.getPasswordManager().getRootCategory().getCredentials().contains(credBuilder.build(uc)));
+        Set<Category> categories = new HashSet<>();
+        Category sub = pm.getRootCategory().getCategoryByPath(Path.ROOT_CATEGORY_PATH.createChildPath("sub"));
+        categories.add(sub);
+
+        cc.addCredentials(credBuilder, categories);
+        Assert.assertTrue(sub.getCredentials().contains(credBuilder.build(uc)));
     }
 
     @Test
-    public void saveCredentialsTestReplace() {
+    public void addCredentialsTestRefreshes() {
+        CredentialsBuilder credBuilder = new CredentialsBuilder()
+                .withName("cred1")
+                .withUserName("user1")
+                .withPassword("passwort123")
+                .withWebsite("www.hallo.de");
+
+        pmc.getMainWindowAUI().refreshEntryList(new ArrayList<>());
+
+        Set<Category> categories = new HashSet<>();
+        Category sub = pm.getRootCategory().getCategoryByPath(Path.ROOT_CATEGORY_PATH.createChildPath("sub"));
+        categories.add(sub);
+
+        cc.addCredentials(credBuilder, categories);
+        Assert.assertTrue("adding Credentials failed", sub.getCredentials().contains(credBuilder.build(uc)));
+        Assert.assertTrue("entry list didn't refresh", mainView.getCurrentCredentialsList().contains(credBuilder.build(uc)));
+    }
+
+    @Test
+    public void updateCredentialsTest() {
         CredentialsBuilder credBuilder1 = new CredentialsBuilder()
                 .withName("cred1")
                 .withUserName("user1")
@@ -70,48 +101,65 @@ public class CredentialsControllerTest {
                 .withPassword("456passwort")
                 .withWebsite("www.hi.com");
 
-        cc.saveCredentials(null, credBuilder1);
-        Assert.assertTrue("Credentials not saved", pm.getRootCategory().getCredentials().contains(credBuilder1.build(uc)));
-        cc.saveCredentials(credBuilder1.build(uc), credBuilder2);
+        Set<Category> categories = new HashSet<>();
+        Category sub = pm.getRootCategory().getCategoryByPath(Path.ROOT_CATEGORY_PATH.createChildPath("sub"));
+        categories.add(sub);
+        cc.addCredentials(credBuilder1, categories);
 
+        Set<Category> categories2 = new HashSet<>();
+        Category bus = pm.getRootCategory().getCategoryByPath(Path.ROOT_CATEGORY_PATH.createChildPath("bus"));
+        categories2.add(bus);
+
+        Assert.assertTrue("Credentials not added to category", sub.getCredentials().contains(credBuilder1.build(uc)));
+        Credentials obar = sub.getCredentials().stream().findFirst().get();
+        cc.updateCredentials(obar, credBuilder2, categories2);
+        Assert.assertFalse("Credentials still in old category", sub.getCredentials().contains(obar));
+        Assert.assertTrue("Credentials not in new category", bus.getCredentials().contains(obar));
         //Nach dem ersetzen darf nur 1 Eintrag im Passwortmanager existieren und dieser muss mit cred2 übereinstimmen
-        Assert.assertEquals("Not exactly 1 Credentials saved after replacing",1, pm.getRootCategory().getCredentials().size());
-        Assert.assertTrue("Credentials not replaced", pm.getRootCategory().getCredentials().contains(credBuilder2.build(uc)));
+        Assert.assertEquals("Not exactly 1 Credentials saved after replacing",1, pm.getRootCategory().getAllCredentials().size());
+        Assert.assertTrue("Credentials not replaced", pm.getRootCategory().getAllCredentials().contains(obar));
     }
 
-    @Test
-    public void saveCredentialsTestReplaceSameObject() {
-        CredentialsBuilder credBuilder = new CredentialsBuilder()
-                .withName("cred")
-                .withUserName("user1")
-                .withPassword("passwort123")
-                .withWebsite("www.hallo.de");
-        cc.saveCredentials(null, credBuilder);
-        Assert.assertTrue(pm.getRootCategory().getCredentials().contains(credBuilder.build(uc)));
-        cc.saveCredentials(credBuilder.build(uc), credBuilder);
-
-        //Nach dem ersetzen darf nur 1 Eintrag im Passwortmanager existieren und dieser muss mit cred übereinstimmen
-        Assert.assertEquals(1, pm.getRootCategory().getCredentials().size());
-        Assert.assertTrue(pm.getRootCategory().getCredentials().contains(credBuilder.build(uc)));
-    }
-
-    @Test
-    public void saveCredentialsTestNull() {
-        Credentials cred = new CredentialsBuilder()
+    public void updateCredentialsTestNewNull() {
+        CredentialsBuilder credBuilder1 = new CredentialsBuilder()
                 .withName("cred1")
                 .withUserName("user1")
                 .withPassword("passwort123")
-                .withWebsite("www.hallo.de")
-                .build(uc);
+                .withWebsite("www.hallo.de");
 
-        cc.saveCredentials(cred, null);
-        Assert.assertEquals("Entries changed while trying to replace Credentials with null Credentials",0, pm.getRootCategory().getCredentials().size());
-        cc.saveCredentials(null, null);
-        Assert.assertEquals("Entries changed while trying to insert null Credentials", 0, pm.getRootCategory().getCredentials().size());
+        Set<Category> categories = new HashSet<>();
+        Category sub = pm.getRootCategory().getCategoryByPath(Path.ROOT_CATEGORY_PATH.createChildPath("sub"));
+        categories.add(sub);
+        cc.addCredentials(credBuilder1, categories);
+
+        Set<Category> categories2 = new HashSet<>();
+        Category bus = pm.getRootCategory().getCategoryByPath(Path.ROOT_CATEGORY_PATH.createChildPath("bus"));
+        categories2.add(bus);
+
+        Assert.assertTrue("Credentials not added to category", sub.getCredentials().contains(credBuilder1.build(uc)));
+        Credentials obar = sub.getCredentials().stream().findFirst().get();
+        cc.updateCredentials(obar, null, categories2);
+        Assert.assertTrue("Credentials moved category", sub.getCredentials().contains(obar));
+        Assert.assertFalse("Credentials not other category", bus.getCredentials().contains(obar));
+        //Nach dem ersetzen darf nur 1 Eintrag im Passwortmanager existieren und dieser muss mit cred2 übereinstimmen
+        Assert.assertEquals("Not exactly 1 Credentials saved after replacing",1, pm.getRootCategory().getAllCredentials().size());
+        Assert.assertTrue("Credentials not replaced", pm.getRootCategory().getAllCredentials().contains(obar));
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void updateCredentialsTestOldNull() {
+        CredentialsBuilder credBuilder = new CredentialsBuilder()
+                .withName("cred1")
+                .withUserName("user1")
+                .withPassword("passwort123")
+                .withWebsite("www.hallo.de");
+
+        Set<Category> categories = new HashSet<>();
+        cc.updateCredentials(null, credBuilder, categories);
     }
 
     @Test
-    public void saveCredentialsTestOldCredentialsNotExist() {
+    public void updateCredentialsTestOldCredentialsNotExist() {
         Credentials cred1 = new CredentialsBuilder()
                 .withName("cred1")
                 .withUserName("user1")
@@ -125,16 +173,18 @@ public class CredentialsControllerTest {
                 .withPassword("456passwort")
                 .withWebsite("www.bye.com");
 
+
+        Set<Category> categories = new HashSet<>();
         //Vorher, wie nachher darf kein Eintrag im Passwortmanager existieren, da cred1 nicht existiert
         Assert.assertEquals("Entries not empty", 0, pm.getRootCategory().getCredentials().size());
-        cc.saveCredentials(cred1, credBuilder2);
+        cc.updateCredentials(cred1, credBuilder2, categories);
         Assert.assertEquals("Entries changed after trying to replace Credentials, that do not exist", 0, pm.getRootCategory().getCredentials().size());
     }
     //endregion
 
     //region  Remove Credentials
     @Test
-    public void removeCredentialsTestView() {
+    public void removeCredentialsTestRefreshes() {
         // Werden Credentials aus dem MainView auch gelöscht?
         Credentials credentials = new CredentialsBuilder()
                 .withName("Hello")
@@ -328,7 +378,7 @@ public class CredentialsControllerTest {
         Assert.assertEquals("password is not shown", password, mainView.getPasswordShown());
 
         cc.setPasswordShown(credBuilder, false);
-        Assert.assertNull("password is shown", mainView.getPasswordShown());
+        Assert.assertEquals("password is shown", "", mainView.getPasswordShown());
     }
     //endregion
 
@@ -338,16 +388,14 @@ public class CredentialsControllerTest {
     public void clearPasswordFromClipboardTest() {
         // Das Passwort muss aus der Zwischenablage gelöscht werden, wenn es in ihr enthalten ist
         String rawPassword = "Passwort123";
-        EncryptedString encPassword = this.pmc.getUtilityController().encryptText(rawPassword);
         CredentialsBuilder credBuilder = new CredentialsBuilder("Super Secret", "bonehead27", rawPassword, "lol5.org");
-        setClipboardContents(encPassword.getEncryptedContent());
+        setClipboardContents(credBuilder.getPassword());
 
         this.cc.clearPasswordFromClipboard(credBuilder);
         Assert.assertNotEquals("Password was not removed from clipboard", rawPassword, getClipboardContents());
 
         // Die Zwischenablage darf nicht verändert werden, wenn sich das Passwort nicht in ihr befindet
         rawPassword = "MeinPasswort";
-        encPassword = this.pmc.getUtilityController().encryptText(rawPassword);
         credBuilder = new CredentialsBuilder("Super Secret", "bonehead27", rawPassword, "lol5.org");
         setClipboardContents("NichtMeinPasswort");
 

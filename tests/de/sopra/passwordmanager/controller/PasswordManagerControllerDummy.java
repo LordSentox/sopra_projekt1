@@ -30,6 +30,7 @@ public class PasswordManagerControllerDummy {
         controller.setLoginViewAUI(createLogin());
         controller.setMainWindowAUI(createMainWindow(controller));
         controller.setMasterPasswordViewAUI(createMasterPass());
+        controller.getPasswordManager().setMasterPassword("Hey123");
         return controller;
     }
 
