@@ -78,7 +78,7 @@ public class CredentialsController {
      * @see CredentialsBuilder
      */
     public void removeSecurityQuestion(String question, String answer, CredentialsBuilder credentials) throws NullPointerException{
-
+        credentials.withoutSecurityQuestion(question, answer);
     }
 
     /**

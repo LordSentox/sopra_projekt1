@@ -226,6 +226,11 @@ public class CredentialsBuilder {
         return this;
     }
 
+    public CredentialsBuilder withoutSecurityQuestion(String question, String answer) {
+        securityQuestions.remove(question, answer);
+        return this;
+    }
+
     public String getName() {
         return name;
     }
