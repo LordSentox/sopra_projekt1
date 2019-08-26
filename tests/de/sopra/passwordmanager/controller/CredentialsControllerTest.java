@@ -327,7 +327,7 @@ public class CredentialsControllerTest {
         Assert.assertEquals("password is not shown", password, mainView.getPasswordShown());
 
         cc.setPasswordShown(credBuilder, false);
-        Assert.assertNull("password is shown", mainView.getPasswordShown());
+        Assert.assertEquals("password is shown", "", mainView.getPasswordShown());
     }
     //endregion
 

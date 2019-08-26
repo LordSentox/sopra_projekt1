@@ -133,7 +133,11 @@ public class CredentialsController {
      * @param visible     Falls 'true', soll das Passwort im Klartext angezeigt werden, sonst nur Sternchen
      */
     public void setPasswordShown(CredentialsBuilder credentials, boolean visible) {
-
+        if (visible) {
+            passwordManagerController.getMainWindowAUI().refreshEntry(credentials);
+        } else {
+            passwordManagerController.getMainWindowAUI().refreshEntry();
+        }
     }
 
     /**
