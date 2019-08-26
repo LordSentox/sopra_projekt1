@@ -1,6 +1,9 @@
 package de.sopra.passwordmanager.view;
 
 import com.jfoenix.controls.JFXTextField;
+
+import de.sopra.passwordmanager.controller.CredentialsController;
+import de.sopra.passwordmanager.util.CredentialsBuilder;
 import javafx.fxml.FXML;
 import javafx.stage.Stage;
 
@@ -22,7 +25,10 @@ public class SecurityQuestionViewController {
     public void onSaveClicked() {
     	//TODO Credentials getter in MainWindowViewController
     	//mainWindowViewController.getPasswordManagerController().getCredentialsController().addSecurityQuestion(textFieldQuestion.getText(), textFieldAnswer.getText()), Credentials ;
-    	stage.close();	
+    	CredentialsBuilder credBuilder = mainWindowViewController.getCredentialsBuilder();
+    	CredentialsController credController = mainWindowViewController.getPasswordManagerController().getCredentialsController();
+    	credController.addSecurityQuestion(textFieldQuestion.getText(), textFieldAnswer.getText(), credBuilder);
+        stage.close();	
     }
 
 }
