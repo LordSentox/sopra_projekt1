@@ -3,6 +3,7 @@ package de.sopra.passwordmanager.model;
 import de.sopra.passwordmanager.util.Path;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Enthält {@link Credentials} und Unterkategorien, die in die Kategorie einsortiert wurden. Es gibt eine rootCategory im
@@ -17,17 +18,17 @@ public class Category {
     /**
      * Alle Credentials, die dieser Kategorie zugeordnet sind.
      */
-    private Collection<Credentials> credentials;
+    private Set<Credentials> credentials;
 
     /**
      * Die Liste aller Kategorien, welche der aktuellen Kategorie untergeordnet sind.
      */
-    private Collection<Category> subCategories;
+    private Set<Category> subCategories;
 
     public Category(String name) {
         this.name = name;
-        this.credentials = new ArrayList<>();
-        this.subCategories = new ArrayList<>();
+        this.credentials = new HashSet<>();
+        this.subCategories = new HashSet<>();
     }
 
     public String getName() {
@@ -158,5 +159,25 @@ public class Category {
         Set<Credentials> theseCredentials = new HashSet<>(credentials);
         subCategories.forEach(category -> theseCredentials.addAll(category.getAllCredentials()));
         return theseCredentials;
+    }
+    /**
+     * Durchsucht alle untergeordneten Kategorien nach Kategorien mit dem gegebenen Namen
+     *
+     * @param name der Name der zu suchenden Kategorie
+     * @return eine Liste aller gefundenen Kategorien
+     */
+    public List<Category> findCategories(String name) {
+        List<Category> collect = subCategories.stream()
+                .filter(category -> category.getName().equals(name))
+                .collect(Collectors.toList());
+        for (Category category : subCategories) {
+            collect.addAll(category.findCategories(name));
+        }
+        return collect;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, subCategories);
     }
 }
