@@ -35,7 +35,8 @@ public class MasterPasswordViewController implements MasterPasswordViewAUI {
 
     public void onPasswordChanged() {
     	//int quality = mainWindowViewController.getPasswordManagerController().getUtilityController().checkQuality(passwordFieldSet.getText());
-    	refreshQuality(quality);
+    	//CheckQuality im UtilityController muss public sein
+    	//refreshQuality(quality); 
     }
     
     public void onMasterPasswordCancelClicked(){
@@ -45,7 +46,13 @@ public class MasterPasswordViewController implements MasterPasswordViewAUI {
     public void refreshQuality(int quality) {
     	double progress = quality / 100;  
     	progressBarQuality.setProgress(progress); //progressBarQuality erwartet qualität zwischen 0 und 1
-
+    	
+    	if (progress<0.3){
+    		progressBarQuality.setStyle("-fx-accent: red;");
+    	}else if (progress>=0.3 && progress <= 0.6){
+    		progressBarQuality.setStyle("-fx-accent: yellow;");
+    	}else{
+    		progressBarQuality.setStyle("-fx-accent: green;");
+    	}
     }
-
 }
