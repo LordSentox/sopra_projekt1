@@ -59,7 +59,7 @@ public class CategoryController {
      * Entfernt die Kategorie aus dem Datenmodell.
      * Je nach übergebenem Boolean werden die enthaltenen Credentials und Unterkategorien mit gelöscht oder nicht.
      *
-     * @param category             Der absolute Pfad zur zu löschenden Kategorie, darf nicht Null sein
+     * @param categoryPath             Der absolute Pfad zur zu löschenden Kategorie, darf nicht Null sein
      * @param removeCredentialsToo gibt an, ob die enthaltenen Credentials und Unterkategorien mit gelöscht werden oder nicht.
      *                             <p>
      *                             Wenn nur die Kategorie gelöscht werden soll, dann müssen die enthaltenen Unterkategorien und Anmeldedaten
@@ -71,14 +71,13 @@ public class CategoryController {
      *                             <p>
      *                             Dann wird die Referenz auf die zu Löschende Kategorie entfernt.
      */
-    public void removeCategory(Path category, boolean removeCredentialsToo) {
-        Validate.notNull(category, "CategoryController: category is null");
+    public void removeCategory(Path categoryPath, boolean removeCredentialsToo) {
+        Validate.notNull(categoryPath, "CategoryController: path to category is null");
         if (removeCredentialsToo) {
             Category categoryByPath = passwordManagerController.getPasswordManager().getRootCategory()
-                    .getCategoryByPath(category.getParent());
-            categoryByPath.removeSubCategory(category.getName());
-            passwordManagerController.getMainWindowAUI().refreshEntry();
-            passwordManagerController.getMainWindowAUI().refreshEntryList(null);
+                    .getCategoryByPath(categoryPath.getParent());
+            categoryByPath.removeSubCategory(categoryPath.getName());
+            //TODO: proper refresh
         } else {
             //TODO
         }
@@ -143,7 +142,8 @@ public class CategoryController {
      * @throws NullPointerException falls die übergebene {@link Collection<Category>} <code>null</code> ist.
      */
     void addCredentialsToCategories(Credentials credentials, Collection<Category> categories) throws NullPointerException {
-
+        categories.forEach(category -> category.addCredentials(credentials));
+        //TODO: proper refresh
     }
 
     /**
@@ -153,7 +153,8 @@ public class CategoryController {
      * @param credentials Die {@link Credentials}, die aus dem Datenmodell entfernt werden sollen
      */
     void removeCredentialsFromCategories(Credentials credentials) {
-
+        passwordManagerController.getPasswordManager().getRootCategory().removeCredentialsFromTree(credentials);
+        //TODO: proper refresh
     }
 
 }
