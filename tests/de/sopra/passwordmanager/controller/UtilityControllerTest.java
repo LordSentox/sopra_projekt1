@@ -33,7 +33,7 @@ public class UtilityControllerTest {
 
     @Test
     public void generatePasswordTest() {
-        utilityController.generatePassword();
+        //utilityController.generatePassword();
         String password = mainWindowAUI.getPasswordShown();
 
         Assert.assertTrue(utilityController.checkQuality(password) > PasswordManagerController.MINIMUM_SAFE_QUALITY);

@@ -36,14 +36,20 @@ public class CredentialsController {
      * Überschreibt alte Anmeldedaten mit Neuen im {@link PasswordManager}
      * Falls {@code oldCredentials} <code>null</code> ist, wird stattdessen ein neuer Eintrag mit den Daten von {@code newCredentials} erstellt
      *
-     * @param oldCredentials Die zu überschreibenden Anmeldedaten. Falls <code>null</code>, wird ein neuer Eintrag erstellt
+     * @param oldCredentials Die zu überschreibenden Anmeldedaten. Darf nicht <code>null</code> sein
      *                       Falls diese nicht im {@link PasswordManager} existieren, geschieht nichts.
      * @param newCredentials Die neuen Anmeldedaten, die die Alten überschreiben. Falls <code>null</code>, geschieht nichts
      * @param categories Die Kategorien in denen die {@link Credentials} liegen sollen
+     * @throws NullPointerException falls {@code oldCredentials} oder {@code categories} null sind
      * @see Credentials
      */
-    public void updateCredentials(Credentials oldCredentials, CredentialsBuilder newCredentials, Collection<Category> categories) {
-
+    public void updateCredentials(Credentials oldCredentials, CredentialsBuilder newCredentials, Collection<Category> categories) throws NullPointerException {
+        if (newCredentials == null) return;
+        passwordManagerController.getPasswordManager().getRootCategory().removeCredentialsFromTree(oldCredentials);
+        newCredentials.copyTo(oldCredentials, passwordManagerController.getUtilityController());
+        for (Category category : categories) {
+            category.addCredentials(oldCredentials);
+        }
     }
 
     /**
@@ -55,7 +61,9 @@ public class CredentialsController {
      */
     public void addCredentials(CredentialsBuilder newCredentials, Collection<Category> categories) {
         Credentials credentials = newCredentials.build(passwordManagerController.getUtilityController());
-        categories.forEach(category -> category.addCredentials(credentials));
+        for (Category category : categories) {
+            category.addCredentials(credentials);
+        }
         //TODO: refresh
     }
 

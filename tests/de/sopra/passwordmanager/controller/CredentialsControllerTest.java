@@ -110,25 +110,40 @@ public class CredentialsControllerTest {
         Category bus = pm.getRootCategory().getCategoryByPath(Path.ROOT_CATEGORY_PATH.createChildPath("bus"));
         categories2.add(bus);
 
-        cc.updateCredentials(credBuilder1.build(uc), credBuilder2, categories2);
-        Assert.assertFalse("Credentials still in old category", sub.getCredentials().contains(credBuilder1.build(uc)));
-        Assert.assertTrue("Credentials not in new category", bus.getCredentials().contains(credBuilder1.build(uc)));
+        Assert.assertTrue("Credentials not added to category", sub.getCredentials().contains(credBuilder1.build(uc)));
+        Credentials obar = sub.getCredentials().stream().findFirst().get();
+        cc.updateCredentials(obar, credBuilder2, categories2);
+        Assert.assertFalse("Credentials still in old category", sub.getCredentials().contains(obar));
+        Assert.assertTrue("Credentials not in new category", bus.getCredentials().contains(obar));
         //Nach dem ersetzen darf nur 1 Eintrag im Passwortmanager existieren und dieser muss mit cred2 übereinstimmen
         Assert.assertEquals("Not exactly 1 Credentials saved after replacing",1, pm.getRootCategory().getAllCredentials().size());
-        Assert.assertTrue("Credentials not replaced", pm.getRootCategory().getAllCredentials().contains(credBuilder2.build(uc)));
+        Assert.assertTrue("Credentials not replaced", pm.getRootCategory().getAllCredentials().contains(obar));
     }
 
-    @Test(expected = NullPointerException.class)
     public void updateCredentialsTestNewNull() {
-        Credentials cred = new CredentialsBuilder()
+        CredentialsBuilder credBuilder1 = new CredentialsBuilder()
                 .withName("cred1")
                 .withUserName("user1")
                 .withPassword("passwort123")
-                .withWebsite("www.hallo.de")
-                .build(uc);
+                .withWebsite("www.hallo.de");
 
         Set<Category> categories = new HashSet<>();
-        cc.updateCredentials(cred, null, categories);
+        Category sub = pm.getRootCategory().getCategoryByPath(Path.ROOT_CATEGORY_PATH.createChildPath("sub"));
+        categories.add(sub);
+        cc.addCredentials(credBuilder1, categories);
+
+        Set<Category> categories2 = new HashSet<>();
+        Category bus = pm.getRootCategory().getCategoryByPath(Path.ROOT_CATEGORY_PATH.createChildPath("bus"));
+        categories2.add(bus);
+
+        Assert.assertTrue("Credentials not added to category", sub.getCredentials().contains(credBuilder1.build(uc)));
+        Credentials obar = sub.getCredentials().stream().findFirst().get();
+        cc.updateCredentials(obar, null, categories2);
+        Assert.assertTrue("Credentials moved category", sub.getCredentials().contains(obar));
+        Assert.assertFalse("Credentials not other category", bus.getCredentials().contains(obar));
+        //Nach dem ersetzen darf nur 1 Eintrag im Passwortmanager existieren und dieser muss mit cred2 übereinstimmen
+        Assert.assertEquals("Not exactly 1 Credentials saved after replacing",1, pm.getRootCategory().getAllCredentials().size());
+        Assert.assertTrue("Credentials not replaced", pm.getRootCategory().getAllCredentials().contains(obar));
     }
 
     @Test(expected = NullPointerException.class)

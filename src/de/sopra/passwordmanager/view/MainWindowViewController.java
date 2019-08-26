@@ -73,7 +73,7 @@ public class MainWindowViewController implements MainWindowAUI {
     }
 
     public void onGeneratePasswordClicked() {
-        passwordManagerController.getUtilityController().generatePassword();
+        //passwordManagerController.getUtilityController().generatePassword();
     }
 
     public void onAddSecurityQuestionClicked() {
