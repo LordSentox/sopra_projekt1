@@ -77,6 +77,11 @@ public class CredentialsController {
 
     }
 
+    
+
+    public void removeSecurityQuestion(SecurityQuestion question, CredentialsBuilder credentials) throws NullPointerException{
+
+    }
     /**
      * Filtert die Liste der {@link Credentials} im {@link de.sopra.passwordmanager.view.MainWindowViewController} nach
      * Kategorie und nach Inhalt seines Namens. Aktualisirt mit {@link MainWindowAUI#refreshEntryList(List)}
