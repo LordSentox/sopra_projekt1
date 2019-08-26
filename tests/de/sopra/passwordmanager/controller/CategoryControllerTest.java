@@ -101,10 +101,10 @@ public class CategoryControllerTest {
         childCategoryWithSubCategories.addSubCategory(childCategoryWithContent);
         childCategoryWithSubCategories.addSubCategory(childCategoryWithCredentialsAndSubCat);
 
-        childCategoryWithCredentialsAndSubCat.getCredentials().add(credentialsDummyDontDelete);
+        childCategoryWithCredentialsAndSubCat.addCredentials(credentialsDummyDontDelete);
         childCategoryWithCredentialsAndSubCat.addSubCategory(emptyChildCategoryDontDelete);
 
-        childCategoryWithContent.getCredentials().add(credentialsDummyNotInDeletedSubCategory);
+        childCategoryWithContent.addCredentials(credentialsDummyNotInDeletedSubCategory);
 
 
         Collection<Credentials> credentialsToCheck;
@@ -112,7 +112,7 @@ public class CategoryControllerTest {
 
         //valides Löschen
         //nur Kategorie, kein Inhalt löschen, aber Inhalt vorhanden
-        catController.removeCategory(childCategoryWithCredentialsAndSubCat, false);
+        catController.removeCategory(new Path("root/childCategoryWithSubCategories/childCategoryWithCredentialsAndSubCat"), false);
         credentialsToCheck = childCategoryWithContent.getCredentials();
         catsToCheck = childCategoryWithContent.getSubCategories();
 
@@ -123,7 +123,7 @@ public class CategoryControllerTest {
 
 
         //nur Kategorie, kein Inhalt löschen, aber kein Inhalt vorhanden
-        catController.removeCategory(childCategoryWithoutContent, false);
+        catController.removeCategory(new Path("root/childCategoryWithoutContent"), false);
         credentialsToCheck = root.getCredentials();
         catsToCheck = root.getSubCategories();
 
@@ -135,11 +135,11 @@ public class CategoryControllerTest {
         childCategoryWithoutContent.getSubCategories().remove(emptyChildCategoryDontDelete);
 
         childCategoryWithCredentialsAndSubCat.addSubCategory(emptyChildCategoryDoDelete);
-        childCategoryWithCredentialsAndSubCat.getCredentials().add(credentialsDummyDoDelete);
-        childCategoryWithCredentialsAndSubCat.getCredentials().add(credentialsDummyDoDelete2);
+        childCategoryWithCredentialsAndSubCat.addCredentials(credentialsDummyDoDelete);
+        childCategoryWithCredentialsAndSubCat.addCredentials(credentialsDummyDoDelete2);
 
         //Kategorie und gesamten Inhalt löschen, Inhalt vorhanden
-        catController.removeCategory(childCategoryWithCredentialsAndSubCat, true);
+        catController.removeCategory(new Path("root/childCategoryWithSubCategories/childCategoryWithCredentialsAndSubCat"), true);
         credentialsToCheck = childCategoryWithContent.getCredentials();
         catsToCheck = childCategoryWithContent.getSubCategories();
 
@@ -151,7 +151,7 @@ public class CategoryControllerTest {
 
 
         //Kategorie und gesamten Inhalt löschen, kein Inhalt vorhanden
-        catController.removeCategory(childCategoryWithoutContent, true);
+        catController.removeCategory(new Path("root/childCategoryWithoutContent"), true);
         credentialsToCheck = root.getCredentials();
         catsToCheck = root.getSubCategories();
 

@@ -3,6 +3,7 @@ package de.sopra.passwordmanager.controller;
 import de.sopra.passwordmanager.model.Category;
 import de.sopra.passwordmanager.model.Credentials;
 import de.sopra.passwordmanager.util.Path;
+import de.sopra.passwordmanager.util.Validate;
 
 import java.util.Collection;
 import java.util.List;
@@ -30,21 +31,34 @@ public class CategoryController {
      *                      Wenn null, dann wird die rootCategory aus dem Datenmodell geholt (getCategory)
      *                      und die anzulegende Kategorie wird an diese angehängt.
      * @param name          Name der anzulegenden Kategorie, darf nicht null sein.
-     *                      Darf nicht leer sein.
+     *                      Kann leer sein, wird als Fehlerfall behandelt.
      *                      Wenn das der Fall ist, wird die MainWindowAUI geholt und darauf showError("Eingegebener Kategoriename darf nicht leer sein") aufgerufen
      *                      Darf nicht den gleichen Namen haben wie ein anderes Kind der Oberkategorie.
      *                      Wenn das der Fall ist, wird die MainWindowAUI geholt und darauf showError("Eingegebener Kategoriename ist schon vergeben") aufgerufen
-     * @throws IllegalArgumentException wenn name null ist, wird die Exception geworfen
+     * @throws NullPointerException wenn name null ist, wird die Exception geworfen
      */
-    public void createCategory(Category superCategory, String name) throws IllegalArgumentException {
+    public void createCategory(Category superCategory, String name) {
+        if (superCategory == null)
+            superCategory = passwordManagerController.getPasswordManager().getRootCategory();
+        if (name.isEmpty()) {
+            passwordManagerController.getMainWindowAUI().showError("Eingegebener Kategoriename darf nicht leer sein");
+            return;
+        }
+        if (superCategory.hasSubCategory(name)) {
+            passwordManagerController.getMainWindowAUI().showError("Eingegebener Kategoriename ist schon vergeben");
+            return;
+        }
+        Category category = new Category(name);
+        superCategory.addSubCategory(category);
+        passwordManagerController.getMainWindowAUI().refreshEntry();
+        passwordManagerController.getMainWindowAUI().refreshEntryList(null);
     }
 
     /**
-     * entfernt die Kategorie aus dem Datenmodell.
+     * Entfernt die Kategorie aus dem Datenmodell.
      * Je nach übergebenem Boolean werden die enthaltenen Credentials und Unterkategorien mit gelöscht oder nicht.
      *
-     * @param category             Die zu löschende Kategorie, darf nicht Null sein
-     *                             Wenn das der Fall ist, wird die MainWindowAUI geholt und darauf showError("Es muss eine Kategorie ausgewählt sein") aufgerufen
+     * @param category             Der absolute Pfad zur zu löschenden Kategorie, darf nicht Null sein
      * @param removeCredentialsToo gibt an, ob die enthaltenen Credentials und Unterkategorien mit gelöscht werden oder nicht.
      *                             <p>
      *                             Wenn nur die Kategorie gelöscht werden soll, dann müssen die enthaltenen Unterkategorien und Anmeldedaten
@@ -56,7 +70,17 @@ public class CategoryController {
      *                             <p>
      *                             Dann wird die Referenz auf die zu Löschende Kategorie entfernt.
      */
-    public void removeCategory(Category category, boolean removeCredentialsToo) {
+    public void removeCategory(Path category, boolean removeCredentialsToo) {
+        Validate.notNull(category, "CategoryController: category is null");
+        if (removeCredentialsToo) {
+            Category categoryByPath = passwordManagerController.getPasswordManager().getRootCategory()
+                    .getCategoryByPath(category.getParent());
+            categoryByPath.removeSubCategory(category.getName());
+            passwordManagerController.getMainWindowAUI().refreshEntry();
+            passwordManagerController.getMainWindowAUI().refreshEntryList(null);
+        } else {
+            //TODO
+        }
     }
 
     /**
@@ -80,11 +104,14 @@ public class CategoryController {
      * Die letzte geholte Kategorie ist die gesuchte, die zurückgegeben wird.
      *
      * @param path kompletter Pfad bis inkl. Kategoriename der gesuchten Kategorie.
-     *             wenn der Pfad null oder leerer String ist, wird die rootCategory zurükgegeben.
+     *             wenn der Pfad ein leerer String ist, wird die rootCategory zurükgegeben.
      * @return gibt die letzte Kategorie des angegebenen Pfades zurück
+     * @throws NullPointerException wenn der Parameter <code>null</code> ist
      */
     Category getCategory(Path path) {
-        return null;
+        if (path.isEmpty())
+            return passwordManagerController.getPasswordManager().getRootCategory();
+        return passwordManagerController.getPasswordManager().getRootCategory().getCategoryByPath(path);
     }
 
     /**
@@ -106,7 +133,7 @@ public class CategoryController {
      *
      * @param credentials Die {@link Credentials}, die hinzugefügt werden sollen. Ist das Objekt <code>null</code> passiert
      *                    nichts.
-     * @param categories Die Liste von {@link Category}-Objekten, in die die Credentials übergeben werden sollen
+     * @param categories  Die Liste von {@link Category}-Objekten, in die die Credentials übergeben werden sollen
      * @throws NullPointerException falls die übergebene {@link Collection<Category>} <code>null</code> ist.
      */
     void addCredentialsToCategories(Credentials credentials, Collection<Category> categories) throws NullPointerException {
