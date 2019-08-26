@@ -40,10 +40,23 @@ public class CredentialsController {
      * @param oldCredentials Die zu überschreibenden Anmeldedaten. Falls <code>null</code>, wird ein neuer Eintrag erstellt
      *                       Falls diese nicht im {@link PasswordManager} existieren, geschieht nichts.
      * @param newCredentials Die neuen Anmeldedaten, die die Alten überschreiben. Falls <code>null</code>, geschieht nichts
+     * @param categories Die Kategorien in denen die {@link Credentials} liegen sollen
      * @see Credentials
      */
-    public void saveCredentials(Credentials oldCredentials, CredentialsBuilder newCredentials) {
+    public void updateCredentials(Credentials oldCredentials, CredentialsBuilder newCredentials, Collection<Category> categories) {
 
+    }
+
+    /**
+     * Speichert neue {@link Credentials} im {@link PasswordManager}
+     * @param newCredentials Die neuen Anmeldedaten. Falls <code>null</code>, geschieht nichts
+     * @param categories Die Kategorien in denen die {@link Credentials} liegen sollen
+     * @see Credentials
+     * @see CredentialsBuilder
+     */
+    public void addCredentials(CredentialsBuilder newCredentials, Collection<Category> categories) {
+        Credentials credentials = newCredentials.build(passwordManagerController.getUtilityController());
+        categories.forEach(category -> category.addCredentials(credentials));
     }
 
     /**
@@ -53,7 +66,7 @@ public class CredentialsController {
      * @see Credentials
      */
     public void removeCredentials(Credentials credentials) {
-
+        passwordManagerController.getPasswordManager().getRootCategory().removeCredentialsFromTree(credentials);
     }
 
     /**
