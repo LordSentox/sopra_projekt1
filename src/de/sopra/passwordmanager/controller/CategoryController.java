@@ -183,7 +183,7 @@ public class CategoryController {
      * @param category die Kategorie, für welche der Pfad generiert werden soll
      * @return der abolute Pfad zu der Kategorie
      */
-    Path getPathForCategory(Category category) {
+    public Path getPathForCategory(Category category) {
         Category rootCategory = passwordManagerController.getPasswordManager().getRootCategory();
         Map<Path, Category> allPaths = rootCategory.createPathMap(new Path());
         for (Map.Entry<Path, Category> entry : allPaths.entrySet()) {
