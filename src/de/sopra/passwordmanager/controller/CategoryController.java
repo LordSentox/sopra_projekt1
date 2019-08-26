@@ -77,7 +77,9 @@ public class CategoryController {
         if (removeCredentialsToo) {
             Category categoryByPath = passwordManagerController.getPasswordManager().getRootCategory()
                     .getCategoryByPath(categoryPath.getParent());
+            Category category = getCategory(categoryPath);
             categoryByPath.removeSubCategory(categoryPath.getName());
+
             //TODO: proper refresh
         } else {
             //TODO
@@ -93,9 +95,26 @@ public class CategoryController {
      *
      * @param oldPath kompletter Pfad bis inkl. Kategoriename der zu verschiebenden Kategorie
      * @param newPath kompletter Pfad bis inkl. Kategoriename der verschobenen Kategorie
-     * @throws IllegalArgumentException wenn einer der Pfade null ist, wird die Exception geworfen
+     * @throws NullPointerException wenn einer der Pfade null ist, wird die Exception geworfen
      */
     public void moveCategory(Path oldPath, Path newPath) throws IllegalArgumentException {
+        Validate.notNull(oldPath, "CategoryController: oldpath to category is null");
+        Validate.notNull(oldPath, "CategoryController: newPath to category is null");
+        Category oldCategory = getCategory(oldPath);
+        Category newCategory = getCategory(newPath);
+        Category parentOfNew = getCategory(newPath.getParent());
+        //wenn die neue Kategorie nicht existiert, neu erstellen
+        if (newCategory == null) {
+            createCategory(parentOfNew, newPath.getName());
+            newCategory = getCategory(newPath);
+        }
+        //alle Inhalte aus der alten in die neue Kategorie verschieben
+        for (Category category : oldCategory.getSubCategories())
+            newCategory.addSubCategory(category);
+        for (Credentials credentials : oldCategory.getCredentials())
+            newCategory.addCredentials(credentials);
+        //alte Kategorie entfernen
+        getCategory(oldPath.getParent()).removeSubCategory(oldCategory);
     }
 
     /**
