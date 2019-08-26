@@ -3,7 +3,6 @@ package de.sopra.passwordmanager.view;
 import de.sopra.passwordmanager.controller.CategoryController;
 import de.sopra.passwordmanager.controller.CredentialsController;
 import de.sopra.passwordmanager.controller.PasswordManagerController;
-<<<<<<< HEAD
 import de.sopra.passwordmanager.model.Category;
 import de.sopra.passwordmanager.model.Credentials;
 import de.sopra.passwordmanager.model.SecurityQuestion;
@@ -36,10 +35,8 @@ import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 
 import org.junit.Assert;
-=======
 import de.sopra.passwordmanager.util.EntryListOrderStrategy;
 import de.sopra.passwordmanager.util.EntryListSelectionStrategy;
->>>>>>> refs/remotes/origin/EntryListStrategy
 
 public class MainWindowViewController implements MainWindowAUI {
 
@@ -391,41 +388,28 @@ public class MainWindowViewController implements MainWindowAUI {
 
 
     @Override
-<<<<<<< HEAD
-    public void refreshEntryList(List<Credentials> entries) {
-=======
     public void refreshLists() {
 
     }
 
     @Override
     public void refreshListStrategies(EntryListSelectionStrategy selection, EntryListOrderStrategy order) {
->>>>>>> refs/remotes/origin/EntryListStrategy
 
     }
 
+    @Override
     public void refreshEntry() {
 
     }
 
-    public void refreshEntry(String password) {
-
-    }
-
-
+    @Override
     public void refreshEntryPasswordQuality(int quality) {
 
     }
 
-
+    @Override
     public void showError(String error) {
 
     }
-
-	@Override
-	public void refreshEntry(CredentialsBuilder credentials) {
-		// TODO Auto-generated method stub
-		
-	}
 
 }
