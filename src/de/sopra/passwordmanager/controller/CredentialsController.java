@@ -1,23 +1,21 @@
 package de.sopra.passwordmanager.controller;
 
-import de.sopra.passwordmanager.model.Category;
-import de.sopra.passwordmanager.model.Credentials;
-import de.sopra.passwordmanager.model.PasswordManager;
-import de.sopra.passwordmanager.model.SecurityQuestion;
+import aes.AES;
+import de.sopra.passwordmanager.model.*;
 import de.sopra.passwordmanager.util.CredentialsBuilder;
 import de.sopra.passwordmanager.util.Path;
 import de.sopra.passwordmanager.util.Validate;
 import de.sopra.passwordmanager.view.MainWindowAUI;
+import exceptions.DecryptionException;
+import exceptions.EncryptionException;
 
 import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -192,7 +190,17 @@ public class CredentialsController {
      * @param newMasterPassword Das neue Masterpasswort, mit dem die Daten verschlüsselt werden sollen. Darf nicht <code>null</code> sein
      */
     void reencryptAll(String oldMasterPassword, String newMasterPassword) {
+        Collection<Credentials> credentials = passwordManagerController.getPasswordManager().getRootCategory().getAllCredentials();
 
+        credentials.forEach(cred -> {
+            cred.setPassword(reencryptText(cred.getPassword(), oldMasterPassword, newMasterPassword));
+            Set<SecurityQuestion> newQuestions = cred.getSecurityQuestions().stream().map(securityQuestion -> new SecurityQuestion(
+                    reencryptText(securityQuestion.getQuestion(), oldMasterPassword, newMasterPassword),
+                    reencryptText(securityQuestion.getAnswer(), oldMasterPassword, newMasterPassword)
+            )).collect(Collectors.toSet());
+            cred.clearSecurityQuesions();
+            cred.addSecurityQuestions(newQuestions);
+        });
     }
 
     private static void setClipboardContents(String contents) {
@@ -206,5 +214,14 @@ public class CredentialsController {
             e.printStackTrace();
         }
         return "";
+    }
+
+    private static EncryptedString reencryptText(EncryptedString text, String oldKey, String newKey) {
+        try {
+            return new EncryptedString(AES.encrypt(AES.decrypt(text.getEncryptedContent(), oldKey), newKey));
+        } catch (EncryptionException | DecryptionException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

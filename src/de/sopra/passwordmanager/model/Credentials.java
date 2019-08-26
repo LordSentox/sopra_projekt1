@@ -158,6 +158,10 @@ public class Credentials {
         securityQuestions.removeAll(questions);
     }
 
+    public void clearSecurityQuesions() {
+        securityQuestions.clear();
+    }
+
     @Override
     public boolean equals(Object object) {
         if (this == object) return true;
