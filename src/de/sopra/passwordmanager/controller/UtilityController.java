@@ -47,10 +47,10 @@ public class UtilityController {
         this.passwordManagerController = controller;
     }
 
-    // Überprüfe, ob alle Elemente im Array den gleichen, angegebenen Wert haben
-    private boolean allHaveValue(int expected, int[] values) {
+    // Überprüfe ob für alle Elemente <= 0 gilt.
+    private boolean allZeroOrLess(int[] values) {
         for (int value : values) {
-            if (value != expected) {
+            if (value > 0) {
                 return false;
             }
         }
@@ -67,7 +67,7 @@ public class UtilityController {
         while (!accepted) {
             if (missingChars[next] > 0) {
                 accepted = true;
-            } else if (allHaveValue(0, missingChars)) {
+            } else if (allZeroOrLess(missingChars)) {
                 accepted = true;
             } else {
                 next = random.nextInt(Charset.values().length);
@@ -138,7 +138,8 @@ public class UtilityController {
             return AES.decrypt(text.getEncryptedContent(), passwordManagerController.getPasswordManager().getMasterPassword());
         } catch (DecryptionException e) {
             System.out.println(text.getEncryptedContent() + " konnte nicht entschlüsselt werden.");
-            System.out.println(e.toString());
+            // TODO: Print error properly
+            System.out.println(e);
             return null;
         }
     }
@@ -154,7 +155,8 @@ public class UtilityController {
             return new EncryptedString(AES.encrypt(text, passwordManagerController.getPasswordManager().getMasterPassword()));
         } catch (EncryptionException e) {
             System.out.println("Ein Text konnte nicht verschlüsselt werden.");
-            System.out.println(e.toString());
+            // TODO: Print error properly
+            System.out.println(e);
             return null;
         }
     }
@@ -221,7 +223,7 @@ public class UtilityController {
 
         // Für jede Regel die eingehalten wird, wird das Gewicht als Wert der unangepassten Qualität hinzugefügt
         double quality = 0.0;
-        for (WeighedRule rule: rules) {
+        for (WeighedRule rule : rules) {
             if (rule.getRule().validate(pwData).isValid()) {
                 quality += rule.getWeight();
             }
@@ -229,7 +231,7 @@ public class UtilityController {
 
         // Die Qualität auf einen int im Bereich von 0 bis 100 anpassen.
         double totalWeight = 0.f;
-        for (WeighedRule rule: rules) {
+        for (WeighedRule rule : rules) {
             totalWeight += rule.getWeight();
         }
         double percent = quality / totalWeight * 100.f;
