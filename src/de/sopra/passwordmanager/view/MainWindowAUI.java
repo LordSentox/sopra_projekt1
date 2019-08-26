@@ -1,9 +1,7 @@
 package de.sopra.passwordmanager.view;
 
 import de.sopra.passwordmanager.model.Credentials;
-import de.sopra.passwordmanager.util.CredentialsBuilder;
-
-import java.util.List;
+import de.sopra.passwordmanager.util.EntryListStrategy;
 
 /**
  * @author Etienne
@@ -12,27 +10,23 @@ import java.util.List;
 public interface MainWindowAUI {
 
     /**
-     * Aktualisiert die Liste der anzuzeigenden {@link Credentials}
-     * Ist die Liste leer, soll eine leere Liste angezeigt werden.
-     * Ist die übergebene Liste <code>null</code> soll die Liste nicht geändert werden.
-     *
-     * @param entries Die {@link List} von {@link Credentials}, die zum Anzeigen in der UI zur Verfügung gestellt werden soll
+     * Aktualisiert die Liste der anzuzeigenden {@link Credentials} unter Verwendung der bekannten Strategie.
+     * Alle Listen der Kategorien werden hier mit eingeschlossen.
      */
-    void refreshEntryList(List<Credentials> entries);
+    void refreshLists();
+
+    /**
+     * Ändert die Strategie mit der die Listen der Einträge gefüllt werden.
+     * Soll nach Abschluss selbstständig zu einem Aufruf von {@link #refreshLists()} führen.
+     *
+     * @param newStrategy die neue Strategy zur Verarbeitung der Daten
+     */
+    void refreshEntryListStrategy(EntryListStrategy newStrategy);
 
     /**
      * Aktualisiert den momentan bearbeiteten Eintrag in der GUI
      */
     void refreshEntry();
-
-    /**
-     * Aktualisiert den momentan bearbeiteten Eintrag in der GUI.
-     * Hier besteht noch die Möglichkeit ein Passwort zu übergeben, etwa um dieses in der UI anzuzeigen.
-     *
-     * @param credentials Der neue {@link CredentialsBuilder}, welcher im {@link MainWindowViewController} als Eintrag
-     *                    der momentan bearbeiteten {@link Credentials} dienen soll.
-     */
-    void refreshEntry(CredentialsBuilder credentials);
 
     /**
      * Aktualisiert die Elemente, die zum Anzeigen der Passwortqualität erforderlich sind
@@ -42,7 +36,7 @@ public interface MainWindowAUI {
     void refreshEntryPasswordQuality(int quality);
 
     /**
-     * Zeigt eine Fehlermeldung an
+     * Zeigt eine Fehlermeldung mit dem gegebenen String als Inhalt an
      *
      * @param error Die Nachricht der Fehlermeldung
      */
