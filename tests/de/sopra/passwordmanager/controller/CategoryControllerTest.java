@@ -300,6 +300,19 @@ public class CategoryControllerTest {
     }
 
     @Test
+    public void getPathForCategoryTest() {
+        this.root = pmc.getPasswordManager().getRootCategory();
+        Category one = new Category("one");
+        Category two = new Category("two");
+        Category three = new Category("three");
+
+        this.root.addSubCategory(one);
+        one.addSubCategory(two);
+        two.addSubCategory(three);
+        assertEquals(root.getCategoryByPath(catController.getPathForCategory(three)), three);
+    }
+
+    @Test
     public void removeCredentialsFromCategories() {
         // Erstellen eines Testbaumes
         this.root = pmc.getPasswordManager().getRootCategory();

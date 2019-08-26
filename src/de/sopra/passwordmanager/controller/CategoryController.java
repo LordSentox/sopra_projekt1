@@ -8,6 +8,7 @@ import de.sopra.passwordmanager.util.Validate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -59,7 +60,7 @@ public class CategoryController {
      * Entfernt die Kategorie aus dem Datenmodell.
      * Je nach übergebenem Boolean werden die enthaltenen Credentials und Unterkategorien mit gelöscht oder nicht.
      *
-     * @param categoryPath             Der absolute Pfad zur zu löschenden Kategorie, darf nicht Null sein
+     * @param categoryPath         Der absolute Pfad zur zu löschenden Kategorie, darf nicht Null sein
      * @param removeCredentialsToo gibt an, ob die enthaltenen Credentials und Unterkategorien mit gelöscht werden oder nicht.
      *                             <p>
      *                             Wenn nur die Kategorie gelöscht werden soll, dann müssen die enthaltenen Unterkategorien und Anmeldedaten
@@ -155,6 +156,22 @@ public class CategoryController {
     void removeCredentialsFromCategories(Credentials credentials) {
         passwordManagerController.getPasswordManager().getRootCategory().removeCredentialsFromTree(credentials);
         //TODO: proper refresh
+    }
+
+    /**
+     * Erstellt ein Path Objekt, das den absoluten Pfad zu der gegebenen Kategorie angibt
+     *
+     * @param category die Kategorie, für welche der Pfad generiert werden soll
+     * @return der abolute Pfad zu der Kategorie
+     */
+    Path getPathForCategory(Category category) {
+        Category rootCategory = passwordManagerController.getPasswordManager().getRootCategory();
+        Map<Path, Category> allPaths = rootCategory.createPathMap(new Path());
+        for (Map.Entry<Path, Category> entry : allPaths.entrySet()) {
+            if (entry.getValue().equals(category))
+                return entry.getKey();
+        }
+        return null;
     }
 
 }
