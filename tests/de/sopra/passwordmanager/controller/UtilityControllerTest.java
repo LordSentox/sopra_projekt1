@@ -1,9 +1,10 @@
 package de.sopra.passwordmanager.controller;
 
 import de.sopra.passwordmanager.controller.PasswordManagerControllerDummy.MainView;
-import de.sopra.passwordmanager.model.BasePassword;
 import de.sopra.passwordmanager.model.Category;
 import de.sopra.passwordmanager.model.Credentials;
+import de.sopra.passwordmanager.model.EncryptedString;
+import de.sopra.passwordmanager.model.PasswordManager;
 import de.sopra.passwordmanager.util.CredentialsBuilder;
 import org.junit.Assert;
 import org.junit.Before;
@@ -20,20 +21,22 @@ public class UtilityControllerTest {
 	private PasswordManagerController passwordManagerController;
 	private UtilityController utilityController;
 	private MainView mainWindowAUI;
-	
+	private PasswordManager passwordManager;
+
     @Before
     public void setUp() throws Exception {
     	passwordManagerController = PasswordManagerControllerDummy.getNewController();
     	utilityController = passwordManagerController.getUtilityController();
     	mainWindowAUI = (MainView) passwordManagerController.getMainWindowAUI();
+		passwordManager = passwordManagerController.getPasswordManager();
     }
 
     @Test
     public void generatePasswordTest() {
-    	utilityController.generatePassword();
-    	String password = mainWindowAUI.getPasswordShown();
-    	
-    	Assert.assertTrue(utilityController.checkQuality(password) > PasswordManagerController.MINUM_SAFE_QUALITY);
+        utilityController.generatePassword();
+        String password = mainWindowAUI.getPasswordShown();
+
+        Assert.assertTrue(utilityController.checkQuality(password) > PasswordManagerController.MINIMUM_SAFE_QUALITY);
     }
 
     @Test
@@ -41,28 +44,31 @@ public class UtilityControllerTest {
     	//daten in das Modell eintragen
     	File file = null; //FIXME: Dateipfad festlegen
     	String masterPassword = "test";
-    	passwordManagerController.getPasswordManager().setMasterPassword(new BasePassword(masterPassword, 5, LocalDateTime.now()));
-    	Category root = passwordManagerController.getPasswordManager().getRootCategory();
+		passwordManager.setMasterPassword(masterPassword);
+		passwordManager.setMasterPasswordReminderDays(5);
+    	passwordManager.setMasterPasswordLastChanged(LocalDateTime.now());
+
+    	Category root = passwordManager.getRootCategory();
     	Category sub = new Category("sub");
     	root.addSubCategory(sub);
     	Category sub1 = new Category("sub1");
     	sub.addSubCategory(sub1);
     	Credentials c1 = new CredentialsBuilder("c1", "c2", "pw", "url")
 				.withChangeReminderDays(5)
-				.build();
+				.build(utilityController);
     	Credentials c2 = new CredentialsBuilder("c21", "c22", "pw2", "url2")
 				.withChangeReminderDays(6)
-				.build();
+				.build(utilityController);
     	sub.addCredentials(c1);
     	sub.addCredentials(c2);
     	sub1.addCredentials(c2);
-    	
+
     	//Test
     	utilityController.exportFile(file);
     	utilityController.importFile(file, masterPassword);
-    	
+
     	// Daten testen, ob diese im Modell vorhanden sind
-    	root = passwordManagerController.getPasswordManager().getRootCategory();
+    	root = passwordManager.getRootCategory();
     	Assert.assertFalse(root.getSubCategories().isEmpty());
     	Assert.assertEquals(root.getSubCategories().size(), 1);
     	
@@ -94,16 +100,18 @@ public class UtilityControllerTest {
 
     @Test
     public void encryptDecryptTextTest() {
-    	String text = "password1";
-    	String encrypted = utilityController.encryptText(text);
-    	String decrypted = utilityController.decryptText(encrypted);
-    	Assert.assertEquals(text, decrypted);
+        String text = "password1";
+        EncryptedString encrypted = utilityController.encryptText(text);
+        String decrypted = utilityController.decryptText(encrypted);
+        Assert.assertEquals(text, decrypted);
+        Assert.assertNotEquals("encryption does not encrypt", text, encrypted.getEncryptedContent());
+        Assert.assertNotEquals("decryption does not decrypt", decrypted, encrypted.getEncryptedContent());
     }
 
 
     @Test
     public void checkQuality() {
-    	 //TODO:Braucht jetzt nicht.
+        //TODO:Braucht jetzt nicht.
 
     }
 }

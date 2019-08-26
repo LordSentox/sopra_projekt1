@@ -5,3 +5,6 @@
 /bin/
 *.iml
 target/
+out/
+libs/
+.vscode

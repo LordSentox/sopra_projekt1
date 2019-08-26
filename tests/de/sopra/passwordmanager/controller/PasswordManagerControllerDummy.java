@@ -1,6 +1,7 @@
 package de.sopra.passwordmanager.controller;
 
 import de.sopra.passwordmanager.model.Credentials;
+import de.sopra.passwordmanager.util.CredentialsBuilder;
 import de.sopra.passwordmanager.view.LoginViewAUI;
 import de.sopra.passwordmanager.view.MainWindowAUI;
 import de.sopra.passwordmanager.view.MasterPasswordViewAUI;
@@ -47,6 +48,7 @@ public class PasswordManagerControllerDummy {
         private List<String> errorsShown = new ArrayList<>();
         private int passwordQuality = -1;
         private String passwordShown;
+        private CredentialsBuilder currentCredentials = null;
 
         @Override
         public void refreshEntryList(List<Credentials> entries) {
@@ -55,12 +57,14 @@ public class PasswordManagerControllerDummy {
 
         @Override
         public void refreshEntry() {
-            this.passwordShown = "";
+            passwordShown = "";
+            currentCredentials = null;
         }
 
         @Override
-        public void refreshEntry(String password) {
-            this.passwordShown = password;
+        public void refreshEntry(CredentialsBuilder credentials) {
+            currentCredentials = credentials;
+            passwordShown = credentials.getPassword();
         }
 
         @Override
@@ -111,6 +115,14 @@ public class PasswordManagerControllerDummy {
             return currentCredentialsList;
         }
 
+        /**
+         * Die aktuellen Credentials als Builder
+         *
+         * @return Die aktuellen Credentials als Builder oder null, falls keines gesetzt wurde
+         */
+        public CredentialsBuilder getCurrentCredentials() {
+            return currentCredentials;
+        }
     }
 
     public static class LoginView implements LoginViewAUI {
