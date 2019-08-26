@@ -14,8 +14,9 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
-import java.util.List;
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -39,7 +40,7 @@ public class CredentialsController {
      * @param oldCredentials Die zu überschreibenden Anmeldedaten. Darf nicht <code>null</code> sein
      *                       Falls diese nicht im {@link PasswordManager} existieren, geschieht nichts.
      * @param newCredentials Die neuen Anmeldedaten, die die Alten überschreiben. Falls <code>null</code>, geschieht nichts
-     * @param categories Die Kategorien in denen die {@link Credentials} liegen sollen
+     * @param categories     Die Kategorien in denen die {@link Credentials} liegen sollen
      * @throws NullPointerException falls {@code oldCredentials} oder {@code categories} null sind
      * @see Credentials
      */
@@ -54,8 +55,9 @@ public class CredentialsController {
 
     /**
      * Speichert neue {@link Credentials} im {@link PasswordManager}
+     *
      * @param newCredentials Die neuen Anmeldedaten. Falls <code>null</code>, geschieht nichts
-     * @param categories Die Kategorien in denen die {@link Credentials} liegen sollen
+     * @param categories     Die Kategorien in denen die {@link Credentials} liegen sollen
      * @see Credentials
      * @see CredentialsBuilder
      */
@@ -100,45 +102,46 @@ public class CredentialsController {
      * Entfernt das gegebene Paar von Frage und Antwort von dem gegebenen {@link CredentialsBuilder}
      * Ist Frage oder Antwort null, so geschieht nichts
      *
-     * @param question Die Frage der {@link SecurityQuestion}, die von den gegebenen {@link Credentials} entfernt werden sollen.
-     * @param answer Die Antwort der {@link SecurityQuestion}, die von den gegebenen {@link Credentials} entfernt werden sollen.
-     * @param credentials      Die {@link CredentialsBuilder}, von der die {@link SecurityQuestion} entfernt werden soll. Darf nicht <code>null</code> sein
+     * @param question    Die Frage der {@link SecurityQuestion}, die von den gegebenen {@link Credentials} entfernt werden sollen.
+     * @param answer      Die Antwort der {@link SecurityQuestion}, die von den gegebenen {@link Credentials} entfernt werden sollen.
+     * @param credentials Die {@link CredentialsBuilder}, von der die {@link SecurityQuestion} entfernt werden soll. Darf nicht <code>null</code> sein
      * @throws NullPointerException Falls {@code #credentials} <code>null</code> ist
      * @see SecurityQuestion
      * @see CredentialsBuilder
      */
-    public void removeSecurityQuestion(String question, String answer, CredentialsBuilder credentials) throws NullPointerException{
+    public void removeSecurityQuestion(String question, String answer, CredentialsBuilder credentials) throws NullPointerException {
         credentials.withoutSecurityQuestion(question, answer);
     }
 
-    
 
-    public void removeSecurityQuestion(SecurityQuestion question, CredentialsBuilder credentials) throws NullPointerException{
+    public void removeSecurityQuestion(SecurityQuestion question, CredentialsBuilder credentials) throws NullPointerException {
 
     }
+
     /**
      * Filtert die Liste der {@link Credentials} im {@link de.sopra.passwordmanager.view.MainWindowViewController} nach
-     * Kategorie und nach Inhalt seines Namens. Aktualisirt mit {@link MainWindowAUI#refreshEntryList(List)}
+     * Kategorie und nach Inhalt seines Namens. Aktualisirt mit {@link MainWindowAUI#refreshLists()}
      *
      * @param categoryPath Der Pfad der {@link Category} in der alle gewünschten {@link Credentials} liegen sollen. Falls <code>null</code>, wird nicht nach Kategorie gefiltert
      * @param pattern      Ein String, der im Namen der {@link Credentials} enthalten sein soll. Falls <code>null</code>, wird nicht nach Eintragsnamen gesucht
      * @see CredentialsBuilder
      */
     public void filterCredentials(Path categoryPath, String pattern) {
+        //FIXME: Die neue Strategie einbinden
         Collection<Credentials> credentials = passwordManagerController.getPasswordManager().getRootCategory().getAllCredentials();
         Stream<Credentials> credentialsStream = credentials.stream();
-        if(categoryPath != null) {
+        if (categoryPath != null) {
             Category category = passwordManagerController.getPasswordManager().getRootCategory().getCategoryByPath(categoryPath);
-            if(category == null) {
-                passwordManagerController.getMainWindowAUI().refreshEntryList(new ArrayList<>());
+            if (category == null) {
+                passwordManagerController.getMainWindowAUI().refreshLists();
                 return;
             }
             credentialsStream = credentialsStream.filter(cred -> category.getAllCredentials().contains(cred));
         }
-        if(pattern != null) {
+        if (pattern != null) {
             credentialsStream = credentialsStream.filter(cred -> cred.getName().contains(pattern));
         }
-        passwordManagerController.getMainWindowAUI().refreshEntryList(credentialsStream.collect(Collectors.toList()));
+        passwordManagerController.getMainWindowAUI().refreshLists();
     }
 
     /**
@@ -158,13 +161,11 @@ public class CredentialsController {
      * @param credentials Der {@link CredentialsBuilder}, dessen Passwort (nicht) angezeigt werden soll. Falls
      *                    <code>null</code> geschieht nichts
      * @param visible     Falls 'true', soll das Passwort im Klartext angezeigt werden, sonst nur Sternchen
+     * @deprecated in die MainView umlagern
      */
+    @Deprecated
     public void setPasswordShown(CredentialsBuilder credentials, boolean visible) {
-        if (visible) {
-            passwordManagerController.getMainWindowAUI().refreshEntry(credentials);
-        } else {
-            passwordManagerController.getMainWindowAUI().refreshEntry();
-        }
+        throw new UnsupportedOperationException("not yet implemented");
     }
 
     /**
@@ -190,7 +191,7 @@ public class CredentialsController {
      * @param credentials Der {@link CredentialsBuilder}, dessen Passwort aus der Zwischenablage entfernt werden soll. Falls <code>null</code> geschieht nichts
      */
     void clearPasswordFromClipboard(CredentialsBuilder credentials) {
-        if(credentials.getPassword().equals(getClipboardContents())) {
+        if (credentials.getPassword().equals(getClipboardContents())) {
             setClipboardContents("*****");
         }
     }

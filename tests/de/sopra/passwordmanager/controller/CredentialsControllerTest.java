@@ -76,7 +76,7 @@ public class CredentialsControllerTest {
                 .withPassword("passwort123")
                 .withWebsite("www.hallo.de");
 
-        pmc.getMainWindowAUI().refreshEntryList(new ArrayList<>());
+        pmc.getMainWindowAUI().refreshLists();
 
         Set<Category> categories = new HashSet<>();
         Category sub = pm.getRootCategory().getCategoryByPath(Path.ROOT_CATEGORY_PATH.createChildPath("sub"));
