@@ -6,6 +6,7 @@ import de.sopra.passwordmanager.model.PasswordManager;
 import de.sopra.passwordmanager.model.SecurityQuestion;
 import de.sopra.passwordmanager.util.CredentialsBuilder;
 import de.sopra.passwordmanager.util.Path;
+import de.sopra.passwordmanager.util.Validate;
 import de.sopra.passwordmanager.view.MainWindowAUI;
 
 import java.util.Collection;
@@ -59,7 +60,10 @@ public class CredentialsController {
      * @see Credentials
      */
     public void addSecurityQuestion(String question, String answer, CredentialsBuilder credentials) throws NullPointerException {
-
+        Validate.notNull(question, "question is null");
+        Validate.notNull(answer, "answer is null");
+        Validate.notNull(credentials, "credentials object is null");
+        credentials.withSecurityQuestion(question, answer);
     }
 
     /**
