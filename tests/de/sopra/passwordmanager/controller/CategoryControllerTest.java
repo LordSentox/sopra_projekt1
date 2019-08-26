@@ -246,18 +246,18 @@ public class CategoryControllerTest {
         this.root = pmc.getPasswordManager().getRootCategory();
         Category hello = new Category("hello");
         Category there = new Category("there");
-        Category hello_hello = new Category("hello");
+        Category helloHello = new Category("hello");
 
         this.root.addSubCategory(there);
         this.root.addSubCategory(hello);
-        hello.addSubCategory(hello_hello);
+        hello.addSubCategory(helloHello);
 
         // Finde eine oder mehrere Kategorien wie angegeben
         Assert.assertEquals(Collections.singletonList(there), catController.findCategory("there"));
         List<Category> hellos = this.catController.findCategory("hello");
         Assert.assertEquals(2, hellos.size());
         Assert.assertTrue(hellos.contains(hello));
-        Assert.assertTrue(hellos.contains(hello_hello));
+        Assert.assertTrue(hellos.contains(helloHello));
         // Wird auch die root-Kategorie gefunden?
         Assert.assertEquals(Collections.singletonList(this.root), this.catController.findCategory(Path.ROOT_CATEGORY));
 
