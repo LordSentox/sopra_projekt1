@@ -13,6 +13,8 @@ public interface MainWindowAUI {
 
     /**
      * Aktualisiert die Liste der anzuzeigenden {@link Credentials}
+     * Ist die Liste leer, soll eine leere Liste angezeigt werden.
+     * Ist die übergebene Liste <code>null</code> soll die Liste nicht geändert werden.
      *
      * @param entries Die {@link List} von {@link Credentials}, die zum Anzeigen in der UI zur Verfügung gestellt werden soll
      */

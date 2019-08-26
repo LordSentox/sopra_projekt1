@@ -64,6 +64,25 @@ public class Category {
     }
 
     /**
+     * Entfernt eine Kategorie aus der Liste der untergeordneten Kategorien
+     *
+     * @param categoryName der Name der zu entfernenden Kategorie
+     */
+    public void removeSubCategory(String categoryName) {
+        subCategories.removeIf(category -> category.getName().equals(categoryName));
+    }
+
+    /**
+     * Prüft die Existenz einer untergeordneten Kategorie über ihren Namen.
+     *
+     * @param name den Namen der zu suchenden untergeordneten Kategorie
+     * @return <code>true</code> wenn eine Kategorie mit dem Namen der aktuellen Kategorie untergeordnet ist, sonst <code>false</code>
+     */
+    public boolean hasSubCategory(String name) {
+        return subCategories.stream().anyMatch(category -> category.getName().equals(name));
+    }
+
+    /**
      * Ordnete ein existierendes Credentials Objekt der aktuellen Kategorie Instanz zu
      *
      * @param credentials die zuzuordnenden Credentials
@@ -106,6 +125,7 @@ public class Category {
      * @return die Kategorie, auf welche der Pfad zeigt oder <code>null</code> wenn die Kategorie fehlt oder der Pfad falsch ist
      */
     public Category getCategoryByPath(Path path) {
+        path = path.leafPath();
         path.navigate(0);
         if (path.getName().equals(getName())) {
             if (!path.hasParent() && !path.hasChild()) {
