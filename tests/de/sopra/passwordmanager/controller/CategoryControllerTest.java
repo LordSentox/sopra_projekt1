@@ -159,7 +159,7 @@ public class CategoryControllerTest {
 
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = NullPointerException.class)
     public void moveCategory() {
         root = pmc.getPasswordManager().getRootCategory();
         Category moveTo = new Category("moveTo");
@@ -186,23 +186,23 @@ public class CategoryControllerTest {
         //valides Move
         //tatsächlich verschieben, kein umbenennen
         catController.moveCategory(Path.ROOT_CATEGORY_PATH.createChildPath("moveFrom/toMoveRenameContent"), Path.ROOT_CATEGORY_PATH.createChildPath("moveTo/toMoveRenameContent"));
-        assertTrue("Kategorie hätte hierhin verschoben werden sollen", moveTo.getSubCategories().contains(toMoveRenameContent));
-        assertTrue("Kategorie sollte nach Verschieben die Unterkategorie enthalten", toMoveRenameContent.getSubCategories().contains(subToMove));
+        assertTrue("Kategorie hätte hierhin verschoben werden sollen", moveTo.hasSubCategory(toMoveRenameContent.getName()));
+        assertTrue("Kategorie sollte nach Verschieben die Unterkategorie enthalten", toMoveRenameContent.hasSubCategory(subToMove.getName()));
         assertTrue("Kategorie sollte nach Verschieben die Credentials enthalten", toMoveRenameContent.getCredentials().contains(credentialsToMove));
-        assertTrue("Kategorie hätte nicht verschoben werden sollen", moveFrom.getSubCategories().contains(dontMove));
+        assertTrue("Kategorie hätte nicht verschoben werden sollen", moveFrom.hasSubCategory(dontMove.getName()));
         assertTrue("Credentials hätte nicht verschoben werden sollen", moveFrom.getCredentials().contains(credentialsDontMove));
-        assertFalse("Kategorie hätte verschoben werden sollen", moveFrom.getSubCategories().contains(toMoveRenameContent));
+        assertFalse("Kategorie hätte verschoben werden sollen", moveFrom.hasSubCategory(toMoveRenameContent.getName()));
 
         //nur umbenennen
         catController.moveCategory(Path.ROOT_CATEGORY_PATH.createChildPath("moveTo/toMoveRenameContent"), Path.ROOT_CATEGORY_PATH.createChildPath("moveTo/toMoveContentRenamed"));
-        assertTrue("Kategorie hätte hierhin verschoben werden sollen", moveTo.getSubCategories().contains(toMoveRenameContent));
+        assertTrue("Kategorie hätte hierhin verschoben werden sollen", moveTo.hasSubCategory(toMoveRenameContent.getName()));
         assertEquals("Kategorie falsch umbenannt", "toMoveContentRenamed", toMoveRenameContent.getName());
         assertTrue("Kategorie sollte nach Verschieben die Unterkategorie enthalten", toMoveRenameContent.getSubCategories().contains(subToMove));
         assertTrue("Kategorie sollte nach Verschieben die Credentials enthalten", toMoveRenameContent.getCredentials().contains(credentialsToMove));
 
         //verschieben und umbenennen
         catController.moveCategory(Path.ROOT_CATEGORY_PATH.createChildPath("moveTo/toMoveContentRenamed"), Path.ROOT_CATEGORY_PATH.createChildPath("moveFrom/toMoveRenameContent"));
-        assertTrue("Kategorie hätte hierhin verschoben werden sollen", moveFrom.getSubCategories().contains(toMoveRenameContent));
+        assertTrue("Kategorie hätte hierhin verschoben werden sollen", moveFrom.hasSubCategory(toMoveRenameContent.getName()));
         assertEquals("toMoveRenameContent", toMoveRenameContent.getName());
         assertTrue("Kategorie sollte nach Verschieben die Unterkategorie enthalten", toMoveRenameContent.getSubCategories().contains(subToMove));
         assertTrue("Kategorie sollte nach Verschieben die Credentials enthalten", toMoveRenameContent.getCredentials().contains(credentialsToMove));
