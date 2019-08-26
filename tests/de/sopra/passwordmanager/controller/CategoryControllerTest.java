@@ -50,7 +50,7 @@ public class CategoryControllerTest {
         Collection<Category> subCategories = root.getSubCategories();
 
         assertTrue("Kategorie wurde nicht an Wurzel angehängt",
-                subCategories.contains(catController.getCategory(new Path("root/category without children and credentials"))));
+                subCategories.contains(catController.getCategory(Path.ROOT_CATEGORY_PATH.createChildPath("category without children and credentials"))));
 
         Category categoryWithoutCredentials = new Category("categoryWithoutCredentials");
         Category categoryWithoutChildren = new Category("categoryWithoutChildren");
@@ -60,10 +60,10 @@ public class CategoryControllerTest {
 
         //neue Unterkategorie
         catController.createCategory(categoryWithoutChildren, "childCategory");
-        subCategories = categoryWithoutCredentials.getSubCategories();
+        subCategories = categoryWithoutChildren.getSubCategories();
 
         assertTrue("Kategorie wurde nicht an Wurzel angehängt",
-                subCategories.contains(catController.getCategory(new Path("root/categoryWithoutCredentials/categoryWithoutChildren/childCategory"))));
+                subCategories.contains(catController.getCategory(Path.ROOT_CATEGORY_PATH.createChildPath("categoryWithoutCredentials/categoryWithoutChildren/childCategory"))));
 
 
         //nicht valide Kategorieerstellung
@@ -112,7 +112,7 @@ public class CategoryControllerTest {
 
         //valides Löschen
         //nur Kategorie, kein Inhalt löschen, aber Inhalt vorhanden
-        catController.removeCategory(new Path("root/childCategoryWithSubCategories/childCategoryWithCredentialsAndSubCat"), false);
+        catController.removeCategory(Path.ROOT_CATEGORY_PATH.createChildPath("childCategoryWithSubCategories/childCategoryWithCredentialsAndSubCat"), false);
         credentialsToCheck = childCategoryWithContent.getCredentials();
         catsToCheck = childCategoryWithContent.getSubCategories();
 
@@ -123,7 +123,7 @@ public class CategoryControllerTest {
 
 
         //nur Kategorie, kein Inhalt löschen, aber kein Inhalt vorhanden
-        catController.removeCategory(new Path("root/childCategoryWithoutContent"), false);
+        catController.removeCategory(Path.ROOT_CATEGORY_PATH.createChildPath("childCategoryWithoutContent"), false);
         credentialsToCheck = root.getCredentials();
         catsToCheck = root.getSubCategories();
 
@@ -139,7 +139,7 @@ public class CategoryControllerTest {
         childCategoryWithCredentialsAndSubCat.addCredentials(credentialsDummyDoDelete2);
 
         //Kategorie und gesamten Inhalt löschen, Inhalt vorhanden
-        catController.removeCategory(new Path("root/childCategoryWithSubCategories/childCategoryWithCredentialsAndSubCat"), true);
+        catController.removeCategory(Path.ROOT_CATEGORY_PATH.createChildPath("childCategoryWithSubCategories/childCategoryWithCredentialsAndSubCat"), true);
         credentialsToCheck = childCategoryWithContent.getCredentials();
         catsToCheck = childCategoryWithContent.getSubCategories();
 
@@ -185,7 +185,7 @@ public class CategoryControllerTest {
 
         //valides Move
         //tatsächlich verschieben, kein umbenennen
-        catController.moveCategory(new Path("root/moveFrom/toMoveRenameContent"), new Path("root/moveTo/toMoveRenameContent"));
+        catController.moveCategory(Path.ROOT_CATEGORY_PATH.createChildPath("moveFrom/toMoveRenameContent"), Path.ROOT_CATEGORY_PATH.createChildPath("moveTo/toMoveRenameContent"));
         assertTrue("Kategorie hätte hierhin verschoben werden sollen", moveTo.getSubCategories().contains(toMoveRenameContent));
         assertTrue("Kategorie sollte nach Verschieben die Unterkategorie enthalten", toMoveRenameContent.getSubCategories().contains(subToMove));
         assertTrue("Kategorie sollte nach Verschieben die Credentials enthalten", toMoveRenameContent.getCredentials().contains(credentialsToMove));
@@ -194,14 +194,14 @@ public class CategoryControllerTest {
         assertFalse("Kategorie hätte verschoben werden sollen", moveFrom.getSubCategories().contains(toMoveRenameContent));
 
         //nur umbenennen
-        catController.moveCategory(new Path("root/moveTo/toMoveRenameContent"), new Path("root/moveTo/toMoveContentRenamed"));
+        catController.moveCategory(Path.ROOT_CATEGORY_PATH.createChildPath("moveTo/toMoveRenameContent"), Path.ROOT_CATEGORY_PATH.createChildPath("moveTo/toMoveContentRenamed"));
         assertTrue("Kategorie hätte hierhin verschoben werden sollen", moveTo.getSubCategories().contains(toMoveRenameContent));
         assertEquals("Kategorie falsch umbenannt", "toMoveContentRenamed", toMoveRenameContent.getName());
         assertTrue("Kategorie sollte nach Verschieben die Unterkategorie enthalten", toMoveRenameContent.getSubCategories().contains(subToMove));
         assertTrue("Kategorie sollte nach Verschieben die Credentials enthalten", toMoveRenameContent.getCredentials().contains(credentialsToMove));
 
         //verschieben und umbenennen
-        catController.moveCategory(new Path("root/moveTo/toMoveContentRenamed"), new Path("root/moveFrom/toMoveRenameContent"));
+        catController.moveCategory(Path.ROOT_CATEGORY_PATH.createChildPath("moveTo/toMoveContentRenamed"), Path.ROOT_CATEGORY_PATH.createChildPath("moveFrom/toMoveRenameContent"));
         assertTrue("Kategorie hätte hierhin verschoben werden sollen", moveFrom.getSubCategories().contains(toMoveRenameContent));
         assertEquals("toMoveRenameContent", toMoveRenameContent.getName());
         assertTrue("Kategorie sollte nach Verschieben die Unterkategorie enthalten", toMoveRenameContent.getSubCategories().contains(subToMove));
@@ -213,7 +213,7 @@ public class CategoryControllerTest {
 
         //nicht valides move
         //einer der Pfade ist null --> Exception wurde geworfen
-        catController.moveCategory(null, new Path("root/moveFrom/toMoveRenameContent"));
+        catController.moveCategory(null, Path.ROOT_CATEGORY_PATH.createChildPath("moveFrom/toMoveRenameContent"));
     }
 
     //---------------------------------

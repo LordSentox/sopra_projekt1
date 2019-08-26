@@ -2,6 +2,7 @@ package de.sopra.passwordmanager.util;
 
 import java.util.*;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * <h1>projekt1</h1>
@@ -13,6 +14,7 @@ import java.util.regex.Pattern;
 public class Path {
 
     public static final String ROOT_CATEGORY = "Alle";
+    public static final Path ROOT_CATEGORY_PATH = new Path(ROOT_CATEGORY);
 
     /**
      * Die Liste aller Elemente im Pfad. Der root ist das erste Element.
@@ -64,10 +66,7 @@ public class Path {
      */
     public Path(List<String> pathElements, int current) {
         //entfernt leere Elemente am Ende und Anfang des Paths
-        while (pathElements.size() > 0 && pathElements.get(0).isEmpty())
-            pathElements = pathElements.subList(1, pathElements.size());
-        while (pathElements.size() > 0 && pathElements.get(pathElements.size() - 1).isEmpty())
-            pathElements = pathElements.subList(0, pathElements.size() - 2);
+        pathElements = pathElements.stream().filter(element -> !element.isEmpty()).collect(Collectors.toList());
         this.pathElements = pathElements;
         navigate(current);
     }
@@ -170,8 +169,8 @@ public class Path {
     public Path createChildPath(String newChild) {
         return new Path(new ArrayList<String>() {{
             addAll(pathElements);
-            add(newChild);
-        }}, pathElements.size());
+            addAll(new Path(newChild).pathElements);
+        }});
     }
 
     /**
