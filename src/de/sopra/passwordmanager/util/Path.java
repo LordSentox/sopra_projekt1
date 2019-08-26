@@ -143,7 +143,7 @@ public class Path {
      *
      * @return eine Kopie des Pfades, welche Elemente nach dem aktuellen Element nicht mehr enthält
      */
-    public Path absolutePath() {
+    public Path leafPath() {
         return subPath(0, current + 1);
     }
 

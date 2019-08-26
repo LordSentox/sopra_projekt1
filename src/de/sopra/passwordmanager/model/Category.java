@@ -64,6 +64,16 @@ public class Category {
     }
 
     /**
+     * Prüft die Existenz einer untergeordneten Kategorie über ihren Namen.
+     *
+     * @param name den Namen der zu suchenden untergeordneten Kategorie
+     * @return <code>true</code> wenn eine Kategorie mit dem Namen der aktuellen Kategorie untergeordnet ist, sonst <code>false</code>
+     */
+    public boolean hasSubCategory(String name) {
+        return subCategories.stream().anyMatch(category -> category.getName().equals(name));
+    }
+
+    /**
      * Ordnete ein existierendes Credentials Objekt der aktuellen Kategorie Instanz zu
      *
      * @param credentials die zuzuordnenden Credentials

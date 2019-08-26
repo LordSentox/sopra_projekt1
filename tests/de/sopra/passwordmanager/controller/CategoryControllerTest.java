@@ -49,7 +49,8 @@ public class CategoryControllerTest {
         catController.createCategory(root, "category without children and credentials");
         Collection<Category> subCategories = root.getSubCategories();
 
-        assertTrue("Kategorie wurde nicht an Wurzel angehängt", subCategories.contains(catController.getCategory(new Path("root/category without children and credentials"))));
+        assertTrue("Kategorie wurde nicht an Wurzel angehängt",
+                subCategories.contains(catController.getCategory(new Path("root/category without children and credentials"))));
 
         Category categoryWithoutCredentials = new Category("categoryWithoutCredentials");
         Category categoryWithoutChildren = new Category("categoryWithoutChildren");
@@ -156,13 +157,6 @@ public class CategoryControllerTest {
 
         assertFalse("Kategorie fälschlicherweise nicht entfernt", catsToCheck.contains(childCategoryWithoutContent));
 
-
-        //nicht valides Löschen
-        //gewählte Kategorie null
-        catController.removeCategory(null, false);
-
-        Collection<String> errors = mv.getErrorsShown();
-        assertTrue("Fehler hätte aufgerufen werden müssen", errors.contains("Es muss eine Kategorie ausgewählt sein"));
     }
 
     @Test(expected = IllegalArgumentException.class)

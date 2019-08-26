@@ -66,13 +66,13 @@ public class PathTest {
 
     @Test
     public void subPathAndAbsolutePathTest() {
-        //absolutePath Tests
-        assertEquals("absolutePath does change the path itself",
-                getPath().toString(), getPath().absolutePath().toString());
-        assertEquals("absolutePath does cut the path the wrong way",
-                getPath().getParent().absolutePath().toString(), "root/test/path/is5");
-        assertEquals("absolutePath does not match the correct length",
-                getPath().getParent().absolutePath().length(), 4);
+        //leafPath Tests
+        assertEquals("leafPath does change the path itself",
+                getPath().toString(), getPath().leafPath().toString());
+        assertEquals("leafPath does cut the path the wrong way",
+                getPath().getParent().leafPath().toString(), "root/test/path/is5");
+        assertEquals("leafPath does not match the correct length",
+                getPath().getParent().leafPath().length(), 4);
 
         //Ein Pfad am Anfang um den root kürzen
         Path path = getPath().subPath(1, getPath().length());
@@ -105,7 +105,7 @@ public class PathTest {
         Path childPath = path.createChildPath("child");
         Assert.assertEquals("added child is missing", "child", childPath.getName());
         Assert.assertEquals("path length varies", path.length() + 1, childPath.length());
-        Assert.assertEquals("method does not act as a counter", path, childPath.getParent().absolutePath());
+        Assert.assertEquals("method does not act as a counter", path, childPath.getParent().leafPath());
     }
 
     @Test
