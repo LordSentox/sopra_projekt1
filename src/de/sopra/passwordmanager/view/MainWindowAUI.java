@@ -1,7 +1,8 @@
 package de.sopra.passwordmanager.view;
 
 import de.sopra.passwordmanager.model.Credentials;
-import de.sopra.passwordmanager.util.EntryListStrategy;
+import de.sopra.passwordmanager.util.EntryListOrderStrategy;
+import de.sopra.passwordmanager.util.EntryListSelectionStrategy;
 
 /**
  * @author Etienne
@@ -19,9 +20,10 @@ public interface MainWindowAUI {
      * Ändert die Strategie mit der die Listen der Einträge gefüllt werden.
      * Soll nach Abschluss selbstständig zu einem Aufruf von {@link #refreshLists()} führen.
      *
-     * @param newStrategy die neue Strategy zur Verarbeitung der Daten
+     * @param selection die neue Strategie zur Auswahl der Daten
+     * @param order     die neue Strategie zur Sortierung der Daten
      */
-    void refreshEntryListStrategy(EntryListStrategy newStrategy);
+    void refreshListStrategies(EntryListSelectionStrategy selection, EntryListOrderStrategy order);
 
     /**
      * Aktualisiert den momentan bearbeiteten Eintrag in der GUI

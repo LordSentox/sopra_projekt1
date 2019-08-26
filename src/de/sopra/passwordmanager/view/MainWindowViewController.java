@@ -1,10 +1,8 @@
 package de.sopra.passwordmanager.view;
 
 import de.sopra.passwordmanager.controller.PasswordManagerController;
-import de.sopra.passwordmanager.model.Credentials;
-import de.sopra.passwordmanager.util.CredentialsBuilder;
-
-import java.util.List;
+import de.sopra.passwordmanager.util.EntryListOrderStrategy;
+import de.sopra.passwordmanager.util.EntryListSelectionStrategy;
 
 public class MainWindowViewController implements MainWindowAUI {
 
@@ -114,16 +112,16 @@ public class MainWindowViewController implements MainWindowAUI {
 
 
     @Override
-    public void refreshEntryList(List<Credentials> entries) {
-
-    }
-
-    public void refreshEntry() {
+    public void refreshLists() {
 
     }
 
     @Override
-    public void refreshEntry(CredentialsBuilder credentials) {
+    public void refreshListStrategies(EntryListSelectionStrategy selection, EntryListOrderStrategy order) {
+
+    }
+
+    public void refreshEntry() {
 
     }
 

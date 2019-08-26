@@ -1,6 +1,6 @@
 package de.sopra.passwordmanager.util;
 
-import de.sopra.passwordmanager.model.Category;
+import de.sopra.passwordmanager.model.Credentials;
 
 import java.util.List;
 
@@ -14,15 +14,14 @@ import java.util.List;
  * @version 26.08.2019
  * @since 26.08.2019
  */
-public interface EntryListStrategy {
+public interface EntryListSelectionStrategy {
 
     /**
-     * Extrahiert aus den gegebenen Daten die anzuzeigende Liste.
+     * Wählt aus den gegebenen Daten die anzuzeigende Liste.
      *
-     * @param selectedCategory die ausgewählte Kategorie
-     * @param pattern          das aktuelle Such-Pattern
+     * @param credentials alle bekannten Elemente
      * @return die Liste mit allen Inhalten, die zur Anzeige gebracht werden sollen
      */
-    List<String> apply(Category selectedCategory, String pattern);
+    List<Credentials> select(List<Credentials> credentials);
 
 }

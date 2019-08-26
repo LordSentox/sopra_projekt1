@@ -1,6 +1,6 @@
 package de.sopra.passwordmanager.util;
 
-import de.sopra.passwordmanager.model.Category;
+import de.sopra.passwordmanager.model.Credentials;
 
 import java.util.List;
 
@@ -11,13 +11,19 @@ import java.util.List;
  * @version 26.08.2019
  * @since 26.08.2019
  */
-public class DefaultEntryListStrategy implements EntryListStrategy {
+public interface EntryListOrderStrategy {
 
-    @Override
-    public List<String> apply(Category selectedCategory, String pattern) {
-        //TODO: default, filter input by categories -> dont modify input, create new list
-        return null;
+    /**
+     * Sortiert die gegebenen Daten in der Liste neu
+     * @param credentials
+     * @return
+     */
+    List<Credentials> order(List<Credentials> credentials);
+
+    default EntryListOrderStrategy nextOrder(EntryListOrderStrategy strategy) {
+        return input -> strategy.order(order(input));
     }
+
 }
 /***********************************************************************************************
  *
