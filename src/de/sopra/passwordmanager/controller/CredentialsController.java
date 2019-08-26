@@ -9,6 +9,11 @@ import de.sopra.passwordmanager.util.Path;
 import de.sopra.passwordmanager.util.Validate;
 import de.sopra.passwordmanager.view.MainWindowAUI;
 
+import java.awt.*;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.StringSelection;
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -117,7 +122,7 @@ public class CredentialsController {
      * @see CredentialsBuilder
      */
     public void copyPasswordToClipboard(CredentialsBuilder credentials) {
-
+        setClipboardContents(credentials.getPassword());
     }
 
     /**
@@ -150,7 +155,9 @@ public class CredentialsController {
      * @param credentials Der {@link CredentialsBuilder}, dessen Passwort aus der Zwischenablage entfernt werden soll. Falls <code>null</code> geschieht nichts
      */
     void clearPasswordFromClipboard(CredentialsBuilder credentials) {
-
+        if(credentials.getPassword().equals(getClipboardContents())) {
+            setClipboardContents("*****");
+        }
     }
 
     /**
@@ -162,5 +169,18 @@ public class CredentialsController {
      */
     void reencryptAll(String oldMasterPassword, String newMasterPassword) {
 
+    }
+
+    private static void setClipboardContents(String contents) {
+        Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(contents), null);
+    }
+
+    private static String getClipboardContents() {
+        try {
+            return (String) Toolkit.getDefaultToolkit().getSystemClipboard().getData(DataFlavor.stringFlavor);
+        } catch (UnsupportedFlavorException | IOException e) {
+            e.printStackTrace();
+        }
+        return "";
     }
 }

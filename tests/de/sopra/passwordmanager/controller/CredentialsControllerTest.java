@@ -2,7 +2,6 @@ package de.sopra.passwordmanager.controller;
 
 import de.sopra.passwordmanager.controller.PasswordManagerControllerDummy.MainView;
 import de.sopra.passwordmanager.model.Credentials;
-import de.sopra.passwordmanager.model.EncryptedString;
 import de.sopra.passwordmanager.model.PasswordManager;
 import de.sopra.passwordmanager.model.SecurityQuestion;
 import de.sopra.passwordmanager.util.CredentialsBuilder;
@@ -338,16 +337,14 @@ public class CredentialsControllerTest {
     public void clearPasswordFromClipboardTest() {
         // Das Passwort muss aus der Zwischenablage gelöscht werden, wenn es in ihr enthalten ist
         String rawPassword = "Passwort123";
-        EncryptedString encPassword = this.pmc.getUtilityController().encryptText(rawPassword);
         CredentialsBuilder credBuilder = new CredentialsBuilder("Super Secret", "bonehead27", rawPassword, "lol5.org");
-        setClipboardContents(encPassword.getEncryptedContent());
+        setClipboardContents(credBuilder.getPassword());
 
         this.cc.clearPasswordFromClipboard(credBuilder);
         Assert.assertNotEquals("Password was not removed from clipboard", rawPassword, getClipboardContents());
 
         // Die Zwischenablage darf nicht verändert werden, wenn sich das Passwort nicht in ihr befindet
         rawPassword = "MeinPasswort";
-        encPassword = this.pmc.getUtilityController().encryptText(rawPassword);
         credBuilder = new CredentialsBuilder("Super Secret", "bonehead27", rawPassword, "lol5.org");
         setClipboardContents("NichtMeinPasswort");
 
