@@ -365,6 +365,7 @@ public class MainWindowViewController implements MainWindowAUI {
         oldCredentials = null;
         //TODO check if correct
         listViewCredentialsList.getSelectionModel().clearSelection();
+        setCopyAndShowButtonsDisabled();
         //listViewCredentialsList.getFocusModel().focus(-1);
         currentCredentials = new CredentialsBuilder();
         setDisable(false);
@@ -377,6 +378,7 @@ public class MainWindowViewController implements MainWindowAUI {
         CredentialsController credController = passwordManagerController.getCredentialsController();
         oldCredentials = listViewCredentialsList.getSelectionModel().getSelectedItem().getCredentials();
         listViewCredentialsList.getSelectionModel().clearSelection();
+        setCopyAndShowButtonsDisabled();
         //listViewCredentialsList.getFocusModel().focus(-1);
         credController.removeCredentials(oldCredentials);
         oldCredentials = null;
@@ -427,6 +429,7 @@ public class MainWindowViewController implements MainWindowAUI {
     }
 
     public void onEntryChosen() {
+
         if (buttonCredentialsShowPassword.isDisabled()) {
             buttonCredentialsShowPassword.setDisable(false);
         }
@@ -454,6 +457,7 @@ public class MainWindowViewController implements MainWindowAUI {
                 public void onCancel() {
                     //nicht löschen
                     listViewCredentialsList.getSelectionModel().clearSelection();
+                    setCopyAndShowButtonsDisabled();
                     //listViewCredentialsList.getFocusModel().focus(-1);
                 }
             };
@@ -465,6 +469,7 @@ public class MainWindowViewController implements MainWindowAUI {
             refreshEntry();
         }
     }
+
 
     public void onCredentialsPasswordChanged() {
         String password = passwordFieldCredentialsPassword.getText();
@@ -613,6 +618,14 @@ public class MainWindowViewController implements MainWindowAUI {
 
         buttonEditCategoryMain.setDisable(!disabled);
         buttonRemoveCategoryMain.setDisable(!disabled);
+    }
+
+    private void setCopyAndShowButtonsDisabled() {
+        buttonCredentialsShowPassword.setDisable(true);
+        buttonCredentialsCopy.setDisable(true);
+        progressBarCredentialsCopyTimer.setOpacity(0.0);
+        progressBarCredentialsQuality.setProgress(0.0);
+        
     }
 
     private void updateCredentialsBuilderCopy() {
