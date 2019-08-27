@@ -8,6 +8,7 @@ import de.sopra.passwordmanager.util.Path;
 import de.sopra.passwordmanager.view.LoginViewAUI;
 import de.sopra.passwordmanager.view.MainWindowAUI;
 import de.sopra.passwordmanager.view.MasterPasswordViewAUI;
+import sun.util.logging.resources.logging_zh_CN;
 
 import java.io.File;
 import java.util.Collection;
@@ -107,7 +108,8 @@ public class PasswordManagerController {
      * Setzt den PasswordManager zurück und löscht alle Passwörter und Kategorien. Das Masterpasswort bleibt erhalten.
      */
     public void removeAll() {
-    	categoryController.removeCategory(Path.ROOT_CATEGORY_PATH, true);
+    	passwordManager.getRootCategory().getSubCategories().clear();
+    	passwordManager.getRootCategory().getCredentials().clear();
     	SAVE_FILE.delete();
     	mainWindowAUI.refreshListStrategies(identity -> identity, identity -> identity);
     	mainWindowAUI.refreshEntry();
@@ -125,15 +127,11 @@ public class PasswordManagerController {
     public void requestLogin(String password, File file) {
     	//ist null, wenn kein sondern Login
     	if(passwordManager.getMasterPassword() == null){
-	    	if(utilityController.importFile(file, password, password)){
-	    		loginViewAUI.handleLoginResult(true);
-	    	} else {
-	    		loginViewAUI.handleLoginResult(false);
-	    	}
+    		boolean result = utilityController.importFile(file, password, password, true);
+	    	loginViewAUI.handleLoginResult(result);
     	} else {
-    		if(utilityController.importFile(file, passwordManager.getMasterPassword(), password)){
-    			
-    		}
+    		boolean result = utilityController.importFile(file, password, password, false);
+	    	loginViewAUI.handleLoginResult(result);
     	}
 
     }
