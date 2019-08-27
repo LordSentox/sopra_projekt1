@@ -9,7 +9,7 @@ import com.sun.javafx.scene.control.skin.ComboBoxListViewSkin;
  * @version 27.08.2019
  * @since 27.08.2019
  */
-public class MultiSelectComboSkin extends ComboBoxListViewSkin<CategorySelectItem> {
+public class MultiSelectComboSkin extends ComboBoxListViewSkin<SelectableComboItem> {
 
     public MultiSelectComboSkin(MultiSelectionComboBox comboBox) {
         super(comboBox);

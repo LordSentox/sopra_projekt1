@@ -1,7 +1,6 @@
 package de.sopra.passwordmanager.view.multibox;
 
 import javafx.collections.FXCollections;
-import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
@@ -10,6 +9,7 @@ import javafx.util.Callback;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * <h1>projekt1</h1>
@@ -18,9 +18,9 @@ import java.util.List;
  * @version 27.08.2019
  * @since 27.08.2019
  */
-public class MultiSelectionComboBox extends ComboBox<CategorySelectItem> {
+public class MultiSelectionComboBox<T> extends ComboBox<SelectableComboItem<T>> {
 
-    private List<CategorySelectItem> listProvider;
+    private List<SelectableComboItem<T>> listProvider;
     private List<String> listSelected;
 
     private MultiSelectionComboBox cmb = this;
@@ -34,14 +34,14 @@ public class MultiSelectionComboBox extends ComboBox<CategorySelectItem> {
     }
 
     /********************************************** Constructor **************************************************/
-    public MultiSelectionComboBox(List<CategorySelectItem> listProvider) {
+    public MultiSelectionComboBox(List<SelectableComboItem<T>> listProvider) {
         init(listProvider);
         // SELECT_ALL_INITIALLY:
         selectUnselectAll(true);
     }
 
     /************************************************ Init *******************************************************/
-    private void init(List<CategorySelectItem> listProvider) {
+    private void init(List<SelectableComboItem<T>> listProvider) {
         listSelected = new ArrayList<>();
 
         // Provider.
@@ -56,13 +56,13 @@ public class MultiSelectionComboBox extends ComboBox<CategorySelectItem> {
     }
 
     /******************************************************* Provider *************************************************/
-    public void setListProvider(List<CategorySelectItem> listProvider) {
+    public void setListProvider(List<SelectableComboItem<T>> listProvider) {
         init(listProvider); // It will set COMBO_SIZE also.
         setListSelected(); // It will set listSelected.
     }
 
     private void setListSelected() {
-        for (CategorySelectItem uiVO : listProvider) {
+        for (SelectableComboItem uiVO : listProvider) {
             if (uiVO.isSelected()) {
                 listSelected.add(uiVO.getItemName());
             }
@@ -76,8 +76,15 @@ public class MultiSelectionComboBox extends ComboBox<CategorySelectItem> {
         return listSelected;
     }
 
-    public List<CategorySelectItem> getListProvider() {
+    public List<SelectableComboItem<T>> getListProvider() {
         return listProvider;
+    }
+
+    public List<T> getSelectedContentList() {
+        return getListProvider().stream()
+                .filter(SelectableComboItem::isSelected)
+                .map(item -> item.getContent())
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -88,8 +95,8 @@ public class MultiSelectionComboBox extends ComboBox<CategorySelectItem> {
     /******************************************
      * Button Cell
      ***********************************************************/
-    private ListCell<CategorySelectItem> buttonCell = new ListCell<CategorySelectItem>() {
-        protected void updateItem(CategorySelectItem item, boolean empty) {
+    private ListCell<SelectableComboItem<T>> buttonCell = new ListCell<SelectableComboItem<T>>() {
+        protected void updateItem(SelectableComboItem item, boolean empty) {
             super.updateItem(item, empty);
             setText("");
         }
@@ -97,13 +104,13 @@ public class MultiSelectionComboBox extends ComboBox<CategorySelectItem> {
     /******************************************
      * Call Back Factory
      ******************************************************/
-    private final Callback<ListView<CategorySelectItem>, ListCell<CategorySelectItem>> cb = new Callback<ListView<CategorySelectItem>, ListCell<CategorySelectItem>>() {
+    private final Callback<ListView<SelectableComboItem<T>>, ListCell<SelectableComboItem<T>>> cb = new Callback<ListView<SelectableComboItem<T>>, ListCell<SelectableComboItem<T>>>() {
 
         @Override
-        public ListCell<CategorySelectItem> call(ListView<CategorySelectItem> param) {
-            ListCell<CategorySelectItem> cell = new ListCell<CategorySelectItem>() {
+        public ListCell<SelectableComboItem<T>> call(ListView<SelectableComboItem<T>> param) {
+            ListCell<SelectableComboItem<T>> cell = new ListCell<SelectableComboItem<T>>() {
                 @Override
-                protected void updateItem(CategorySelectItem item, boolean empty) {
+                protected void updateItem(SelectableComboItem<T> item, boolean empty) {
                     super.updateItem(item, empty);
                     if (!empty && item != null) {
                         CheckBox cb = new CheckBox(item.getItemName());
@@ -119,19 +126,6 @@ public class MultiSelectionComboBox extends ComboBox<CategorySelectItem> {
         }
     };
 
-    /*******************************************
-     * Control Button Click
-     *************************************************/
-    private EventHandler<Event> onButtonClick = event -> {
-        Button btn = (Button) event.getSource();
-        MultiSelectComboEvent e;
-        if (btn.getText().equalsIgnoreCase("Ok")) {
-            e = new MultiSelectComboEvent(cmb, MultiSelectComboEvent.EVENT_OK);
-        } else {
-            e = new MultiSelectComboEvent(cmb, MultiSelectComboEvent.EVENT_CANCEL);
-        }
-        fireEvent(e);
-    };
     /**************************************************
      * Combo Check
      ****************************************************/
@@ -142,17 +136,17 @@ public class MultiSelectionComboBox extends ComboBox<CategorySelectItem> {
             CheckBox chk = (CheckBox) event.getSource();
             String itemName = chk.getText();
 
-                if (chk.isSelected()) {
-                    if (!listSelected.contains(itemName)) {
-                        listSelected.add(itemName);
-                        updateProvider(itemName, true);
-                    }
-                } else {
-                    if (listSelected.contains(itemName)) {
-                        listSelected.remove(itemName);
-                        updateProvider(itemName, false);
-                    }
+            if (chk.isSelected()) {
+                if (!listSelected.contains(itemName)) {
+                    listSelected.add(itemName);
+                    updateProvider(itemName, true);
                 }
+            } else {
+                if (listSelected.contains(itemName)) {
+                    listSelected.remove(itemName);
+                    updateProvider(itemName, false);
+                }
+            }
 
             // changeComboColor();
         }
@@ -163,7 +157,7 @@ public class MultiSelectionComboBox extends ComboBox<CategorySelectItem> {
      ***********************************************************/
     private void selectUnselectAll(boolean check) {
         if (check) {
-            for (CategorySelectItem uiVO : getItems()) {
+            for (SelectableComboItem uiVO : getItems()) {
                 if (!listSelected.contains(uiVO.getItemName())) {
                     listSelected.add(uiVO.getItemName());
                 }
@@ -179,7 +173,7 @@ public class MultiSelectionComboBox extends ComboBox<CategorySelectItem> {
      ****************************************************/
     private void updateProvider(String itemName, boolean isSelected) {
         // UPDATE_SELECTED_ITEM:
-        for (CategorySelectItem uiVO : getItems()) {
+        for (SelectableComboItem uiVO : getItems()) {
             if (uiVO.getItemName().equalsIgnoreCase(itemName)) {
                 uiVO.setSelected(isSelected);
                 break;
@@ -190,17 +184,15 @@ public class MultiSelectionComboBox extends ComboBox<CategorySelectItem> {
     }
 
     private void updateProvider() {
-        List<CategorySelectItem> listTemp = new ArrayList<>();
-        for (CategorySelectItem uiVO : getItems()) {
-            listTemp.add(uiVO);
-        }
+        List<SelectableComboItem<T>> listTemp = new ArrayList<>();
+        listTemp.addAll(getItems());
         getItems().clear();
         setItems(FXCollections.observableArrayList(listTemp));
     }
 
     private void updateProvider(boolean isSelected) {
-        List<CategorySelectItem> listTemp = new ArrayList<>();
-        for (CategorySelectItem uiVO : getItems()) {
+        List<SelectableComboItem<T>> listTemp = new ArrayList<>();
+        for (SelectableComboItem<T> uiVO : getItems()) {
             uiVO.setSelected(isSelected);
             listTemp.add(uiVO);
         }

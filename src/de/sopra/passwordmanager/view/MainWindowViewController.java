@@ -18,8 +18,8 @@ import de.sopra.passwordmanager.util.strategy.AlphabeticOrderStrategy;
 import de.sopra.passwordmanager.util.strategy.EntryListOrderStrategy;
 import de.sopra.passwordmanager.util.strategy.EntryListSelectionStrategy;
 import de.sopra.passwordmanager.util.strategy.SelectAllStrategy;
-import de.sopra.passwordmanager.view.multibox.CategorySelectItem;
 import de.sopra.passwordmanager.view.multibox.MultiSelectionComboBox;
+import de.sopra.passwordmanager.view.multibox.SelectableComboItem;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.collections.ObservableList;
@@ -91,7 +91,7 @@ public class MainWindowViewController implements MainWindowAUI {
     private JFXCheckBox checkBoxCredentialsUseReminder;
 
     @FXML
-    private MultiSelectionComboBox choiceBoxCredentialsCategories;
+    private MultiSelectionComboBox<CategoryItem> choiceBoxCredentialsCategories;
 
     @FXML
     private JFXProgressBar progressBarCredentialsCopyTimer;
@@ -150,8 +150,9 @@ public class MainWindowViewController implements MainWindowAUI {
             onCredentialsPasswordChanged();
         });
 
-        listViewCredentialsList.getSelectionModel().selectedItemProperty().addListener((obs, oldText, newText) -> {
-            onEntryChosen();
+        listViewCredentialsList.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null && !newValue.equals(oldValue))
+                onEntryChosen();
         });
         
         comboBoxCategorySelectionMain.getSelectionModel().selectedItemProperty().addListener((obs, oldText, newText) -> {
@@ -398,13 +399,15 @@ public class MainWindowViewController implements MainWindowAUI {
 
         updateCredentialsBuilderCopy();
 
-        List<CategorySelectItem> listProvider = choiceBoxCredentialsCategories.getListProvider();
-        List<Category> categories = categories = listProvider.stream().map(item -> item.getCategory()).collect(Collectors.toList());
+        List<CategoryItem> categoryItems = choiceBoxCredentialsCategories.getSelectedContentList();
+        List<Category> categoryList = categoryItems.stream()
+                .map(CategoryItem::getCategory)
+                .collect(Collectors.toList());
 
         if (oldCredentials == null) {
-            credController.addCredentials(currentCredentials, categories);
+            credController.addCredentials(currentCredentials, categoryList);
         } else {
-            credController.updateCredentials(oldCredentials, currentCredentials, categories);
+            credController.updateCredentials(oldCredentials, currentCredentials, categoryList);
         }
         refreshEntry();
     }
@@ -486,13 +489,13 @@ public class MainWindowViewController implements MainWindowAUI {
                 .map(entry -> new CategoryItem(entry.getKey(), entry.getValue()))
                 .forEach(comboBoxCategorySelectionMain.getItems()::add);
 
-        List<CategorySelectItem> oldList = choiceBoxCredentialsCategories.getListProvider();
+        List<SelectableComboItem<CategoryItem>> oldList = choiceBoxCredentialsCategories.getListProvider();
 
-        List<CategorySelectItem> catItems = cats.entrySet().stream()
-                .map(entry -> new CategorySelectItem(entry.getKey(), entry.getValue()))
+        List<SelectableComboItem<CategoryItem>> catItems = cats.entrySet().stream()
+                .map(entry -> new SelectableComboItem<>(new CategoryItem(entry.getKey(), entry.getValue())))
                 .collect(Collectors.toList());
-        for (CategorySelectItem item : catItems) {
-            if (oldList.stream().anyMatch(itemx -> itemx.getCategoryPath().equals(item.getCategoryPath()) && itemx.isSelected()))
+        for (SelectableComboItem<CategoryItem> item : catItems) {
+            if (oldList.stream().anyMatch(itemx -> itemx.getContent().getPath().equals(item.getContent().getPath()) && itemx.isSelected()))
                 item.setSelected(true);
         }
         choiceBoxCredentialsCategories.setListProvider(catItems);
