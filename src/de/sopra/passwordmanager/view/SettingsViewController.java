@@ -2,6 +2,10 @@ package de.sopra.passwordmanager.view;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
@@ -63,17 +67,22 @@ public class SettingsViewController {
 
 	public void onResetDataClicked() {
 	    // TODO
-		JDialog.setDefaultLookAndFeelDecorated(true);
-	    int response = JOptionPane.showConfirmDialog(null, "PasswortManager wirklich zurücksetzen? Dieser Vorgang löscht alle Daten endgültig!", "",
-	        JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-	    if (response == JOptionPane.NO_OPTION) {
-	      //System.out.println("");
-	    } else if (response == JOptionPane.YES_OPTION) {
-	      System.out.println("PasswortManager gelöscht.");
-	      mainWindowViewController.getPasswordManagerController().removeAll();
-	    } else if (response == JOptionPane.CLOSED_OPTION) {
-	      //System.out.println("JOptionPane closed");
-	    }
+	    Alert alertDialog = new Alert(AlertType.CONFIRMATION);
+
+        ButtonType buttonTypeYes = new ButtonType("Ja");
+        ButtonType buttonTypeNo = new ButtonType("Nein");
+
+        alertDialog.setHeaderText("PasswortManager wirklich zurücksetzen?");
+        alertDialog.setContentText("Dieser Vorgang löscht alle Daten endgültig!");
+        alertDialog.getButtonTypes().setAll(buttonTypeYes, buttonTypeNo);
+        alertDialog.showAndWait();
+
+        ButtonType result = alertDialog.getResult();
+        if (result == buttonTypeYes) {
+            System.out.println("PasswortManager gelöscht");
+        } else if (result == buttonTypeNo) {
+            System.out.println("Doch nicht löschen");
+        } 
 		
 	}
 

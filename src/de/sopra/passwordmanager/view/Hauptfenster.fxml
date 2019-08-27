@@ -22,7 +22,8 @@
       <Label layoutX="315.0" layoutY="121.0" text="Benutzername" />
       <JFXTextField fx:id="textFieldCredentialsUserName" layoutX="430.0" layoutY="116.0" />
       <Label layoutX="315.0" layoutY="152.0" text="Passwort" />
-      <JFXTextField fx:id="passwordFieldCredentialsPassword" layoutX="430.0" layoutY="147.0" />
+      <JFXTextField fx:id="textFieldCredentialsPassword" layoutX="430.0" layoutY="147.0"/>
+      <JFXPasswordField fx:id="passwordFieldCredentialsPassword" layoutX="430.0" layoutY="147.0"/>
       <!--  <JFXToggleNode fx:id="buttonCredentialsShowPassword" layoutX="606.0" layoutY="140.0" mnemonicParsing="false" text="Anzeigen" onAction="#onShowPasswordClicked"/>  -->
       <JFXToggleNode fx:id="buttonCredentialsShowPassword" layoutX="607.0" layoutY="145.0" onAction="#onShowPasswordClicked">
       	<Label text="Anzeigen"/>
