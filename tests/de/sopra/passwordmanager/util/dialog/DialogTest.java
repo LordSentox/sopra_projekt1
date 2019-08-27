@@ -5,13 +5,14 @@ import javafx.embed.swing.JFXPanel;
 import javafx.scene.control.Alert;
 import javafx.stage.StageStyle;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 
 import javax.swing.*;
-import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
 
+/**
+ * @author Etienne
+ */
 public class DialogTest {
 
     private boolean jfxIsSetup;
@@ -43,12 +44,6 @@ public class DialogTest {
         public void onSuccess() {
             System.out.println("nice");
         }
-    }
-
-    @Before
-    public void init() throws IOException
-    {
-        setupJavaFX();
     }
 
     @Test
