@@ -325,6 +325,7 @@ public class CredentialsControllerTest {
 
     @Test
     public void removeSecurityQuestionTestNotExist() {
+        //XXX entfernen?
         SecurityQuestion sq1 = securityQuestionFromStrings("Was", "Das");
         SecurityQuestion sq2 = securityQuestionFromStrings("Warum", "Darum");
 

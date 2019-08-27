@@ -59,6 +59,7 @@ public class MasterPasswordViewController extends AbstractViewController impleme
         String password = passwordFieldSet.getText();
         if (password != null) {
             //TODO change credentials to String in check Quality
+            //XXX entfernen?
             CredentialsBuilder credBuilder = new CredentialsBuilder().withPassword(password);
             mainWindowViewController.getPasswordManagerController().getMasterPasswordController().checkQuality(password);
         }

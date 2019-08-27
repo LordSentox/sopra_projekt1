@@ -65,6 +65,7 @@ public class PasswordManagerControllerDummy {
 
         @Override
         public void refreshLists() {
+            //XXX entfernen?
             Category category = controller.getPasswordManager().getRootCategory();
             if (currentSelectedCategory != null) category = currentSelectedCategory;
 

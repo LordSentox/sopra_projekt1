@@ -435,7 +435,7 @@ public class MainWindowViewController implements MainWindowAUI {
                     oldCredentials = selectedEntry.getCredentials();
                     currentCredentials = selectedEntry.getNewBuilder(passwordManagerController.getUtilityController());
                     setDisable(true);
-                    listViewCredentialsList.getFocusModel().focus(-1);
+                    listViewCredentialsList.getFocusModel().focus(index);
                     refreshEntry();
                 }
 
@@ -531,7 +531,7 @@ public class MainWindowViewController implements MainWindowAUI {
         
         comboBoxCredentialsSecurityQuestion.getItems().clear();
         for(Map.Entry<String, String> question: currentCredentials.getSecurityQuestions().entrySet()){
-        	
+
         	comboBoxCredentialsSecurityQuestion.getItems().add(question.getKey());
         }
         

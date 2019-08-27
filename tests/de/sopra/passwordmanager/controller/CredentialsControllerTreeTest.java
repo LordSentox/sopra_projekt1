@@ -204,6 +204,7 @@ public class CredentialsControllerTreeTest {
     @Test(expected = NullPointerException.class)
     public void getCredentialsByCategoryPathTestPathNull() {
         // Kategorie, die nicht existiert
+        //XXX entfernen?
         Collection<Credentials> creds = cc.getCredentialsByCategoryPath(null);
     }
 

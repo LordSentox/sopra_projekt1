@@ -66,6 +66,7 @@ public class CredentialsController {
         for (Category category : categories) {
             category.addCredentials(credentials);
 
+            //XXX entfernen?
             Collection<Credentials> creds = category.getCredentials();
         }
         passwordManagerController.getMainWindowAUI().refreshLists();

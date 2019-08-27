@@ -9,7 +9,8 @@ import javafx.scene.control.Label;
 import javafx.stage.Stage;
 
 public class LoginViewController extends AbstractViewController implements LoginViewAUI{
-	
+
+    //XXX entfernen?
 	private static final File SAVEFILE = new File("");
 
     private Stage mainStage;

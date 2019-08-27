@@ -17,7 +17,7 @@
       <JFXListView fx:id="listViewCredentialsList" layoutX="10.0" layoutY="80.0" prefHeight="450.0" prefWidth="290.0"/>
       <JFXButton fx:id="buttonAddCredentials" layoutX="10.0" layoutY="540.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="124.0" text="Neuer Eintrag" onAction="#onAddCredentialsClicked" />
       <JFXButton fx:id="buttonRemoveCredentials" layoutX="163.0" layoutY="540.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="137.0" text="Eintrag löschen" onAction="#onRemoveCredentialsClicked" />
-      <Label layoutX="315.0" layoutY="90.0" text="Name" />
+      <Label layoutX="315.0" layoutY="90.0" text="Eintragsname" />
       <JFXTextField fx:id="textFieldCredentialsName" layoutX="430.0" layoutY="85.0" />
       <Label layoutX="315.0" layoutY="121.0" text="Benutzername" />
       <JFXTextField fx:id="textFieldCredentialsUserName" layoutX="430.0" layoutY="116.0" />

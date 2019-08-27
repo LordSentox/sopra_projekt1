@@ -47,6 +47,7 @@ public class SettingsViewController extends AbstractViewController{
 		FileChooser fileChooser = new FileChooser();
 		fileChooser.setTitle("Öffne Datei");
 		fileChooser.getExtensionFilters().addAll(new ExtensionFilter("XML", "*.xml"));
+		//XXX entfernen?
 		File fileToOpen = fileChooser.showOpenDialog(null);
 		//TODO UtilityController -> import
 		//Login Fenster wird geöffnet und richtige Vorraussetzungen müssen für onLoginClicked gegeben sein
