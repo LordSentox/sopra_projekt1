@@ -289,9 +289,6 @@ public class UtilityController {
             Validate.notNull(dataNode, "DataNode does not exist");
             List<Credentials> dataList = extractCredentials(dataNode);
             Validate.notNull(dataList, "Data are stored incorrectly");
-            
-            
-            
         } catch (Exception e) {
             // TODO: Schönere Fehlerbehandlung
             e.printStackTrace();
@@ -304,38 +301,45 @@ public class UtilityController {
         List<Node> childNodes = IntStream.range(0, dataNode.getChildNodes().getLength()).mapToObj(dataNode.getChildNodes()::item).collect(Collectors.toList());
         List<Credentials> credNodes= new ArrayList<>(childNodes.size());
         for (Node entry : childNodes) {
-            CredentialsBuilder bobTheBuilder = new CredentialsBuilder();
-            
-            Node attribute = entry.getAttributes().item(0);
-            if ( attribute.getNodeName().equals("name")) {
-                bobTheBuilder.withName(attribute.getNodeValue());
-            } else {
-                return null;
-            }
-            
-            //Alle Elemente als Map von tag name zu Text Inhalt
-            Map<String, String> elements = IntStream.range(0, entry.getChildNodes().getLength())
-                    .mapToObj(entry.getChildNodes()::item)
-                    .filter(node -> !node.getNodeName().equals("questions"))
-                    .collect(Collectors.toMap(Node::getNodeName, Node::getTextContent));
-            
-            bobTheBuilder.withUserName(elements.get("userName"));
-            bobTheBuilder.withPassword(elements.get("password"));
-            bobTheBuilder.withWebsite(elements.get("website"));
-            bobTheBuilder.withCreated(LocalDateTime.parse(elements.get("created")));
-            bobTheBuilder.withLastChanged(LocalDateTime.parse(elements.get("lastChanged")));
-            bobTheBuilder.withNotes(elements.get("notes"));
-            
-            Map<String, String> questions = IntStream.range(0, entry.getChildNodes().getLength())
-                    .mapToObj(entry.getChildNodes()::item)
-                    .filter(node -> node.getNodeName().equals("questions"))
-                    .findFirst().ifPresent(consumer);
-            
-            credNodes.add(bobTheBuilder.build(this));
         }
         return credNodes;
         
     }
+
+    private CredentialsBuilder extractCredentialsObject(Node entry) {
+        CredentialsBuilder bobTheBuilder = new CredentialsBuilder();
+
+        Node attribute = entry.getAttributes().item(0);
+        if ( attribute.getNodeName().equals("name")) {
+            bobTheBuilder.withName(attribute.getNodeValue());
+        } else {
+            return null;
+        }
+
+        //Alle Elemente als Map von tag name zu Text Inhalt
+        Map<String, String> elements = IntStream.range(0, entry.getChildNodes().getLength())
+                .mapToObj(entry.getChildNodes()::item)
+                .filter(node -> !node.getNodeName().equals("questions"))
+                .collect(Collectors.toMap(Node::getNodeName, Node::getTextContent));
+
+        // Lesen der nicht verschlüsselten Attribute aus der Datei
+        bobTheBuilder.withUserName(elements.get("userName"));
+        bobTheBuilder.withWebsite(elements.get("website"));
+        bobTheBuilder.withCreated(LocalDateTime.parse(elements.get("created")));
+        bobTheBuilder.withLastChanged(LocalDateTime.parse(elements.get("lastChanged")));
+        bobTheBuilder.withNotes(elements.get("notes"));
+
+        // Lesen der verschlüsselten Daten und entschlüsseln, um sie in den Builder hinzufügen zu können.
+        EncryptedString password = new EncryptedString(elements.get("password"));
+
+        Map<String, String> questions = IntStream.range(0, entry.getChildNodes().getLength())
+                .mapToObj(entry.getChildNodes()::item)
+                .filter(node -> node.getNodeName().equals("questions"))
+                .findFirst().ifPresent(consumer);
+
+        credNodes.add(bobTheBuilder.build(this));
+    }
+
     /**
      * Die Methode exportiert die aktuellen Daten in die angegebene Datei, wenn die Datei bereits etwas enthält, wird diese überschrieben
      *
