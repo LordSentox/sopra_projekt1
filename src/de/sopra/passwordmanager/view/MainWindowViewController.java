@@ -41,6 +41,7 @@ public class MainWindowViewController implements MainWindowAUI {
     private MasterPasswordViewController masterPasswordViewController;
     private Timeline timeline;
     private Credentials oldCredentials;
+    private CategoryItem rootCategoryItem;
 
     private CredentialsBuilder currentCredentials;
 
@@ -134,6 +135,12 @@ public class MainWindowViewController implements MainWindowAUI {
         textFieldCredentialsPassword.textProperty().addListener((obs, oldText, newText) -> {
             onCredentialsPasswordChanged();
         });
+        
+        //ComboBoxCategorySelection soll immer die rootCategory haben.
+        rootCategoryItem = new CategoryItem(Path.ROOT_CATEGORY_PATH, passwordManagerController.getPasswordManager().getRootCategory());
+        comboBoxCategorySelectionMain.getItems().add(rootCategoryItem);
+        comboBoxCategorySelectionMain.getSelectionModel().select(rootCategoryItem);;
+        
 
     }
 
@@ -463,14 +470,27 @@ public class MainWindowViewController implements MainWindowAUI {
 
         /* Init category combobox */
         Map<Path, Category> cats = passwordManagerController.getPasswordManager().getRootCategory().createPathMap(new Path());
-
+        CategoryItem chosenCat = comboBoxCategorySelectionMain.getSelectionModel().getSelectedItem();
         comboBoxCategorySelectionMain.getItems().clear();
         cats.keySet().stream()
                 .map(path -> new CategoryItem(path, cats.get(path)))
                 .forEach(comboBoxCategorySelectionMain.getItems()::add);
-        //TODO geht das so?
-        CategoryItem chosenCat = comboBoxCategorySelectionMain.getSelectionModel().getSelectedItem();
-        listViewCredentialsList.setItems((ObservableList<Credentials>) chosenCat.getCategory().getAllCredentials());
+        
+        List<CategoryItem> items = comboBoxCategorySelectionMain.getItems();
+        if(!items.stream().anyMatch(item -> item.getPath().equals(chosenCat.getPath()))){
+        	comboBoxCategorySelectionMain.getSelectionModel().select(rootCategoryItem);
+        } else {
+        	CategoryItem selected = items.stream().filter(item -> item.getPath().equals(chosenCat.getPath())).findAny().get();
+        	comboBoxCategorySelectionMain.getSelectionModel().select(selected);       	
+        }
+        CategoryItem chosenCat2 = comboBoxCategorySelectionMain.getSelectionModel().getSelectedItem();
+        
+        if(!chosenCat2.getCategory().getCredentials().isEmpty() && !chosenCat2.getCategory().getSubCategories().isEmpty()){
+        	listViewCredentialsList.setItems((ObservableList<Credentials>) chosenCat2.getCategory().getAllCredentials());        	        	
+        } else {
+        	//TODO
+        }
+        
     }
 
     @Override
