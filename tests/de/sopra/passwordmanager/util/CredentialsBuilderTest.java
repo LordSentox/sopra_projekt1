@@ -168,7 +168,7 @@ public class CredentialsBuilderTest {
                 .build(uc);
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test(expected = CredentialsBuilder.CredentialsBuilderException.class)
     public void invalidChangeReminderTest() {
         String name = "cred1";
         String userName = "user1";
