@@ -25,7 +25,7 @@
       <JFXTextField fx:id="textFieldCredentialsPassword" layoutX="430.0" layoutY="147.0"/>
       <JFXPasswordField fx:id="passwordFieldCredentialsPassword" layoutX="430.0" layoutY="147.0"/>
       <!--  <JFXToggleNode fx:id="buttonCredentialsShowPassword" layoutX="606.0" layoutY="140.0" mnemonicParsing="false" text="Anzeigen" onAction="#onShowPasswordClicked"/>  -->
-      <JFXToggleNode fx:id="buttonCredentialsShowPassword" layoutX="607.0" layoutY="145.0" onAction="#onShowPasswordClicked">
+      <JFXToggleNode fx:id="buttonCredentialsShowPassword" layoutX="607.0" layoutY="145.0">
       	<Label text="Anzeigen"/>
       </JFXToggleNode>
       <JFXButton fx:id="buttonCredentialsCopy" layoutX="690.0" layoutY="144.0" mnemonicParsing="false" prefHeight="28.0" text="Kopieren" onAction="#onCopyPasswordClicked"/>
