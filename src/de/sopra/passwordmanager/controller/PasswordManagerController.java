@@ -164,5 +164,4 @@ public class PasswordManagerController {
 //        credentialsController.updateCredentials(oldCredentials, newCredentials);
 //        categoryController.addCredentialsToCategories(newCredentials, newCategories);
     }
-
 }
