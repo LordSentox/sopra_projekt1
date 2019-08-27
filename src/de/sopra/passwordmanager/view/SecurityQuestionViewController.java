@@ -9,16 +9,11 @@ import javafx.stage.Stage;
 
 
 
-public class SecurityQuestionViewController {
+public class SecurityQuestionViewController extends AbstractViewController{
 
-	@FXML private JFXTextField textFieldQuestion;
-	@FXML private JFXTextField textFieldAnswer;
-    private MainWindowViewController mainWindowViewController;
-    private Stage stage; 
+	@FXML private JFXTextField textFieldQuestion, textFieldAnswer;
+      
     
-    public void setStage(Stage primaryStage){
-    	this.stage = primaryStage;
-    }
     public void onSecurityQuestionCancelClicked(){
     	stage.close();
     }
