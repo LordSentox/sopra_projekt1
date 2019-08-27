@@ -4,6 +4,7 @@ import de.sopra.passwordmanager.model.Category;
 import de.sopra.passwordmanager.model.Credentials;
 import de.sopra.passwordmanager.model.PasswordManager;
 import de.sopra.passwordmanager.util.CredentialsBuilder;
+import de.sopra.passwordmanager.util.Path;
 import de.sopra.passwordmanager.view.LoginViewAUI;
 import de.sopra.passwordmanager.view.MainWindowAUI;
 import de.sopra.passwordmanager.view.MasterPasswordViewAUI;
@@ -23,6 +24,7 @@ public class PasswordManagerController {
      * Minimale Qualität, die ein Passwort benötigt um als sicher zu gelten
      */
     public static final int MINIMUM_SAFE_QUALITY = 50;
+    public static final File SAVE_FILE = new File("../data.xml"); 
 
     private PasswordManager passwordManager;
 
@@ -105,7 +107,12 @@ public class PasswordManagerController {
      * Setzt den PasswordManager zurück und löscht alle Passwörter und Kategorien. Das Masterpasswort bleibt erhalten.
      */
     public void removeAll() {
-
+    	categoryController.removeCategory(Path.ROOT_CATEGORY_PATH, true);
+    	SAVE_FILE.delete();
+    	mainWindowAUI.refreshListStrategies(identity -> identity, identity -> identity);
+    	mainWindowAUI.refreshEntry();
+    	mainWindowAUI.refreshLists();
+    	mainWindowAUI.refreshEntryPasswordQuality(0);
     }
 
     /**
@@ -116,6 +123,18 @@ public class PasswordManagerController {
      * @param file     Daten, die geladen/importiert werden müssen
      */
     public void requestLogin(String password, File file) {
+    	//ist null, wenn kein sondern Login
+    	if(passwordManager.getMasterPassword() == null){
+	    	if(utilityController.importFile(file, password, password)){
+	    		loginViewAUI.handleLoginResult(true);
+	    	} else {
+	    		loginViewAUI.handleLoginResult(false);
+	    	}
+    	} else {
+    		if(utilityController.importFile(file, passwordManager.getMasterPassword(), password)){
+    			
+    		}
+    	}
 
     }
 
@@ -129,6 +148,8 @@ public class PasswordManagerController {
      * @throws NullPointerException falls statt eines {@link CredentialsBuilder} <code>null</code> übergeben wird
      */
     public void checkQuality(CredentialsBuilder credentials) throws NullPointerException {
+    	int quality = utilityController.checkQuality(credentials.getPassword());
+    	mainWindowAUI.refreshEntryPasswordQuality(quality);
     }
 
     /**
