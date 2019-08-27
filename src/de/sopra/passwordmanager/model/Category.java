@@ -175,4 +175,9 @@ public class Category {
         }
         return collect;
     }
+
+    @Override
+    public String toString() {
+    	return getName();
+    }
 }

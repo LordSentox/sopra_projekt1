@@ -14,7 +14,7 @@ import javafx.stage.Stage;
 import javax.swing.*;
 import java.io.File;
 
-public class SettingsViewController {
+public class SettingsViewController extends AbstractViewController{
 
 	private MainWindowViewController mainWindowViewController;
 	private Stage settingsStage, masterPasswordStage;
@@ -30,8 +30,7 @@ public class SettingsViewController {
 			AnchorPane setMasterPasswordPane = new AnchorPane();
 			FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("../view/Masterpasswort-setzen.fxml"));
 			setMasterPasswordPane = fxmlLoader.load();
-			MasterPasswordViewController masterPasswordViewController = (MasterPasswordViewController) fxmlLoader
-					.getController();
+			MasterPasswordViewController masterPasswordViewController = (MasterPasswordViewController) fxmlLoader.getController();
 
 			masterPasswordStage = new Stage();
 			Scene setMasterPasswordScene = new Scene(setMasterPasswordPane);
@@ -39,6 +38,7 @@ public class SettingsViewController {
 			masterPasswordStage.setScene(setMasterPasswordScene);
 			masterPasswordViewController.setStage(masterPasswordStage);
 			masterPasswordViewController.setMainWindowViewController(mainWindowViewController);
+			masterPasswordViewController.initSpinner();
 			masterPasswordStage.show();
 
 		} catch (Exception e) {
