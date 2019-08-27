@@ -243,7 +243,7 @@ public class MainWindowViewController implements MainWindowAUI {
             CategoryItem selectedItem = comboBoxCategorySelectionMain.getSelectionModel().getSelectedItem();
             Path path = selectedItem.getPath();
             if (Path.ROOT_CATEGORY_PATH.equals(path)) {
-                showError("Ändern der Hauptkategorie nicht erlaubt");
+                showError("Das Ändern der Hauptkategorie ist nicht erlaubt.");
                 return;
             }
 
@@ -520,7 +520,7 @@ public class MainWindowViewController implements MainWindowAUI {
     @Override
     public void showError(String error) {
         SimpleDialog dialog = new SimpleDialog("Ein Fehler ist aufgetreten!",
-                "Warnung! Es ist ein unerwarteter Fehler aufgetreten.", error);
+                "Warnung! Es ist ein Fehler aufgetreten.", error);
         dialog.setAlertType(AlertType.ERROR);
         dialog.setStyle(StageStyle.UTILITY);
         dialog.open();
