@@ -2,16 +2,13 @@ package de.sopra.passwordmanager.view;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
 
-import javax.swing.*;
+import de.sopra.passwordmanager.util.dialog.SimpleConfirmation;
+
 import java.io.File;
 
 public class SettingsViewController extends AbstractViewController{
@@ -66,23 +63,21 @@ public class SettingsViewController extends AbstractViewController{
 	}
 
 	public void onResetDataClicked() {
-	    // TODO
-	    Alert alertDialog = new Alert(AlertType.CONFIRMATION);
 
-        ButtonType buttonTypeYes = new ButtonType("Ja");
-        ButtonType buttonTypeNo = new ButtonType("Nein");
+		SimpleConfirmation removeConfirmation = new SimpleConfirmation("Passwortmanager zurücksetzen", null, "Passwortmanager wirklich zurücksetzen?") {
 
-        alertDialog.setHeaderText("PasswortManager wirklich zurücksetzen?");
-        alertDialog.setContentText("Dieser Vorgang löscht alle Daten endgültig!");
-        alertDialog.getButtonTypes().setAll(buttonTypeYes, buttonTypeNo);
-        alertDialog.showAndWait();
+			@Override
+			public void onCancel() {
 
-        ButtonType result = alertDialog.getResult();
-        if (result == buttonTypeYes) {
-            System.out.println("PasswortManager gelöscht");
-        } else if (result == buttonTypeNo) {
-            System.out.println("Doch nicht löschen");
-        } 
+			}
+
+			@Override
+			public void onSuccess() {
+				mainWindowViewController.getPasswordManagerController().removeAll();
+			}
+		};
+
+        removeConfirmation.open();
 		
 	}
 
