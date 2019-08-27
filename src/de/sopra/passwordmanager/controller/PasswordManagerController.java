@@ -131,6 +131,7 @@ public class PasswordManagerController {
      * @throws NullPointerException falls statt eines {@link CredentialsBuilder} <code>null</code> übergeben wird
      */
     public void checkQuality(CredentialsBuilder credentials) throws NullPointerException {
+        this.mainWindowAUI.refreshEntryPasswordQuality((this.utilityController.checkQuality(credentials.getPassword())));
     }
 
     /**

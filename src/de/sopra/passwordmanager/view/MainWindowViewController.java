@@ -31,6 +31,8 @@ import java.util.List;
 import java.util.Map;
 
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 public class MainWindowViewController implements MainWindowAUI {
 
@@ -41,6 +43,7 @@ public class MainWindowViewController implements MainWindowAUI {
     private LoginViewController loginViewController;
     private MasterPasswordViewController masterPasswordViewController;
     private Timeline timeline;
+    private Credentials oldCredentials;
 
     private CredentialsBuilder currentCredentials;
 
@@ -112,6 +115,8 @@ public class MainWindowViewController implements MainWindowAUI {
 
     @FXML
     private JFXProgressBar progressBarCredentialsCopyTimer;
+    @FXML
+    private JFXProgressBar progressBarCredentialsQuality;
 
     @FXML
     private Label labelCredentialsSecurityAnswer;
@@ -165,6 +170,9 @@ public class MainWindowViewController implements MainWindowAUI {
         //textFieldCredentialsPassword und passwordFieldCredentialsPassword erhalten beide den gleichen Text.
         textFieldCredentialsPassword.textProperty().bindBidirectional(passwordFieldCredentialsPassword.textProperty());
         
+        textFieldCredentialsPassword.textProperty().addListener((obs, oldText, newText) -> {
+            onCredentialsPasswordChanged();
+        });
         
     }
 
@@ -305,11 +313,6 @@ public class MainWindowViewController implements MainWindowAUI {
         catController.removeCategory(categoryPath, removeCredentialsToo);
     }
 
-    public void onShowPasswordClicked() {
-        //läuft so (init mit toggle button)
-        //TODO entfernen?
-    }
-
     public void onCopyPasswordClicked() {
         CredentialsController credController = passwordManagerController.getCredentialsController();
         credController.copyPasswordToClipboard(currentCredentials);
@@ -326,11 +329,7 @@ public class MainWindowViewController implements MainWindowAUI {
 
     public void onCheckBoxClicked() {
         boolean checkBoxSelected = checkBoxCredentialsUseReminder.isSelected();
-        if (checkBoxSelected) {
-            spinnerCredentialsReminderDays.setDisable(false);
-        } else {
-            spinnerCredentialsReminderDays.setDisable(true);
-        }
+        spinnerCredentialsReminderDays.setDisable(!checkBoxSelected);
     }
 
     public void onAddSecurityQuestionClicked() {
@@ -357,23 +356,30 @@ public class MainWindowViewController implements MainWindowAUI {
     public void onRemoveSecurityQuestionClicked() {
         CredentialsController credController = passwordManagerController.getCredentialsController();
         SecurityQuestion question = comboBoxCredentialsSecurityQuestion.getValue();
-        
+        //FIXME
         //String question = comboBoxCredentialsSecurityQuestion.getValue();
         credController.removeSecurityQuestion(question, currentCredentials);
     }
 
     public void onAddCredentialsClicked() {
+        oldCredentials = null;
         //TODO check if correct
+        listViewCredentialsList.getFocusModel().focus(-1);
         currentCredentials = new CredentialsBuilder();
         setDisable(false);
         buttonCredentialsCopy.setDisable(false);
         buttonCredentialsShowPassword.setDisable(false);
+        refreshEntry();
     }
 
     public void onRemoveCredentialsClicked() {
         CredentialsController credController = passwordManagerController.getCredentialsController();
-        Credentials oldCredentials = listViewCredentialsList.getSelectionModel().getSelectedItem();
+        oldCredentials = listViewCredentialsList.getSelectionModel().getSelectedItem();
+        listViewCredentialsList.getFocusModel().focus(-1);
         credController.removeCredentials(oldCredentials);
+        oldCredentials = null;
+        currentCredentials = new CredentialsBuilder();
+        refreshEntry();
     }
 
     public void onStartEditCredentialsClicked() {
@@ -389,9 +395,9 @@ public class MainWindowViewController implements MainWindowAUI {
         spinnerCredentialsReminderDays.setDisable(true);
         
         CredentialsController credController = passwordManagerController.getCredentialsController();
-        Credentials oldCredentials = listViewCredentialsList.getSelectionModel().getSelectedItem();
+        oldCredentials = listViewCredentialsList.getSelectionModel().getSelectedItem();
 
-        setBuilder();       
+        setBuilderFromEntry();       
         
         List<Category> categories = new ArrayList<Category>();
         categories = choiceBoxCredentialsCategories.getItems();
@@ -430,6 +436,7 @@ public class MainWindowViewController implements MainWindowAUI {
 
     public void onEntryChosen() {
         Credentials selectedEntry = listViewCredentialsList.getSelectionModel().getSelectedItem();
+        int index = listViewCredentialsList.getFocusModel().getFocusedIndex();
         if (buttonEditCredentials.isDisabled()) {
             Alert alertDialog = new Alert(AlertType.CONFIRMATION);
 
@@ -442,18 +449,27 @@ public class MainWindowViewController implements MainWindowAUI {
             alertDialog.showAndWait();
             ButtonType result = alertDialog.getResult();
 
-            //TODO korrekte Reaktion hinzufügen
-            if (result == buttonTypeYes) {
-                Credentials oldCredentials = selectedEntry;
-                setBuilder();
+            if (result == buttonTypeYes) {                
+                oldCredentials = selectedEntry;
+                currentCredentials = new CredentialsBuilder(oldCredentials, passwordManagerController.getUtilityController());
                 System.out.println("Änderung abbrechen");
             } else if (result == buttonTypeNo) {
+                listViewCredentialsList.getFocusModel().focus(index);
                 System.out.println("nicht mit löschen");
                 return;
             }
         }
         
     }
+    
+    public void onCredentialsPasswordChanged() {
+        String password = passwordFieldCredentialsPassword.getText();
+        if (password != null) {
+            currentCredentials.withPassword(password);
+            passwordManagerController.checkQuality(currentCredentials);            
+        }
+    }
+    
 
     @Override
     public void refreshLists() {
@@ -464,7 +480,7 @@ public class MainWindowViewController implements MainWindowAUI {
 
     @Override
     public void refreshListStrategies(EntryListSelectionStrategy selection, EntryListOrderStrategy order) {
-
+        
     }
 
     @Override
@@ -474,14 +490,14 @@ public class MainWindowViewController implements MainWindowAUI {
         passwordFieldCredentialsPassword.setText(currentCredentials.getPassword());
         textFieldCredentialsWebsite.setText(currentCredentials.getWebsite());
         textFieldCredentialsNotes.setText(currentCredentials.getNotes());
-        //FIXME: richtige Mehode um reminderDays zu übernehmen
-        //spinnerCredentialsReminderDays.setValue(currentCredentials.getChangeReminderDays());
+        //spinnerCredentialsReminderDays.getValueFactory().setValue(currentCredentials.getChangeReminderDays());
         checkBoxCredentialsUseReminder.setSelected(currentCredentials.getChangeReminderDays() != null);
     }
 
     @Override
     public void refreshEntryPasswordQuality(int quality) {
-
+        //XXX change quality to double between 0 and 1
+        progressBarCredentialsQuality.setProgress((double)quality/100);
     }
 
     @Override
@@ -514,23 +530,43 @@ public class MainWindowViewController implements MainWindowAUI {
         choiceBoxCredentialsCategories.setDisable(disabled);
     }
     
-    private void setBuilder() {
+    private void setBuilderFromEntry() {
         String name = textFieldCredentialsName.getText();
         String userName = textFieldCredentialsUserName.getText();
         String password = passwordFieldCredentialsPassword.getText();
         String website = textFieldCredentialsWebsite.getText();
         String notes = textFieldCredentialsNotes.getText();
-        currentCredentials.withName(name)
-        .withUserName(userName)
-        .withPassword(password)
-        .withWebsite(website)
-        .withNotes(notes);
-        int changeReminderDays = spinnerCredentialsReminderDays.getValue();
+        setBuilderNameField(name);
+        setBuilderUserNameField(userName);
+        setBuilderPasswordField(password);
+        setBuilderWebsiteField(website);
+        setBuilderNotesField(notes);
+        Integer changeReminderDays = spinnerCredentialsReminderDays.getValue();
         boolean addChangeReminderDays = checkBoxCredentialsUseReminder.isSelected();
         if (addChangeReminderDays) {
             currentCredentials.withChangeReminderDays(changeReminderDays); 
         } else {
-            //currentCredentials.withChangeReminderDays(null); 
+            currentCredentials.withChangeReminderDays(null); 
         }
+        setBuilderReminderField(changeReminderDays);
+    }
+    
+    private void setBuilderNameField(String name) {
+        currentCredentials.withName(name);
+    }
+    private void setBuilderUserNameField(String userName) {
+        currentCredentials.withUserName(userName);
+    }
+    private void setBuilderPasswordField(String password) {
+        currentCredentials.withPassword(password);
+    }
+    private void setBuilderWebsiteField(String website) {
+        currentCredentials.withWebsite(website);
+    }
+    private void setBuilderNotesField(String notes) {
+        currentCredentials.withNotes(notes);
+    }
+    private void setBuilderReminderField(Integer reminder) {
+        currentCredentials.withChangeReminderDays(reminder);
     }
 }
