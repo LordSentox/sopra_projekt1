@@ -2,6 +2,8 @@ package de.sopra.passwordmanager.view;
 
 import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXProgressBar;
+
+import de.sopra.passwordmanager.util.CredentialsBuilder;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.Spinner;
@@ -25,14 +27,19 @@ public class MasterPasswordViewController extends AbstractViewController impleme
     
     public void setStage(Stage primaryStage){
     	this.stage = primaryStage;
-    	spinnerReminderDays.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1,999));
+    	//spinnerReminderDays.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1,999));
     }
     public void setMainStage(Stage mainStage){
     	this.mainStage = mainStage;
     }
 
-    public void initSpinner(){
+    public void init(){
         spinnerReminderDays.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1,999));
+
+        passwordFieldSet.textProperty().addListener((obs, oldText, newText) -> {
+            onPasswordChanged();
+        });
+
     }
 
     public void onSaveClicked() {
@@ -47,10 +54,19 @@ public class MasterPasswordViewController extends AbstractViewController impleme
     	}
     }
 
+
     public void onPasswordChanged() {
-    	//int quality = mainWindowViewController.getPasswordManagerController().getUtilityController().checkQuality(passwordFieldSet.getText());
-    	//CheckQuality im UtilityController muss public sein
-    	//refreshQuality(quality); 
+        String password = passwordFieldSet.getText();
+        if (password != null) {
+            //TODO change credentials to String in check Quality
+            CredentialsBuilder credBuilder = new CredentialsBuilder().withPassword(password);
+            mainWindowViewController.getPasswordManagerController().checkQuality(credBuilder);
+        }
+    }
+    
+    public void refreshEntryPasswordQuality(int quality) {
+        //XXX change quality to double between 0 and 1
+        progressBarQuality.setProgress((double) quality / 100);
     }
     
     public void onMasterPasswordCancelClicked(){

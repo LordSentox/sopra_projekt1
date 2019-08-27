@@ -67,6 +67,8 @@ public class CredentialsController {
         Credentials credentials = newCredentials.build(passwordManagerController.getUtilityController());
         for (Category category : categories) {
             category.addCredentials(credentials);
+            
+            Collection<Credentials> creds = category.getCredentials();
         }
         passwordManagerController.getMainWindowAUI().refreshLists();
     }

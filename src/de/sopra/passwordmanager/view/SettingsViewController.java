@@ -34,7 +34,7 @@ public class SettingsViewController extends AbstractViewController{
 			masterPasswordStage.setScene(setMasterPasswordScene);
 			masterPasswordViewController.setStage(masterPasswordStage);
 			masterPasswordViewController.setMainWindowViewController(mainWindowViewController);
-			masterPasswordViewController.initSpinner();
+			masterPasswordViewController.init();
 			masterPasswordStage.show();
 
 		} catch (Exception e) {

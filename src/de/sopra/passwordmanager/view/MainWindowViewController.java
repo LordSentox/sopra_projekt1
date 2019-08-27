@@ -142,6 +142,10 @@ public class MainWindowViewController implements MainWindowAUI {
             onCredentialsPasswordChanged();
         });
 
+        listViewCredentialsList.getSelectionModel().selectedItemProperty().addListener((obs, oldText, newText) -> {
+            onEntryChosen();
+        });
+
         //Die ComboBox initialisieren - enthält zu Beginn nur die Root-Kategorie
         CategoryItem rootCategoryItem = new CategoryItem(Path.ROOT_CATEGORY_PATH, passwordManagerController.getPasswordManager().getRootCategory());
         comboBoxCategorySelectionMain.getItems().add(rootCategoryItem);
@@ -371,9 +375,6 @@ public class MainWindowViewController implements MainWindowAUI {
         spinnerCredentialsReminderDays.setDisable(true);
 
         CredentialsController credController = passwordManagerController.getCredentialsController();
-        CredentialsItem item = listViewCredentialsList.getSelectionModel().getSelectedItem();
-        if (item != null)
-            oldCredentials = item.getCredentials();
 
         updateCredentialsBuilderCopy();
 
@@ -419,7 +420,6 @@ public class MainWindowViewController implements MainWindowAUI {
         CredentialsItem selectedEntry = listViewCredentialsList.getSelectionModel().getSelectedItem();
         int index = listViewCredentialsList.getFocusModel().getFocusedIndex();
         if (buttonEditCredentials.isDisabled()) {
-
             SimpleConfirmation confirmation = new SimpleConfirmation("Änderung verwerfen?",
                     "Zur Zeit wird ein Eintrag bearbeitet",
                     "Wollen Sie wirklich abbrechen? \n Alle Änderungen werden gelöscht.") {
@@ -436,10 +436,14 @@ public class MainWindowViewController implements MainWindowAUI {
                     listViewCredentialsList.getFocusModel().focus(index);
                 }
             };
-            confirmation.setAlertType(AlertType.WARNING);
+            confirmation.setAlertType(AlertType.CONFIRMATION);
             confirmation.open();
-        }
+        } else {
+            oldCredentials = selectedEntry.getCredentials();
+            currentCredentials = selectedEntry.getNewBuilder(passwordManagerController.getUtilityController());
 
+        }
+        refreshEntry();
     }
 
     public void onCredentialsPasswordChanged() {
