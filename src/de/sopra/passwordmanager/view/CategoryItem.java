@@ -3,7 +3,7 @@ package de.sopra.passwordmanager.view;
 import de.sopra.passwordmanager.model.Category;
 import de.sopra.passwordmanager.util.Path;
 
-public class CategoryItem {
+class CategoryItem {
 
     private Path path;
     private Category category;
