@@ -180,4 +180,9 @@ public class Category {
     public int hashCode() {
         return Objects.hash(name, subCategories);
     }
+    
+    @Override
+    public String toString() {
+    	return getName();
+    }
 }

@@ -6,6 +6,7 @@ import de.sopra.passwordmanager.model.PasswordManager;
 import de.sopra.passwordmanager.util.CredentialsBuilder;
 import de.sopra.passwordmanager.view.LoginViewAUI;
 import de.sopra.passwordmanager.view.MainWindowAUI;
+import de.sopra.passwordmanager.view.MainWindowViewController;
 import de.sopra.passwordmanager.view.MasterPasswordViewAUI;
 
 import java.io.File;
@@ -42,13 +43,14 @@ public class PasswordManagerController {
 
     private MasterPasswordViewAUI masterPasswordViewAUI;
 
-    public PasswordManagerController() {
+    public PasswordManagerController(MainWindowAUI mainWindowAUI) {
         this.passwordManager = new PasswordManager();
         this.credentialsController = new CredentialsController(this);
         this.categoryController = new CategoryController(this);
         this.utilityController = new UtilityController(this);
         this.masterPasswordController = new MasterPasswordController(this);
         this.passwordReminderController = new PasswordReminderController(this);
+        this.mainWindowAUI = mainWindowAUI;
     }
 
     public PasswordManager getPasswordManager() {

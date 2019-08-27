@@ -21,7 +21,7 @@ public class Main extends Application{
 			mainPane = fxmlLoader.load();
 			MainWindowViewController mainWindowViewController = (MainWindowViewController) fxmlLoader.getController();
 			mainWindowViewController.init();
-			mainWindowViewController.setPasswordManagerController(new PasswordManagerController());
+			mainWindowViewController.setPasswordManagerController(new PasswordManagerController(mainWindowViewController));
 			
 			Stage mainStage = new Stage();
 			Scene mainScene = new Scene(mainPane);

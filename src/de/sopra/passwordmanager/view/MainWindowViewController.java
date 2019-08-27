@@ -52,22 +52,32 @@ public class MainWindowViewController implements MainWindowAUI {
     private JFXTextField textFieldCredentialsUserName;
     @FXML
     private JFXTextField textFieldCredentialsWebsite;
+<<<<<<< HEAD
     @FXML
     private JFXTextField passwordFieldCredentialsPassword;
 
+=======
+>>>>>>> refs/remotes/origin/abstractViewController
     @FXML
     private TextArea textFieldCredentialsNotes;
+<<<<<<< HEAD
 
 
+=======
+    @FXML
+    private JFXPasswordField passwordFieldCredentialsPassword;
+>>>>>>> refs/remotes/origin/abstractViewController
     @FXML
     private Spinner<Integer> spinnerCredentialsReminderDays;
-
     @FXML
     private JFXListView<Credentials> listViewCredentialsList;
-
     @FXML
+<<<<<<< HEAD
     private JFXToggleNode buttonCredentialsShowPassword;
 
+=======
+    private JFXToggleButton buttonCredentialsShowPassword;
+>>>>>>> refs/remotes/origin/abstractViewController
     @FXML
     private JFXButton buttonAddCredentials;
     @FXML
@@ -219,7 +229,11 @@ public class MainWindowViewController implements MainWindowAUI {
             categoryEditScene.getStylesheets().add(getClass().getResource("../application/application.css").toExternalForm());
             categoryEditStage.setScene(categoryEditScene);
             categoryEditViewController.setStage(categoryEditStage);
+            categoryEditViewController.setMainWindowViewController(this);
+            categoryEditViewController.initComboBox();
             categoryEditStage.show();
+            
+            
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
