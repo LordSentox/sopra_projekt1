@@ -19,6 +19,7 @@ public interface MainWindowAUI {
     /**
      * Ändert die Strategie mit der die Listen der Einträge gefüllt werden.
      * Soll nach Abschluss selbstständig zu einem Aufruf von {@link #refreshLists()} führen.
+     * Ist eine Strategie <code>null</code>, so wird diese strategy <strong>nicht</strong> neu gesetzt.
      *
      * @param selection die neue Strategie zur Auswahl der Daten
      * @param order     die neue Strategie zur Sortierung der Daten

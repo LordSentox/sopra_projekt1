@@ -175,6 +175,7 @@ public class Category {
         }
         return collect;
     }
+<<<<<<< HEAD
 
     @Override
     public int hashCode() {
@@ -182,4 +183,6 @@ public class Category {
     }
     
    
+=======
+>>>>>>> refs/remotes/origin/master
 }
