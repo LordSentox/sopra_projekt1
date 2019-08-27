@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<moepse keyValidator="034c0f8ac5ab8ef39e1c25af63b4f8d40e9488ebb5ff03af3c583b4e4db2aa3d">
+    <tree>
+        <category name="Arbeit">
+            <category name="Einkaufen">
+                <entry name="Hartmuts gutes Passwort"/>
+            </category>
+        </category>
+        <category name="Briefmarken_Sammeln">
+            <category name="Einkaufen">
+                <entry name="Hartmuts gutes Passwort"/>
+            </category>
+        </category>
+    </tree>
+
+    <data>
+        <entry name="Hartmuts gutes Passwort">
+            <userName>Hartmut</userName>
+            <password>IchBinVerschluesselt</password>
+            <created>2018-07-14T17:45:55.9483536</created>
+            <lastChanged>2018-07-14T17:45:55.9483536</lastChanged>
+            <questions/>
+        </entry>
+    </data>
+</moepse>

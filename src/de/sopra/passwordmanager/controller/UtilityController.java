@@ -6,8 +6,13 @@ import de.sopra.passwordmanager.util.CredentialsBuilder;
 import exceptions.DecryptionException;
 import exceptions.EncryptionException;
 import org.passay.*;
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
 
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
+import java.io.IOException;
 import java.security.SecureRandom;
 import java.util.Arrays;
 import java.util.List;
@@ -117,16 +122,6 @@ public class UtilityController {
     }
 
     /**
-     * Die Methode exportiert die aktüllen Daten in die angegebene Datei, wenn die Datei bereits etwas enthält, wird diese überschrieben
-     *
-     * @param file Die Datei, in welche die daten exportiert werden sollen
-     * @throws IllegalArgumentException Wenn file null ist oder der Pfad nicht existiert
-     */
-    public void exportFile(File file) throws IllegalArgumentException {
-
-    }
-
-    /**
      * Die Methode entschlüsselt einen eingegebenen text mit dem Masterpasswort
      *
      * @param text Der zu entschlüsselnde Text, dabei kann es sich um Passwörter oder die Sicherheitsfragen handeln
@@ -138,8 +133,7 @@ public class UtilityController {
             return AES.decrypt(text.getEncryptedContent(), passwordManagerController.getPasswordManager().getMasterPassword());
         } catch (DecryptionException e) {
             System.out.println(text.getEncryptedContent() + " konnte nicht entschlüsselt werden.");
-            // TODO: Print error properly
-            System.out.println(e);
+            e.printStackTrace();
             return null;
         }
     }
@@ -155,8 +149,7 @@ public class UtilityController {
             return new EncryptedString(AES.encrypt(text, passwordManagerController.getPasswordManager().getMasterPassword()));
         } catch (EncryptionException e) {
             System.out.println("Ein Text konnte nicht verschlüsselt werden.");
-            // TODO: Print error properly
-            System.out.println(e);
+            e.printStackTrace();
             return null;
         }
     }
@@ -261,7 +254,24 @@ public class UtilityController {
      * hat der Import funktioniert
      */
     boolean importFile(File file, String masterPassword) {
+        try {
+            Document document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(file);
+
+            document.getDocumentElement().normalize();
+        } catch (Exception e) {
+            // TODO: Schönere Fehlerbehandlung
+            e.printStackTrace();
+        }
+
         return false;
     }
 
+    /**
+     * Die Methode exportiert die aktüllen Daten in die angegebene Datei, wenn die Datei bereits etwas enthält, wird diese überschrieben
+     *
+     * @param file Die Datei, in welche die daten exportiert werden sollen
+     * @throws IllegalArgumentException Wenn file null ist oder der Pfad nicht existiert
+     */
+    public void exportFile(File file) throws IllegalArgumentException {
+    }
 }
