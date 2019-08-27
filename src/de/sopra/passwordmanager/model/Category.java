@@ -175,9 +175,4 @@ public class Category {
         }
         return collect;
     }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(name, subCategories);
-    }
 }
