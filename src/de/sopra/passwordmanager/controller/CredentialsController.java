@@ -197,7 +197,7 @@ public class CredentialsController {
      *
      * @param credentials Der {@link CredentialsBuilder}, dessen Passwort aus der Zwischenablage entfernt werden soll. Falls <code>null</code> geschieht nichts
      */
-    void clearPasswordFromClipboard(CredentialsBuilder credentials) {
+    public void clearPasswordFromClipboard(CredentialsBuilder credentials) {
         if (credentials.getPassword().equals(getClipboardContents())) {
             setClipboardContents("*****");
         }

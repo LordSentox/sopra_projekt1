@@ -299,6 +299,16 @@ public class MainWindowViewController implements MainWindowAUI {
         progressBarCredentialsCopyTimer.setOpacity(1.0);
         progressBarCredentialsCopyTimer.setProgress(1.0);
         timeline.playFromStart();
+        
+        timeline.setOnFinished(new EventHandler<ActionEvent>() {
+
+            @Override
+            public void handle(ActionEvent event) {
+                passwordManagerController.getCredentialsController().clearPasswordFromClipboard(currentCredentials);
+                
+            }
+        });
+        
     }
 
     public void onGeneratePasswordClicked() {

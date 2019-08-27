@@ -60,13 +60,8 @@ public class MasterPasswordViewController extends AbstractViewController impleme
         if (password != null) {
             //TODO change credentials to String in check Quality
             CredentialsBuilder credBuilder = new CredentialsBuilder().withPassword(password);
-            mainWindowViewController.getPasswordManagerController().checkQuality(credBuilder);
+            mainWindowViewController.getPasswordManagerController().getMasterPasswordController().checkQuality(password);
         }
-    }
-    
-    public void refreshEntryPasswordQuality(int quality) {
-        //XXX change quality to double between 0 and 1
-        progressBarQuality.setProgress((double) quality / 100);
     }
     
     public void onMasterPasswordCancelClicked(){
@@ -74,14 +69,14 @@ public class MasterPasswordViewController extends AbstractViewController impleme
     }
     @Override
     public void refreshQuality(int quality) {
-    	double progress = quality / 100;  
+    	double progress = quality / 100.0;  
     	progressBarQuality.setProgress(progress); //progressBarQuality erwartet qualität zwischen 0 und 1
-    	
-    	if (progress<0.3){
+
+    	if (progress<0.3) {
     		progressBarQuality.setStyle("-fx-accent: red;");
-    	}else if (progress>=0.3 && progress <= 0.6){
+    	} else if (progress>=0.3 && progress <= 0.6){
     		progressBarQuality.setStyle("-fx-accent: yellow;");
-    	}else{
+    	} else {
     		progressBarQuality.setStyle("-fx-accent: green;");
     	}
     }
