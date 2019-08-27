@@ -6,7 +6,6 @@ import de.sopra.passwordmanager.controller.CredentialsController;
 import de.sopra.passwordmanager.controller.PasswordManagerController;
 import de.sopra.passwordmanager.model.Category;
 import de.sopra.passwordmanager.model.Credentials;
-import de.sopra.passwordmanager.model.EncryptedString;
 import de.sopra.passwordmanager.model.SecurityQuestion;
 import de.sopra.passwordmanager.util.CredentialsBuilder;
 import de.sopra.passwordmanager.util.EntryListOrderStrategy;
@@ -276,8 +275,8 @@ public class MainWindowViewController implements MainWindowAUI {
             System.out.println("abbrechen");
             return;
         }
-        Category selectedCat = comboBoxCategorySelectionMain.getValue();
-        Path categoryPath = catController.getPathForCategory(selectedCat);
+        CategoryItem selectedCat = comboBoxCategorySelectionMain.getValue();
+        Path categoryPath = catController.getPathForCategory(selectedCat.getCategory());
 
         TwoOptionConfirmation removeConfirmation = new TwoOptionConfirmation("Kategorie entfernen", null,
                 "Nur die Kategorie oder die Kategorie mitsamt Inhalt löschen?") {
