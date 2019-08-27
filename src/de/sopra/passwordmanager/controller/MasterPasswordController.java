@@ -25,10 +25,10 @@ public class MasterPasswordController {
      * @param newReminder Zeit in Tagen, in der der Nutzer zur Änderung des Masterpasswortes aufgefordert wird
      */
     public void changePassword(String newPassword, int newReminder) {
-    	String oldMasterPassword = passwordManagerController.getPasswordManager().getMasterPassword();
-    	passwordManagerController.getPasswordManager().setMasterPassword(newPassword);
-    	passwordManagerController.getPasswordManager().setMasterPasswordReminderDays(newReminder);
-    	passwordManagerController.getCredentialsController().reencryptAll(oldMasterPassword, newPassword);
+        String oldMasterPassword = passwordManagerController.getPasswordManager().getMasterPassword();
+        passwordManagerController.getPasswordManager().setMasterPassword(newPassword);
+        passwordManagerController.getPasswordManager().setMasterPasswordReminderDays(newReminder);
+        passwordManagerController.getCredentialsController().reencryptAll(oldMasterPassword, newPassword);
     }
 
     /**
@@ -39,9 +39,9 @@ public class MasterPasswordController {
      * @throws NullPointerException falls statt eines Passwortstrings <code>null</code> übergeben wird
      */
     public void checkQuality(String password) throws NullPointerException {
-    	int quality = passwordManagerController.getUtilityController().checkQuality(password);
-    	passwordManagerController.getMasterPasswordViewAUI().refreshQuality(quality);
-    	
+        int quality = passwordManagerController.getUtilityController().checkQuality(password);
+        passwordManagerController.getMasterPasswordViewAUI().refreshQuality(quality);
+
     }
 
     /**
@@ -51,7 +51,7 @@ public class MasterPasswordController {
      * @return true, wenn das übergebene Passwort mit dem hinterlegten Masterpasswort übereinstimmt. false, sonst.
      */
     boolean checkPassword(String password) {
-    	return passwordManagerController.getPasswordManager().getMasterPassword().equals(password);
+        return passwordManagerController.getPasswordManager().getMasterPassword().equals(password);
     }
 
     /**
@@ -60,10 +60,10 @@ public class MasterPasswordController {
      * @return true, wenn Masterpasswort geändert werden muss. false, sonst.
      */
     boolean hasToBeChanged() {
-    	LocalDateTime lastChanged = passwordManagerController.getPasswordManager().getMasterPasswordLastChanged();
-    	int reminderDays = passwordManagerController.getPasswordManager().getMasterPasswordReminderDays();
-    	LocalDateTime targetTime = lastChanged.plusDays(reminderDays);
-    	return targetTime.compareTo(LocalDateTime.now()) <= 0;
+        LocalDateTime lastChanged = passwordManagerController.getPasswordManager().getMasterPasswordLastChanged();
+        int reminderDays = passwordManagerController.getPasswordManager().getMasterPasswordReminderDays();
+        LocalDateTime targetTime = lastChanged.plusDays(reminderDays);
+        return targetTime.compareTo(LocalDateTime.now()) <= 0;
     }
 
 }
