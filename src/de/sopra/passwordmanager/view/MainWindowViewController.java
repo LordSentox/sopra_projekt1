@@ -141,7 +141,7 @@ public class MainWindowViewController implements MainWindowAUI {
         textFieldCredentialsPassword.textProperty().addListener((obs, oldText, newText) -> {
             onCredentialsPasswordChanged();
         });
-        
+
         listViewCredentialsList.getSelectionModel().selectedItemProperty().addListener((obs, oldText, newText) -> {
             onEntryChosen();
         });
@@ -375,9 +375,6 @@ public class MainWindowViewController implements MainWindowAUI {
         spinnerCredentialsReminderDays.setDisable(true);
 
         CredentialsController credController = passwordManagerController.getCredentialsController();
-        //CredentialsItem item = listViewCredentialsList.getSelectionModel().getSelectedItem();
-        //if (item != null)
-            //oldCredentials = item.getCredentials();
 
         updateCredentialsBuilderCopy();
 
@@ -444,7 +441,7 @@ public class MainWindowViewController implements MainWindowAUI {
         } else {
             oldCredentials = selectedEntry.getCredentials();
             currentCredentials = selectedEntry.getNewBuilder(passwordManagerController.getUtilityController());
-            
+
         }
         refreshEntry();
     }
@@ -512,8 +509,9 @@ public class MainWindowViewController implements MainWindowAUI {
         passwordFieldCredentialsPassword.setText(currentCredentials.getPassword());
         textFieldCredentialsWebsite.setText(currentCredentials.getWebsite());
         textFieldCredentialsNotes.setText(currentCredentials.getNotes());
-        //spinnerCredentialsReminderDays.getValueFactory().setValue(currentCredentials.getChangeReminderDays());
-        checkBoxCredentialsUseReminder.setSelected(currentCredentials.getChangeReminderDays() != null);
+        Integer changeReminderDays = currentCredentials.getChangeReminderDays();
+        spinnerCredentialsReminderDays.getValueFactory().setValue(changeReminderDays != null ? changeReminderDays : 1);
+        checkBoxCredentialsUseReminder.setSelected(changeReminderDays != null);
     }
 
     @Override
