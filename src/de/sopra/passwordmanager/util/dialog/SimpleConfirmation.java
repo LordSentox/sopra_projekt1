@@ -25,6 +25,11 @@ public abstract class SimpleConfirmation extends PasswordManagerDialog {
     public abstract void onSuccess();
 
     @Override
+    public void onCancel() {
+
+    }
+
+    @Override
     public void open() {
         Alert alert = new Alert(alertType);
         alert.initStyle(style);

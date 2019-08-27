@@ -14,7 +14,7 @@ import static javafx.scene.control.ButtonBar.ButtonData.CANCEL_CLOSE;
  * @version 27.08.2019
  * @since 27.08.2019
  */
-public abstract class ThreeOptionConfirmation extends PasswordManagerDialog {
+public class ThreeOptionConfirmation extends PasswordManagerDialog {
 
     private String option1, option2, option3;
     private Runnable run1, run2, run3;
@@ -49,6 +49,11 @@ public abstract class ThreeOptionConfirmation extends PasswordManagerDialog {
 
     public void setRun3(Runnable run3) {
         this.run3 = run3;
+    }
+
+    @Override
+    public void onCancel() {
+
     }
 
     @Override

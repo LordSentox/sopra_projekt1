@@ -255,12 +255,7 @@ public class MainWindowViewController implements MainWindowAUI {
     public void onRemoveCategoryClicked() {
         CategoryController catController = passwordManagerController.getCategoryController();
         TwoOptionConfirmation removeConfirmation = new TwoOptionConfirmation("Kategorie entfernen", null,
-                "Nur die Kategorie oder die Kategorie mitsamt Inhalt löschen?") {
-            @Override
-            public void onCancel() {
-
-            }
-        };
+                "Nur die Kategorie oder die Kategorie mitsamt Inhalt löschen?");
 
         removeConfirmation.setAlertType(Alert.AlertType.NONE);
         removeConfirmation.setOption1("Nur Kategorie");
