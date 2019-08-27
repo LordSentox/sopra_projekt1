@@ -187,7 +187,7 @@ public class MainWindowViewController implements MainWindowAUI {
             settingsViewController.setMainWindowViewController(this);
             settingsStage.show();
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException(e);    
         }
     }
 
@@ -371,6 +371,7 @@ public class MainWindowViewController implements MainWindowAUI {
         
         
         List<Category> categories = new ArrayList<Category>();
+        categories.add(passwordManagerController.getPasswordManager().getRootCategory());
         categories = choiceBoxCredentialsCategories.getItems();
         
         

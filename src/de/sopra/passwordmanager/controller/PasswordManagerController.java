@@ -160,8 +160,9 @@ public class PasswordManagerController {
      * @see Category
      */
     public void saveEntry(Credentials oldCredentials, CredentialsBuilder newCredentials, Collection<Category> newCategories) {
-//        categoryController.removeCredentialsFromCategories(oldCredentials);
-//        credentialsController.updateCredentials(oldCredentials, newCredentials);
-//        categoryController.addCredentialsToCategories(newCredentials, newCategories);
+  
+    	   credentialsController.removeCredentials(oldCredentials);
+    	   credentialsController.addCredentials(newCredentials, newCategories);
+    	   mainWindowAUI.refreshEntry();
     }
 }

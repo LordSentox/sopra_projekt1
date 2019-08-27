@@ -45,6 +45,7 @@ public class Main extends Application{
 				primaryStage.setScene(loginScene);
 				primaryStage.show();
 			} else {
+				/* Masterpasswort zum Erststart / Registrierung setzen */
 				AnchorPane masterPasswordPane = new AnchorPane();
 				fxmlLoader = new FXMLLoader(getClass().getResource("../view/Masterpasswort-setzen.fxml"));
 				masterPasswordPane = fxmlLoader.load();
