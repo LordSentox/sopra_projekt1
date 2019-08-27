@@ -7,14 +7,17 @@ import de.sopra.passwordmanager.controller.CredentialsController;
 import de.sopra.passwordmanager.controller.PasswordManagerController;
 import de.sopra.passwordmanager.model.Category;
 import de.sopra.passwordmanager.model.Credentials;
-import de.sopra.passwordmanager.model.SecurityQuestion;
 import de.sopra.passwordmanager.util.CredentialsBuilder;
+import de.sopra.passwordmanager.util.CredentialsItem;
 import de.sopra.passwordmanager.util.Path;
+import de.sopra.passwordmanager.util.PatternSyntax;
 import de.sopra.passwordmanager.util.dialog.SimpleConfirmation;
 import de.sopra.passwordmanager.util.dialog.SimpleDialog;
 import de.sopra.passwordmanager.util.dialog.TwoOptionConfirmation;
+import de.sopra.passwordmanager.util.strategy.AlphabeticOrderStrategy;
 import de.sopra.passwordmanager.util.strategy.EntryListOrderStrategy;
 import de.sopra.passwordmanager.util.strategy.EntryListSelectionStrategy;
+import de.sopra.passwordmanager.util.strategy.SelectAllStrategy;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.collections.ObservableList;
@@ -31,7 +34,6 @@ import javafx.stage.StageStyle;
 import javafx.util.Duration;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class MainWindowViewController implements MainWindowAUI {
 
@@ -152,8 +154,8 @@ public class MainWindowViewController implements MainWindowAUI {
         comboBoxCategorySelectionMain.getSelectionModel().select(rootCategoryItem);
 
         //Die Strategie initilisieren - sind zu Beginn Identitätsbeziehungen, d.h. ändern nichts am Input
-        selectionStrategy = identity -> identity; //es wird keine Auswahl getroffen
-        orderStrategy = identity -> identity; //es wird nicht sortiert
+        selectionStrategy = new SelectAllStrategy(); //es wird keine Auswahl getroffen
+        orderStrategy = new AlphabeticOrderStrategy(); //es wird nicht sortiert
 
     }
 
@@ -211,13 +213,9 @@ public class MainWindowViewController implements MainWindowAUI {
     }
 
     public void onSearchClicked() {
-
-        //FIXME
         CredentialsController credentialsController = passwordManagerController.getCredentialsController();
-        Path categoryPath = comboBoxCategorySelectionMain.getValue().getPath();
-
         String pattern = textFieldSearch.getText();
-        credentialsController.filterCredentials(categoryPath, pattern);
+        credentialsController.filterCredentials(new PatternSyntax(pattern));
     }
 
     public void onAddCategoryClicked() {
@@ -411,13 +409,7 @@ public class MainWindowViewController implements MainWindowAUI {
     }
 
     public void onChooseCategoryClicked() {
-        CredentialsController credController = passwordManagerController.getCredentialsController();
-        CategoryController categoryController = passwordManagerController.getCategoryController();
-
-        CategoryItem category = comboBoxCategorySelectionMain.getValue();
-        Path categoryPath = categoryController.getPathForCategory(category.getCategory());
-        String pattern = textFieldSearch.getText();
-        credController.filterCredentials(categoryPath, pattern);
+        refreshLists();
     }
 
     public void onChooseQuestionClicked() {
@@ -479,10 +471,14 @@ public class MainWindowViewController implements MainWindowAUI {
 
         //Alle Kategorien in die Kombobox einpflegen
         CategoryItem chosenCat = comboBoxCategorySelectionMain.getSelectionModel().getSelectedItem();
+        //alte Inhalte entfernen
         comboBoxCategorySelectionMain.getItems().clear();
+        //neue Inhalte einfügen
         cats.keySet().stream()
                 .map(path -> new CategoryItem(path, cats.get(path)))
                 .forEach(comboBoxCategorySelectionMain.getItems()::add);
+
+        //vorherige Auswahl wiederherstellen, wenn möglich
         List<CategoryItem> items = comboBoxCategorySelectionMain.getItems();
         if (!items.stream().anyMatch(item -> item.getPath().equals(chosenCat.getPath()))) {
             CategoryItem selected = items.stream().filter(item -> item.getPath().equals(Path.ROOT_CATEGORY_PATH)).findAny().get();
@@ -494,10 +490,12 @@ public class MainWindowViewController implements MainWindowAUI {
 
         //Inhalt der Kategorie in Liste anzeigen
         CategoryItem chosenCat2 = comboBoxCategorySelectionMain.getSelectionModel().getSelectedItem();
-        Collection<Credentials> credentials = chosenCat2.getCategory().getCredentials();
+        //getAllCredentials damit die aktuelle Kategorie, ihre Inhalte und alle untergeordneten Inhalte berücksichtigt werden
+        Collection<Credentials> credentials = chosenCat2.getCategory().getAllCredentials();
         if (!credentials.isEmpty()) {
-            ObservableList<CredentialsItem> credsToShow = new ObservableListWrapper<>(
-                    credentials.stream().map(CredentialsItem::new).collect(Collectors.toList()));
+            List<CredentialsItem> selection = selectionStrategy.select(new LinkedList<>(credentials));
+            List<CredentialsItem> ordered = orderStrategy.order(selection);
+            ObservableList<CredentialsItem> credsToShow = new ObservableListWrapper<>(ordered);
             listViewCredentialsList.setItems(credsToShow);
         } else {
             //TODO
