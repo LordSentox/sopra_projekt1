@@ -257,7 +257,7 @@ public class MainWindowViewController implements MainWindowAUI {
         TwoOptionConfirmation removeConfirmation = new TwoOptionConfirmation("Kategorie entfernen", null,
                 "Nur die Kategorie oder die Kategorie mitsamt Inhalt löschen?");
 
-        removeConfirmation.setAlertType(Alert.AlertType.NONE);
+        removeConfirmation.setAlertType(AlertType.CONFIRMATION);
         removeConfirmation.setOption1("Nur Kategorie");
         removeConfirmation.setOption2("Mitsamt Inhalt");
         removeConfirmation.setRun1(() -> catController.removeCategory(comboBoxCategorySelectionMain.getValue().getPath(), false));
@@ -409,6 +409,7 @@ public class MainWindowViewController implements MainWindowAUI {
                     System.out.println("nicht mit löschen");
                 }
             };
+            confirmation.setAlertType(AlertType.WARNING);
             confirmation.open();
         }
 
