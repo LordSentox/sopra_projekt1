@@ -114,7 +114,7 @@ public class CategoryController {
         for (Credentials credentials : oldCategory.getCredentials())
             newCategory.addCredentials(credentials);
         //alte Kategorie entfernen
-        getCategory(oldPath.getParent()).removeSubCategory(oldCategory);
+        getCategory(oldPath.getParent()).removeSubCategory(oldCategory.getName());
     }
 
     /**
