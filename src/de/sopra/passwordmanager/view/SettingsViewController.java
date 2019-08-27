@@ -2,12 +2,16 @@ package de.sopra.passwordmanager.view;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
 
 import javax.swing.*;
+
+import de.sopra.passwordmanager.util.dialog.SimpleConfirmation;
+
 import java.io.File;
 
 public class SettingsViewController extends AbstractViewController{
@@ -62,17 +66,21 @@ public class SettingsViewController extends AbstractViewController{
 	}
 
 	public void onResetDataClicked() {
-		JDialog.setDefaultLookAndFeelDecorated(true);
-	    int response = JOptionPane.showConfirmDialog(null, "PasswortManager wirklich zurücksetzen? Dieser Vorgang löscht alle Daten endgültig!", "",
-	        JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-	    if (response == JOptionPane.NO_OPTION) {
-	      //System.out.println("");
-	    } else if (response == JOptionPane.YES_OPTION) {
-	      System.out.println("PasswortManager gelöscht.");
-	      mainWindowViewController.getPasswordManagerController().removeAll();
-	    } else if (response == JOptionPane.CLOSED_OPTION) {
-	      //System.out.println("JOptionPane closed");
-	    }
+		
+		SimpleConfirmation removeConfirmation = new SimpleConfirmation("Passwortmanager zurücksetzen", null, "Passwortmanager wirklich zurücksetzen?") {
+			
+			@Override
+			public void onCancel() {
+								
+			}
+			
+			@Override
+			public void onSuccess() {
+				mainWindowViewController.getPasswordManagerController().removeAll();
+			}
+		};
+		
+        removeConfirmation.open();
 		
 	}
 
