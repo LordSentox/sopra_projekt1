@@ -11,6 +11,7 @@ import de.sopra.passwordmanager.util.CredentialsBuilder;
 import de.sopra.passwordmanager.util.EntryListOrderStrategy;
 import de.sopra.passwordmanager.util.EntryListSelectionStrategy;
 import de.sopra.passwordmanager.util.Path;
+import de.sopra.passwordmanager.util.dialog.SimpleConfirmation;
 import de.sopra.passwordmanager.util.dialog.TwoOptionConfirmation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -184,7 +185,7 @@ public class MainWindowViewController implements MainWindowAUI {
             settingsViewController.setMainWindowViewController(this);
             settingsStage.show();
         } catch (Exception e) {
-            throw new RuntimeException(e);    
+            throw new RuntimeException(e);
         }
     }
 
@@ -342,7 +343,6 @@ public class MainWindowViewController implements MainWindowAUI {
 
     public void onStartEditCredentialsClicked() {
         setDisable(false);
-
     }
 
 
@@ -383,7 +383,7 @@ public class MainWindowViewController implements MainWindowAUI {
     public void onChooseQuestionClicked() {
         CredentialsController credController = passwordManagerController.getCredentialsController();
         Map<String, String> questions = currentCredentials.getSecurityQuestions();
-        
+
         //TODO Methode hinzufügen für decrypt von Question und Answer
         //SecurityQuestion chosenQuestion = credController.
         SecurityQuestion selectedQuestion = comboBoxCredentialsSecurityQuestion.getValue();
@@ -397,26 +397,24 @@ public class MainWindowViewController implements MainWindowAUI {
         Credentials selectedEntry = listViewCredentialsList.getSelectionModel().getSelectedItem();
         int index = listViewCredentialsList.getFocusModel().getFocusedIndex();
         if (buttonEditCredentials.isDisabled()) {
-            Alert alertDialog = new Alert(AlertType.CONFIRMATION);
 
-            ButtonType buttonTypeYes = new ButtonType("Ja");
-            ButtonType buttonTypeNo = new ButtonType("Abbrechen");
+            SimpleConfirmation confirmation = new SimpleConfirmation("Änderung verwerfen?",
+                    "Zur Zeit wird ein Eintrag bearbeitet",
+                    "Wollen Sie wirklich abbrechen? \n Alle Änderungen werden gelöscht.") {
+                @Override
+                public void onSuccess() {
+                    oldCredentials = selectedEntry;
+                    currentCredentials = new CredentialsBuilder(oldCredentials, passwordManagerController.getUtilityController());
+                    System.out.println("Änderung abbrechen");
+                }
 
-            alertDialog.setHeaderText("Zur Zeit wird ein Eintrag bearbeitet");
-            alertDialog.setContentText("Wollen Sie wirklich abbrechen? \n Alle Änderungen werden gelöscht.");
-            alertDialog.getButtonTypes().setAll(buttonTypeYes, buttonTypeNo);
-            alertDialog.showAndWait();
-            ButtonType result = alertDialog.getResult();
-
-            if (result == buttonTypeYes) {
-                oldCredentials = selectedEntry;
-                currentCredentials = new CredentialsBuilder(oldCredentials, passwordManagerController.getUtilityController());
-                System.out.println("Änderung abbrechen");
-            } else if (result == buttonTypeNo) {
-                listViewCredentialsList.getFocusModel().focus(index);
-                System.out.println("nicht mit löschen");
-                return;
-            }
+                @Override
+                public void onCancel() {
+                    listViewCredentialsList.getFocusModel().focus(index);
+                    System.out.println("nicht mit löschen");
+                }
+            };
+            confirmation.open();
         }
 
     }
@@ -467,7 +465,7 @@ public class MainWindowViewController implements MainWindowAUI {
     @Override
     public void refreshEntryPasswordQuality(int quality) {
         //XXX change quality to double between 0 and 1
-        progressBarCredentialsQuality.setProgress((double)quality/100);
+        progressBarCredentialsQuality.setProgress((double) quality / 100);
     }
 
     @Override
@@ -498,7 +496,7 @@ public class MainWindowViewController implements MainWindowAUI {
         checkBoxCredentialsUseReminder.setDisable(disabled);
         choiceBoxCredentialsCategories.setDisable(disabled);
     }
-    
+
     private void setBuilderFromEntry() {
         String name = textFieldCredentialsName.getText();
         String userName = textFieldCredentialsUserName.getText();
@@ -523,18 +521,23 @@ public class MainWindowViewController implements MainWindowAUI {
     private void setBuilderNameField(String name) {
         currentCredentials.withName(name);
     }
+
     private void setBuilderUserNameField(String userName) {
         currentCredentials.withUserName(userName);
     }
+
     private void setBuilderPasswordField(String password) {
         currentCredentials.withPassword(password);
     }
+
     private void setBuilderWebsiteField(String website) {
         currentCredentials.withWebsite(website);
     }
+
     private void setBuilderNotesField(String notes) {
         currentCredentials.withNotes(notes);
     }
+
     private void setBuilderReminderField(Integer reminder) {
         currentCredentials.withChangeReminderDays(reminder);
     }
