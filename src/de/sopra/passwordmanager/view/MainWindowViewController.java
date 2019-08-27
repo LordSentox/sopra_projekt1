@@ -1,6 +1,8 @@
 package de.sopra.passwordmanager.view;
 
 import com.jfoenix.controls.*;
+import com.sun.javafx.collections.ObservableListWrapper;
+
 import de.sopra.passwordmanager.controller.CategoryController;
 import de.sopra.passwordmanager.controller.CredentialsController;
 import de.sopra.passwordmanager.controller.PasswordManagerController;
@@ -28,6 +30,7 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -314,6 +317,7 @@ public class MainWindowViewController implements MainWindowAUI {
     }
 
     public void onGeneratePasswordClicked() {
+    	setBuilderFromEntry();
         passwordManagerController.getUtilityController().generatePassword(currentCredentials);
     }
 
@@ -392,7 +396,9 @@ public class MainWindowViewController implements MainWindowAUI {
 
         List<Category> categories = new ArrayList<Category>();
         categories.add(passwordManagerController.getPasswordManager().getRootCategory());
-        categories = choiceBoxCredentialsCategories.getItems();
+        //categories.add(comboBoxCategorySelectionMain.getSelectionModel().getSelectedItem().getCategory());
+        //TODO auslesen aus choiceBox und an liste anhängen
+        //categories = choiceBoxCredentialsCategories.getItems();
 
 
         if (oldCredentials == null) {
@@ -470,12 +476,12 @@ public class MainWindowViewController implements MainWindowAUI {
 
         /* Init category combobox */
         Map<Path, Category> cats = passwordManagerController.getPasswordManager().getRootCategory().createPathMap(new Path());
+        //combobox updaten
         CategoryItem chosenCat = comboBoxCategorySelectionMain.getSelectionModel().getSelectedItem();
         comboBoxCategorySelectionMain.getItems().clear();
         cats.keySet().stream()
                 .map(path -> new CategoryItem(path, cats.get(path)))
                 .forEach(comboBoxCategorySelectionMain.getItems()::add);
-        
         List<CategoryItem> items = comboBoxCategorySelectionMain.getItems();
         if(!items.stream().anyMatch(item -> item.getPath().equals(chosenCat.getPath()))){
         	comboBoxCategorySelectionMain.getSelectionModel().select(rootCategoryItem);
@@ -483,12 +489,17 @@ public class MainWindowViewController implements MainWindowAUI {
         	CategoryItem selected = items.stream().filter(item -> item.getPath().equals(chosenCat.getPath())).findAny().get();
         	comboBoxCategorySelectionMain.getSelectionModel().select(selected);       	
         }
+        //FIXME es werden keine credentials reingeladen
         CategoryItem chosenCat2 = comboBoxCategorySelectionMain.getSelectionModel().getSelectedItem();
-        
-        if(!chosenCat2.getCategory().getCredentials().isEmpty() && !chosenCat2.getCategory().getSubCategories().isEmpty()){
-        	listViewCredentialsList.setItems((ObservableList<Credentials>) chosenCat2.getCategory().getAllCredentials());        	        	
+        System.out.println(chosenCat2);
+        System.out.println(chosenCat2.getCategory().getCredentials().size());
+        if(!chosenCat2.getCategory().getCredentials().isEmpty()){
+        	List<Credentials> credsToShow = new ObservableListWrapper<>(new LinkedList<>(chosenCat2.getCategory().getCredentials()));
+        	listViewCredentialsList.setItems((ObservableList<Credentials>) credsToShow);
+        	//TODO Items anzeigen lassen
         } else {
         	//TODO
+        	System.out.println("wir sind im else");
         }
         
     }
@@ -577,7 +588,8 @@ public class MainWindowViewController implements MainWindowAUI {
     }
     private void setBuilderWebsiteField(String website) {
         currentCredentials.withWebsite(website);
-    }
+    }//TODO geht das so? Nein
+
     private void setBuilderNotesField(String notes) {
         currentCredentials.withNotes(notes);
     }
