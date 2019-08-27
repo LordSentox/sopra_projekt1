@@ -133,7 +133,8 @@ public class CredentialsController {
     public void filterCredentials(PatternSyntax pattern) {
         if (pattern.getPatternFilter() == PatternSyntax.PatternSyntaxFilter.COMMAND) {
             //TODO: remove when program is finish, this is just the dev tool
-            DevTool.fillWithData();
+            DevTool.fillWithData(passwordManagerController);
+            passwordManagerController.getMainWindowAUI().refreshLists();
             return;
         }
         EntryListSelectionStrategy strategy = credentials -> {
