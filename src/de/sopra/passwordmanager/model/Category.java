@@ -181,8 +181,5 @@ public class Category {
         return Objects.hash(name, subCategories);
     }
     
-    @Override
-    public String toString() {
-    	return getName();
-    }
+   
 }
