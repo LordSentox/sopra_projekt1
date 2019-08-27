@@ -1,4 +1,4 @@
-package de.sopra.passwordmanager.util;
+package de.sopra.passwordmanager.util.strategy;
 
 import de.sopra.passwordmanager.model.Credentials;
 
@@ -14,9 +14,12 @@ import java.util.List;
 public interface EntryListOrderStrategy {
 
     /**
-     * Sortiert die gegebenen Daten in der Liste neu
-     * @param credentials
-     * @return
+     * Sortiert die gegebenen Daten in der Liste neu.
+     * Soll die urprüngliche Liste nicht verändern.
+     * Die neue Liste soll die gleiche Länge haben, wie die ursprüngliche Liste.
+     *
+     * @param credentials die Liste der unsortierten Credentials
+     * @return eine neue sortierte Liste der Credentials
      */
     List<Credentials> order(List<Credentials> credentials);
 

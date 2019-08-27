@@ -4,6 +4,7 @@ import de.sopra.passwordmanager.controller.PasswordManagerController;
 import de.sopra.passwordmanager.controller.PasswordManagerControllerDummy;
 import de.sopra.passwordmanager.controller.UtilityController;
 import de.sopra.passwordmanager.model.Credentials;
+import de.sopra.passwordmanager.util.strategy.EntryListOrderStrategy;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

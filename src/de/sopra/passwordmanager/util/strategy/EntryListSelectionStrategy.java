@@ -1,4 +1,4 @@
-package de.sopra.passwordmanager.util;
+package de.sopra.passwordmanager.util.strategy;
 
 import de.sopra.passwordmanager.model.Credentials;
 
