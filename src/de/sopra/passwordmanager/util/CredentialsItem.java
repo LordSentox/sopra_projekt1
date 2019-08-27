@@ -1,8 +1,7 @@
-package de.sopra.passwordmanager.view;
+package de.sopra.passwordmanager.util;
 
 import de.sopra.passwordmanager.controller.UtilityController;
 import de.sopra.passwordmanager.model.Credentials;
-import de.sopra.passwordmanager.util.CredentialsBuilder;
 
 import java.util.function.Function;
 
@@ -13,7 +12,7 @@ import java.util.function.Function;
  * @version 27.08.2019
  * @since 27.08.2019
  */
-class CredentialsItem {
+public class CredentialsItem {
 
     private Credentials credentials;
     private Function<Credentials, String> namingStrategy;

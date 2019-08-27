@@ -1,6 +1,6 @@
 package de.sopra.passwordmanager.util.strategy;
 
-import de.sopra.passwordmanager.model.Credentials;
+import de.sopra.passwordmanager.util.CredentialsItem;
 
 import java.util.Comparator;
 import java.util.LinkedList;
@@ -16,15 +16,10 @@ import java.util.List;
 public class AlphabeticOrderStrategy implements EntryListOrderStrategy {
 
     @Override
-    public List<Credentials> order(List<Credentials> credentials) {
-        LinkedList<Credentials> list = new LinkedList<>(credentials);
-        list.sort(Comparator.comparing(Credentials::getName));
+    public List<CredentialsItem> order(List<CredentialsItem> credentials) {
+        LinkedList<CredentialsItem> list = new LinkedList<>(credentials);
+        list.sort(Comparator.comparing(o -> o.getCredentials().getName()));
         return list;
     }
 
 }
-/***********************************************************************************************
- *
- *                  All rights reserved, SpaceParrots UG (c) copyright 2019
- *
- ***********************************************************************************************/

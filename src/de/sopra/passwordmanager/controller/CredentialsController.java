@@ -2,9 +2,7 @@ package de.sopra.passwordmanager.controller;
 
 import aes.AES;
 import de.sopra.passwordmanager.model.*;
-import de.sopra.passwordmanager.util.CredentialsBuilder;
-import de.sopra.passwordmanager.util.Path;
-import de.sopra.passwordmanager.util.Validate;
+import de.sopra.passwordmanager.util.*;
 import de.sopra.passwordmanager.util.strategy.EntryListSelectionStrategy;
 import de.sopra.passwordmanager.view.MainWindowAUI;
 import exceptions.DecryptionException;
@@ -17,9 +15,9 @@ import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * @author Etienne
@@ -67,7 +65,7 @@ public class CredentialsController {
         Credentials credentials = newCredentials.build(passwordManagerController.getUtilityController());
         for (Category category : categories) {
             category.addCredentials(credentials);
-            
+
             Collection<Credentials> creds = category.getCredentials();
         }
         passwordManagerController.getMainWindowAUI().refreshLists();
@@ -129,24 +127,25 @@ public class CredentialsController {
      * Filtert die Liste der {@link Credentials} im {@link de.sopra.passwordmanager.view.MainWindowViewController} nach
      * Kategorie und nach Inhalt seines Namens. Aktualisirt mit {@link MainWindowAUI#refreshLists()}
      *
-     * @param categoryPath Der Pfad der {@link Category} in der alle gewünschten {@link Credentials} liegen sollen. Falls <code>null</code>, wird nicht nach Kategorie gefiltert
-     * @param pattern      Ein String, der im Namen der {@link Credentials} enthalten sein soll. Falls <code>null</code>, wird nicht nach Eintragsnamen gesucht
+     * @param pattern Ein PatternSyntax, der in den {@link Credentials} enthalten sein soll.
      * @see CredentialsBuilder
      */
-    public void filterCredentials(Path categoryPath, String pattern) {
+    public void filterCredentials(PatternSyntax pattern) {
+        if (pattern.getPatternFilter() == PatternSyntax.PatternSyntaxFilter.COMMAND) {
+            //TODO: remove when program is finish, this is just the dev tool
+            DevTool.fillWithData();
+            return;
+        }
         EntryListSelectionStrategy strategy = credentials -> {
-            Stream<Credentials> credentialsStream = credentials.stream();
-            if (categoryPath != null) {
-                Category category = passwordManagerController.getPasswordManager().getRootCategory().getCategoryByPath(categoryPath);
-                if (category == null) {
-                    return Collections.emptyList();
+            LinkedList<CredentialsItem> selection = new LinkedList<>();
+            for (Credentials creds : credentials) {
+                if (pattern.include(creds)) {
+                    CredentialsItem item = new CredentialsItem(creds);
+                    item.setNamingStrategy(pattern.getPatternFilter());
+                    selection.add(item);
                 }
-                credentialsStream = credentialsStream.filter(cred -> category.getAllCredentials().contains(cred));
             }
-            if (pattern != null) {
-                credentialsStream = credentialsStream.filter(cred -> cred.getName().contains(pattern));
-            }
-            return credentialsStream.collect(Collectors.toList());
+            return selection;
         };
         passwordManagerController.getMainWindowAUI().refreshListStrategies(strategy, null);
     }
