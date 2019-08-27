@@ -2,7 +2,9 @@ package de.sopra.passwordmanager.controller;
 
 import de.sopra.passwordmanager.model.Credentials;
 
-import java.util.List;
+import java.time.LocalDateTime;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * In PasswordreminderController werden die Passwörter, bei denen der Timer abgelaufen ist, verwaltet.
@@ -29,18 +31,25 @@ public class PasswordReminderController {
      */
 
     boolean hasToBeChanged(Credentials password) {
-        return false;
+        if (password.getChangeReminderDays() == null) return false;
+
+        LocalDateTime lastChanged = password.getLastChanged();
+        LocalDateTime changeDate = lastChanged.plusDays(password.getChangeReminderDays());
+        LocalDateTime now = LocalDateTime.now();
+        return now.isAfter(changeDate) || now.isEqual(changeDate);
     }
 
 
     /**
-     * Erstellt eine Liste mit Passwörtern bei denen der Timer abgelaufen ist und geändert werden müssen.
+     * Erstellt ein Set mit Passwörtern bei denen der Timer abgelaufen ist und geändert werden müssen.
      *
-     * @return Liste der Passwörter, wo der Timer abgelaufen ist und geändert werden müssen.
+     * @return Set der Passwörter, wo der Timer abgelaufen ist und geändert werden müssen.
      */
 
-    List<Credentials> passwordsToBeChanged() {
-        return null;
+    Set<Credentials> passwordsToBeChanged() {
+        return passwordManagerController.getPasswordManager().getRootCategory().getAllCredentials().stream()
+                .filter(this::hasToBeChanged)
+                .collect(Collectors.toSet());
     }
 
 }
