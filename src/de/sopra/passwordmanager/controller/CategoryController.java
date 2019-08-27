@@ -7,6 +7,7 @@ import de.sopra.passwordmanager.util.Validate;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -77,7 +78,7 @@ public class CategoryController {
         if (removeCredentialsToo) {
             Category categoryParent = getCategory(categoryPath.getParent());
             Category category = getCategory(categoryPath);
-            Collection<Credentials> creds = category.getCredentials();
+            Collection<Credentials> creds = new LinkedList<>(category.getCredentials());
             creds.forEach(passwordManagerController.getCredentialsController()::removeCredentials);
             categoryParent.removeSubCategory(category);
             passwordManagerController.getMainWindowAUI().refreshLists();

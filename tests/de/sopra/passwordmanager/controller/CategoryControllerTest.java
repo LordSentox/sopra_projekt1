@@ -140,7 +140,7 @@ public class CategoryControllerTest {
 
         //Kategorie und gesamten Inhalt löschen, Inhalt vorhanden
         catController.removeCategory(Path.ROOT_CATEGORY_PATH.createChildPath("childCategoryWithSubCategories/childCategoryWithCredentialsAndSubCat"), true);
-        credentialsToCheck = childCategoryWithContent.getCredentials();
+        credentialsToCheck = childCategoryWithSubCategories.getCredentials();
         catsToCheck = childCategoryWithContent.getSubCategories();
 
         assertFalse("Credentials wurden fälschlicherweise nicht entfernt", credentialsToCheck.contains(credentialsDummyDoDelete));
@@ -151,7 +151,7 @@ public class CategoryControllerTest {
 
 
         //Kategorie und gesamten Inhalt löschen, kein Inhalt vorhanden
-        catController.removeCategory(new Path("root/childCategoryWithoutContent"), true);
+        catController.removeCategory(Path.ROOT_CATEGORY_PATH.createChildPath("childCategoryWithoutContent"), true);
         credentialsToCheck = root.getCredentials();
         catsToCheck = root.getSubCategories();
 
