@@ -104,7 +104,7 @@ public class CategoryControllerTest {
         childCategoryWithCredentialsAndSubCat.addCredentials(credentialsDummyDontDelete);
         childCategoryWithCredentialsAndSubCat.addSubCategory(emptyChildCategoryDontDelete);
 
-        childCategoryWithContent.addCredentials(credentialsDummyNotInDeletedSubCategory);
+        childCategoryWithSubCategories.addCredentials(credentialsDummyNotInDeletedSubCategory);
 
 
         Collection<Credentials> credentialsToCheck;
@@ -113,8 +113,8 @@ public class CategoryControllerTest {
         //valides Löschen
         //nur Kategorie, kein Inhalt löschen, aber Inhalt vorhanden
         catController.removeCategory(Path.ROOT_CATEGORY_PATH.createChildPath("childCategoryWithSubCategories/childCategoryWithCredentialsAndSubCat"), false);
-        credentialsToCheck = childCategoryWithContent.getCredentials();
-        catsToCheck = childCategoryWithContent.getSubCategories();
+        credentialsToCheck = childCategoryWithSubCategories.getCredentials();
+        catsToCheck = childCategoryWithSubCategories.getSubCategories();
 
         assertTrue("Credentials wurden fälschlicherweise entfernt", credentialsToCheck.contains(credentialsDummyDontDelete));
         assertTrue("Credentials wurden fälschlicherweise entfernt", credentialsToCheck.contains(credentialsDummyNotInDeletedSubCategory));
