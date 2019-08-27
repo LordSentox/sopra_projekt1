@@ -175,14 +175,6 @@ public class Category {
         }
         return collect;
     }
-<<<<<<< HEAD
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(name, subCategories);
-    }
     
    
-=======
->>>>>>> refs/remotes/origin/master
 }
