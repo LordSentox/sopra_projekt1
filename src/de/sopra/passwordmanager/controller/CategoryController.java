@@ -75,14 +75,17 @@ public class CategoryController {
     public void removeCategory(Path categoryPath, boolean removeCredentialsToo) {
         Validate.notNull(categoryPath, "CategoryController: path to category is null");
         if (removeCredentialsToo) {
-            Category categoryByPath = passwordManagerController.getPasswordManager().getRootCategory()
-                    .getCategoryByPath(categoryPath.getParent());
+            Category categoryParent = getCategory(categoryPath.getParent());
             Category category = getCategory(categoryPath);
-            categoryByPath.removeSubCategory(categoryPath.getName());
-
-            //TODO: proper refresh
+            for(Credentials credentials : category.getCredentials()){
+            	passwordManagerController.getCredentialsController().removeCredentials(credentials);
+            	
+            }
+            categoryParent.removeSubCategory(category);
+            passwordManagerController.getMainWindowAUI().refreshLists();
         } else {
-            //TODO
+            moveCategory(categoryPath, categoryPath.getParent());
+            passwordManagerController.getMainWindowAUI().refreshLists();
         }
     }
 
