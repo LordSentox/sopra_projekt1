@@ -53,7 +53,6 @@ public class CategoryController {
         }
         Category category = new Category(name);
         superCategory.addSubCategory(category);
-        passwordManagerController.getMainWindowAUI().refreshEntry();
         passwordManagerController.getMainWindowAUI().refreshLists();
     }
 
@@ -84,7 +83,6 @@ public class CategoryController {
             passwordManagerController.getMainWindowAUI().refreshLists();
         } else {
             moveCategory(categoryPath, categoryPath.getParent());
-            passwordManagerController.getMainWindowAUI().refreshLists();
         }
     }
 
@@ -117,6 +115,8 @@ public class CategoryController {
             newCategory.addCredentials(credentials);
         //alte Kategorie entfernen
         getCategory(oldPath.getParent()).removeSubCategory(oldCategory.getName());
+        
+        passwordManagerController.getMainWindowAUI().refreshLists();
     }
 
     /**
@@ -165,7 +165,7 @@ public class CategoryController {
      */
     void addCredentialsToCategories(Credentials credentials, Collection<Category> categories) throws NullPointerException {
         categories.forEach(category -> category.addCredentials(credentials));
-        //TODO: proper refresh
+       passwordManagerController.getMainWindowAUI().refreshLists();
     }
 
     /**
@@ -176,7 +176,7 @@ public class CategoryController {
      */
     void removeCredentialsFromCategories(Credentials credentials) {
         passwordManagerController.getPasswordManager().getRootCategory().removeCredentialsFromTree(credentials);
-        //TODO: proper refresh
+        passwordManagerController.getMainWindowAUI().refreshLists();
     }
 
     /**
