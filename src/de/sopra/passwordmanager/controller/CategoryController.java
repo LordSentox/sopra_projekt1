@@ -5,11 +5,7 @@ import de.sopra.passwordmanager.model.Credentials;
 import de.sopra.passwordmanager.util.Path;
 import de.sopra.passwordmanager.util.Validate;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 /**
@@ -115,7 +111,7 @@ public class CategoryController {
             newCategory.addCredentials(credentials);
         //alte Kategorie entfernen
         getCategory(oldPath.getParent()).removeSubCategory(oldCategory.getName());
-        
+
         passwordManagerController.getMainWindowAUI().refreshLists();
     }
 
@@ -165,7 +161,7 @@ public class CategoryController {
      */
     void addCredentialsToCategories(Credentials credentials, Collection<Category> categories) throws NullPointerException {
         categories.forEach(category -> category.addCredentials(credentials));
-       passwordManagerController.getMainWindowAUI().refreshLists();
+        passwordManagerController.getMainWindowAUI().refreshLists();
     }
 
     /**

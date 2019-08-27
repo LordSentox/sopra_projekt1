@@ -39,10 +39,6 @@ public class PasswordManager {
         return masterPasswordReminderDays;
     }
 
-    public LocalDateTime getMasterPassordLastChanged() {
-        return masterPassordLastChanged;
-    }
-
     public void setMasterPassword(String masterPassword) {
         this.masterPassword = masterPassword;
     }
