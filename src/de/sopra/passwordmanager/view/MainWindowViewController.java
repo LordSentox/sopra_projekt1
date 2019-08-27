@@ -431,12 +431,15 @@ public class MainWindowViewController implements MainWindowAUI {
                     //Änderungen nicht übernehmen
                     oldCredentials = selectedEntry.getCredentials();
                     currentCredentials = selectedEntry.getNewBuilder(passwordManagerController.getUtilityController());
+                    setDisable(true);
+                    listViewCredentialsList.getFocusModel().focus(-1);
+                    refreshEntry();
                 }
 
                 @Override
                 public void onCancel() {
                     //nicht löschen
-                    listViewCredentialsList.getFocusModel().focus(index);
+                    listViewCredentialsList.getFocusModel().focus(-1);
                 }
             };
             confirmation.setAlertType(AlertType.CONFIRMATION);
@@ -444,9 +447,9 @@ public class MainWindowViewController implements MainWindowAUI {
         } else {
             oldCredentials = selectedEntry.getCredentials();
             currentCredentials = selectedEntry.getNewBuilder(passwordManagerController.getUtilityController());
+            refreshEntry();
             
         }
-        refreshEntry();
     }
 
     public void onCredentialsPasswordChanged() {
