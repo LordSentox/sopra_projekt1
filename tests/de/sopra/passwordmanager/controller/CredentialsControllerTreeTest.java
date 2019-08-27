@@ -56,7 +56,7 @@ public class CredentialsControllerTreeTest {
 
         // Credentials zum Baum hinzufügen
         this.obar = new CredentialsBuilder("obar", "Hodor", "hoDor", "schmo.de")
-                .withoutSecurityQuestion("Hey?", "Ja").build(uc);
+                .withSecurityQuestion("Hey?", "Ja").build(uc);
         this.hbar = new CredentialsBuilder("hbar", "Hodor", "hoDor", "hodortmund.de").build(uc);
         this.fbar = new CredentialsBuilder("fbar", "Hodor", "hoDor", "zwergenfreun.de").build(uc);
 
@@ -216,6 +216,6 @@ public class CredentialsControllerTreeTest {
         SecurityQuestion question = obar.getSecurityQuestions().stream().findFirst().get();
         Assert.assertEquals("reencrypting password failed", "hoDor", uc.decryptText(obar.getPassword()));
         Assert.assertEquals("reencrypting security question failed", "Hey?", uc.decryptText(question.getQuestion()));
-        Assert.assertEquals("reencrypting security question failed", "Hey?", uc.decryptText(question.getAnswer()));
+        Assert.assertEquals("reencrypting security question failed", "Ja", uc.decryptText(question.getAnswer()));
     }
 }

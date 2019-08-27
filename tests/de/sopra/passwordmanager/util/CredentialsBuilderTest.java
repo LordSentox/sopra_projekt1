@@ -64,7 +64,7 @@ public class CredentialsBuilderTest {
         cred2.setChangeReminderDays(changeReminder);
         cred2.setLastChanged(lastChanged);
         cred2.setNotes(notes);
-        cred2.addSecurityQuestion(uc.encryptText(question1), uc.encryptText(question2));
+        cred2.addSecurityQuestion(uc.encryptText(question1), uc.encryptText(answer1));
         cred2.addSecurityQuestion(sq2);
 
         Assert.assertEquals("Credentials not equal", cred1, cred2);
@@ -111,7 +111,7 @@ public class CredentialsBuilderTest {
         Assert.assertEquals("Minimal built credentials not equal to expected", cred1, cred2);
     }
 
-    @Test(expected = CredentialsBuilder.CredentialsBuilderException.class)
+    @Test(expected = NullPointerException.class)
     public void missingNameTest() {
         String userName = "user1";
         String password = "passwort123";
@@ -125,7 +125,7 @@ public class CredentialsBuilderTest {
                 .build(uc);
     }
 
-    @Test(expected = CredentialsBuilder.CredentialsBuilderException.class)
+    @Test(expected = NullPointerException.class)
     public void missingUserNameTest() {
         String name = "cred1";
         String password = "passwort123";
@@ -140,7 +140,7 @@ public class CredentialsBuilderTest {
     }
 
 
-    @Test(expected = CredentialsBuilder.CredentialsBuilderException.class)
+    @Test(expected = NullPointerException.class)
     public void missingPasswordTest() {
         String name = "cred1";
         String userName = "user1";
@@ -154,7 +154,7 @@ public class CredentialsBuilderTest {
                 .build(uc);
     }
 
-    @Test(expected = CredentialsBuilder.CredentialsBuilderException.class)
+    @Test(expected = NullPointerException.class)
     public void missingWebsiteTest() {
         String name = "cred1";
         String userName = "user1";
@@ -306,6 +306,17 @@ public class CredentialsBuilderTest {
         Assert.assertEquals("last changed getter value not equal", lastChanged, credBuilder1.getLastChanged());
         Assert.assertEquals("notes getter value not equal", notes, credBuilder1.getNotes());
         Assert.assertEquals("security questions getter value not equal", questions, credBuilder1.getSecurityQuestions());
+    }
+
+    @Test
+    public void withoutSecurityQuestionTest() {
+        CredentialsBuilder credBuilder1 = new CredentialsBuilder("Hi", "How", "Are", "You")
+                .withSecurityQuestion("Was", "Das")
+                .withSecurityQuestion("Warum", "Darum")
+                .withoutSecurityQuestion("Was", "Das");
+
+        Assert.assertNull("Security Question not removed",  credBuilder1.getSecurityQuestions().getOrDefault("Was", null));
+        Assert.assertEquals("Wrong Security Question removed", "Darum", credBuilder1.getSecurityQuestions().getOrDefault("Warum", null));
     }
 
     private SecurityQuestion securityQuestionFromStrings(String question, String answer) {
