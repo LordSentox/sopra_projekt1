@@ -170,11 +170,11 @@ public class Credentials {
         return name.equals(that.name) &&
                 userName.equals(that.userName) &&
                 website.equals(that.website) &&
-                password.equals(that.password) &&
                 notes.equals(that.notes) &&
                 created.equals(that.created) &&
                 Objects.equals(lastChanged, that.lastChanged) &&
                 Objects.equals(changeReminderDays, that.changeReminderDays) &&
                 securityQuestions.equals(that.securityQuestions);
     }
+
 }

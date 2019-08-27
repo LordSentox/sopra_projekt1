@@ -2,6 +2,7 @@ package de.sopra.passwordmanager.application;
 
 import de.sopra.passwordmanager.controller.PasswordManagerController;
 import de.sopra.passwordmanager.view.LoginViewController;
+import de.sopra.passwordmanager.view.MainWindowAUI;
 import de.sopra.passwordmanager.view.MainWindowViewController;
 import de.sopra.passwordmanager.view.MasterPasswordViewController;
 import javafx.application.Application;
@@ -14,7 +15,7 @@ public class Main extends Application{
 		
 	@Override
 	public void start(Stage primaryStage) {
-		
+		 MainWindowAUI aui = null;
 		try {
 			/* Hauptfenster */
 			AnchorPane mainPane = new AnchorPane();
@@ -23,6 +24,7 @@ public class Main extends Application{
 			MainWindowViewController mainWindowViewController = (MainWindowViewController) fxmlLoader.getController();
 			PasswordManagerController passwordManagerController = new PasswordManagerController();
 			passwordManagerController.setMainWindowAUI(mainWindowViewController);
+			aui = mainWindowViewController;
 			mainWindowViewController.setPasswordManagerController(passwordManagerController);
 			mainWindowViewController.init();
 			
@@ -65,6 +67,9 @@ public class Main extends Application{
 				
 			}
 		} catch (Exception e) {
+		if (aui != null) {
+                aui.showError(e.toString() + " while creating the main view - fatal error");
+            }
 			throw new RuntimeException(e);
 		}
 	}
