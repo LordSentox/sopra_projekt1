@@ -51,6 +51,7 @@ public class CredentialsController {
         for (Category category : categories) {
             category.addCredentials(oldCredentials);
         }
+        passwordManagerController.getMainWindowAUI().refreshLists();
     }
 
     /**
@@ -66,7 +67,7 @@ public class CredentialsController {
         for (Category category : categories) {
             category.addCredentials(credentials);
         }
-        //TODO: refresh
+        passwordManagerController.getMainWindowAUI().refreshLists();
     }
 
     /**
@@ -77,7 +78,7 @@ public class CredentialsController {
      */
     public void removeCredentials(Credentials credentials) {
         passwordManagerController.getPasswordManager().getRootCategory().removeCredentialsFromTree(credentials);
-        //TODO: refresh
+        passwordManagerController.getMainWindowAUI().refreshLists();
     }
 
     /**
