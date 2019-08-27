@@ -1,9 +1,6 @@
 package de.sopra.passwordmanager.util.dialog;
 
 import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
-
-import java.util.Optional;
 
 /**
  * <h1>projekt1</h1>
@@ -12,21 +9,14 @@ import java.util.Optional;
  * @version 27.08.2019
  * @since 27.08.2019
  */
-public abstract class SimpleConfirmation extends PasswordManagerDialog {
+public class SimpleDialog extends PasswordManagerDialog {
 
     private String title, headerText, contentText;
 
-    public SimpleConfirmation(String title, String headerText, String text) {
+    public SimpleDialog(String title, String headerText, String text) {
         this.title = title;
         this.headerText = headerText;
         this.contentText = text;
-    }
-
-    public abstract void onSuccess();
-
-    @Override
-    public void onCancel() {
-
     }
 
     @Override
@@ -37,14 +27,12 @@ public abstract class SimpleConfirmation extends PasswordManagerDialog {
         alert.setHeaderText(headerText);
         alert.setContentText(contentText);
 
-        Optional<ButtonType> result = alert.showAndWait();
-        if (result.get() == ButtonType.OK) {
-            onSuccess();
-        } else {
-            onCancel();
-        }
+        alert.showAndWait();
     }
 
+    @Override
+    public final void onCancel() {
 
+    }
 
 }

@@ -1,13 +1,12 @@
 package de.sopra.passwordmanager.view;
 
+import de.sopra.passwordmanager.util.dialog.SimpleConfirmation;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
-
-import de.sopra.passwordmanager.util.dialog.SimpleConfirmation;
 
 import java.io.File;
 
@@ -65,12 +64,6 @@ public class SettingsViewController extends AbstractViewController{
 	public void onResetDataClicked() {
 
 		SimpleConfirmation removeConfirmation = new SimpleConfirmation("Passwortmanager zurücksetzen", null, "Passwortmanager wirklich zurücksetzen?") {
-
-			@Override
-			public void onCancel() {
-
-			}
-
 			@Override
 			public void onSuccess() {
 				mainWindowViewController.getPasswordManagerController().removeAll();

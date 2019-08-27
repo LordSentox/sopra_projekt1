@@ -320,6 +320,9 @@ public class CredentialsControllerTest {
         Assert.assertEquals("Credential does not contain Security Question", "Das", credBuilder.getSecurityQuestions().getOrDefault("Was", null));
         cc.removeSecurityQuestion("Was", "Das", credBuilder);
         Assert.assertTrue("Removing SecurityQuestion failed", credBuilder.getSecurityQuestions().isEmpty());
+        credBuilder = credBuilder.withSecurityQuestion("Was", "Das");
+        cc.removeSecurityQuestion(securityQuestionFromStrings("Was", "Das"), credBuilder);
+        Assert.assertTrue("Removing SecurityQuestion failed", credBuilder.getSecurityQuestions().isEmpty());
     }
 
     @Test
