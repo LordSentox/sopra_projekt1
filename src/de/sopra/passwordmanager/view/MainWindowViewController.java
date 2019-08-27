@@ -423,6 +423,13 @@ public class MainWindowViewController implements MainWindowAUI {
     }
 
     public void onEntryChosen() {
+        if (buttonCredentialsShowPassword.isDisabled()) {
+            buttonCredentialsShowPassword.setDisable(false);
+        }
+        if (buttonCredentialsCopy.isDisabled()) {
+            buttonCredentialsCopy.setDisable(false);
+            progressBarCredentialsCopyTimer.setOpacity(1.0);
+        }
         CredentialsItem selectedEntry = listViewCredentialsList.getSelectionModel().getSelectedItem();
         int index = listViewCredentialsList.getFocusModel().getFocusedIndex();
         if (buttonEditCredentials.isDisabled()) {
@@ -583,6 +590,9 @@ public class MainWindowViewController implements MainWindowAUI {
         buttonCredentialsAddCategories.setDisable(disabled);
         checkBoxCredentialsUseReminder.setDisable(disabled);
         choiceBoxCredentialsCategories.setDisable(disabled);
+        
+        buttonEditCategoryMain.setDisable(!disabled);
+        buttonRemoveCategoryMain.setDisable(!disabled);
     }
 
     private void updateCredentialsBuilderCopy() {
