@@ -8,28 +8,18 @@ import de.sopra.passwordmanager.util.Validate;
 import exceptions.DecryptionException;
 import exceptions.EncryptionException;
 import org.passay.*;
-import org.xml.sax.SAXException;
-
-import com.sun.org.apache.xerces.internal.dom.ChildNode;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
 
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
-import java.io.IOException;
-import java.security.SecureRandom;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.stream.Collector;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-
-import org.w3c.dom.*;
-import javax.xml.parsers.*;
-import java.io.*;
 
 /**
  * Der UtilityController stellt verschiedene Hilfsdienste zur Verfügung
@@ -282,16 +272,15 @@ public class UtilityController {
 //                System.err.println("moepse must contain two children");
 //                return false;
 //            }
-            
+
             Node treeNode = childNodes.stream().filter(node -> node.getNodeName().equals("tree")).findFirst().get();
             Node dataNode = childNodes.stream().filter(node -> node.getNodeName().equals("data")).findFirst().get();
             Validate.notNull(treeNode, "TreeNode does not exist");
             Validate.notNull(dataNode, "DataNode does not exist");
             List<Credentials> dataList = extractCredentials(dataNode);
             Validate.notNull(dataList, "Data are stored incorrectly");
-            
-            
-            
+
+
         } catch (Exception e) {
             // TODO: Schönere Fehlerbehandlung
             e.printStackTrace();
@@ -299,43 +288,45 @@ public class UtilityController {
 
         return false;
     }
-    //Baut eine Liste der Credentials aus dem Data-Tag, oder <code>null</code> wenn ein Fehler auftritt 
+
+    //Baut eine Liste der Credentials aus dem Data-Tag, oder <code>null</code> wenn ein Fehler auftritt
     private List<Credentials> extractCredentials(Node dataNode) {
         List<Node> childNodes = IntStream.range(0, dataNode.getChildNodes().getLength()).mapToObj(dataNode.getChildNodes()::item).collect(Collectors.toList());
-        List<Credentials> credNodes= new ArrayList<>(childNodes.size());
+        List<Credentials> credNodes = new ArrayList<>(childNodes.size());
         for (Node entry : childNodes) {
             CredentialsBuilder bobTheBuilder = new CredentialsBuilder();
-            
+
             Node attribute = entry.getAttributes().item(0);
-            if ( attribute.getNodeName().equals("name")) {
+            if (attribute.getNodeName().equals("name")) {
                 bobTheBuilder.withName(attribute.getNodeValue());
             } else {
                 return null;
             }
-            
+
             //Alle Elemente als Map von tag name zu Text Inhalt
             Map<String, String> elements = IntStream.range(0, entry.getChildNodes().getLength())
                     .mapToObj(entry.getChildNodes()::item)
                     .filter(node -> !node.getNodeName().equals("questions"))
                     .collect(Collectors.toMap(Node::getNodeName, Node::getTextContent));
-            
+
             bobTheBuilder.withUserName(elements.get("userName"));
             bobTheBuilder.withPassword(elements.get("password"));
             bobTheBuilder.withWebsite(elements.get("website"));
             bobTheBuilder.withCreated(LocalDateTime.parse(elements.get("created")));
             bobTheBuilder.withLastChanged(LocalDateTime.parse(elements.get("lastChanged")));
             bobTheBuilder.withNotes(elements.get("notes"));
-            
+
             Map<String, String> questions = IntStream.range(0, entry.getChildNodes().getLength())
                     .mapToObj(entry.getChildNodes()::item)
                     .filter(node -> node.getNodeName().equals("questions"))
                     .findFirst().ifPresent(consumer);
-            
+
             credNodes.add(bobTheBuilder.build(this));
         }
         return credNodes;
-        
+
     }
+
     /**
      * Die Methode exportiert die aktuellen Daten in die angegebene Datei, wenn die Datei bereits etwas enthält, wird diese überschrieben
      *
@@ -344,7 +335,58 @@ public class UtilityController {
      */
     public void exportFile(File file) throws IllegalArgumentException {
         try {
-            
+
         }
     }
+
+    /**
+     * Generiert ein zufälligen neuen Salt
+     *
+     * @return ein neuer Salt
+     */
+    private String generateRandomSalt() {
+        //zu hohe Längen können die Effizienz beinträchtigen, 16 ist Standard
+        final int saltLength = 16;
+        byte[] salt = new byte[saltLength];
+        new Random().nextBytes(salt);
+        return new String(salt, StandardCharsets.UTF_8);
+    }
+
+    /**
+     * Generiert zu einem Eingabe String einen entsprechenden Hash.
+     * Hierfür kann ein vorhandener Salt angegeben werden, falls nicht, wird ein zufälliger neuer Salt generiert.
+     * Das Tupel aus Salt und Hash ergeben die Darstellung des gehashten Strings
+     *
+     * @param input der Eingabe String für die Hash Funktion
+     * @param salt  der Salt für die Hash-Operation, wenn <code>null</code> wird ein neuer salt generiert
+     * @return ein array, welche an index 0 den salt und and index 1 den gehashten String beinhaltet
+     */
+    private String[] hashString(String input, String salt) {
+
+        //wenn kein salt vorhanden, wird ein zufälliges neues salt ergänzt
+        if (salt == null) {
+            salt = generateRandomSalt();
+        }
+
+        //hashing vorbereiten
+        MessageDigest md = null;
+        try {
+            md = MessageDigest.getInstance("SHA-512"); //algorithmus fürs hashing festlegen
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+
+        //salt setzen
+        md.update(salt.getBytes(StandardCharsets.UTF_8));
+
+        //den Eingabe-String per SHA-512 hashen
+        byte[] result = md.digest(input.getBytes(StandardCharsets.UTF_8));
+
+        //byte arrays in String umwandeln
+        String resultHash, resultSalt;
+        resultHash = new String(result, StandardCharsets.UTF_8);
+
+        return new String[]{salt, resultHash};
+    }
+
 }
