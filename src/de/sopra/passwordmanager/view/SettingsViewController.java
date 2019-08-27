@@ -7,10 +7,11 @@ import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
 
-import javax.swing.*;
+import de.sopra.passwordmanager.util.dialog.SimpleConfirmation;
+
 import java.io.File;
 
-public class SettingsViewController {
+public class SettingsViewController extends AbstractViewController{
 
 	private MainWindowViewController mainWindowViewController;
 	private Stage settingsStage, masterPasswordStage;
@@ -26,8 +27,7 @@ public class SettingsViewController {
 			AnchorPane setMasterPasswordPane = new AnchorPane();
 			FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("../view/Masterpasswort-setzen.fxml"));
 			setMasterPasswordPane = fxmlLoader.load();
-			MasterPasswordViewController masterPasswordViewController = (MasterPasswordViewController) fxmlLoader
-					.getController();
+			MasterPasswordViewController masterPasswordViewController = (MasterPasswordViewController) fxmlLoader.getController();
 
 			masterPasswordStage = new Stage();
 			Scene setMasterPasswordScene = new Scene(setMasterPasswordPane);
@@ -35,6 +35,7 @@ public class SettingsViewController {
 			masterPasswordStage.setScene(setMasterPasswordScene);
 			masterPasswordViewController.setStage(masterPasswordStage);
 			masterPasswordViewController.setMainWindowViewController(mainWindowViewController);
+			masterPasswordViewController.initSpinner();
 			masterPasswordStage.show();
 
 		} catch (Exception e) {
@@ -62,17 +63,21 @@ public class SettingsViewController {
 	}
 
 	public void onResetDataClicked() {
-		JDialog.setDefaultLookAndFeelDecorated(true);
-	    int response = JOptionPane.showConfirmDialog(null, "PasswortManager wirklich zurücksetzen? Dieser Vorgang löscht alle Daten endgültig!", "",
-	        JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-	    if (response == JOptionPane.NO_OPTION) {
-	      //System.out.println("");
-	    } else if (response == JOptionPane.YES_OPTION) {
-	      System.out.println("PasswortManager gelöscht.");
-	      mainWindowViewController.getPasswordManagerController().removeAll();
-	    } else if (response == JOptionPane.CLOSED_OPTION) {
-	      //System.out.println("JOptionPane closed");
-	    }
+
+		SimpleConfirmation removeConfirmation = new SimpleConfirmation("Passwortmanager zurücksetzen", null, "Passwortmanager wirklich zurücksetzen?") {
+
+			@Override
+			public void onCancel() {
+
+			}
+
+			@Override
+			public void onSuccess() {
+				mainWindowViewController.getPasswordManagerController().removeAll();
+			}
+		};
+
+        removeConfirmation.open();
 		
 	}
 
