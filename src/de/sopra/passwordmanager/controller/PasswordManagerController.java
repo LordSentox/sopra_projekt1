@@ -108,7 +108,8 @@ public class PasswordManagerController {
      * Setzt den PasswordManager zurück und löscht alle Passwörter und Kategorien. Das Masterpasswort bleibt erhalten.
      */
     public void removeAll() {
-    	categoryController.removeCategory(Path.ROOT_CATEGORY_PATH, true);
+    	passwordManager.getRootCategory().getSubCategories().clear();
+    	passwordManager.getRootCategory().getCredentials().clear();
     	SAVE_FILE.delete();
     	mainWindowAUI.refreshListStrategies(identity -> identity, identity -> identity);
     	mainWindowAUI.refreshEntry();
@@ -126,15 +127,11 @@ public class PasswordManagerController {
     public void requestLogin(String password, File file) {
     	//ist null, wenn kein sondern Login
     	if(passwordManager.getMasterPassword() == null){
-	    	if(utilityController.importFile(file, password, password)){
-	    		loginViewAUI.handleLoginResult(true);
-	    	} else {
-	    		loginViewAUI.handleLoginResult(false);
-	    	}
+    		boolean result = utilityController.importFile(file, password, password, true);
+	    	loginViewAUI.handleLoginResult(result);
     	} else {
-    		if(utilityController.importFile(file, passwordManager.getMasterPassword(), password)){
-
-    		}
+    		boolean result = utilityController.importFile(file, password, password, false);
+	    	loginViewAUI.handleLoginResult(result);
     	}
 
     }
@@ -149,7 +146,8 @@ public class PasswordManagerController {
      * @throws NullPointerException falls statt eines {@link CredentialsBuilder} <code>null</code> übergeben wird
      */
     public void checkQuality(CredentialsBuilder credentials) throws NullPointerException {
-        this.mainWindowAUI.refreshEntryPasswordQuality((this.utilityController.checkQuality(credentials.getPassword())));
+    	int quality = utilityController.checkQuality(credentials.getPassword());
+    	mainWindowAUI.refreshEntryPasswordQuality(quality);
     }
 
     /**
@@ -162,9 +160,8 @@ public class PasswordManagerController {
      * @see Category
      */
     public void saveEntry(Credentials oldCredentials, CredentialsBuilder newCredentials, Collection<Category> newCategories) {
-//        categoryController.removeCredentialsFromCategories(oldCredentials);
-//        credentialsController.updateCredentials(oldCredentials, newCredentials);
-//        categoryController.addCredentialsToCategories(newCredentials, newCategories);
+    	   credentialsController.removeCredentials(oldCredentials);
+    	   credentialsController.addCredentials(newCredentials, newCategories);
+    	   mainWindowAUI.refreshEntry();
     }
-
 }

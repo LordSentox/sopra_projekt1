@@ -65,7 +65,7 @@ public class UtilityControllerTest {
 
     	//Test
     	utilityController.exportFile(file);
-    	utilityController.importFile(file, masterPassword, masterPassword);
+    	utilityController.importFile(file, masterPassword, masterPassword, true);
 
     	// Daten testen, ob diese im Modell vorhanden sind
     	root = passwordManager.getRootCategory();

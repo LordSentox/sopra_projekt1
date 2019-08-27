@@ -261,7 +261,7 @@ public class UtilityController {
      * @return Die Methode liefert false, wenn ein fehler beim importieren passiert, wenn true geliefert wird,
      * hat der Import funktioniert
      */
-    boolean importFile(File file, String decryptionPassword, String encryptionPassword) {
+    boolean importFile(File file, String decryptionPassword, String encryptionPassword, boolean setMaster) {
         return false;
     }
 

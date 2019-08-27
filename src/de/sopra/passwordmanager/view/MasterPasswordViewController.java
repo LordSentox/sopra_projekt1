@@ -15,16 +15,32 @@ public class MasterPasswordViewController extends AbstractViewController impleme
 	@FXML private Label labelError;
 	@FXML private JFXProgressBar progressBarQuality;
 	
-	  
-    public void initSpinner(){
-    	spinnerReminderDays.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1,999));
+	private Stage stage, mainStage;
+	
+    private MainWindowViewController mainWindowViewController;
+
+    public void setMainWindowViewController(MainWindowViewController mainWindowViewController) {
+        this.mainWindowViewController = mainWindowViewController;
     }
     
+    public void setStage(Stage primaryStage){
+    	this.stage = primaryStage;
+    	spinnerReminderDays.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1,999));
+    }
+    public void setMainStage(Stage mainStage){
+    	this.mainStage = mainStage;
+    }
+
+    public void initSpinner(){
+        spinnerReminderDays.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1,999));
+    }
+
     public void onSaveClicked() {
     	if (passwordFieldSet.getText().equals(passwordFieldCheck.getText())){
     		
     		int newReminder = spinnerReminderDays.getValue(); 
     		mainWindowViewController.getPasswordManagerController().getMasterPasswordController().changePassword(passwordFieldSet.getText(), newReminder);
+    		mainStage.show();
             stage.close();
     	}else {
     		labelError.setVisible(true);
