@@ -7,6 +7,7 @@ import de.sopra.passwordmanager.util.CredentialsBuilder;
 import de.sopra.passwordmanager.util.Path;
 import de.sopra.passwordmanager.view.LoginViewAUI;
 import de.sopra.passwordmanager.view.MainWindowAUI;
+import de.sopra.passwordmanager.view.MainWindowViewController;
 import de.sopra.passwordmanager.view.MasterPasswordViewAUI;
 
 import java.io.File;
@@ -24,7 +25,7 @@ public class PasswordManagerController {
      * Minimale Qualität, die ein Passwort benötigt um als sicher zu gelten
      */
     public static final int MINIMUM_SAFE_QUALITY = 50;
-    public static final File SAVE_FILE = new File("../data.xml"); 
+    public static final File SAVE_FILE = new File("../data.xml");
 
     private PasswordManager passwordManager;
 
@@ -132,7 +133,7 @@ public class PasswordManagerController {
 	    	}
     	} else {
     		if(utilityController.importFile(file, passwordManager.getMasterPassword(), password)){
-    			
+
     		}
     	}
 
@@ -148,8 +149,7 @@ public class PasswordManagerController {
      * @throws NullPointerException falls statt eines {@link CredentialsBuilder} <code>null</code> übergeben wird
      */
     public void checkQuality(CredentialsBuilder credentials) throws NullPointerException {
-    	int quality = utilityController.checkQuality(credentials.getPassword());
-    	mainWindowAUI.refreshEntryPasswordQuality(quality);
+        this.mainWindowAUI.refreshEntryPasswordQuality((this.utilityController.checkQuality(credentials.getPassword())));
     }
 
     /**

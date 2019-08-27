@@ -8,23 +8,15 @@ import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
 import javafx.stage.Stage;
 
-public class MasterPasswordViewController implements MasterPasswordViewAUI {
+public class MasterPasswordViewController extends AbstractViewController implements MasterPasswordViewAUI {
 	@FXML private JFXPasswordField passwordFieldSet;
 	@FXML private JFXPasswordField passwordFieldCheck;
 	@FXML private Spinner<Integer> spinnerReminderDays;
 	@FXML private Label labelError;
 	@FXML private JFXProgressBar progressBarQuality;
 	
-	private Stage stage;
-	
-    private MainWindowViewController mainWindowViewController;
-
-    public void setMainWindowViewController(MainWindowViewController mainWindowViewController) {
-        this.mainWindowViewController = mainWindowViewController;
-    }
-    
-    public void setStage(Stage primaryStage){
-    	this.stage = primaryStage;
+	  
+    public void initSpinner(){
     	spinnerReminderDays.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1,999));
     }
     

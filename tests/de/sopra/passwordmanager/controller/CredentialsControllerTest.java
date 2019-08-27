@@ -120,6 +120,7 @@ public class CredentialsControllerTest {
         Assert.assertTrue("Credentials not replaced", pm.getRootCategory().getAllCredentials().contains(obar));
     }
 
+    @Test
     public void updateCredentialsTestNewNull() {
         CredentialsBuilder credBuilder1 = new CredentialsBuilder()
                 .withName("cred1")
