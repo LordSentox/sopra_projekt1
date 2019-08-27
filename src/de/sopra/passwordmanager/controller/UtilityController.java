@@ -1,22 +1,35 @@
 package de.sopra.passwordmanager.controller;
 
 import aes.AES;
+import de.sopra.passwordmanager.model.Credentials;
 import de.sopra.passwordmanager.model.EncryptedString;
 import de.sopra.passwordmanager.util.CredentialsBuilder;
+import de.sopra.passwordmanager.util.Validate;
 import exceptions.DecryptionException;
 import exceptions.EncryptionException;
 import org.passay.*;
-import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
+
+import com.sun.org.apache.xerces.internal.dom.ChildNode;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
 import java.security.SecureRandom;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
+import org.w3c.dom.*;
+import javax.xml.parsers.*;
+import java.io.*;
 
 /**
  * Der UtilityController stellt verschiedene Hilfsdienste zur Verfügung
@@ -132,7 +145,7 @@ public class UtilityController {
         try {
             return AES.decrypt(text.getEncryptedContent(), passwordManagerController.getPasswordManager().getMasterPassword());
         } catch (DecryptionException e) {
-            System.out.println(text.getEncryptedContent() + " konnte nicht entschlüsselt werden.");
+            System.err.println(text.getEncryptedContent() + " konnte nicht entschlüsselt werden.");
             e.printStackTrace();
             return null;
         }
@@ -148,7 +161,7 @@ public class UtilityController {
         try {
             return new EncryptedString(AES.encrypt(text, passwordManagerController.getPasswordManager().getMasterPassword()));
         } catch (EncryptionException e) {
-            System.out.println("Ein Text konnte nicht verschlüsselt werden.");
+            System.err.println("Ein Text konnte nicht verschlüsselt werden.");
             e.printStackTrace();
             return null;
         }
@@ -245,7 +258,7 @@ public class UtilityController {
     }
 
     /**
-     * Die Methode importiert eine neü Datei mit Anmeldedaten. Für den Import wird das Masterpasswort der Datei benötigt.
+     * Die Methode importiert eine neue Datei mit Anmeldedaten. Für den Import wird das Masterpasswort der Datei benötigt.
      * Das Importieren einer neün Datei überschreibt die aktüllen Einträge.
      *
      * @param file           Die zu importierende Datei
@@ -258,6 +271,27 @@ public class UtilityController {
             Document document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(file);
 
             document.getDocumentElement().normalize();
+            Node moepse = document.getDocumentElement();
+            if (!moepse.getNodeName().equals("moepse")) {
+                System.err.println("Root has wrong Name");
+                return false;
+            }
+            List<Node> childNodes = IntStream.range(0, moepse.getChildNodes().getLength()).mapToObj(moepse.getChildNodes()::item).collect(Collectors.toList());
+//            final int numChildNodes = 2;
+//            if (childNodes.getLength() != numChildNodes) {
+//                System.err.println("moepse must contain two children");
+//                return false;
+//            }
+            
+            Node treeNode = childNodes.stream().filter(node -> node.getNodeName().equals("tree")).findFirst().get();
+            Node dataNode = childNodes.stream().filter(node -> node.getNodeName().equals("data")).findFirst().get();
+            Validate.notNull(treeNode, "TreeNode does not exist");
+            Validate.notNull(dataNode, "DataNode does not exist");
+            List<Credentials> dataList = extractCredentials(dataNode);
+            Validate.notNull(dataList, "Data are stored incorrectly");
+            
+            
+            
         } catch (Exception e) {
             // TODO: Schönere Fehlerbehandlung
             e.printStackTrace();
@@ -265,13 +299,52 @@ public class UtilityController {
 
         return false;
     }
-
+    //Baut eine Liste der Credentials aus dem Data-Tag, oder <code>null</code> wenn ein Fehler auftritt 
+    private List<Credentials> extractCredentials(Node dataNode) {
+        List<Node> childNodes = IntStream.range(0, dataNode.getChildNodes().getLength()).mapToObj(dataNode.getChildNodes()::item).collect(Collectors.toList());
+        List<Credentials> credNodes= new ArrayList<>(childNodes.size());
+        for (Node entry : childNodes) {
+            CredentialsBuilder bobTheBuilder = new CredentialsBuilder();
+            
+            Node attribute = entry.getAttributes().item(0);
+            if ( attribute.getNodeName().equals("name")) {
+                bobTheBuilder.withName(attribute.getNodeValue());
+            } else {
+                return null;
+            }
+            
+            //Alle Elemente als Map von tag name zu Text Inhalt
+            Map<String, String> elements = IntStream.range(0, entry.getChildNodes().getLength())
+                    .mapToObj(entry.getChildNodes()::item)
+                    .filter(node -> !node.getNodeName().equals("questions"))
+                    .collect(Collectors.toMap(Node::getNodeName, Node::getTextContent));
+            
+            bobTheBuilder.withUserName(elements.get("userName"));
+            bobTheBuilder.withPassword(elements.get("password"));
+            bobTheBuilder.withWebsite(elements.get("website"));
+            bobTheBuilder.withCreated(LocalDateTime.parse(elements.get("created")));
+            bobTheBuilder.withLastChanged(LocalDateTime.parse(elements.get("lastChanged")));
+            bobTheBuilder.withNotes(elements.get("notes"));
+            
+            Map<String, String> questions = IntStream.range(0, entry.getChildNodes().getLength())
+                    .mapToObj(entry.getChildNodes()::item)
+                    .filter(node -> node.getNodeName().equals("questions"))
+                    .findFirst().ifPresent(consumer);
+            
+            credNodes.add(bobTheBuilder.build(this));
+        }
+        return credNodes;
+        
+    }
     /**
-     * Die Methode exportiert die aktüllen Daten in die angegebene Datei, wenn die Datei bereits etwas enthält, wird diese überschrieben
+     * Die Methode exportiert die aktuellen Daten in die angegebene Datei, wenn die Datei bereits etwas enthält, wird diese überschrieben
      *
      * @param file Die Datei, in welche die daten exportiert werden sollen
      * @throws IllegalArgumentException Wenn file null ist oder der Pfad nicht existiert
      */
     public void exportFile(File file) throws IllegalArgumentException {
+        try {
+            
+        }
     }
 }
