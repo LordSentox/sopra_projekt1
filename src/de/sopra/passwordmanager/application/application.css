@@ -7,3 +7,7 @@
 .button {
 	-fx-background-color: #aaaaaa;
 }	
+
+.jfx-toggle-node {
+	-jfx-toggle-color: green;
+}

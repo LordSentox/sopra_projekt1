@@ -4,6 +4,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.control.Label?>
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="576.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.sopra.passwordmanager.view.MainWindowViewController">
    <children>
       <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="450.0" layoutX="310.0" layoutY="80.0" stroke="BLACK" strokeType="INSIDE" width="480.0" />
@@ -21,11 +22,14 @@
       <Label layoutX="315.0" layoutY="121.0" text="Benutzername" />
       <JFXTextField fx:id="textFieldCredentialsUserName" layoutX="430.0" layoutY="116.0" />
       <Label layoutX="315.0" layoutY="152.0" text="Passwort" />
-      <JFXPasswordField fx:id="passwordFieldCredentialsPassword" layoutX="430.0" layoutY="147.0" />
-      <JFXToggleButton fx:id="buttonCredentialsShowPassword" layoutX="606.0" layoutY="140.0" mnemonicParsing="false" text="Anzeigen" onAction="#onShowPasswordClicked"/>
-      <JFXButton fx:id="buttonCredentialsCopy" layoutX="690.0" layoutY="147.0" mnemonicParsing="false" text="Kopieren" onAction="#onCopyPasswordClicked"/>
+      <JFXTextField fx:id="passwordFieldCredentialsPassword" layoutX="430.0" layoutY="147.0" />
+      <!--  <JFXToggleNode fx:id="buttonCredentialsShowPassword" layoutX="606.0" layoutY="140.0" mnemonicParsing="false" text="Anzeigen" onAction="#onShowPasswordClicked"/>  -->
+      <JFXToggleNode fx:id="buttonCredentialsShowPassword" layoutX="607.0" layoutY="145.0" onAction="#onShowPasswordClicked">
+      	<Label text="Anzeigen"/>
+      </JFXToggleNode>
+      <JFXButton fx:id="buttonCredentialsCopy" layoutX="690.0" layoutY="144.0" mnemonicParsing="false" prefHeight="28.0" text="Kopieren" onAction="#onCopyPasswordClicked"/>
       <JFXProgressBar fx:id="progressBarCredentialsQuality" layoutX="430.0" layoutY="183.0" prefHeight="20.0" prefWidth="171.0" progress="0.0" />
-      <JFXProgressBar fx:id="progressBarCredentialsCopyTimer" layoutX="690.0" layoutY="147.0" prefHeight="26.0" prefWidth="76.0" progress="0.0" />
+      <JFXProgressBar fx:id="progressBarCredentialsCopyTimer" layoutX="691.0" layoutY="145.0" prefHeight="26.0" prefWidth="74.0" progress="0.0" />
       <JFXButton fx:id="buttonCredentialsGeneratePassword" layoutX="606.0" layoutY="179.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="160.0" text="Neu generieren" onAction="#onGeneratePasswordClicked"/>
       <Label layoutX="315.0" layoutY="225.0" text="Webseite" />
       <JFXTextField fx:id="textFieldCredentialsWebsite" layoutX="430.0" layoutY="220.0" />

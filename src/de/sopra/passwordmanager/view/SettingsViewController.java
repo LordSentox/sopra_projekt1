@@ -62,6 +62,7 @@ public class SettingsViewController {
 	}
 
 	public void onResetDataClicked() {
+	    // TODO
 		JDialog.setDefaultLookAndFeelDecorated(true);
 	    int response = JOptionPane.showConfirmDialog(null, "PasswortManager wirklich zurücksetzen? Dieser Vorgang löscht alle Daten endgültig!", "",
 	        JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);

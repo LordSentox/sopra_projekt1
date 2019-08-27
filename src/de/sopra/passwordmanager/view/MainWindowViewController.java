@@ -19,6 +19,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -50,12 +52,12 @@ public class MainWindowViewController implements MainWindowAUI {
     private JFXTextField textFieldCredentialsUserName;
     @FXML
     private JFXTextField textFieldCredentialsWebsite;
+    @FXML
+    private JFXTextField passwordFieldCredentialsPassword;
 
     @FXML
     private TextArea textFieldCredentialsNotes;
 
-    @FXML
-    private JFXPasswordField passwordFieldCredentialsPassword;
 
     @FXML
     private Spinner<Integer> spinnerCredentialsReminderDays;
@@ -64,7 +66,7 @@ public class MainWindowViewController implements MainWindowAUI {
     private JFXListView<Credentials> listViewCredentialsList;
 
     @FXML
-    private JFXToggleButton buttonCredentialsShowPassword;
+    private JFXToggleNode buttonCredentialsShowPassword;
 
     @FXML
     private JFXButton buttonAddCredentials;
@@ -116,15 +118,17 @@ public class MainWindowViewController implements MainWindowAUI {
     @FXML
     private Label lableCredentialsCreated;
 
+    
     public void init() {
         setDisable(true);
-
+        
         spinnerCredentialsReminderDays.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 999));
         spinnerCredentialsReminderDays.setDisable(true);
 
         labelCredentialsSecurityAnswer.setVisible(false);
-
-        //buttonCredentialsCopy.setDisable(true);
+        
+        buttonCredentialsShowPassword.setDisable(true);
+        buttonCredentialsCopy.setDisable(true);
         progressBarCredentialsCopyTimer.toFront();
         buttonCredentialsCopy.toFront();
         progressBarCredentialsCopyTimer.setProgress(1);
@@ -181,7 +185,7 @@ public class MainWindowViewController implements MainWindowAUI {
 
             Stage settingsStage = new Stage();
             Scene settingsScene = new Scene(settingsPane);
-            //settingsScene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+            settingsScene.getStylesheets().add(getClass().getResource("../application/application.css").toExternalForm());
             settingsStage.setScene(settingsScene);
             settingsViewController.setStage(settingsStage);
             settingsViewController.setMainWindowViewController(this);
@@ -212,7 +216,7 @@ public class MainWindowViewController implements MainWindowAUI {
 
             Stage categoryEditStage = new Stage();
             Scene categoryEditScene = new Scene(categoryEditPane);
-            //categoryEditScene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+            categoryEditScene.getStylesheets().add(getClass().getResource("../application/application.css").toExternalForm());
             categoryEditStage.setScene(categoryEditScene);
             categoryEditViewController.setStage(categoryEditStage);
             categoryEditStage.show();
@@ -232,9 +236,20 @@ public class MainWindowViewController implements MainWindowAUI {
 
             Stage categoryEditStage = new Stage();
             Scene categoryEditScene = new Scene(categoryEditPane);
-            //categoryEditScene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+            categoryEditScene.getStylesheets().add(getClass().getResource("../application/application.css").toExternalForm());
             categoryEditStage.setScene(categoryEditScene);
             categoryEditViewController.setStage(categoryEditStage);
+            
+            /*
+            Category parent = comboBoxCategorySelectionMain.getValue();
+            if (parent == null) {
+                parent = passwordManagerController.getPasswordManager().getRootCategory();
+            }
+
+            List<Category> categories = new ArrayList<Category>();
+            categories = choiceBoxCredentialsCategories.getItems();
+            categoryEditViewController.setParentCategory(categories, parent);
+             */
             categoryEditStage.show();
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -246,17 +261,24 @@ public class MainWindowViewController implements MainWindowAUI {
         CategoryController catController = passwordManagerController.getCategoryController();
         boolean removeCredentialsToo = false;
         //TODO JFX Dialog nutzen
-        JDialog.setDefaultLookAndFeelDecorated(true);
-        int response = JOptionPane.showConfirmDialog(null, "Alle zur Kategorie gehörigen Daten ebenfalls Löschen?", "",
-                JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-        if (response == JOptionPane.NO_OPTION) {
+        Alert alertDialog = new Alert(AlertType.CONFIRMATION);
+
+        ButtonType buttonTypeYes = new ButtonType("Ja");
+        ButtonType buttonTypeNo = new ButtonType("Nein");
+        ButtonType buttonTypeCancel = new ButtonType("Abbrechen", ButtonData.CANCEL_CLOSE);
+
+        alertDialog.setHeaderText("Alle zur Kategorie gehörigen Daten ebenfalls Löschen?");
+        alertDialog.show();
+        alertDialog.getButtonTypes().setAll(buttonTypeYes, buttonTypeNo, buttonTypeCancel);
+
+        ButtonType result = alertDialog.getResult();
+        if (result == buttonTypeYes) {
+           removeCredentialsToo = true; 
+        } else if (result == buttonTypeNo) {
             removeCredentialsToo = false;
-        } else if (response == JOptionPane.YES_OPTION) {
-            removeCredentialsToo = true;
-        } else if (response == JOptionPane.CLOSED_OPTION) {
+        } else {
             return;
         }
-
         Category selectedCat = comboBoxCategorySelectionMain.getValue();
         Path categoryPath = catController.getPathForCategory(selectedCat);
 
@@ -306,7 +328,8 @@ public class MainWindowViewController implements MainWindowAUI {
 
             Stage securityQuestionAddStage = new Stage();
             Scene securityQuestionAddScene = new Scene(securityQuestionAddPane);
-            //securityQuestionAddScene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+            
+            securityQuestionAddScene.getStylesheets().add(getClass().getResource("../application/application.css").toExternalForm());
             securityQuestionAddStage.setScene(securityQuestionAddScene);
             securityQuestionViewController.setStage(securityQuestionAddStage);
             securityQuestionAddStage.show();
