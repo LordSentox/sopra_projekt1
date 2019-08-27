@@ -40,11 +40,11 @@ public class CategoryController {
         if (superCategory == null)
             superCategory = passwordManagerController.getPasswordManager().getRootCategory();
         if (name.isEmpty()) {
-            passwordManagerController.getMainWindowAUI().showError("Eingegebener Kategoriename darf nicht leer sein");
+            passwordManagerController.getMainWindowAUI().showError("Der eingegebene Kategoriename darf nicht leer sein.");
             return;
         }
         if (superCategory.hasSubCategory(name)) {
-            passwordManagerController.getMainWindowAUI().showError("Eingegebener Kategoriename ist schon vergeben");
+            passwordManagerController.getMainWindowAUI().showError("Der eingegebener Kategoriename ist schon vergeben.");
             return;
         }
         Category category = new Category(name);
