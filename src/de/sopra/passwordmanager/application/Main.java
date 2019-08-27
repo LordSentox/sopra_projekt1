@@ -55,6 +55,7 @@ public class Main extends Application{
 				masterPasswordViewController.setMainWindowViewController(mainWindowViewController);
 				masterPasswordViewController.setStage(primaryStage);
 				masterPasswordViewController.setMainStage(mainStage);
+				masterPasswordViewController.init();
 				
 				
 				Scene masterPasswordScene = new Scene(masterPasswordPane);
