@@ -12,6 +12,7 @@ import de.sopra.passwordmanager.util.EntryListOrderStrategy;
 import de.sopra.passwordmanager.util.EntryListSelectionStrategy;
 import de.sopra.passwordmanager.util.Path;
 import de.sopra.passwordmanager.util.dialog.SimpleConfirmation;
+import de.sopra.passwordmanager.util.dialog.SimpleDialog;
 import de.sopra.passwordmanager.util.dialog.TwoOptionConfirmation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -21,10 +22,11 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.util.Duration;
 
 import java.util.ArrayList;
@@ -185,6 +187,7 @@ public class MainWindowViewController implements MainWindowAUI {
             settingsViewController.setMainWindowViewController(this);
             settingsStage.show();
         } catch (Exception e) {
+            showError(e);
             throw new RuntimeException(e);
         }
     }
@@ -218,6 +221,7 @@ public class MainWindowViewController implements MainWindowAUI {
 
 
         } catch (Exception e) {
+            showError(e);
             throw new RuntimeException(e);
         }
 
@@ -225,12 +229,15 @@ public class MainWindowViewController implements MainWindowAUI {
 
     public void onEditCategoryClicked() {
 
-        Path path = comboBoxCategorySelectionMain.getSelectionModel().getSelectedItem().getPath();
-        if (Path.ROOT_CATEGORY_PATH.equals(path)) {
-            showError("Ändern der Hauptkategorie nicht erlaubt");
-            return;
-        }
         try {
+
+            CategoryItem selectedItem = comboBoxCategorySelectionMain.getSelectionModel().getSelectedItem();
+            Path path = selectedItem.getPath();
+            if (Path.ROOT_CATEGORY_PATH.equals(path)) {
+                showError("Ändern der Hauptkategorie nicht erlaubt");
+                return;
+            }
+
             /* Kategorie bearbeiten */
             AnchorPane categoryEditPane;
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("../view/Kategorie_anlegen-aendern.fxml"));
@@ -247,6 +254,7 @@ public class MainWindowViewController implements MainWindowAUI {
             categoryEditViewController.initComboBox();
             categoryEditStage.show();
         } catch (Exception e) {
+            showError(e);
             throw new RuntimeException(e);
         }
 
@@ -301,6 +309,7 @@ public class MainWindowViewController implements MainWindowAUI {
             securityQuestionViewController.setStage(securityQuestionAddStage);
             securityQuestionAddStage.show();
         } catch (Exception e) {
+            showError(e);
             throw new RuntimeException(e);
         }
 
@@ -464,16 +473,29 @@ public class MainWindowViewController implements MainWindowAUI {
         progressBarCredentialsQuality.setProgress((double) quality / 100);
     }
 
+    public void showError(Exception exception) {
+        Throwable throwable = exception;
+        while (throwable.getCause() != null)
+            throwable = throwable.getCause();
+        StringBuilder builder = new StringBuilder(exception.toString());
+        int count = 0;
+        for (StackTraceElement trace : exception.getStackTrace()) {
+            count++;
+            if (count <= 15)
+                builder.append("\n" + trace.toString());
+        }
+        if (count > 15)
+            builder.append("\n...and " + (count - 25) + " more...");
+        showError(builder.toString());
+    }
+
     @Override
     public void showError(String error) {
-        Alert alertDialog = new Alert(AlertType.CONFIRMATION);
-
-        ButtonType buttonTypeYes = new ButtonType("OK");
-
-        alertDialog.setHeaderText("Achtung! es ist ein unerwarteter Fehler aufgetreten");
-        alertDialog.setContentText(error);
-        alertDialog.getButtonTypes().setAll(buttonTypeYes);
-        alertDialog.show();
+        SimpleDialog dialog = new SimpleDialog("Ein Fehler ist aufgetreten!",
+                "Warnung! Es ist ein unerwarteter Fehler aufgetreten.", error);
+        dialog.setAlertType(AlertType.ERROR);
+        dialog.setStyle(StageStyle.UTILITY);
+        dialog.open();
     }
 
     private void setDisable(boolean disabled) {
