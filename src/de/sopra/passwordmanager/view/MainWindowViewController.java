@@ -24,11 +24,10 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import javax.swing.*;
 
 public class MainWindowViewController implements MainWindowAUI {
 
@@ -43,24 +42,37 @@ public class MainWindowViewController implements MainWindowAUI {
 
     private CredentialsBuilder currentCredentials;
 
-    @FXML    private JFXTextField textFieldSearch, textFieldCredentialsName, textFieldCredentialsUserName, textFieldCredentialsWebsite;
-    @FXML    private TextArea textFieldCredentialsNotes;
-    @FXML    private JFXPasswordField passwordFieldCredentialsPassword;
-    @FXML    private Spinner<Integer> spinnerCredentialsReminderDays;
-    @FXML    private JFXListView<Credentials> listViewCredentialsList;
-    @FXML    private JFXToggleButton buttonCredentialsShowPassword;
-    @FXML    private JFXButton buttonAddCredentials, buttonRemoveCredentials, buttonCredentialsAddSecurityQuestion, buttonCredentialsRemoveSecurityQuestion, buttonAddCategoryMain, buttonRemoveCategoryMain, buttonSearch, buttonCredentialsGeneratePassword, buttonCredentialsCopy, buttonEditCredentials, buttonSaveCredentials, buttonCredentialsAddCategories, buttonSettings, buttonEditCategoryMain;
+    @FXML
+    private JFXTextField textFieldSearch, textFieldCredentialsName, textFieldCredentialsUserName, textFieldCredentialsWebsite;
+    @FXML
+    private TextArea textFieldCredentialsNotes;
+    @FXML
+    private JFXPasswordField passwordFieldCredentialsPassword;
+    @FXML
+    private Spinner<Integer> spinnerCredentialsReminderDays;
+    @FXML
+    private JFXListView<Credentials> listViewCredentialsList;
+    @FXML
+    private JFXToggleButton buttonCredentialsShowPassword;
+    @FXML
+    private JFXButton buttonAddCredentials, buttonRemoveCredentials, buttonCredentialsAddSecurityQuestion, buttonCredentialsRemoveSecurityQuestion, buttonAddCategoryMain, buttonRemoveCategoryMain, buttonSearch, buttonCredentialsGeneratePassword, buttonCredentialsCopy, buttonEditCredentials, buttonSaveCredentials, buttonCredentialsAddCategories, buttonSettings, buttonEditCategoryMain;
 
-    @FXML    private JFXComboBox<CategoryItem> comboBoxCategorySelectionMain;
-    @FXML    private JFXComboBox<SecurityQuestion> comboBoxCredentialsSecurityQuestion;
+    @FXML
+    private JFXComboBox<CategoryItem> comboBoxCategorySelectionMain;
+    @FXML
+    private JFXComboBox<SecurityQuestion> comboBoxCredentialsSecurityQuestion;
 
-    @FXML    private JFXCheckBox checkBoxCredentialsUseReminder;
+    @FXML
+    private JFXCheckBox checkBoxCredentialsUseReminder;
 
-    @FXML    private ChoiceBox<Category> choiceBoxCredentialsCategories;
+    @FXML
+    private ChoiceBox<Category> choiceBoxCredentialsCategories;
 
-    @FXML    private JFXProgressBar progressBarCredentialsCopyTimer;
+    @FXML
+    private JFXProgressBar progressBarCredentialsCopyTimer;
 
-    @FXML    private Label labelCredentialsSecurityAnswer, lableCredentialsLastChanged, lableCredentialsCreated;
+    @FXML
+    private Label labelCredentialsSecurityAnswer, lableCredentialsLastChanged, lableCredentialsCreated;
 
     public void init() {
         setDisable(true);
@@ -87,7 +99,7 @@ public class MainWindowViewController implements MainWindowAUI {
             }
         }));
         timeline.setCycleCount(1000);
-        
+
         refreshLists();
 
     }
@@ -144,7 +156,7 @@ public class MainWindowViewController implements MainWindowAUI {
 
         CredentialsController credentialsController = passwordManagerController.getCredentialsController();
         Path categoryPath = comboBoxCategorySelectionMain.getValue().getPath();
-        
+
         String pattern = textFieldSearch.getText();
         credentialsController.filterCredentials(categoryPath, pattern);
     }
@@ -165,8 +177,8 @@ public class MainWindowViewController implements MainWindowAUI {
             categoryEditViewController.setMainWindowViewController(this);
             categoryEditViewController.initComboBox();
             categoryEditStage.show();
-            
-            
+
+
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -187,6 +199,7 @@ public class MainWindowViewController implements MainWindowAUI {
             categoryEditStage.setScene(categoryEditScene);
             categoryEditViewController.setStage(categoryEditStage);
             categoryEditViewController.setMainWindowViewController(this);
+            categoryEditViewController.setCurrentlyEdited(comboBoxCategorySelectionMain.getSelectionModel().getSelectedItem().getPath());
             categoryEditViewController.initComboBox();
             categoryEditStage.show();
         } catch (Exception e) {
@@ -201,13 +214,13 @@ public class MainWindowViewController implements MainWindowAUI {
         //TODO JFX Dialog nutzen
         JDialog.setDefaultLookAndFeelDecorated(true);
         int response = JOptionPane.showConfirmDialog(null, "Alle zur Kategorie gehörigen Daten ebenfalls Löschen?", "", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-        
+
         if (response == JOptionPane.NO_OPTION)
             removeCredentialsToo = false;
-        
+
         else if (response == JOptionPane.YES_OPTION)
             removeCredentialsToo = true;
-        
+
         else if (response == JOptionPane.CLOSED_OPTION)
             return;
 
@@ -266,7 +279,7 @@ public class MainWindowViewController implements MainWindowAUI {
     public void onRemoveSecurityQuestionClicked() {
         CredentialsController credController = passwordManagerController.getCredentialsController();
         SecurityQuestion question = comboBoxCredentialsSecurityQuestion.getValue();
-        
+
         //String question = comboBoxCredentialsSecurityQuestion.getValue();
         credController.removeSecurityQuestion(question, currentCredentials);
     }
@@ -294,7 +307,7 @@ public class MainWindowViewController implements MainWindowAUI {
 
         spinnerCredentialsReminderDays.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 999));
         spinnerCredentialsReminderDays.setDisable(true);
-        
+
         CredentialsController credController = passwordManagerController.getCredentialsController();
         Credentials oldCredentials = listViewCredentialsList.getSelectionModel().getSelectedItem();
 
@@ -304,26 +317,26 @@ public class MainWindowViewController implements MainWindowAUI {
         String website = textFieldCredentialsWebsite.getText();
         String notes = textFieldCredentialsNotes.getText();
         currentCredentials.withName(name)
-                          .withUserName(userName)
-                          .withPassword(password)
-                          .withWebsite(website)
-                          .withNotes(notes);
+                .withUserName(userName)
+                .withPassword(password)
+                .withWebsite(website)
+                .withNotes(notes);
         int changeReminderDays = spinnerCredentialsReminderDays.getValue();
         boolean addChangeReminderDays = checkBoxCredentialsUseReminder.isSelected();
         if (addChangeReminderDays) {
-           currentCredentials.withChangeReminderDays(changeReminderDays); 
+            currentCredentials.withChangeReminderDays(changeReminderDays);
         } else {
             //currentCredentials.withChangeReminderDays(); XXX: credentialsBuilder braucht Methode zum entfernen von Änderungswecker
         }
-        
-        
+
+
         List<Category> categories = new ArrayList<Category>();
         categories = choiceBoxCredentialsCategories.getItems();
-        
-        
+
+
         if (oldCredentials == null) {
             credController.addCredentials(currentCredentials, categories);
-        } else {            
+        } else {
             credController.updateCredentials(oldCredentials, currentCredentials, categories);
         }
 
@@ -346,15 +359,15 @@ public class MainWindowViewController implements MainWindowAUI {
 
     @Override
     public void refreshLists() {
-    	//TODO
-    	
-    	/* Init category combobox */
-    	Map<Path, Category> cats = passwordManagerController.getPasswordManager().getRootCategory().createPathMap(new Path());
+        //TODO
 
-    	comboBoxCategorySelectionMain.getItems().clear();
-    	cats.keySet().stream()
-    		.map(path -> new CategoryItem(path, cats.get(path)))
-    		.forEach(comboBoxCategorySelectionMain.getItems()::add);
+        /* Init category combobox */
+        Map<Path, Category> cats = passwordManagerController.getPasswordManager().getRootCategory().createPathMap(new Path());
+
+        comboBoxCategorySelectionMain.getItems().clear();
+        cats.keySet().stream()
+                .map(path -> new CategoryItem(path, cats.get(path)))
+                .forEach(comboBoxCategorySelectionMain.getItems()::add);
     }
 
     @Override
@@ -383,7 +396,7 @@ public class MainWindowViewController implements MainWindowAUI {
         textFieldCredentialsWebsite.setDisable(disabled);
         textFieldCredentialsNotes.setDisable(disabled);
         passwordFieldCredentialsPassword.setDisable(disabled);
-        
+
         buttonCredentialsAddSecurityQuestion.setDisable(disabled);
         buttonCredentialsRemoveSecurityQuestion.setDisable(disabled);
         buttonCredentialsGeneratePassword.setDisable(disabled);
