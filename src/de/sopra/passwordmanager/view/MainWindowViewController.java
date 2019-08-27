@@ -12,6 +12,7 @@ import de.sopra.passwordmanager.util.CredentialsBuilder;
 import de.sopra.passwordmanager.util.EntryListOrderStrategy;
 import de.sopra.passwordmanager.util.EntryListSelectionStrategy;
 import de.sopra.passwordmanager.util.Path;
+import de.sopra.passwordmanager.util.dialog.TwoOptionConfirmation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
@@ -24,7 +25,6 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
-import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -217,20 +217,22 @@ public class MainWindowViewController implements MainWindowAUI {
     public void onRemoveCategoryClicked() {
         CategoryController catController = passwordManagerController.getCategoryController();
         boolean removeCredentialsToo = false;
-        //TODO JFX Dialog nutzen
-        JDialog.setDefaultLookAndFeelDecorated(true);
-        int response = JOptionPane.showConfirmDialog(null, "Alle zur Kategorie gehörigen Daten ebenfalls Löschen?", "", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 
-        if (response == JOptionPane.NO_OPTION)
-            removeCredentialsToo = false;
+        TwoOptionConfirmation removeConfirmation = new TwoOptionConfirmation("Kategorie entfernen", null,
+                "Nur die Kategorie oder die Kategorie mitsamt Inhalt löschen?") {
+            @Override
+            public void onCancel() {
+                //Nix
+            }
+        };
 
-        else if (response == JOptionPane.YES_OPTION)
-            removeCredentialsToo = true;
+        removeConfirmation.setAlertType(Alert.AlertType.NONE);
+        removeConfirmation.setOption1("Nur Kategorie");
+        removeConfirmation.setOption2("Mitsamt Inhalt");
+        removeConfirmation.setRun1(() -> catController.removeCategory(comboBoxCategorySelectionMain.getValue().getPath(), false));
+        removeConfirmation.setRun2(() -> catController.removeCategory(comboBoxCategorySelectionMain.getValue().getPath(), true));
 
-        else if (response == JOptionPane.CLOSED_OPTION)
-            return;
-
-        catController.removeCategory(comboBoxCategorySelectionMain.getValue().getPath(), removeCredentialsToo);
+        removeConfirmation.open();
     }
 
     public void onShowPasswordClicked() {
