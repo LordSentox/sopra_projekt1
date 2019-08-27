@@ -104,7 +104,7 @@ public class CategoryControllerTest {
         childCategoryWithCredentialsAndSubCat.addCredentials(credentialsDummyDontDelete);
         childCategoryWithCredentialsAndSubCat.addSubCategory(emptyChildCategoryDontDelete);
 
-        childCategoryWithContent.addCredentials(credentialsDummyNotInDeletedSubCategory);
+        childCategoryWithSubCategories.addCredentials(credentialsDummyNotInDeletedSubCategory);
 
 
         Collection<Credentials> credentialsToCheck;
@@ -113,8 +113,8 @@ public class CategoryControllerTest {
         //valides Löschen
         //nur Kategorie, kein Inhalt löschen, aber Inhalt vorhanden
         catController.removeCategory(Path.ROOT_CATEGORY_PATH.createChildPath("childCategoryWithSubCategories/childCategoryWithCredentialsAndSubCat"), false);
-        credentialsToCheck = childCategoryWithContent.getCredentials();
-        catsToCheck = childCategoryWithContent.getSubCategories();
+        credentialsToCheck = childCategoryWithSubCategories.getCredentials();
+        catsToCheck = childCategoryWithSubCategories.getSubCategories();
 
         assertTrue("Credentials wurden fälschlicherweise entfernt", credentialsToCheck.contains(credentialsDummyDontDelete));
         assertTrue("Credentials wurden fälschlicherweise entfernt", credentialsToCheck.contains(credentialsDummyNotInDeletedSubCategory));
@@ -140,7 +140,7 @@ public class CategoryControllerTest {
 
         //Kategorie und gesamten Inhalt löschen, Inhalt vorhanden
         catController.removeCategory(Path.ROOT_CATEGORY_PATH.createChildPath("childCategoryWithSubCategories/childCategoryWithCredentialsAndSubCat"), true);
-        credentialsToCheck = childCategoryWithContent.getCredentials();
+        credentialsToCheck = childCategoryWithSubCategories.getCredentials();
         catsToCheck = childCategoryWithContent.getSubCategories();
 
         assertFalse("Credentials wurden fälschlicherweise nicht entfernt", credentialsToCheck.contains(credentialsDummyDoDelete));
@@ -151,7 +151,7 @@ public class CategoryControllerTest {
 
 
         //Kategorie und gesamten Inhalt löschen, kein Inhalt vorhanden
-        catController.removeCategory(new Path("root/childCategoryWithoutContent"), true);
+        catController.removeCategory(Path.ROOT_CATEGORY_PATH.createChildPath("childCategoryWithoutContent"), true);
         credentialsToCheck = root.getCredentials();
         catsToCheck = root.getSubCategories();
 
@@ -195,8 +195,8 @@ public class CategoryControllerTest {
 
         //nur umbenennen
         catController.moveCategory(Path.ROOT_CATEGORY_PATH.createChildPath("moveTo/toMoveRenameContent"), Path.ROOT_CATEGORY_PATH.createChildPath("moveTo/toMoveContentRenamed"));
-        assertTrue("Kategorie hätte hierhin verschoben werden sollen", moveTo.hasSubCategory(toMoveRenameContent.getName()));
-        assertEquals("Kategorie falsch umbenannt", "toMoveContentRenamed", toMoveRenameContent.getName());
+        assertTrue("Kategorie hätte hierhin verschoben werden sollen", moveTo.hasSubCategory("toMoveContentRenamed"));
+        assertEquals("Kategorie falsch umbenannt", "toMoveContentRenamed", moveTo.getCategoryByPath(new Path("moveTo/toMoveContentRenamed")).getName());
         assertTrue("Kategorie sollte nach Verschieben die Unterkategorie enthalten", toMoveRenameContent.getSubCategories().contains(subToMove));
         assertTrue("Kategorie sollte nach Verschieben die Credentials enthalten", toMoveRenameContent.getCredentials().contains(credentialsToMove));
 
