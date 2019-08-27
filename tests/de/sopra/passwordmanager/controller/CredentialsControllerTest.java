@@ -368,7 +368,7 @@ public class CredentialsControllerTest {
     }
     //endregion
 
-    //region Set Password Shown
+    /*/region Set Password Shown
     @Test
     public void setPasswordShownTest() {
         String password = "pass1";
@@ -381,7 +381,7 @@ public class CredentialsControllerTest {
         Assert.assertEquals("password is shown", "", mainView.getPasswordShown());
     }
     //endregion
-
+    */
     //Tests for getCredentialsByCategoryPath() in CredentialsControllerTreeTest
 
     @Test

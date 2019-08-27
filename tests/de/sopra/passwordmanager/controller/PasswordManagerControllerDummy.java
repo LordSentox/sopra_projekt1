@@ -64,8 +64,9 @@ public class PasswordManagerControllerDummy {
         @Override
         public void refreshLists() {
             Category category = controller.getPasswordManager().getRootCategory();
-            //TODO get all credentials in currently selected category
-            List<Credentials> credentials = null;
+            if (currentSelectedCategory != null) category = currentSelectedCategory;
+
+            List<Credentials> credentials = new ArrayList<>(controller.getPasswordManager().getRootCategory().getAllCredentials());
             List<Credentials> selected = strategy.select(credentials);
             List<Credentials> ordered = orderStrategy.order(selected);
             this.currentCredentialsList = ordered;
@@ -73,8 +74,8 @@ public class PasswordManagerControllerDummy {
 
         @Override
         public void refreshListStrategies(EntryListSelectionStrategy selection, EntryListOrderStrategy order) {
-            this.strategy = selection;
-            this.orderStrategy = order;
+            if (selection != null) this.strategy = selection;
+            if (order != null) this.orderStrategy = order;
             refreshLists();
         }
 

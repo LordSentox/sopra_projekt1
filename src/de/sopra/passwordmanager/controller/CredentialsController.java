@@ -3,6 +3,7 @@ package de.sopra.passwordmanager.controller;
 import aes.AES;
 import de.sopra.passwordmanager.model.*;
 import de.sopra.passwordmanager.util.CredentialsBuilder;
+import de.sopra.passwordmanager.util.EntryListSelectionStrategy;
 import de.sopra.passwordmanager.util.Path;
 import de.sopra.passwordmanager.util.Validate;
 import de.sopra.passwordmanager.view.MainWindowAUI;
@@ -116,7 +117,10 @@ public class CredentialsController {
 
 
     public void removeSecurityQuestion(SecurityQuestion question, CredentialsBuilder credentials) throws NullPointerException {
-
+        credentials.withoutSecurityQuestion(
+                passwordManagerController.getUtilityController().decryptText(question.getQuestion()),
+                passwordManagerController.getUtilityController().decryptText(question.getAnswer())
+        );
     }
 
     /**
@@ -128,21 +132,21 @@ public class CredentialsController {
      * @see CredentialsBuilder
      */
     public void filterCredentials(Path categoryPath, String pattern) {
-        //FIXME: Die neue Strategie einbinden
-        Collection<Credentials> credentials = passwordManagerController.getPasswordManager().getRootCategory().getAllCredentials();
-        Stream<Credentials> credentialsStream = credentials.stream();
-        if (categoryPath != null) {
-            Category category = passwordManagerController.getPasswordManager().getRootCategory().getCategoryByPath(categoryPath);
-            if (category == null) {
-                passwordManagerController.getMainWindowAUI().refreshLists();
-                return;
+        EntryListSelectionStrategy strategy = credentials -> {
+            Stream<Credentials> credentialsStream = credentials.stream();
+            if (categoryPath != null) {
+                Category category = passwordManagerController.getPasswordManager().getRootCategory().getCategoryByPath(categoryPath);
+                if (category == null) {
+                    return Collections.emptyList();
+                }
+                credentialsStream = credentialsStream.filter(cred -> category.getAllCredentials().contains(cred));
             }
-            credentialsStream = credentialsStream.filter(cred -> category.getAllCredentials().contains(cred));
-        }
-        if (pattern != null) {
-            credentialsStream = credentialsStream.filter(cred -> cred.getName().contains(pattern));
-        }
-        passwordManagerController.getMainWindowAUI().refreshLists();
+            if (pattern != null) {
+                credentialsStream = credentialsStream.filter(cred -> cred.getName().contains(pattern));
+            }
+            return credentialsStream.collect(Collectors.toList());
+        };
+        passwordManagerController.getMainWindowAUI().refreshListStrategies(strategy, null);
     }
 
     /**

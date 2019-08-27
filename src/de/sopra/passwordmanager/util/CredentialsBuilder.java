@@ -163,7 +163,7 @@ public class CredentialsBuilder {
      * @param changeReminderDays Die Zeitspanne nach dessen Ablauf das Passwort geändert werden soll (in Tagen)
      * @return Den Builder selbst
      */
-    public CredentialsBuilder withChangeReminderDays(int changeReminderDays) {
+    public CredentialsBuilder withChangeReminderDays(Integer changeReminderDays) {
         this.changeReminderDays = changeReminderDays;
         return this;
     }
