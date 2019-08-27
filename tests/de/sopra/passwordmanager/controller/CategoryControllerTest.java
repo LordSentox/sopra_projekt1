@@ -71,13 +71,13 @@ public class CategoryControllerTest {
         catController.createCategory(root, "");
 
         Collection<String> errors = mv.getErrorsShown();
-        assertTrue("Fehler hätte aufgerufen werden müssen", errors.contains("Eingegebener Kategoriename darf nicht leer sein"));
+        assertTrue("Fehler hätte aufgerufen werden müssen", errors.contains("Der eingegebene Kategoriename darf nicht leer sein."));
 
         //Kategorie soll gleichen Namen haben, wie schon existierendes Kind
         catController.createCategory(root, "category without children and credentials");
 
         errors = mv.getErrorsShown();
-        assertTrue("Fehler hätte aufgerufen werden müssen", errors.contains("Eingegebener Kategoriename ist schon vergeben"));
+        assertTrue("Fehler hätte aufgerufen werden müssen", errors.contains("Der eingegebener Kategoriename ist schon vergeben."));
     }
 
     @Test
