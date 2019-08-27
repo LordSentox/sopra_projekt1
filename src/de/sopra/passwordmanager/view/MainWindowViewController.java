@@ -153,6 +153,10 @@ public class MainWindowViewController implements MainWindowAUI {
         listViewCredentialsList.getSelectionModel().selectedItemProperty().addListener((obs, oldText, newText) -> {
             onEntryChosen();
         });
+        
+        comboBoxCategorySelectionMain.getSelectionModel().selectedItemProperty().addListener((obs, oldText, newText) -> {
+            refreshEntryListWhenCategoryChosen();
+        });
 
         //Die ComboBox initialisieren - enthält zu Beginn nur die Root-Kategorie
         CategoryItem rootCategoryItem = new CategoryItem(Path.ROOT_CATEGORY_PATH, passwordManagerController.getPasswordManager().getRootCategory());
@@ -359,7 +363,8 @@ public class MainWindowViewController implements MainWindowAUI {
     public void onAddCredentialsClicked() {
         oldCredentials = null;
         //TODO check if correct
-        listViewCredentialsList.getFocusModel().focus(-1);
+        listViewCredentialsList.getSelectionModel().clearSelection();
+        //listViewCredentialsList.getFocusModel().focus(-1);
         currentCredentials = new CredentialsBuilder();
         setDisable(false);
         buttonCredentialsCopy.setDisable(false);
@@ -370,7 +375,8 @@ public class MainWindowViewController implements MainWindowAUI {
     public void onRemoveCredentialsClicked() {
         CredentialsController credController = passwordManagerController.getCredentialsController();
         oldCredentials = listViewCredentialsList.getSelectionModel().getSelectedItem().getCredentials();
-        listViewCredentialsList.getFocusModel().focus(-1);
+        listViewCredentialsList.getSelectionModel().clearSelection();
+        //listViewCredentialsList.getFocusModel().focus(-1);
         credController.removeCredentials(oldCredentials);
         oldCredentials = null;
         currentCredentials = new CredentialsBuilder();
@@ -427,7 +433,7 @@ public class MainWindowViewController implements MainWindowAUI {
         }
         CredentialsItem selectedEntry = listViewCredentialsList.getSelectionModel().getSelectedItem();
         int index = listViewCredentialsList.getFocusModel().getFocusedIndex();
-        if (buttonEditCredentials.isDisabled()) {
+        if (buttonEditCredentials.isDisabled()|| selectedEntry == null) {
             SimpleConfirmation confirmation = new SimpleConfirmation("Änderung verwerfen?",
                     "Zur Zeit wird ein Eintrag bearbeitet",
                     "Wollen Sie wirklich abbrechen? \n Alle Änderungen werden gelöscht.") {
@@ -444,7 +450,8 @@ public class MainWindowViewController implements MainWindowAUI {
                 @Override
                 public void onCancel() {
                     //nicht löschen
-                    listViewCredentialsList.getFocusModel().focus(-1);
+                    listViewCredentialsList.getSelectionModel().clearSelection();
+                    //listViewCredentialsList.getFocusModel().focus(-1);
                 }
             };
             confirmation.setAlertType(AlertType.CONFIRMATION);
@@ -500,10 +507,16 @@ public class MainWindowViewController implements MainWindowAUI {
             comboBoxCategorySelectionMain.getSelectionModel().select(selected);
         }
 
+        refreshEntryListWhenCategoryChosen();
+
+    }
+
+    private void refreshEntryListWhenCategoryChosen() {
         //Inhalt der Kategorie in Liste anzeigen
         CategoryItem chosenCat2 = comboBoxCategorySelectionMain.getSelectionModel().getSelectedItem();
         //getAllCredentials damit die aktuelle Kategorie, ihre Inhalte und alle untergeordneten Inhalte berücksichtigt werden
-        Collection<Credentials> credentials = chosenCat2.getCategory().getAllCredentials();
+        Collection<Credentials> credentials = chosenCat2 == null ? 
+                passwordManagerController.getPasswordManager().getRootCategory().getAllCredentials() : chosenCat2.getCategory().getAllCredentials();
         if (!credentials.isEmpty()) {
             List<CredentialsItem> selection = selectionStrategy.select(new LinkedList<>(credentials));
             List<CredentialsItem> ordered = orderStrategy.order(selection);
@@ -516,7 +529,6 @@ public class MainWindowViewController implements MainWindowAUI {
             currentCredentials = null;
             refreshEntry();
         }
-
     }
 
     @Override
