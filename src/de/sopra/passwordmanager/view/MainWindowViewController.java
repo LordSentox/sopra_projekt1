@@ -186,12 +186,18 @@ public class MainWindowViewController implements MainWindowAUI {
     }
 
     public void onEditCategoryClicked() {
+
+        Path path = comboBoxCategorySelectionMain.getSelectionModel().getSelectedItem().getPath();
+        if (Path.ROOT_CATEGORY_PATH.equals(path)) {
+            showError("Ändern der Hauptkategorie nicht erlaubt");
+            return;
+        }
         try {
             /* Kategorie bearbeiten */
-            AnchorPane categoryEditPane = new AnchorPane();
+            AnchorPane categoryEditPane;
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("../view/Kategorie_anlegen-aendern.fxml"));
             categoryEditPane = fxmlLoader.load();
-            categoryEditViewController = (CategoryEditViewController) fxmlLoader.getController();
+            categoryEditViewController = fxmlLoader.getController();
 
             Stage categoryEditStage = new Stage();
             Scene categoryEditScene = new Scene(categoryEditPane);
@@ -199,7 +205,7 @@ public class MainWindowViewController implements MainWindowAUI {
             categoryEditStage.setScene(categoryEditScene);
             categoryEditViewController.setStage(categoryEditStage);
             categoryEditViewController.setMainWindowViewController(this);
-            categoryEditViewController.setCurrentlyEdited(comboBoxCategorySelectionMain.getSelectionModel().getSelectedItem().getPath());
+            categoryEditViewController.setCurrentlyEdited(path);
             categoryEditViewController.initComboBox();
             categoryEditStage.show();
         } catch (Exception e) {
