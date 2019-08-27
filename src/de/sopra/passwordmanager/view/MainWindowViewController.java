@@ -23,6 +23,10 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import javax.swing.*;
 
 public class MainWindowViewController implements MainWindowAUI {
@@ -113,23 +117,10 @@ public class MainWindowViewController implements MainWindowAUI {
     private Label lableCredentialsCreated;
 
     public void init() {
-        textFieldCredentialsName.setDisable(true);
-        textFieldCredentialsUserName.setDisable(true);
-        textFieldCredentialsWebsite.setDisable(true);
-        textFieldCredentialsNotes.setDisable(true);
-        passwordFieldCredentialsPassword.setDisable(true);
+        setDisable(true);
 
         spinnerCredentialsReminderDays.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 999));
         spinnerCredentialsReminderDays.setDisable(true);
-
-
-        buttonCredentialsAddSecurityQuestion.setDisable(true);
-        buttonCredentialsRemoveSecurityQuestion.setDisable(true);
-        buttonCredentialsGeneratePassword.setDisable(true);
-        buttonSaveCredentials.setDisable(true);
-        buttonCredentialsAddCategories.setDisable(true);
-        checkBoxCredentialsUseReminder.setDisable(true);
-        choiceBoxCredentialsCategories.setDisable(true);
 
         labelCredentialsSecurityAnswer.setVisible(false);
 
@@ -279,14 +270,13 @@ public class MainWindowViewController implements MainWindowAUI {
         } else {
             visible = true;
         }
-        //TODO credentials hinzfügen
-        credController.setPasswordShown(null, visible);
+        //TODO show Passwort Methode implementieren
+        //credController.setPasswordShown(currentCredentials, visible);
     }
 
     public void onCopyPasswordClicked() {
         CredentialsController credController = passwordManagerController.getCredentialsController();
-        //TODO credentials hinzfügen
-        credController.copyPasswordToClipboard(null);
+        credController.copyPasswordToClipboard(currentCredentials);
         buttonCredentialsCopy.setOpacity(0.5);
         timeline.stop();
         progressBarCredentialsCopyTimer.setProgress(1.0);
@@ -329,55 +319,66 @@ public class MainWindowViewController implements MainWindowAUI {
     public void onRemoveSecurityQuestionClicked() {
         CredentialsController credController = passwordManagerController.getCredentialsController();
         SecurityQuestion question = comboBoxCredentialsSecurityQuestion.getValue();
-        //TODO credentials hinzfügen
-        credController.removeSecurityQuestion(question, null);
+        
+        //String question = comboBoxCredentialsSecurityQuestion.getValue();
+        credController.removeSecurityQuestion(question, currentCredentials);
     }
 
     public void onAddCredentialsClicked() {
-        //TODO
+        //TODO check if correct
+        currentCredentials = new CredentialsBuilder();
+        setDisable(false);
     }
 
     public void onRemoveCredentialsClicked() {
         CredentialsController credController = passwordManagerController.getCredentialsController();
-        //TODO credentials hinzfügen
-        credController.removeCredentials(null);
+        Credentials oldCredentials = listViewCredentialsList.getSelectionModel().getSelectedItem();
+        credController.removeCredentials(oldCredentials);
     }
 
     public void onStartEditCredentialsClicked() {
-        textFieldCredentialsName.setDisable(false);
-        textFieldCredentialsUserName.setDisable(false);
-        textFieldCredentialsWebsite.setDisable(false);
-        textFieldCredentialsNotes.setDisable(false);
-        passwordFieldCredentialsPassword.setDisable(false);
-
-        buttonCredentialsAddSecurityQuestion.setDisable(false);
-        buttonCredentialsRemoveSecurityQuestion.setDisable(false);
-        buttonCredentialsGeneratePassword.setDisable(false);
-        buttonSaveCredentials.setDisable(false);
-        buttonCredentialsAddCategories.setDisable(false);
-        checkBoxCredentialsUseReminder.setDisable(false);
-        choiceBoxCredentialsCategories.setDisable(false);
+        setDisable(false);
 
     }
 
+
     public void onSaveCredentialsClicked() {
-        textFieldCredentialsName.setDisable(true);
-        textFieldCredentialsUserName.setDisable(true);
-        textFieldCredentialsWebsite.setDisable(true);
-        textFieldCredentialsNotes.setDisable(true);
-        passwordFieldCredentialsPassword.setDisable(true);
+        setDisable(true);
 
         spinnerCredentialsReminderDays.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 999));
         spinnerCredentialsReminderDays.setDisable(true);
+        
+        CredentialsController credController = passwordManagerController.getCredentialsController();
+        Credentials oldCredentials = listViewCredentialsList.getSelectionModel().getSelectedItem();
 
-
-        buttonCredentialsAddSecurityQuestion.setDisable(true);
-        buttonCredentialsRemoveSecurityQuestion.setDisable(true);
-        buttonCredentialsGeneratePassword.setDisable(true);
-        buttonSaveCredentials.setDisable(true);
-        buttonCredentialsAddCategories.setDisable(true);
-        checkBoxCredentialsUseReminder.setDisable(true);
-        choiceBoxCredentialsCategories.setDisable(true);
+        String name = textFieldCredentialsName.getText();
+        String userName = textFieldCredentialsUserName.getText();
+        String password = passwordFieldCredentialsPassword.getText();
+        String website = textFieldCredentialsWebsite.getText();
+        String notes = textFieldCredentialsNotes.getText();
+        currentCredentials.withName(name)
+                          .withUserName(userName)
+                          .withPassword(password)
+                          .withWebsite(website)
+                          .withNotes(notes);
+        int changeReminderDays = spinnerCredentialsReminderDays.getValue();
+        boolean addChangeReminderDays = checkBoxCredentialsUseReminder.isSelected();
+        if (addChangeReminderDays) {
+           currentCredentials.withChangeReminderDays(changeReminderDays); 
+        } else {
+            //currentCredentials.withChangeReminderDays(); XXX: credentialsBuilder braucht Methode zum entfernen von Änderungswecker
+        }
+        
+        
+        List<Category> categories = new ArrayList<Category>();
+        categories = choiceBoxCredentialsCategories.getItems();
+        
+        
+        if (oldCredentials == null) {
+            credController.addCredentials(currentCredentials, categories);
+        } else {            
+            credController.updateCredentials(oldCredentials, currentCredentials, categories);
+        }
 
     }
 
@@ -393,8 +394,12 @@ public class MainWindowViewController implements MainWindowAUI {
 
     public void onChooseQuestionClicked() {
         CredentialsController credController = passwordManagerController.getCredentialsController();
+        Map<String, String> questions = currentCredentials.getSecurityQuestions();
+        
         //TODO Methode hinzufügen für decrypt von Question und Answer
         //SecurityQuestion chosenQuestion = credController.
+        SecurityQuestion selectedQuestion = comboBoxCredentialsSecurityQuestion.getValue();
+        selectedQuestion.getQuestion();
         String answer = "";
         labelCredentialsSecurityAnswer.setText(answer);
         labelCredentialsSecurityAnswer.setVisible(true);
@@ -426,4 +431,24 @@ public class MainWindowViewController implements MainWindowAUI {
 
     }
 
+    private void setDisable(boolean disabled) {
+        
+        textFieldCredentialsName.setDisable(disabled);
+        textFieldCredentialsUserName.setDisable(disabled);
+        textFieldCredentialsWebsite.setDisable(disabled);
+        textFieldCredentialsNotes.setDisable(disabled);
+        passwordFieldCredentialsPassword.setDisable(disabled);
+        
+        buttonCredentialsAddSecurityQuestion.setDisable(disabled);
+        buttonCredentialsRemoveSecurityQuestion.setDisable(disabled);
+        buttonCredentialsGeneratePassword.setDisable(disabled);
+        buttonSaveCredentials.setDisable(disabled);
+        buttonCredentialsAddCategories.setDisable(disabled);
+        checkBoxCredentialsUseReminder.setDisable(disabled);
+        choiceBoxCredentialsCategories.setDisable(disabled);
+    }
+
+    CredentialsBuilder getCredentialsBuilder() {
+        return currentCredentials;
+    }
 }
