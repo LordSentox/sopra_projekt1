@@ -43,7 +43,6 @@ public class Main extends Application {
                 loginViewController.setStage(primaryStage);
                 loginViewController.setMainStage(mainStage);
 
-
                 Scene loginScene = new Scene(loginPane);
                 loginScene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
                 primaryStage.setScene(loginScene);
