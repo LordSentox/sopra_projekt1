@@ -308,6 +308,17 @@ public class CredentialsBuilderTest {
         Assert.assertEquals("security questions getter value not equal", questions, credBuilder1.getSecurityQuestions());
     }
 
+    @Test
+    public void withoutSecurityQuestionTest() {
+        CredentialsBuilder credBuilder1 = new CredentialsBuilder("Hi", "How", "Are", "You")
+                .withSecurityQuestion("Was", "Das")
+                .withSecurityQuestion("Warum", "Darum")
+                .withoutSecurityQuestion("Was", "Das");
+
+        Assert.assertNull("Security Question not removed",  credBuilder1.getSecurityQuestions().getOrDefault("Was", null));
+        Assert.assertEquals("Wrong Security Question removed", "Darum", credBuilder1.getSecurityQuestions().getOrDefault("Warum", null));
+    }
+
     private SecurityQuestion securityQuestionFromStrings(String question, String answer) {
         return new SecurityQuestion(uc.encryptText(question), uc.encryptText(answer));
     }
