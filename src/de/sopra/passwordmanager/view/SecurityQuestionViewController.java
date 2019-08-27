@@ -12,7 +12,6 @@ import javafx.stage.Stage;
 public class SecurityQuestionViewController extends AbstractViewController{
 
 	@FXML private JFXTextField textFieldQuestion, textFieldAnswer;
-      
     
     public void onSecurityQuestionCancelClicked(){
     	stage.close();

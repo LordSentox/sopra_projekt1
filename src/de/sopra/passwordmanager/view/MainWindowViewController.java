@@ -77,7 +77,7 @@ public class MainWindowViewController implements MainWindowAUI {
     @FXML
     private JFXComboBox<CategoryItem> comboBoxCategorySelectionMain;
     @FXML
-    private JFXComboBox<SecurityQuestion> comboBoxCredentialsSecurityQuestion;
+    private JFXComboBox<String> comboBoxCredentialsSecurityQuestion;
 
     @FXML
     private JFXCheckBox checkBoxCredentialsUseReminder;
@@ -325,6 +325,7 @@ public class MainWindowViewController implements MainWindowAUI {
             securityQuestionAddScene.getStylesheets().add(getClass().getResource("../application/application.css").toExternalForm());
             securityQuestionAddStage.setScene(securityQuestionAddScene);
             securityQuestionViewController.setStage(securityQuestionAddStage);
+            securityQuestionViewController.setMainWindowViewController(this);
             securityQuestionAddStage.show();
         } catch (Exception e) {
             showError(e);
@@ -335,11 +336,11 @@ public class MainWindowViewController implements MainWindowAUI {
 
     public void onRemoveSecurityQuestionClicked() {
         CredentialsController credController = passwordManagerController.getCredentialsController();
-        SecurityQuestion question = comboBoxCredentialsSecurityQuestion.getValue();
+        String question = comboBoxCredentialsSecurityQuestion.getValue();
 
         //FIXME
         //String question = comboBoxCredentialsSecurityQuestion.getValue();
-        credController.removeSecurityQuestion(question, currentCredentials);
+        credController.removeSecurityQuestion(question, currentCredentials.getSecurityQuestions().get(question) ,currentCredentials);
     }
 
     public void onAddCredentialsClicked() {
@@ -390,7 +391,7 @@ public class MainWindowViewController implements MainWindowAUI {
         } else {
             credController.updateCredentials(oldCredentials, currentCredentials, categories);
         }
-
+        refreshEntry();
     }
 
     public void onChooseCategoryClicked() {
@@ -404,16 +405,12 @@ public class MainWindowViewController implements MainWindowAUI {
     }
 
     public void onChooseQuestionClicked() {
-        CredentialsController credController = passwordManagerController.getCredentialsController();
-        Map<String, String> questions = currentCredentials.getSecurityQuestions();
 
-        //TODO Methode hinzufügen für decrypt von Question und Answer
-        //SecurityQuestion chosenQuestion = credController.
-        SecurityQuestion selectedQuestion = comboBoxCredentialsSecurityQuestion.getValue();
-        selectedQuestion.getQuestion();
-        String answer = "";
+        String selectedQuestion = comboBoxCredentialsSecurityQuestion.getValue();
+        String answer = currentCredentials.getSecurityQuestions().get(selectedQuestion);
         labelCredentialsSecurityAnswer.setText(answer);
         labelCredentialsSecurityAnswer.setVisible(true);
+        refreshEntry();
     }
 
     public void onEntryChosen() {
@@ -512,6 +509,15 @@ public class MainWindowViewController implements MainWindowAUI {
         Integer changeReminderDays = currentCredentials.getChangeReminderDays();
         spinnerCredentialsReminderDays.getValueFactory().setValue(changeReminderDays != null ? changeReminderDays : 1);
         checkBoxCredentialsUseReminder.setSelected(changeReminderDays != null);
+        
+        //SecurityQuestionComboBox refreshen
+        
+        comboBoxCredentialsSecurityQuestion.getItems().clear();
+        for(Map.Entry<String, String> question: currentCredentials.getSecurityQuestions().entrySet()){
+        	
+        	comboBoxCredentialsSecurityQuestion.getItems().add(question.getKey());
+        }
+        
     }
 
     @Override

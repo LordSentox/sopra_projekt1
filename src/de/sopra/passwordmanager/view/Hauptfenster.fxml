@@ -41,7 +41,7 @@
       <ChoiceBox fx:id="choiceBoxCredentialsCategories" layoutX="430.0" layoutY="362.0" prefWidth="171.0" />
       <JFXButton fx:id="buttonCredentialsAddCategories" layoutX="606.0" layoutY="362.0" mnemonicParsing="false" text="+" onAction="#onAddCategoryClicked"/>
       <Label layoutX="315.0" layoutY="310.0" text="Sicherheitsfrage" />
-      <JFXComboBox fx:id="comboBoxCredentialsSecurityQuestion" layoutX="430.0" layoutY="305.0" prefWidth="171.0" />
+      <JFXComboBox fx:id="comboBoxCredentialsSecurityQuestion" layoutX="430.0" layoutY="305.0" prefWidth="171.0" onAction="#onChooseQuestionClicked"/>
       <JFXButton fx:id="buttonCredentialsAddSecurityQuestion" layoutX="606.0" layoutY="305.0" mnemonicParsing="false" text="+" onAction="#onAddSecurityQuestionClicked"/>
       <JFXButton fx:id="buttonCredentialsRemoveSecurityQuestion" layoutX="640.0" layoutY="305.0" mnemonicParsing="false" prefWidth="29.0" text="-" onAction="#onRemoveSecurityQuestionClicked"/>
       <Label fx:id="labelCredentialsSecurityAnswer" layoutX="430.0" layoutY="336.0" prefWidth="171.0" text="Antwort" />
