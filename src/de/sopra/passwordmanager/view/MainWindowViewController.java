@@ -336,20 +336,22 @@ public class MainWindowViewController implements MainWindowAUI {
             securityQuestionAddStage.setScene(securityQuestionAddScene);
             securityQuestionViewController.setStage(securityQuestionAddStage);
             securityQuestionViewController.setMainWindowViewController(this);
-            securityQuestionAddStage.show();
+            securityQuestionAddStage.showAndWait();
+
+            comboBoxCredentialsSecurityQuestion.getItems().clear();
+            for(Map.Entry<String, String> question: currentCredentials.getSecurityQuestions().entrySet()){
+                
+                comboBoxCredentialsSecurityQuestion.getItems().add(question.getKey());
+            }
         } catch (Exception e) {
             showError(e);
             throw new RuntimeException(e);
         }
-
     }
 
     public void onRemoveSecurityQuestionClicked() {
         CredentialsController credController = passwordManagerController.getCredentialsController();
         String question = comboBoxCredentialsSecurityQuestion.getValue();
-
-        //FIXME
-        //String question = comboBoxCredentialsSecurityQuestion.getValue();
         credController.removeSecurityQuestion(question, currentCredentials.getSecurityQuestions().get(question) ,currentCredentials);
     }
 
@@ -421,6 +423,7 @@ public class MainWindowViewController implements MainWindowAUI {
         labelCredentialsSecurityAnswer.setText(answer);
         labelCredentialsSecurityAnswer.setVisible(true);
         refreshEntry();
+        comboBoxCredentialsSecurityQuestion.getSelectionModel().select(selectedQuestion);
     }
 
     public void onEntryChosen() {

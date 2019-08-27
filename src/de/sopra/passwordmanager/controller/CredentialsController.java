@@ -199,7 +199,7 @@ public class CredentialsController {
      */
     public void clearPasswordFromClipboard(CredentialsBuilder credentials) {
         if (credentials.getPassword().equals(getClipboardContents())) {
-            setClipboardContents("*****");
+            setClipboardContents(null);
         }
     }
 
