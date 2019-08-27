@@ -93,7 +93,7 @@ public class PasswordReminderControllerTest {
 		//prüft, ob die komplette Testliste zurückgegeben wird, bei der alle Timer abgelaufen sind
 		{
 			Set<Credentials> toBeChanged = this.passwordManagerController.getPasswordReminderController().passwordsToBeChanged();
-			assertEquals("Filtering did not return all credentials", credentials, toBeChanged);
+			assertEquals("Filtering did not return all credentials", toBeChanged, credentials);
 		}
 
 		//Legt Set mit Passworteinträgen an, die angezeigt werden müssen, wenn vier Tage vergangen sind
@@ -106,7 +106,7 @@ public class PasswordReminderControllerTest {
 		credentials.forEach(cred -> cred.setLastChanged(fourDaysEarlier));
 
 		//prüft, ob die credentialsTestPartial-Liste von passwordsToBeChanged zurückgegeben wird
-		assertEquals(credentialsTestPartial, this.passwordManagerController.getPasswordReminderController().passwordsToBeChanged());
+		assertEquals(this.passwordManagerController.getPasswordReminderController().passwordsToBeChanged(), credentialsTestPartial);
 	}
 
 }

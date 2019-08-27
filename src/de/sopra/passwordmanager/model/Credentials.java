@@ -177,4 +177,8 @@ public class Credentials {
                 securityQuestions.equals(that.securityQuestions);
     }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(lastChanged, changeReminderDays, name, userName, website, notes, created, securityQuestions);
+    }
 }
