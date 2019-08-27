@@ -16,10 +16,8 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * <h1>projekt1</h1>
@@ -101,12 +99,12 @@ public class CredentialsControllerTest {
                 .withPassword("456passwort")
                 .withWebsite("www.hi.com");
 
-        Set<Category> categories = new HashSet<>();
+        Collection<Category> categories = new ArrayList<>();
         Category sub = pm.getRootCategory().getCategoryByPath(Path.ROOT_CATEGORY_PATH.createChildPath("sub"));
         categories.add(sub);
         cc.addCredentials(credBuilder1, categories);
 
-        Set<Category> categories2 = new HashSet<>();
+        Collection<Category> categories2 = new ArrayList<>();
         Category bus = pm.getRootCategory().getCategoryByPath(Path.ROOT_CATEGORY_PATH.createChildPath("bus"));
         categories2.add(bus);
 
