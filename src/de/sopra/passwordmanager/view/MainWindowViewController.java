@@ -343,6 +343,10 @@ public class MainWindowViewController implements MainWindowAUI {
                 
                 comboBoxCredentialsSecurityQuestion.getItems().add(question.getKey());
             }
+            
+            comboBoxCredentialsSecurityQuestion.getSelectionModel().select(1);
+            String selectedQuestion = comboBoxCredentialsSecurityQuestion.getSelectionModel().getSelectedItem();
+            System.out.println(selectedQuestion);
         } catch (Exception e) {
             showError(e);
             throw new RuntimeException(e);
