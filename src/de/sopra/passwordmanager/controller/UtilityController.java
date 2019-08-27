@@ -256,11 +256,12 @@ public class UtilityController {
      * Das Importieren einer neün Datei überschreibt die aktüllen Einträge.
      *
      * @param file           Die zu importierende Datei
-     * @param masterPassword das Masterpasswort des zu importierenden Projektes
+     * @param decryptionPassword das Masterpasswort des zu importierenden Projektes
+     * @param encryptionPassword das neue Passwort zum reencrypten, kann identisch zu decryptionPassword sein
      * @return Die Methode liefert false, wenn ein fehler beim importieren passiert, wenn true geliefert wird,
      * hat der Import funktioniert
      */
-    boolean importFile(File file, String masterPassword) {
+    boolean importFile(File file, String decryptionPassword, String encryptionPassword, boolean setMaster) {
         return false;
     }
 
