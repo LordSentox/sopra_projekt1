@@ -22,7 +22,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -254,35 +253,11 @@ public class MainWindowViewController implements MainWindowAUI {
 
     public void onRemoveCategoryClicked() {
         CategoryController catController = passwordManagerController.getCategoryController();
-        boolean removeCredentialsToo = false;
-        Alert alertDialog = new Alert(AlertType.CONFIRMATION);
-
-        ButtonType buttonTypeYes = new ButtonType("Ja");
-        ButtonType buttonTypeNo = new ButtonType("Nein");
-        ButtonType buttonTypeCancel = new ButtonType("Abbrechen", ButtonData.CANCEL_CLOSE);
-
-        alertDialog.setHeaderText("Alle zur Kategorie gehörigen Daten ebenfalls Löschen?");
-        alertDialog.getButtonTypes().setAll(buttonTypeYes, buttonTypeNo, buttonTypeCancel);
-        alertDialog.showAndWait();
-        ButtonType result = alertDialog.getResult();
-        if (result == buttonTypeYes) {
-           removeCredentialsToo = true;
-           System.out.println("mit löschen");
-        } else if (result == buttonTypeNo) {
-            removeCredentialsToo = false;
-            System.out.println("nicht mit löschen");
-        } else {
-            System.out.println("abbrechen");
-            return;
-        }
-        CategoryItem selectedCat = comboBoxCategorySelectionMain.getValue();
-        Path categoryPath = catController.getPathForCategory(selectedCat.getCategory());
-
         TwoOptionConfirmation removeConfirmation = new TwoOptionConfirmation("Kategorie entfernen", null,
                 "Nur die Kategorie oder die Kategorie mitsamt Inhalt löschen?") {
             @Override
             public void onCancel() {
-                //Nix
+
             }
         };
 
@@ -292,7 +267,6 @@ public class MainWindowViewController implements MainWindowAUI {
         removeConfirmation.setRun1(() -> catController.removeCategory(comboBoxCategorySelectionMain.getValue().getPath(), false));
         removeConfirmation.setRun2(() -> catController.removeCategory(comboBoxCategorySelectionMain.getValue().getPath(), true));
 
-        catController.removeCategory(categoryPath, removeCredentialsToo);
         removeConfirmation.open();
     }
 
