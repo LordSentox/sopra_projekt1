@@ -1,6 +1,7 @@
 package de.sopra.passwordmanager.controller;
 
 import aes.AES;
+import de.sopra.passwordmanager.model.Category;
 import de.sopra.passwordmanager.model.Credentials;
 import de.sopra.passwordmanager.model.EncryptedString;
 import de.sopra.passwordmanager.util.CredentialsBuilder;
@@ -20,6 +21,8 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+
+import org.w3c.dom.*;
 
 /**
  * Der UtilityController stellt verschiedene Hilfsdienste zur Verfügung
@@ -118,10 +121,6 @@ public class UtilityController {
         } while (checkQuality(password) < 100);
 
         credentials.withPassword(password);
-
-        // Aktualisieren der Anzeige im MainWindowViewController
-        passwordManagerController.getMainWindowAUI().refreshEntry();
-        passwordManagerController.getMainWindowAUI().refreshEntryPasswordQuality(100);
     }
 
     /**
@@ -132,8 +131,12 @@ public class UtilityController {
      * wenn er nicht entschlüsselt werden konnte
      */
     public String decryptText(EncryptedString text) {
+        return decryptText(text, passwordManagerController.getPasswordManager().getMasterPassword());
+    }
+
+    public static String decryptText(EncryptedString text, String password) {
         try {
-            return AES.decrypt(text.getEncryptedContent(), passwordManagerController.getPasswordManager().getMasterPassword());
+            return AES.decrypt(text.getEncryptedContent(), password);
         } catch (DecryptionException e) {
             System.err.println(text.getEncryptedContent() + " konnte nicht entschlüsselt werden.");
             e.printStackTrace();
@@ -148,8 +151,12 @@ public class UtilityController {
      * @return Der zurückgegebene String ist die verschlüsselte Version des eingegebenen Textes
      */
     public EncryptedString encryptText(String text) {
+        return encryptText(text, passwordManagerController.getPasswordManager().getMasterPassword());
+    }
+
+    public static EncryptedString encryptText(String text, String password) {
         try {
-            return new EncryptedString(AES.encrypt(text, passwordManagerController.getPasswordManager().getMasterPassword()));
+            return new EncryptedString(AES.encrypt(text, password));
         } catch (EncryptionException e) {
             System.err.println("Ein Text konnte nicht verschlüsselt werden.");
             e.printStackTrace();
@@ -248,15 +255,16 @@ public class UtilityController {
     }
 
     /**
-     * Die Methode importiert eine neue Datei mit Anmeldedaten. Für den Import wird das Masterpasswort der Datei benötigt.
+     * Die Methode importiert eine neü Datei mit Anmeldedaten. Für den Import wird das Masterpasswort der Datei benötigt.
      * Das Importieren einer neün Datei überschreibt die aktüllen Einträge.
      *
      * @param file           Die zu importierende Datei
-     * @param masterPassword das Masterpasswort des zu importierenden Projektes
+     * @param decryptionPassword das Masterpasswort des zu importierenden Projektes
+     * @param encryptionPassword das neue Passwort zum reencrypten, kann identisch zu decryptionPassword sein
      * @return Die Methode liefert false, wenn ein fehler beim importieren passiert, wenn true geliefert wird,
      * hat der Import funktioniert
      */
-    boolean importFile(File file, String masterPassword) {
+    boolean importFile(File file, String decryptionPassword, String encryptionPassword, boolean setMaster) {
         try {
             Document document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(file);
 
@@ -267,70 +275,125 @@ public class UtilityController {
                 return false;
             }
             List<Node> childNodes = IntStream.range(0, moepse.getChildNodes().getLength()).mapToObj(moepse.getChildNodes()::item).collect(Collectors.toList());
-//            final int numChildNodes = 2;
-//            if (childNodes.getLength() != numChildNodes) {
-//                System.err.println("moepse must contain two children");
-//                return false;
-//            }
 
             Node treeNode = childNodes.stream().filter(node -> node.getNodeName().equals("tree")).findFirst().get();
             Node dataNode = childNodes.stream().filter(node -> node.getNodeName().equals("data")).findFirst().get();
             Validate.notNull(treeNode, "TreeNode does not exist");
             Validate.notNull(dataNode, "DataNode does not exist");
-            List<Credentials> dataList = extractCredentials(dataNode);
-            Validate.notNull(dataList, "Data are stored incorrectly");
 
+            // Die entschlüsselten Daten auslesen.
+            List<CredentialsBuilder> dataList = extractCredentials(dataNode, decryptionPassword);
+            Validate.notNull(dataList, "The credentials could not be read. Incorrect format");
+
+            // Setzen des Masterpasswortes und Verschlüsselung der Daten
+            // TODO: Sehr unschön, da man es bei dieser Methode nicht erwarten würde, wenn man setMasterPassword auf false setzt
+            this.passwordManagerController.getPasswordManager().setMasterPassword(encryptionPassword);
+            Map<String, Credentials> credentials = dataList.stream().collect(Collectors.toMap(CredentialsBuilder::getName, builder -> builder.build(this)));
+
+            // TODO: Merge into the old MasterPasswordController instead of resetting the root
+            //this.passwordManagerController.removeAll();
+            extractAndFillCategories(this.passwordManagerController.getPasswordManager().getRootCategory(), treeNode, credentials);
+
+            // Wenn das Masterpasswort neu gesetzt werden soll muss der Änderungswecker und das Erstellungsdatum im
+            // Passwortmanager gesetzt werden.
 
         } catch (Exception e) {
             // TODO: Schönere Fehlerbehandlung
             e.printStackTrace();
+            return false;
         }
 
-        return false;
+        return true;
+    }
+
+    private void extractAndFillCategories(Category currentRoot, Node treeNode, Map<String, Credentials> credentials) {
+        List<Node> children = listFromNodeList(treeNode.getChildNodes());
+        for (Node child : children) {
+            if (child.getNodeName().equals("category")) {
+                Category newCategory = new Category(child.getAttributes().getNamedItem("name").getNodeValue());
+                currentRoot.addSubCategory(newCategory);
+                extractAndFillCategories(newCategory, child, credentials);
+            } else if (child.getNodeName().equals("entry")) {
+                Credentials entry = credentials.get(child.getAttributes().getNamedItem("name").getNodeValue());
+                if (entry != null) {
+                    currentRoot.addCredentials(entry);
+                } else {
+                    System.err.println("Could not attach entry to category. Credentials were not found");
+                }
+            }
+        }
     }
 
     //Baut eine Liste der Credentials aus dem Data-Tag, oder <code>null</code> wenn ein Fehler auftritt
-    private List<Credentials> extractCredentials(Node dataNode) {
-        List<Node> childNodes = IntStream.range(0, dataNode.getChildNodes().getLength()).mapToObj(dataNode.getChildNodes()::item).collect(Collectors.toList());
-        List<Credentials> credNodes = new ArrayList<>(childNodes.size());
-        for (Node entry : childNodes) {
+    private List<CredentialsBuilder> extractCredentials(Node dataNode, String decryptionPassword) {
+        List<Node> entries = listFromNodeList(dataNode.getChildNodes()).stream().filter(node -> node.getNodeName().equals("entry")).collect(Collectors.toList());
+
+        List<CredentialsBuilder> credNodes = new ArrayList<>(entries.size());
+        for (Node entry : entries) {
+            CredentialsBuilder credentials = extractCredentialsObject(entry, decryptionPassword);
+            if (credentials != null) {
+                credNodes.add(credentials);
+            }
         }
         return credNodes;
-
     }
 
-    private CredentialsBuilder extractCredentialsObject(Node entry) {
+    private CredentialsBuilder extractCredentialsObject(Node entry, String decryptionPassword) {
         CredentialsBuilder bobTheBuilder = new CredentialsBuilder();
 
-        Node attribute = entry.getAttributes().item(0);
-        if ( attribute.getNodeName().equals("name")) {
-            bobTheBuilder.withName(attribute.getNodeValue());
-        } else {
+        // Finde das Namensattribut
+        if (!entry.hasAttributes()) {
             return null;
         }
+        NamedNodeMap attributes = entry.getAttributes();
+        if (attributes == null) {
+            return null;
+        }
+        Node name = attributes.getNamedItem("name");
+        if (name == null) {
+            return null;
+        }
+        bobTheBuilder.withName(name.getNodeValue());
 
-        //Alle Elemente als Map von tag name zu Text Inhalt
-        Map<String, String> elements = IntStream.range(0, entry.getChildNodes().getLength())
-                .mapToObj(entry.getChildNodes()::item)
-                .filter(node -> !node.getNodeName().equals("questions"))
-                .collect(Collectors.toMap(Node::getNodeName, Node::getTextContent));
+        // Lese den Inhalt der Credentials
+        List<Node> elements = listFromNodeList(entry.getChildNodes());
+        for (Node element : elements) {
+            switch (element.getNodeName()) {
+                case "username": bobTheBuilder.withUserName(element.getTextContent()); break;
+                case "website": bobTheBuilder.withWebsite(element.getTextContent()); break;
+                case "created": bobTheBuilder.withCreated(LocalDateTime.parse(element.getTextContent())); break;
+                case "last-changed": bobTheBuilder.withLastChanged(LocalDateTime.parse(element.getTextContent())); break;
+                case "notes": bobTheBuilder.withNotes(element.getTextContent()); break;
+                case "password": bobTheBuilder.withPassword(decryptText(new EncryptedString(element.getTextContent()), decryptionPassword)); break;
+                case "questions": extractSecurityQuestionsIntoBuilder(element, bobTheBuilder, decryptionPassword);
+            }
+        }
 
-        // Lesen der nicht verschlüsselten Attribute aus der Datei
-        bobTheBuilder.withUserName(elements.get("userName"));
-        bobTheBuilder.withWebsite(elements.get("website"));
-        bobTheBuilder.withCreated(LocalDateTime.parse(elements.get("created")));
-        bobTheBuilder.withLastChanged(LocalDateTime.parse(elements.get("lastChanged")));
-        bobTheBuilder.withNotes(elements.get("notes"));
+        return bobTheBuilder;
+    }
 
-        // Lesen der verschlüsselten Daten und entschlüsseln, um sie in den Builder hinzufügen zu können.
-        EncryptedString password = new EncryptedString(elements.get("password"));
+    private void extractSecurityQuestionsIntoBuilder(Node element, CredentialsBuilder bobTheBuilder, String decryptionPassword) {
+        List<Node> securityQuestions = listFromNodeList(element.getChildNodes());
 
-        Map<String, String> questions = IntStream.range(0, entry.getChildNodes().getLength())
-                .mapToObj(entry.getChildNodes()::item)
-                .filter(node -> node.getNodeName().equals("questions"))
-                .findFirst().ifPresent(consumer);
+        // Gehe durch die Liste der Sicherheitsfragen
+        for (Node securityQuestion : securityQuestions) {
+            // Stelle sicher, dass es sich auch wirklich um eine Sicherheitsfrage handelt und füge sie dann zu der Liste
+            // der Sicherheitsfragen hinzu, wenn dies der Fall ist.
+            if (!securityQuestion.getNodeName().equals("security-question")) continue;
+            if (!securityQuestion.hasAttributes()) continue;
 
-        credNodes.add(bobTheBuilder.build(this));
+            // Die Attribute sollten Frage und Antwort enthalten
+            NamedNodeMap attributes = securityQuestion.getAttributes();
+            // TODO: Hier braucht es noch Fehlerbehandlung
+            String question = decryptText(new EncryptedString(attributes.getNamedItem("question").getNodeValue()), decryptionPassword);
+            String answer = decryptText(new EncryptedString(attributes.getNamedItem("answer").getNodeValue()), decryptionPassword);
+
+            bobTheBuilder.withSecurityQuestion(question, answer);
+        }
+    }
+
+    private static List<Node> listFromNodeList(NodeList nodes) {
+        return IntStream.range(0, nodes.getLength()).mapToObj(nodes::item).filter(Objects::nonNull).collect(Collectors.toList());
     }
 
     /**
@@ -340,9 +403,6 @@ public class UtilityController {
      * @throws IllegalArgumentException Wenn file null ist oder der Pfad nicht existiert
      */
     public void exportFile(File file) throws IllegalArgumentException {
-        try {
-
-        }
     }
 
     /**
@@ -350,7 +410,7 @@ public class UtilityController {
      *
      * @return ein neuer Salt
      */
-    private String generateRandomSalt() {
+    private static String generateRandomSalt() {
         //zu hohe Längen können die Effizienz beinträchtigen, 16 ist Standard
         final int saltLength = 16;
         byte[] salt = new byte[saltLength];
@@ -367,7 +427,7 @@ public class UtilityController {
      * @param salt  der Salt für die Hash-Operation, wenn <code>null</code> wird ein neuer salt generiert
      * @return ein array, welche an index 0 den salt und and index 1 den gehashten String beinhaltet
      */
-    private String[] hashString(String input, String salt) {
+    private static String[] hashString(String input, String salt) {
 
         //wenn kein salt vorhanden, wird ein zufälliges neues salt ergänzt
         if (salt == null) {
@@ -394,5 +454,4 @@ public class UtilityController {
 
         return new String[]{salt, resultHash};
     }
-
 }
