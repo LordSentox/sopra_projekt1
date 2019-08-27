@@ -20,7 +20,9 @@ public class Main extends Application{
 			FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("../view/Hauptfenster.fxml"));
 			mainPane = fxmlLoader.load();
 			MainWindowViewController mainWindowViewController = (MainWindowViewController) fxmlLoader.getController();
-			mainWindowViewController.setPasswordManagerController(new PasswordManagerController(mainWindowViewController));
+			PasswordManagerController passwordManagerController = new PasswordManagerController();
+			passwordManagerController.setMainWindowAUI(mainWindowViewController);
+			mainWindowViewController.setPasswordManagerController(passwordManagerController);
 			mainWindowViewController.init();
 			
 			Stage mainStage = new Stage();
