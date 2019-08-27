@@ -26,7 +26,7 @@ public class PasswordManagerControllerDummy {
     }
 
     private static PasswordManagerController create() {
-        PasswordManagerController controller = new PasswordManagerController();
+        PasswordManagerController controller = new PasswordManagerController(null);
         controller.setLoginViewAUI(createLogin());
         controller.setMainWindowAUI(createMainWindow(controller));
         controller.setMasterPasswordViewAUI(createMasterPass());

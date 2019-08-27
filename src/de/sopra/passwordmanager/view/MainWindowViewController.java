@@ -50,22 +50,16 @@ public class MainWindowViewController implements MainWindowAUI {
     private JFXTextField textFieldCredentialsUserName;
     @FXML
     private JFXTextField textFieldCredentialsWebsite;
-
     @FXML
     private TextArea textFieldCredentialsNotes;
-
     @FXML
     private JFXPasswordField passwordFieldCredentialsPassword;
-
     @FXML
     private Spinner<Integer> spinnerCredentialsReminderDays;
-
     @FXML
     private JFXListView<Credentials> listViewCredentialsList;
-
     @FXML
     private JFXToggleButton buttonCredentialsShowPassword;
-
     @FXML
     private JFXButton buttonAddCredentials;
     @FXML
@@ -215,7 +209,11 @@ public class MainWindowViewController implements MainWindowAUI {
             //categoryEditScene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
             categoryEditStage.setScene(categoryEditScene);
             categoryEditViewController.setStage(categoryEditStage);
+            categoryEditViewController.setMainWindowViewController(this);
+            categoryEditViewController.initComboBox();
             categoryEditStage.show();
+            
+            
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

@@ -8,7 +8,7 @@ import exceptions.EncryptionException;
 import org.passay.*;
 
 import java.io.File;
-import java.security.SecureRandom;
+//import java.security.SecureRandom;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
