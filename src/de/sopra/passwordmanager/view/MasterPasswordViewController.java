@@ -27,7 +27,7 @@ public class MasterPasswordViewController extends AbstractViewController impleme
     
     public void setStage(Stage primaryStage){
     	this.stage = primaryStage;
-    	spinnerReminderDays.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1,999));
+    	//spinnerReminderDays.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1,999));
     }
     public void setMainStage(Stage mainStage){
     	this.mainStage = mainStage;

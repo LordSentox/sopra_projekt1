@@ -505,7 +505,7 @@ public class MainWindowViewController implements MainWindowAUI {
         passwordFieldCredentialsPassword.setText(currentCredentials.getPassword());
         textFieldCredentialsWebsite.setText(currentCredentials.getWebsite());
         textFieldCredentialsNotes.setText(currentCredentials.getNotes());
-        spinnerCredentialsReminderDays.getValueFactory().setValue(currentCredentials.getChangeReminderDays());
+        //spinnerCredentialsReminderDays.getValueFactory().setValue(currentCredentials.getChangeReminderDays());
         checkBoxCredentialsUseReminder.setSelected(currentCredentials.getChangeReminderDays() != null);
     }
 
