@@ -124,6 +124,8 @@ public class UtilityController {
         } while (checkQuality(password) < 100);
 
         credentials.withPassword(password);
+        passwordManagerController.getMainWindowAUI().refreshEntry();
+        passwordManagerController.getMainWindowAUI().refreshEntryPasswordQuality(100);
     }
 
     /**

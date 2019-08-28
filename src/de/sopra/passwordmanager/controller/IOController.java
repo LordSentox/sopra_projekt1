@@ -3,14 +3,17 @@ package de.sopra.passwordmanager.controller;
 import de.sopra.passwordmanager.model.Category;
 import de.sopra.passwordmanager.model.Credentials;
 import de.sopra.passwordmanager.model.EncryptedString;
+import de.sopra.passwordmanager.model.SecurityQuestion;
 import de.sopra.passwordmanager.util.CredentialsBuilder;
 import de.sopra.passwordmanager.util.Validate;
-import org.w3c.dom.Document;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
+import org.w3c.dom.*;
 
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -224,14 +227,100 @@ public class IOController {
      * @throws IllegalArgumentException Wenn file null ist oder der Pfad nicht existiert
      */
     public void exportFile(File file) throws IllegalArgumentException {
-        // moepse-tag generieren und als root benutzen.
         try {
             Document document = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
 
+            // moepse-tag generieren und als root benutzen. Die notwendigen Attribute werden hier direkt aus dem
+            // Passwordmanager gesetzt.
+            Element moepse = document.createElement("moepse");
+            document.appendChild(moepse);
 
+            byte[][] hashAndSalt = hashString(passwordManagerController.getPasswordManager().getMasterPassword().getBytes(StandardCharsets.UTF_8), null);
+            String salt = bytesToHex(hashAndSalt[1]);
+            String hash = bytesToHex(hashAndSalt[0]);
+            LocalDateTime lastChanged = passwordManagerController.getPasswordManager().getMasterPasswordLastChanged();
+            int changeReminder = passwordManagerController.getPasswordManager().getMasterPasswordReminderDays();
+
+            moepse.setAttribute("key-salt", salt);
+            moepse.setAttribute("key-hash", hash);
+            moepse.setAttribute("last-changed", lastChanged.toString());
+            moepse.setAttribute("change-reminder-days", Integer.toString(changeReminder));
+
+            // Den Tag für die Kategorien und den Tag in dem die Daten gespeichert werden erstellen
+            Element tree = document.createElement("tree");
+            Element data = document.createElement("data");
+            moepse.appendChild(tree);
+            moepse.appendChild(data);
+
+            // Lege eine HashMap an, in der alle Credentials gespeichert werden, sodass sie nachdem die Kategorien
+            // geschrieben wurden problemlos abspeicherbar sind.
+            Map<String, Credentials> credentials = new HashMap<>();
+            writeCategories(passwordManagerController.getPasswordManager().getRootCategory(), tree, credentials, document);
+
+            // Speichere alle Credentials, die vorkommen
+            credentials.values().forEach(cred -> writeCredentials(cred, data, document));
+
+            // Speichere die Datei am vorgegebenen Ort
+            DOMSource domSource = new DOMSource(document);
+            StreamResult streamResult = new StreamResult(file);
+
+            Transformer transformer = TransformerFactory.newInstance().newTransformer();
+            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+            transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
+            transformer.transform(domSource, streamResult);
         } catch (Exception e) {
             e.printStackTrace();
             passwordManagerController.getMainWindowAUI().showError("Datei konnte nicht exportiert werden. Pech gehabt.");
+        }
+    }
+
+    private static void writeCredentials(Credentials credentials, Element data, Document document) {
+        Element entry = document.createElement("entry");
+        data.appendChild(entry);
+        entry.setAttribute("name", credentials.getName());
+
+        addTextTagChild(entry, "username", credentials.getUserName(), document);
+        addTextTagChild(entry, "password", credentials.getPassword().getEncryptedContent(), document);
+        addTextTagChild(entry, "website", credentials.getWebsite(), document);
+        addTextTagChild(entry, "created", credentials.getUserName(), document);
+        addTextTagChild(entry, "last-changed", credentials.getLastChanged().toString(), document);
+        if (credentials.getNotes() != null) {
+            addTextTagChild(entry, "notes", credentials.getNotes(), document);
+        }
+
+        Element securityQuestions = document.createElement("questions");
+        entry.appendChild(securityQuestions);
+        for (SecurityQuestion securityQuestion : credentials.getSecurityQuestions()) {
+            Element securityQuestionElement = document.createElement("security-question");
+            securityQuestions.appendChild(securityQuestionElement);
+            securityQuestionElement.setAttribute("question", securityQuestion.getQuestion().getEncryptedContent());
+            securityQuestionElement.setAttribute("answer", securityQuestion.getAnswer().getEncryptedContent());
+        }
+    }
+
+    private static void addTextTagChild(Element entry, String tag, String content, Document document) {
+        Element textTag = document.createElement(tag);
+        entry.appendChild(textTag);
+        textTag.setTextContent(content);
+    }
+
+    // Schreibt die in Kategorie enthaltenen Einträge und Unterkategorien rekursiv in einen XML-Baum
+    private static void writeCategories(Category currentCategory, Element currentRoot, Map<String, Credentials> credentials, Document document) {
+        // Hinzufügen von Credentials, falls sie noch nicht in der Map vorkommen.
+        for (Credentials cred : currentCategory.getCredentials()) {
+            credentials.put(cred.getName(), cred);
+            Element entry = document.createElement("entry");
+            entry.setAttribute("name", cred.getName());
+            currentRoot.appendChild(entry);
+        }
+
+        // writeCategories für die Unterkategorien aufrufen
+        for (Category category : currentCategory.getSubCategories()) {
+            Element child = document.createElement("category");
+            child.setAttribute("name", category.getName());
+            currentRoot.appendChild(child);
+
+            writeCategories(category, child, credentials, document);
         }
     }
 
