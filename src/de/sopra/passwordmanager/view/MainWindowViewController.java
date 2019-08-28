@@ -39,8 +39,12 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
 
+import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static de.sopra.passwordmanager.view.MainWindowViewController.WindowState.UNSET;
+import static de.sopra.passwordmanager.view.MainWindowViewController.WindowState.VIEW_ENTRY;
 
 public class MainWindowViewController extends AbstractViewController implements MainWindowAUI {
 
@@ -58,7 +62,7 @@ public class MainWindowViewController extends AbstractViewController implements 
     private CredentialsBuilder currentCredentials;
     private EntryListSelectionStrategy selectionStrategy;
     private EntryListOrderStrategy orderStrategy;
-    private WindowState state = WindowState.UNSET;
+    private WindowState state = UNSET;
 
     enum WindowState {
         UNSET,
@@ -66,6 +70,15 @@ public class MainWindowViewController extends AbstractViewController implements 
         CREATING_NEW_ENTRY,
         START_EDITING_ENTRY,
         EDITED_ENTRY;
+
+        public boolean match(WindowState... states) {
+            for (WindowState state : states) {
+                if (state == this)
+                    return true;
+            }
+            return false;
+        }
+
     }
 
     //region fx-members
@@ -141,6 +154,7 @@ public class MainWindowViewController extends AbstractViewController implements 
             }
         }));
         timeline.setCycleCount(1000);
+        timeline.setOnFinished(event -> passwordManagerController.getCredentialsController().clearPasswordFromClipboard(currentCredentials));
 
         textFieldCredentialsPassword.setManaged(false);
         textFieldCredentialsPassword.setVisible(false);
@@ -251,6 +265,7 @@ public class MainWindowViewController extends AbstractViewController implements 
 
     //region action handler
     public void onSettingsClicked() {
+        //STATE - soll unabhängig funktionieren
         try {
             /* Einstellungen öffnen */
             AnchorPane settingsPane;
@@ -274,62 +289,45 @@ public class MainWindowViewController extends AbstractViewController implements 
     }
 
     public void onSearchClicked() {
+        //STATE - soll unabhängig funktionieren
         CredentialsController credentialsController = passwordManagerController.getCredentialsController();
         String pattern = textFieldSearch.getText();
         //mit neuem Pattern filtern, refresh erfolgt über controller
         credentialsController.filterCredentials(new PatternSyntax(pattern));
     }
 
+    private void openCategoryEditWindow() throws IOException {
+        categoryEditViewController = openModal("../view/Kategorie_anlegen-aendern.fxml",
+                CategoryEditViewController.class, CategoryEditViewController::initComboBox);
+    }
+
     public void onAddCategoryClicked() {
+        //STATE - soll unabhängig funktionieren
         try {
-            /* Kategorie hinzufügen */
-            AnchorPane categoryEditPane;
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("../view/Kategorie_anlegen-aendern.fxml"));
-            categoryEditPane = fxmlLoader.load();
-            categoryEditViewController = fxmlLoader.getController();
-
-            Stage categoryEditStage = new Stage();
-            Scene categoryEditScene = new Scene(categoryEditPane);
-            categoryEditScene.getStylesheets().add(getClass().getResource("../application/application.css").toExternalForm());
-            categoryEditStage.setScene(categoryEditScene);
-            categoryEditViewController.setStage(categoryEditStage);
-            categoryEditViewController.setMainWindowViewController(this);
-            categoryEditViewController.initComboBox();
-            categoryEditStage.show();
-
+            /* Kategorie hinzufügen - leeres Fenster öffnen */
+            openCategoryEditWindow();
         } catch (Exception e) {
             showError(e);
             throw new RuntimeException(e);
         }
-
     }
 
     public void onEditCategoryClicked() {
-
+        //STATE - soll nur in UNSET und VIEW_ENTRY funktionieren
+        if (!state.match(UNSET, VIEW_ENTRY)) {
+            showError("Du kannst die Kategorien aktuell nicht editieren");
+            return;
+        }
         try {
-
             CategoryItem selectedItem = comboBoxCategorySelectionMain.getSelectionModel().getSelectedItem();
             Path path = selectedItem.getPath();
             if (Path.ROOT_CATEGORY_PATH.equals(path)) {
                 showError("Das Ändern der Hauptkategorie ist nicht erlaubt.");
                 return;
             }
-
-            /* Kategorie bearbeiten */
-            AnchorPane categoryEditPane;
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("../view/Kategorie_anlegen-aendern.fxml"));
-            categoryEditPane = fxmlLoader.load();
-            categoryEditViewController = fxmlLoader.getController();
-
-            Stage categoryEditStage = new Stage();
-            Scene categoryEditScene = new Scene(categoryEditPane);
-            categoryEditScene.getStylesheets().add(getClass().getResource("../application/application.css").toExternalForm());
-            categoryEditStage.setScene(categoryEditScene);
-            categoryEditViewController.setStage(categoryEditStage);
-            categoryEditViewController.setMainWindowViewController(this);
+            openCategoryEditWindow();
+            //aktuelle Auswahl zur Bearbeitung angeben
             categoryEditViewController.setCurrentlyEdited(path);
-            categoryEditViewController.initComboBox();
-            categoryEditStage.show();
         } catch (Exception e) {
             showError(e);
             throw new RuntimeException(e);
@@ -338,13 +336,22 @@ public class MainWindowViewController extends AbstractViewController implements 
     }
 
     public void onRemoveCategoryClicked() {
+        //STATE - soll nur in UNSET und VIEW_ENTRY funktionieren
+        if (!state.match(UNSET, VIEW_ENTRY)) {
+            showError("Du kannst die Kategorie aktuell nicht löschen");
+            return;
+        }
+
         CategoryController catController = passwordManagerController.getCategoryController();
+
+        //Sicherheitsabfrage
         TwoOptionConfirmation removeConfirmation = new TwoOptionConfirmation("Kategorie entfernen", null,
                 "Nur die Kategorie oder die Kategorie mitsamt Inhalt löschen?");
 
         removeConfirmation.setAlertType(AlertType.CONFIRMATION);
         removeConfirmation.setOption1("Nur Kategorie");
         removeConfirmation.setOption2("Mitsamt Inhalt");
+        //Das eigentliche Entfernen wird über den Controller hier in die Runnables gesetzt
         removeConfirmation.setRun1(() -> catController.removeCategory(comboBoxCategorySelectionMain.getValue().getPath(), false));
         removeConfirmation.setRun2(() -> catController.removeCategory(comboBoxCategorySelectionMain.getValue().getPath(), true));
 
@@ -352,6 +359,12 @@ public class MainWindowViewController extends AbstractViewController implements 
     }
 
     public void onCopyPasswordClicked() {
+        //STATE - soll NICHT in UNSET funktionieren
+        if (state.match(UNSET)) {
+            showError("Du kannst aktuell kein Password kopieren");
+            return;
+        }
+
         CredentialsController credController = passwordManagerController.getCredentialsController();
         credController.copyPasswordToClipboard(currentCredentials);
         buttonCredentialsCopy.setOpacity(0.5);
@@ -359,47 +372,42 @@ public class MainWindowViewController extends AbstractViewController implements 
         progressBarCredentialsCopyTimer.setOpacity(1.0);
         progressBarCredentialsCopyTimer.setProgress(1.0);
         timeline.playFromStart();
-
-        timeline.setOnFinished(event -> passwordManagerController.getCredentialsController().clearPasswordFromClipboard(currentCredentials));
-
     }
 
     public void onGeneratePasswordClicked() {
-        updateCredentialsBuilderCopy();
+        //STATE - soll NICHT in UNSET und VIEW_ENTRY funktionieren
+        if (state.match(UNSET, VIEW_ENTRY)) {
+            showError("Du kannst aktuell kein Password generieren");
+            return;
+        }
+        //refresh erfolgt von controller aus
         passwordManagerController.getUtilityController().generatePassword(currentCredentials);
     }
 
     public void onCheckBoxClicked() {
+        //STATE - soll NICHT in UNSET und VIEW_ENTRY funktionieren
+        if (state.match(UNSET, VIEW_ENTRY)) {
+            showError("Du kannst aktuell den Änderungswecker nicht ändern");
+            return;
+        }
+
         boolean checkBoxSelected = checkBoxCredentialsUseReminder.isSelected();
         spinnerCredentialsReminderDays.setDisable(!checkBoxSelected);
     }
 
     public void onAddSecurityQuestionClicked() {
+
+        //STATE - soll NICHT in UNSET und VIEW_ENTRY funktionieren
+        if (state.match(UNSET, VIEW_ENTRY)) {
+            showError("Du kannst aktuell keine Sicherheitsfragen hinzufügen");
+            return;
+        }
+
         try {
             /* Sicherheitsfrage hinzufügen */
-            AnchorPane securityQuestionAddPane;
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("../view/Sicherheitsfrage-und-Antwort.fxml"));
-            securityQuestionAddPane = fxmlLoader.load();
-            securityQuestionViewController = fxmlLoader.getController();
-
-            Stage securityQuestionAddStage = new Stage();
-            Scene securityQuestionAddScene = new Scene(securityQuestionAddPane);
-
-            securityQuestionAddScene.getStylesheets().add(getClass().getResource("../application/application.css").toExternalForm());
-            securityQuestionAddStage.setScene(securityQuestionAddScene);
-            securityQuestionViewController.setStage(securityQuestionAddStage);
-            securityQuestionViewController.setMainWindowViewController(this);
-            securityQuestionAddStage.showAndWait();
-
-            comboBoxCredentialsSecurityQuestion.getItems().clear();
-            for (Map.Entry<String, String> question : currentCredentials.getSecurityQuestions().entrySet()) {
-
-                comboBoxCredentialsSecurityQuestion.getItems().add(question.getKey());
-            }
-
-            comboBoxCredentialsSecurityQuestion.getSelectionModel().select(1);
-            String selectedQuestion = comboBoxCredentialsSecurityQuestion.getSelectionModel().getSelectedItem();
-            System.out.println(selectedQuestion);
+            openModal("../view/Sicherheitsfrage-und-Antwort.fxml",
+                    SecurityQuestionViewController.class, identity -> {
+                    });
         } catch (Exception e) {
             showError(e);
             throw new RuntimeException(e);
@@ -407,14 +415,28 @@ public class MainWindowViewController extends AbstractViewController implements 
     }
 
     public void onRemoveSecurityQuestionClicked() {
-        CredentialsController credController = passwordManagerController.getCredentialsController();
-        String question = comboBoxCredentialsSecurityQuestion.getValue();
-        credController.removeSecurityQuestion(question, currentCredentials.getSecurityQuestions().get(question), currentCredentials);
+        //STATE - soll NICHT in UNSET und VIEW_ENTRY funktionieren
+        if (state.match(UNSET, VIEW_ENTRY)) {
+            showError("Du kannst aktuell keine Sicherheitsfragen entfernen");
+            return;
+        }
+
+        throw new UnsupportedOperationException("Not yet implemented");
+        //CredentialsController credController = passwordManagerController.getCredentialsController();
+        //String question = comboBoxCredentialsSecurityQuestion.getValue();
+        //FIXME: Direkte Änderungen sollen nicht vorgenommen werden. erst am current, beim save am tatsächlichen objekt
+        //credController.removeSecurityQuestion(question, currentCredentials.getSecurityQuestions().get(question), currentCredentials);
     }
 
     public void onAddCredentialsClicked() {
+        //STATE - soll nur in UNSET und VIEW_ENTRY funktionieren
+        if (!state.match(UNSET, VIEW_ENTRY)) {
+            showError("Du kannst aktuell keine neuen Einträge erstellen");
+            return;
+        }
+
+        //TODO: Markierung - Code Überarbeitung hier fortsetzen
         oldCredentials = null;
-        //TODO check if correct
         listViewCredentialsList.getSelectionModel().clearSelection();
         disableAllEntryControls();
         //listViewCredentialsList.getFocusModel().focus(-1);
@@ -634,6 +656,15 @@ public class MainWindowViewController extends AbstractViewController implements 
 
             comboBoxCredentialsSecurityQuestion.getItems().add(question.getKey());
         }
+
+        //FIXME: moved from securityQuestions
+        comboBoxCredentialsSecurityQuestion.getItems().clear();
+        for (Map.Entry<String, String> question : currentCredentials.getSecurityQuestions().entrySet()) {
+            comboBoxCredentialsSecurityQuestion.getItems().add(question.getKey());
+        }
+        comboBoxCredentialsSecurityQuestion.getSelectionModel().select(1);
+        String selectedQuestion = comboBoxCredentialsSecurityQuestion.getSelectionModel().getSelectedItem();
+        System.out.println(selectedQuestion);
 
     }
 
