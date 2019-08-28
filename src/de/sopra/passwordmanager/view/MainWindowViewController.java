@@ -21,14 +21,9 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.*;
 import javafx.scene.control.TextFormatter.Change;
-import javafx.scene.layout.AnchorPane;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
 import javafx.util.converter.IntegerStringConverter;
@@ -294,20 +289,7 @@ public class MainWindowViewController extends AbstractViewController implements 
         //STATE - soll unabhängig funktionieren
         try {
             /* Einstellungen öffnen */
-            AnchorPane settingsPane;
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("../view/Einstellungen.fxml"));
-            settingsPane = fxmlLoader.load();
-            settingsViewController = fxmlLoader.getController();
-
-            Stage settingsStage = new Stage();
-            Scene settingsScene = new Scene(settingsPane);
-            settingsStage.initModality(Modality.WINDOW_MODAL);
-            settingsStage.initOwner(stage);
-            settingsScene.getStylesheets().add(getClass().getResource("../application/application.css").toExternalForm());
-            settingsStage.setScene(settingsScene);
-            settingsViewController.setStage(settingsStage);
-            settingsViewController.setMainWindowViewController(this);
-            settingsStage.show();
+            openModal("../view/Einstellungen.fxml", SettingsViewController.class, identity -> {});
         } catch (Exception e) {
             showError(e);
             throw new RuntimeException(e);

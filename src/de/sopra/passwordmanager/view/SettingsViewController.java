@@ -1,9 +1,6 @@
 package de.sopra.passwordmanager.view;
 
 import de.sopra.passwordmanager.view.dialog.SimpleConfirmation;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
-import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
@@ -12,20 +9,11 @@ import java.io.File;
 
 public class SettingsViewController extends AbstractViewController {
 
-    private MainWindowViewController mainWindowViewController;
     private Stage settingsStage, loginStage;
-
-
-    public void setMainWindowViewController(MainWindowViewController mainWindowViewController) {
-        this.mainWindowViewController = mainWindowViewController;
-    }
 
     public void onChangeMasterpasswordClicked() {
         try {
-            
             openModal(settingsStage, "../view/Masterpasswort-setzen.fxml", MasterPasswordViewController.class, control -> {control.init(); control.openedBySettings();});
-            
-
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
