@@ -32,6 +32,8 @@ public class Main extends Application {
             Scene mainScene = new Scene(mainPane);
             mainScene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
             mainStage.setScene(mainScene);
+            mainWindowViewController.setMainWindowViewController(mainWindowViewController);
+            mainWindowViewController.setStage(mainStage);
 
             if (PasswordManagerController.SAVE_FILE.exists()) {
                 /* Loginfenster */
