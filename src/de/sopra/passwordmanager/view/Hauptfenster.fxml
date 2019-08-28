@@ -47,10 +47,10 @@
       <Label fx:id="labelCredentialsSecurityAnswer" layoutX="430.0" layoutY="336.0" prefWidth="171.0" text="Antwort" />
       <Label layoutX="315.0" layoutY="398.0" text="Notizen" />
       <TextArea fx:id="textFieldCredentialsNotes" layoutX="430.0" layoutY="393.0" prefHeight="132.0" prefWidth="336.0" />
-      <Label fx:id="lableCredentialsLastChanged" layoutX="648.0" layoutY="272.0" text="Datum" />
+      <Label fx:id="labelCredentialsLastChanged" layoutX="648.0" layoutY="272.0" text="Datum" />
       <Label layoutX="648.0" layoutY="251.0" text="zuletzt geändert am:" />
       <Label layoutX="698.0" layoutY="85.0" text="angelegt am:" />
-      <Label fx:id="lableCredentialsCreated" layoutX="698.0" layoutY="104.0" text="Datum" />
+      <Label fx:id="labelCredentialsCreated" layoutX="698.0" layoutY="104.0" text="Datum" />
       <JFXButton fx:id="buttonEditCredentials" layoutX="310.0" layoutY="540.0" mnemonicParsing="false" text="Eintrag bearbeiten" onAction="#onStartEditCredentialsClicked"/>
       <JFXButton fx:id="buttonSaveCredentials" layoutX="604.0" layoutY="540.0" mnemonicParsing="false" text="Änderungen übernehmen" onAction="#onSaveCredentialsClicked"/>
       <JFXButton fx:id="buttonSettings" layoutX="717.0" layoutY="10.0" mnemonicParsing="false" text="Zahnrad" onAction="#onSettingsClicked"/>

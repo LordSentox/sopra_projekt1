@@ -23,6 +23,6 @@ class CategoryItem {
 
     @Override
     public String toString() {
-        return this.path.getName() + " (" + this.path + ")";
+        return this.path.getName() + " - " + this.path;
     }
 }

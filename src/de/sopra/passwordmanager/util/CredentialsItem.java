@@ -24,7 +24,7 @@ public class CredentialsItem {
     }
 
     public void setNamingStrategy(Function<Credentials, String> namingStrategy) {
-        this.namingStrategy = namingStrategy;
+        this.namingStrategy = namingStrategy == null ? this.namingStrategy : namingStrategy;
     }
 
     public Credentials getCredentials() {
