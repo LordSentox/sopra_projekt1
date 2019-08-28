@@ -209,6 +209,8 @@ public class MainWindowViewController extends AbstractViewController implements 
             if (oldText == null || newText == null) return;
             if (Math.abs(oldText.length() - newText.length()) <= 1) {
                 currentCredentials.withNotes(newText);
+                if (state.match(START_EDITING_ENTRY))
+                    setState(EDITED_ENTRY);
             }
         });
 
