@@ -228,7 +228,9 @@ public class CredentialsController {
 
     private static String getClipboardContents() {
         try {
-            return (String) Toolkit.getDefaultToolkit().getSystemClipboard().getData(DataFlavor.stringFlavor);
+        	if(Toolkit.getDefaultToolkit().getSystemClipboard().isDataFlavorAvailable(DataFlavor.stringFlavor)){
+        		return (String) Toolkit.getDefaultToolkit().getSystemClipboard().getData(DataFlavor.stringFlavor);
+        	}
         } catch (UnsupportedFlavorException | IOException e) {
             e.printStackTrace();
         }
