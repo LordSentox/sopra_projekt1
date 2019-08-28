@@ -19,8 +19,6 @@ public class SecurityQuestionViewController extends AbstractViewController {
     }
 
     public void onSaveClicked() {
-        //TODO Credentials getter in MainWindowViewController
-        //mainWindowViewController.getPasswordManagerController().getCredentialsController().addSecurityQuestion(textFieldQuestion.getText(), textFieldAnswer.getText()), Credentials ;
         CredentialsBuilder credBuilder = mainWindowViewController.getCredentialsBuilder();
         CredentialsController credController = mainWindowViewController.getPasswordManagerController().getCredentialsController();
         credController.addSecurityQuestion(textFieldQuestion.getText(), textFieldAnswer.getText(), credBuilder);
