@@ -32,6 +32,7 @@ public class DevTool {
         Credentials creds1 = new CredentialsBuilder("TestEintrag1", "DerDödel3000", "MeinPasswort", "https://www.google.de/")
                 .withSecurityQuestion("Wer bist du?", "Keine Maschine")
                 .withCreated(LocalDateTime.now())
+                .withLastChanged(LocalDateTime.now())
                 .withNotes("Ich dachte mir so, lass mal Notes einfügen")
                 .build(controller.getUtilityController());
 
@@ -39,6 +40,7 @@ public class DevTool {
                 .withSecurityQuestion("Was stellst du dar?", "Alles oder nichts")
                 .withSecurityQuestion("Für wen hälst du dich?", "Für mich")
                 .withCreated(LocalDateTime.now())
+                .withLastChanged(LocalDateTime.now())
                 .withNotes("Es war einmal...\n\n\n\n- jemand der keine Lust hatte kreativ für dummy Daten zu werden")
                 .build(controller.getUtilityController());
 

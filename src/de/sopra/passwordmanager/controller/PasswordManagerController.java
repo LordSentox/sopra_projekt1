@@ -5,6 +5,7 @@ import de.sopra.passwordmanager.model.Credentials;
 import de.sopra.passwordmanager.model.PasswordManager;
 import de.sopra.passwordmanager.util.CredentialsBuilder;
 import de.sopra.passwordmanager.util.strategy.AlphabeticOrderStrategy;
+import de.sopra.passwordmanager.util.strategy.ReminderSecondaryStrategy;
 import de.sopra.passwordmanager.util.strategy.SelectAllStrategy;
 import de.sopra.passwordmanager.view.LoginViewAUI;
 import de.sopra.passwordmanager.view.MainWindowAUI;
@@ -117,7 +118,8 @@ public class PasswordManagerController {
     public void removeAll() {
         this.passwordManager.clearAll();
         SAVE_FILE.delete();
-        mainWindowAUI.refreshListStrategies(new SelectAllStrategy(), new AlphabeticOrderStrategy());
+        mainWindowAUI.refreshListStrategies(new SelectAllStrategy(),
+                new AlphabeticOrderStrategy().nextOrder(new ReminderSecondaryStrategy()));
         mainWindowAUI.refreshEntry();
         mainWindowAUI.refreshLists();
         mainWindowAUI.refreshEntryPasswordQuality(0);

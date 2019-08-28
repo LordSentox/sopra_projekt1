@@ -14,6 +14,14 @@ public abstract class AbstractViewController {
     protected Stage stage;
     protected MainWindowViewController mainWindowViewController;
 
+    protected String styleSheet;
+
+    //Nur der Name der Datei: "application/style.css" -> "style"
+    //Auf null setzen zum nicht verwenden
+    public void setStyleSheet(String styleSheet) {
+        this.styleSheet = styleSheet;
+    }
+
     public void setStage(Stage primaryStage) {
         this.stage = primaryStage;
     }
@@ -42,8 +50,11 @@ public abstract class AbstractViewController {
         newStage.initOwner(parent);
         newStage.initModality(Modality.WINDOW_MODAL);
         newScene.getStylesheets().add(getClass().getResource("../application/application.css").toExternalForm());
+        if (styleSheet != null)
+            newScene.getStylesheets().add(getClass().getResource("../application/" + styleSheet + ".css").toExternalForm());
         newStage.setScene(newScene);
         controller.setStage(newStage);
+        controller.setStyleSheet(styleSheet);
         controller.setMainWindowViewController(mainWindowViewController);
         preOpen.accept(controller);
         newStage.show();
