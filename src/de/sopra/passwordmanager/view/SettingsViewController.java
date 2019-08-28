@@ -22,20 +22,9 @@ public class SettingsViewController extends AbstractViewController {
 
     public void onChangeMasterpasswordClicked() {
         try {
-            /* MasterpasswortSetzenFenster */
-            AnchorPane setMasterPasswordPane = new AnchorPane();
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("../view/Masterpasswort-setzen.fxml"));
-            setMasterPasswordPane = fxmlLoader.load();
-            MasterPasswordViewController masterPasswordViewController = (MasterPasswordViewController) fxmlLoader.getController();
-
-            loginStage = new Stage();
-            Scene setMasterPasswordScene = new Scene(setMasterPasswordPane);
-            //setMasterPasswordScene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
-            loginStage.setScene(setMasterPasswordScene);
-            masterPasswordViewController.setStage(loginStage);
-            masterPasswordViewController.setMainWindowViewController(mainWindowViewController);
-            masterPasswordViewController.init();
-            loginStage.show();
+            
+            openModal("../view/Masterpasswort-setzen.fxml", MasterPasswordViewController.class, control -> {control.init(); control.openedBySettings();});
+            
 
         } catch (Exception e) {
             throw new RuntimeException(e);

@@ -35,7 +35,7 @@
       <Label layoutX="315.0" layoutY="225.0" text="Webseite" />
       <JFXTextField fx:id="textFieldCredentialsWebsite" layoutX="430.0" layoutY="220.0" />
       <JFXCheckBox fx:id="checkBoxCredentialsUseReminder" layoutX="315.0" layoutY="251.0" mnemonicParsing="false" text="Erinnern an Passwortänderung in" onAction="#onCheckBoxClicked"/>
-      <Spinner fx:id="spinnerCredentialsReminderDays" layoutX="430.0" layoutY="274.0" prefHeight="26.0" prefWidth="100.0" />
+      <Spinner fx:id="spinnerCredentialsReminderDays" layoutX="430.0" layoutY="274.0" prefHeight="26.0" prefWidth="100.0" editable="true" />
       <Label layoutX="544.0" layoutY="279.0" text="Tagen" />
       <Label layoutX="315.0" layoutY="367.0" text="Kategorien" />
       <MultiSelectionComboBox fx:id="choiceBoxCredentialsCategories" layoutX="430.0" layoutY="362.0" prefWidth="171.0" />

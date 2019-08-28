@@ -15,6 +15,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 
 public class LoginViewController extends AbstractViewController implements LoginViewAUI {
+	
 
     private Stage mainStage;
 
