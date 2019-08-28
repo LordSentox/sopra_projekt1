@@ -127,14 +127,13 @@ public class MainWindowViewController extends AbstractViewController implements 
     //endregion
 
     public void init() {
-        setDisable(true);
+        updateView();
 
         spinnerCredentialsReminderDays.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 999));
         spinnerCredentialsReminderDays.setDisable(true);
 
         labelCredentialsSecurityAnswer.setVisible(false);
 
-        updateView();
         progressBarCredentialsCopyTimer.toFront();
         buttonCredentialsCopy.toFront();
 
@@ -174,6 +173,8 @@ public class MainWindowViewController extends AbstractViewController implements 
             if (oldText == null || newText == null) return;
             if (Math.abs(oldText.length() - newText.length()) <= 1) {
                 currentCredentials.withName(newText);
+                if (state.match(START_EDITING_ENTRY))
+                    setState(EDITED_ENTRY);
             }
             //setSaveButonDisabled();
         });
@@ -181,6 +182,8 @@ public class MainWindowViewController extends AbstractViewController implements 
             if (oldText == null || newText == null) return;
             if (Math.abs(oldText.length() - newText.length()) <= 1) {
                 currentCredentials.withUserName(newText);
+                if (state.match(START_EDITING_ENTRY))
+                    setState(EDITED_ENTRY);
             }
             //setSaveButonDisabled();
         });
@@ -188,6 +191,8 @@ public class MainWindowViewController extends AbstractViewController implements 
             if (oldText == null || newText == null) return;
             if (Math.abs(oldText.length() - newText.length()) <= 1) {
                 currentCredentials.withWebsite(newText);
+                if (state.match(START_EDITING_ENTRY))
+                    setState(EDITED_ENTRY);
             }
             //setSaveButonDisabled();
         });
@@ -195,6 +200,8 @@ public class MainWindowViewController extends AbstractViewController implements 
             if (oldText == null || newText == null) return;
             if (Math.abs(oldText.length() - newText.length()) <= 1) {
                 currentCredentials.withPassword(newText);
+                if (state.match(START_EDITING_ENTRY))
+                    setState(EDITED_ENTRY);
                 passwordManagerController.checkQuality(currentCredentials);
             }
         });
@@ -431,15 +438,13 @@ public class MainWindowViewController extends AbstractViewController implements 
             return;
         }
 
-        state = CREATING_NEW_ENTRY;
+        setState(CREATING_NEW_ENTRY);
 
         //TODO state -> disable/enable
         oldCredentials = null;
         currentCredentials = new CredentialsBuilder();
         listViewCredentialsList.getSelectionModel().clearSelection();
-        updateView();
         //listViewCredentialsList.getFocusModel().focus(-1);
-        setDisable(false);
         buttonCredentialsCopy.setDisable(false);
         buttonCredentialsShowPassword.setDisable(false);
 
@@ -464,7 +469,7 @@ public class MainWindowViewController extends AbstractViewController implements 
         CredentialsController credController = passwordManagerController.getCredentialsController();
         oldCredentials = listViewCredentialsList.getSelectionModel().getSelectedItem().getCredentials();
         listViewCredentialsList.getSelectionModel().clearSelection();
-        updateView();
+        setState(UNSET);
         //listViewCredentialsList.getFocusModel().focus(-1);
         credController.removeCredentials(oldCredentials);
         oldCredentials = null;
@@ -478,9 +483,7 @@ public class MainWindowViewController extends AbstractViewController implements 
             showError("Du kannst aktuell keinen Eintrag bearbeiten");
             return;
         }
-
-        setDisable(false);
-        state = START_EDITING_ENTRY;
+        setState(START_EDITING_ENTRY);
     }
 
     public void onSaveCredentialsClicked() {
@@ -490,7 +493,7 @@ public class MainWindowViewController extends AbstractViewController implements 
             return;
         }
 
-        setDisable(true);
+        setState(VIEW_ENTRY);
 
         spinnerCredentialsReminderDays.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 999));
         spinnerCredentialsReminderDays.setDisable(true);
@@ -559,9 +562,8 @@ public class MainWindowViewController extends AbstractViewController implements 
                     //Änderungen nicht übernehmen
                     oldCredentials = selectedEntry.getCredentials();
                     currentCredentials = selectedEntry.getNewBuilder(passwordManagerController.getUtilityController());
-                    listViewCredentialsList.getFocusModel().focus(index);
+                    listViewCredentialsList.getSelectionModel().select(index);
                     setState(VIEW_ENTRY);
-                    updateView();
                     refreshEntry();
                 }
 
@@ -626,6 +628,7 @@ public class MainWindowViewController extends AbstractViewController implements 
 
     }
 
+    //Die Liste der Credentials updaten, wenn eine Kategorie zum Filtern ausgewählt wird
     private void refreshEntryListWhenCategoryChosen() {
         //Inhalt der Kategorie in Liste anzeigen
         CategoryItem chosenCat2 = comboBoxCategorySelectionMain.getSelectionModel().getSelectedItem();
@@ -637,9 +640,11 @@ public class MainWindowViewController extends AbstractViewController implements 
             List<CredentialsItem> ordered = orderStrategy.order(selection);
             ObservableList<CredentialsItem> credsToShow = new ObservableListWrapper<>(ordered);
             listViewCredentialsList.setItems(credsToShow);
+            listViewCredentialsList.getSelectionModel().select(0);
         } else {
             //TODO
             listViewCredentialsList.setItems(new ObservableListWrapper<>(Collections.emptyList()));
+            setState(UNSET);
             oldCredentials = null;
             currentCredentials = null;
             refreshEntry();
@@ -726,6 +731,7 @@ public class MainWindowViewController extends AbstractViewController implements 
     private void setState(WindowState state) {
         System.out.println("state changed: " + this.state + " -> " + state);
         this.state = state;
+        updateView();
     }
 
     private void updateView() {
@@ -733,22 +739,27 @@ public class MainWindowViewController extends AbstractViewController implements 
             case UNSET:
                 setDisable(true);
                 disableAllEntryControls(true, 0.0);
+                buttonSaveCredentials.setDisable(true);
                 break;
             case VIEW_ENTRY:
                 setDisable(true);
                 disableAllEntryControls(false, 1.0);
+                buttonSaveCredentials.setDisable(true);
                 break;
             case CREATING_NEW_ENTRY:
                 setDisable(false);
                 disableAllEntryControls(false, 1.0);
+                buttonSaveCredentials.setDisable(false);
                 break;
             case START_EDITING_ENTRY:
                 setDisable(false);
                 disableAllEntryControls(false, 1.0);
+                buttonSaveCredentials.setDisable(true);
                 break;
             case EDITED_ENTRY:
                 setDisable(false);
                 disableAllEntryControls(false, 1.0);
+                buttonSaveCredentials.setDisable(false);
                 break;
         }
     }
