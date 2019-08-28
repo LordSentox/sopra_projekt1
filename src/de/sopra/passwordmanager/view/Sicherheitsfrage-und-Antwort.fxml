@@ -5,13 +5,13 @@
 <?import com.jfoenix.controls.JFXTextField?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.AnchorPane?>
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="155.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.sopra.passwordmanager.view.SecurityQuestionViewController">
+<AnchorPane styleClass="background" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="155.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.sopra.passwordmanager.view.SecurityQuestionViewController">
    <children>
       <Label layoutX="28.0" layoutY="33.0" text="Sicherheitsfrage eingeben" />
       <Label layoutX="28.0" layoutY="67.0" text="Antwort eingeben" />
       <JFXButton fx:id="buttonSave" layoutX="435.0" layoutY="102.0" mnemonicParsing="false" text="OK" onAction="#onSaveClicked"/>
       <JFXButton fx:id="buttonCancel" layoutX="484.0" layoutY="102.0" mnemonicParsing="false" text="Abbrechen" onAction="#onSecurityQuestionCancelClicked"/>
-      <JFXTextField fx:id="textFieldQuestion" layoutX="231.0" layoutY="62.0" prefHeight="26.0" prefWidth="342.0" />
-      <JFXTextField fx:id="textFieldAnswer" layoutX="231.0" layoutY="28.0" prefHeight="26.0" prefWidth="342.0" />
+      <JFXTextField fx:id="textFieldQuestion" layoutX="231.0" layoutY="28.0" prefHeight="26.0" prefWidth="342.0" />
+      <JFXTextField fx:id="textFieldAnswer" layoutX="231.0" layoutY="62.0" prefHeight="26.0" prefWidth="342.0" />
    </children>
 </AnchorPane>

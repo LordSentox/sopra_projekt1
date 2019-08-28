@@ -1,6 +1,6 @@
 package de.sopra.passwordmanager.view;
 
-import de.sopra.passwordmanager.util.dialog.SimpleConfirmation;
+import de.sopra.passwordmanager.view.dialog.SimpleConfirmation;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
@@ -51,19 +51,7 @@ public class SettingsViewController extends AbstractViewController {
         File fileToOpen = fileChooser.showOpenDialog(null);
 
         try {
-            AnchorPane loginPane;
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("../view/Einloggen.fxml"));
-            loginPane = fxmlLoader.load();
-            LoginViewController loginViewController = fxmlLoader.getController();
-            loginViewController.setSourceFile(fileToOpen);
-
-            loginStage = new Stage();
-            Scene loginScene = new Scene(loginPane);
-            loginScene.getStylesheets().add(getClass().getResource("../application/application.css").toExternalForm());
-            loginStage.setScene(loginScene);
-            loginViewController.setStage(loginStage);
-            loginViewController.setMainWindowViewController(mainWindowViewController);
-            loginStage.show();
+            openModal("../view/Einloggen.fxml", LoginViewController.class, controller -> controller.setSourceFile(fileToOpen));
         } catch (Exception e) {
             e.printStackTrace();
         }

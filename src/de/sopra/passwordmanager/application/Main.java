@@ -10,8 +10,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
-import java.io.File;
 import java.io.IOException;
 
 public class Main extends Application {
@@ -21,10 +21,9 @@ public class Main extends Application {
         MainWindowAUI aui = null;
         try {
             /* Hauptfenster */
-            AnchorPane mainPane = new AnchorPane();
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("../view/Hauptfenster.fxml"));
-            mainPane = fxmlLoader.load();
-            MainWindowViewController mainWindowViewController = (MainWindowViewController) fxmlLoader.getController();
+            AnchorPane mainPane = fxmlLoader.load();
+            MainWindowViewController mainWindowViewController = fxmlLoader.getController();
             PasswordManagerController passwordManagerController = new PasswordManagerController();
             passwordManagerController.setMainWindowAUI(mainWindowViewController);
             aui = mainWindowViewController;
@@ -35,12 +34,13 @@ public class Main extends Application {
             Scene mainScene = new Scene(mainPane);
             mainScene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
             mainStage.setScene(mainScene);
+            mainWindowViewController.setMainWindowViewController(mainWindowViewController);
+            mainWindowViewController.setStage(mainStage);
 
             if (PasswordManagerController.SAVE_FILE.exists()) {
                 /* Loginfenster */
-                AnchorPane loginPane = new AnchorPane();
                 fxmlLoader = new FXMLLoader(getClass().getResource("../view/Einloggen.fxml"));
-                loginPane = fxmlLoader.load();
+                AnchorPane loginPane = fxmlLoader.load();
                 LoginViewController loginViewController = fxmlLoader.getController();
                 loginViewController.setSourceFile(PasswordManagerController.SAVE_FILE);
                 loginViewController.setMainWindowViewController(mainWindowViewController);
@@ -49,6 +49,7 @@ public class Main extends Application {
 
                 Scene loginScene = new Scene(loginPane);
                 loginScene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+                primaryStage.initStyle(StageStyle.UNDECORATED);
                 primaryStage.setScene(loginScene);
                 primaryStage.show();
 

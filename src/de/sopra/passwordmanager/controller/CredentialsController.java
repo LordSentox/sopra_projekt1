@@ -54,6 +54,23 @@ public class CredentialsController {
     }
 
     /**
+     * Erstellt eine Liste aller Kategorien, welche von der gegebenen Kategorie aus alle Kategorien enthält,
+     * die ihrerseits wiederum das {@link Credentials} Objekt enthalten.
+     *
+     * @param category    die Kategorie in der gesucht werden soll
+     * @param credentials die Credentials, nach welchen gesucht werden soll
+     * @return eine Liste mit allen Kategorien, die die Credentials enthalten. Kann leer, aber nicht <code>null</code> sein
+     */
+    public Collection<Category> getCategoriesOfCredentials(Category category, Credentials credentials) {
+        LinkedList<Category> categories = new LinkedList<>();
+        if (category.getCredentials().contains(credentials))
+            categories.add(category);
+        for (Category subCat : category.getSubCategories())
+            categories.addAll(getCategoriesOfCredentials(subCat, credentials));
+        return categories;
+    }
+
+    /**
      * Speichert neue {@link Credentials} im {@link PasswordManager}
      *
      * @param newCredentials Die neuen Anmeldedaten. Falls <code>null</code>, geschieht nichts
@@ -65,7 +82,7 @@ public class CredentialsController {
         Credentials credentials = newCredentials.build(passwordManagerController.getUtilityController());
         for (Category category : categories) {
             category.addCredentials(credentials);
-		}
+        }
         passwordManagerController.getMainWindowAUI().refreshLists();
     }
 
@@ -129,12 +146,14 @@ public class CredentialsController {
      * @see CredentialsBuilder
      */
     public void filterCredentials(PatternSyntax pattern) {
+
+        //XXX: remove when program is finish, this is just the dev tool
         if (pattern.getPatternFilter() == PatternSyntax.PatternSyntaxFilter.COMMAND) {
-            //TODO: remove when program is finish, this is just the dev tool
             DevTool.fillWithData(passwordManagerController);
             passwordManagerController.getMainWindowAUI().refreshLists();
             return;
         }
+
         EntryListSelectionStrategy strategy = credentials -> {
             LinkedList<CredentialsItem> selection = new LinkedList<>();
             for (Credentials creds : credentials) {
@@ -228,7 +247,9 @@ public class CredentialsController {
 
     private static String getClipboardContents() {
         try {
-            return (String) Toolkit.getDefaultToolkit().getSystemClipboard().getData(DataFlavor.stringFlavor);
+        	if(Toolkit.getDefaultToolkit().getSystemClipboard().isDataFlavorAvailable(DataFlavor.stringFlavor)){
+        		return (String) Toolkit.getDefaultToolkit().getSystemClipboard().getData(DataFlavor.stringFlavor);
+        	}
         } catch (UnsupportedFlavorException | IOException e) {
             e.printStackTrace();
         }
