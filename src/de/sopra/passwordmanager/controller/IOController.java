@@ -99,7 +99,7 @@ public class IOController {
             Map<String, Credentials> credentials = dataList.stream().collect(Collectors.toMap(CredentialsBuilder::getName, builder -> builder.build(passwordManagerController.getUtilityController())));
 
             // TODO: Merge into the old MasterPasswordController instead of resetting the root
-            //this.passwordManagerController.removeAll();
+            this.passwordManagerController.getPasswordManager().clearAll();
             extractAndFillCategories(this.passwordManagerController.getPasswordManager().getRootCategory(), treeNode, credentials);
 
             // Wenn das Masterpasswort neu gesetzt werden soll muss der Änderungswecker und das Erstellungsdatum im
@@ -184,6 +184,9 @@ public class IOController {
                     break;
                 case "notes":
                     bobTheBuilder.withNotes(element.getTextContent());
+                    break;
+                case "change-reminder-days":
+                    bobTheBuilder.withChangeReminderDays(Integer.parseUnsignedInt(element.getTextContent()));
                     break;
                 case "password":
                     bobTheBuilder.withPassword(UtilityController.decryptText(new EncryptedString(element.getTextContent()), decryptionPassword));
@@ -284,6 +287,7 @@ public class IOController {
         addTextTagChild(entry, "website", credentials.getWebsite(), document);
         addTextTagChild(entry, "created", credentials.getCreatedAt().toString(), document);
         addTextTagChild(entry, "last-changed", credentials.getLastChanged().toString(), document);
+        addTextTagChild(entry, "change-reminder-days", credentials.getChangeReminderDays().toString(), document);
         if (credentials.getNotes() != null) {
             addTextTagChild(entry, "notes", credentials.getNotes(), document);
         }
