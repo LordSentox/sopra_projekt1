@@ -134,7 +134,7 @@ public class MainWindowViewController extends AbstractViewController implements 
 
         labelCredentialsSecurityAnswer.setVisible(false);
 
-        disableAllEntryControls();
+        updateView();
         progressBarCredentialsCopyTimer.toFront();
         buttonCredentialsCopy.toFront();
 
@@ -437,7 +437,7 @@ public class MainWindowViewController extends AbstractViewController implements 
         oldCredentials = null;
         currentCredentials = new CredentialsBuilder();
         listViewCredentialsList.getSelectionModel().clearSelection();
-        disableAllEntryControls();
+        updateView();
         //listViewCredentialsList.getFocusModel().focus(-1);
         setDisable(false);
         buttonCredentialsCopy.setDisable(false);
@@ -464,7 +464,7 @@ public class MainWindowViewController extends AbstractViewController implements 
         CredentialsController credController = passwordManagerController.getCredentialsController();
         oldCredentials = listViewCredentialsList.getSelectionModel().getSelectedItem().getCredentials();
         listViewCredentialsList.getSelectionModel().clearSelection();
-        disableAllEntryControls();
+        updateView();
         //listViewCredentialsList.getFocusModel().focus(-1);
         credController.removeCredentials(oldCredentials);
         oldCredentials = null;
@@ -486,7 +486,7 @@ public class MainWindowViewController extends AbstractViewController implements 
     public void onSaveCredentialsClicked() {
         //STATE - soll nur in CREATING_NEW_ENTRY und EDITED_ENTRY funktionieren
         if (!state.match(CREATING_NEW_ENTRY, EDITED_ENTRY)) {
-            showError("Du kannst aktuell keine neuen Einträge erstellen");
+            showError("Du kannst aktuell keine Einträge speichern");
             return;
         }
 
@@ -518,8 +518,8 @@ public class MainWindowViewController extends AbstractViewController implements 
 
     public void onChooseQuestionClicked() {
         //STATE - soll nur in CREATING_NEW_ENTRY, START_EDITING_ENTRY und EDITED_ENTRY funktionieren
-        if (!state.match(CREATING_NEW_ENTRY, EDITED_ENTRY, START_EDITING_ENTRY)) {
-            showError("Du kannst aktuell keine neuen Einträge erstellen");
+        if (state.match(UNSET)) {
+            showError("Du kannst aktuell keine Sicherheitsfrage auswählen");
             return;
         }
 
@@ -527,8 +527,8 @@ public class MainWindowViewController extends AbstractViewController implements 
         String answer = currentCredentials.getSecurityQuestions().get(selectedQuestion);
         labelCredentialsSecurityAnswer.setText(answer);
         labelCredentialsSecurityAnswer.setVisible(true);
-        refreshEntry();
-        comboBoxCredentialsSecurityQuestion.getSelectionModel().select(selectedQuestion);
+        //comboBoxCredentialsSecurityQuestion.getSelectionModel().select(selectedQuestion);
+        //refreshEntry();
     }
 
     public void onEntryChosen() {
@@ -548,7 +548,9 @@ public class MainWindowViewController extends AbstractViewController implements 
         buttonCredentialsShowPassword.setSelected(false);
         CredentialsItem selectedEntry = listViewCredentialsList.getSelectionModel().getSelectedItem();
         int index = listViewCredentialsList.getFocusModel().getFocusedIndex();
-        if (buttonEditCredentials.isDisabled() || selectedEntry == null) {
+
+        //Wenn Eingaben vorliegen, nach Verwerfung dieser Eingaben fragen
+        if (state.match(EDITED_ENTRY, CREATING_NEW_ENTRY)) {
             SimpleConfirmation confirmation = new SimpleConfirmation("Änderung verwerfen?",
                     "Zur Zeit wird ein Eintrag bearbeitet",
                     "Wollen Sie wirklich abbrechen? \n Alle Änderungen werden gelöscht.") {
@@ -557,8 +559,9 @@ public class MainWindowViewController extends AbstractViewController implements 
                     //Änderungen nicht übernehmen
                     oldCredentials = selectedEntry.getCredentials();
                     currentCredentials = selectedEntry.getNewBuilder(passwordManagerController.getUtilityController());
-                    setDisable(true);
                     listViewCredentialsList.getFocusModel().focus(index);
+                    setState(VIEW_ENTRY);
+                    updateView();
                     refreshEntry();
                 }
 
@@ -566,8 +569,7 @@ public class MainWindowViewController extends AbstractViewController implements 
                 public void onCancel() {
                     //nicht löschen
                     listViewCredentialsList.getSelectionModel().clearSelection();
-                    disableAllEntryControls();
-                    //listViewCredentialsList.getFocusModel().focus(-1);
+                    updateView();
                 }
             };
             confirmation.setAlertType(AlertType.CONFIRMATION);
@@ -575,6 +577,7 @@ public class MainWindowViewController extends AbstractViewController implements 
         } else {
             oldCredentials = selectedEntry.getCredentials();
             currentCredentials = selectedEntry.getNewBuilder(passwordManagerController.getUtilityController());
+            setState(VIEW_ENTRY);
             refreshEntry();
         }
     }
@@ -652,8 +655,10 @@ public class MainWindowViewController extends AbstractViewController implements 
 
     @Override
     public void refreshEntry() {
+
         if (currentCredentials == null)
             currentCredentials = new CredentialsBuilder();
+
         textFieldCredentialsName.setText(currentCredentials.getName());
         textFieldCredentialsUserName.setText(currentCredentials.getUserName());
         passwordFieldCredentialsPassword.setText(currentCredentials.getPassword());
@@ -665,20 +670,19 @@ public class MainWindowViewController extends AbstractViewController implements 
 
         //SecurityQuestionComboBox refreshen
 
-        comboBoxCredentialsSecurityQuestion.getItems().clear();
-        for (Map.Entry<String, String> question : currentCredentials.getSecurityQuestions().entrySet()) {
-
-            comboBoxCredentialsSecurityQuestion.getItems().add(question.getKey());
-        }
+//        comboBoxCredentialsSecurityQuestion.getItems().clear();
+//        for (Map.Entry<String, String> question : currentCredentials.getSecurityQuestions().entrySet()) {
+//            comboBoxCredentialsSecurityQuestion.getItems().add(question.getKey());
+//        }
 
         //FIXME: moved from securityQuestions
         comboBoxCredentialsSecurityQuestion.getItems().clear();
         for (Map.Entry<String, String> question : currentCredentials.getSecurityQuestions().entrySet()) {
             comboBoxCredentialsSecurityQuestion.getItems().add(question.getKey());
         }
-        comboBoxCredentialsSecurityQuestion.getSelectionModel().select(1);
-        String selectedQuestion = comboBoxCredentialsSecurityQuestion.getSelectionModel().getSelectedItem();
-        System.out.println(selectedQuestion);
+        if (!currentCredentials.getSecurityQuestions().entrySet().isEmpty())
+            comboBoxCredentialsSecurityQuestion.getSelectionModel().select(0);
+        //String selectedQuestion = comboBoxCredentialsSecurityQuestion.getSelectionModel().getSelectedItem();
 
     }
 
@@ -719,6 +723,36 @@ public class MainWindowViewController extends AbstractViewController implements 
 
     //endregion
 
+    private void setState(WindowState state) {
+        System.out.println("state changed: " + this.state + " -> " + state);
+        this.state = state;
+    }
+
+    private void updateView() {
+        switch (state) {
+            case UNSET:
+                setDisable(true);
+                disableAllEntryControls(true, 0.0);
+                break;
+            case VIEW_ENTRY:
+                setDisable(true);
+                disableAllEntryControls(false, 1.0);
+                break;
+            case CREATING_NEW_ENTRY:
+                setDisable(false);
+                disableAllEntryControls(false, 1.0);
+                break;
+            case START_EDITING_ENTRY:
+                setDisable(false);
+                disableAllEntryControls(false, 1.0);
+                break;
+            case EDITED_ENTRY:
+                setDisable(false);
+                disableAllEntryControls(false, 1.0);
+                break;
+        }
+    }
+
     private void setDisable(boolean disabled) {
         textFieldCredentialsName.setDisable(disabled);
         textFieldCredentialsUserName.setDisable(disabled);
@@ -737,15 +771,15 @@ public class MainWindowViewController extends AbstractViewController implements 
         buttonRemoveCategoryMain.setDisable(!disabled);
         buttonEditCredentials.setDisable(!disabled);
         buttonSaveCredentials.setDisable(disabled);
-
     }
 
-    private void disableAllEntryControls() {
-        buttonCredentialsShowPassword.setDisable(true);
-        buttonCredentialsCopy.setDisable(true);
-        progressBarCredentialsCopyTimer.setOpacity(0.0);
-        progressBarCredentialsQuality.setProgress(0.0);
-        comboBoxCredentialsSecurityQuestion.setDisable(true);
+    private void disableAllEntryControls(boolean disabled, double opacity) {
+        buttonCredentialsShowPassword.setDisable(disabled);
+        buttonCredentialsCopy.setDisable(disabled);
+        progressBarCredentialsCopyTimer.setOpacity(opacity);
+        if (disabled)
+            progressBarCredentialsQuality.setProgress(0.0);
+        comboBoxCredentialsSecurityQuestion.setDisable(disabled);
     }
 
     private void updateCredentialsBuilderCopy() {
@@ -767,7 +801,6 @@ public class MainWindowViewController extends AbstractViewController implements 
         } else {
             currentCredentials.withChangeReminderDays(null);
         }
-        currentCredentials.withChangeReminderDays(changeReminderDays);
     }
 
 }
