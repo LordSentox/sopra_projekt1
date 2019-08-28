@@ -68,7 +68,7 @@ public class PasswordManagerControllerTest {
         this.passwordManager.getRootCategory().addCredentials(credentials);
         this.passwordManager.getRootCategory().addSubCategory(new Category("null"));
         File file = new File("requestLoginTestFile.xml");
-        this.uc.exportFile(file);
+        this.passwordManagerController.getIOController().exportFile(file);
 
         String newMasterPassword = "このパスワードをググったらリスに変わる";
         this.passwordManager.setMasterPassword(newMasterPassword);

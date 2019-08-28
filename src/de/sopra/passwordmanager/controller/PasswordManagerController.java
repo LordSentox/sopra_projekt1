@@ -25,7 +25,7 @@ public class PasswordManagerController {
      * Minimale Qualität, die ein Passwort benötigt um als sicher zu gelten
      */
     public static final int MINIMUM_SAFE_QUALITY = 50;
-    public static final File SAVE_FILE = new File("../data.xml");
+    public static final File SAVE_FILE = new File("data.xml");
 
     private PasswordManager passwordManager;
 
@@ -34,6 +34,8 @@ public class PasswordManagerController {
     private CategoryController categoryController;
 
     private UtilityController utilityController;
+
+    private IOController ioController;
 
     private MasterPasswordController masterPasswordController;
 
@@ -50,6 +52,7 @@ public class PasswordManagerController {
         this.credentialsController = new CredentialsController(this);
         this.categoryController = new CategoryController(this);
         this.utilityController = new UtilityController(this);
+        this.ioController = new IOController(this);
         this.masterPasswordController = new MasterPasswordController(this);
         this.passwordReminderController = new PasswordReminderController(this);
     }
@@ -68,6 +71,10 @@ public class PasswordManagerController {
 
     public UtilityController getUtilityController() {
         return utilityController;
+    }
+
+    public IOController getIOController() {
+        return ioController;
     }
 
     public MasterPasswordController getMasterPasswordController() {
@@ -127,13 +134,14 @@ public class PasswordManagerController {
     public void requestLogin(String password, File file) {
         //ist null, wenn kein sondern Login
         if (passwordManager.getMasterPassword() == null) {
-            boolean result = utilityController.importFile(file, password, password, true);
+            boolean result = ioController.importFile(file, password, password, true);
             loginViewAUI.handleLoginResult(result);
         } else {
-            boolean result = utilityController.importFile(file, password, password, false);
+            boolean result = ioController.importFile(file, password, password, false);
             loginViewAUI.handleLoginResult(result);
         }
 
+        mainWindowAUI.refreshLists();
     }
 
     /**

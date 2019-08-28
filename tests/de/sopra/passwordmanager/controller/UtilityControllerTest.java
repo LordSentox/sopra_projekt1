@@ -20,7 +20,7 @@ import java.time.LocalDateTime;
 public class UtilityControllerTest {
 	private PasswordManagerController passwordManagerController;
 	private UtilityController utilityController;
-    //XXX entfernen?
+	private IOController ioController;
 	private MainView mainWindowAUI;
 	private PasswordManager passwordManager;
 
@@ -28,6 +28,7 @@ public class UtilityControllerTest {
     public void setUp() throws Exception {
     	passwordManagerController = PasswordManagerControllerDummy.getNewController();
     	utilityController = passwordManagerController.getUtilityController();
+    	ioController = passwordManagerController.getIOController();
     	mainWindowAUI = (MainView) passwordManagerController.getMainWindowAUI();
 		passwordManager = passwordManagerController.getPasswordManager();
     }
@@ -65,8 +66,8 @@ public class UtilityControllerTest {
     	sub1.addCredentials(c2);
 
     	//Test
-    	utilityController.exportFile(file);
-    	utilityController.importFile(file, masterPassword, masterPassword, true);
+    	ioController.exportFile(file);
+    	ioController.importFile(file, masterPassword, masterPassword, true);
 
     	// Daten testen, ob diese im Modell vorhanden sind
     	root = passwordManager.getRootCategory();

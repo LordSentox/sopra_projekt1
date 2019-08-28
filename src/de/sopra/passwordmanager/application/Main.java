@@ -11,6 +11,9 @@ import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
+import java.io.File;
+import java.io.IOException;
+
 public class Main extends Application {
 
     @Override
@@ -39,6 +42,7 @@ public class Main extends Application {
                 fxmlLoader = new FXMLLoader(getClass().getResource("../view/Einloggen.fxml"));
                 loginPane = fxmlLoader.load();
                 LoginViewController loginViewController = fxmlLoader.getController();
+                loginViewController.setSourceFile(PasswordManagerController.SAVE_FILE);
                 loginViewController.setMainWindowViewController(mainWindowViewController);
                 loginViewController.setStage(primaryStage);
                 loginViewController.setMainStage(mainStage);
@@ -69,7 +73,6 @@ public class Main extends Application {
 
                 //set AUI link
                 passwordManagerController.setMasterPasswordViewAUI(masterPasswordViewController);
-
             }
         } catch (Exception e) {
             if (aui != null) {
@@ -79,7 +82,7 @@ public class Main extends Application {
         }
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         launch(args);
     }
 }
