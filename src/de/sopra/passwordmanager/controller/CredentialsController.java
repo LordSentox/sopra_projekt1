@@ -167,6 +167,7 @@ public class CredentialsController {
             }
             return selection;
         };
+
         passwordManagerController.getMainWindowAUI().refreshListStrategies(strategy, null);
     }
 
