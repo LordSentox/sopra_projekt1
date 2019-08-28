@@ -110,8 +110,7 @@ public class MainWindowViewController implements MainWindowAUI {
 
         labelCredentialsSecurityAnswer.setVisible(false);
 
-        buttonCredentialsShowPassword.setDisable(true);
-        buttonCredentialsCopy.setDisable(true);
+        disableAllEntryControls();
         progressBarCredentialsCopyTimer.toFront();
         buttonCredentialsCopy.toFront();
 
@@ -146,8 +145,18 @@ public class MainWindowViewController implements MainWindowAUI {
         //textFieldCredentialsPassword und passwordFieldCredentialsPassword erhalten beide den gleichen Text.
         textFieldCredentialsPassword.textProperty().bindBidirectional(passwordFieldCredentialsPassword.textProperty());
 
+        
         textFieldCredentialsPassword.textProperty().addListener((obs, oldText, newText) -> {
             onCredentialsPasswordChanged();
+        });
+        textFieldCredentialsName.textProperty().addListener((obs, oldText, newText) -> {
+            setSaveButonDisabled();
+        });
+        textFieldCredentialsUserName.textProperty().addListener((obs, oldText, newText) -> {
+            setSaveButonDisabled();
+        });
+        textFieldCredentialsWebsite.textProperty().addListener((obs, oldText, newText) -> {
+            setSaveButonDisabled();
         });
 
         listViewCredentialsList.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
@@ -365,12 +374,21 @@ public class MainWindowViewController implements MainWindowAUI {
         oldCredentials = null;
         //TODO check if correct
         listViewCredentialsList.getSelectionModel().clearSelection();
-        setCopyAndShowButtonsDisabled();
+        disableAllEntryControls();
         //listViewCredentialsList.getFocusModel().focus(-1);
         currentCredentials = new CredentialsBuilder();
         setDisable(false);
         buttonCredentialsCopy.setDisable(false);
         buttonCredentialsShowPassword.setDisable(false);
+
+        if (currentCredentials == null ||
+            currentCredentials.getName() == null||
+            currentCredentials.getUserName() == null||
+            currentCredentials.getPassword() == null||
+            currentCredentials.getWebsite() == null) {
+
+            buttonSaveCredentials.setDisable(true);
+        }
         refreshEntry();
     }
 
@@ -378,7 +396,7 @@ public class MainWindowViewController implements MainWindowAUI {
         CredentialsController credController = passwordManagerController.getCredentialsController();
         oldCredentials = listViewCredentialsList.getSelectionModel().getSelectedItem().getCredentials();
         listViewCredentialsList.getSelectionModel().clearSelection();
-        setCopyAndShowButtonsDisabled();
+        disableAllEntryControls();
         //listViewCredentialsList.getFocusModel().focus(-1);
         credController.removeCredentials(oldCredentials);
         oldCredentials = null;
@@ -437,6 +455,9 @@ public class MainWindowViewController implements MainWindowAUI {
             buttonCredentialsCopy.setDisable(false);
             progressBarCredentialsCopyTimer.setOpacity(1.0);
         }
+        if (comboBoxCredentialsSecurityQuestion.isDisabled()) {
+            comboBoxCredentialsSecurityQuestion.setDisable(false);
+        }
         CredentialsItem selectedEntry = listViewCredentialsList.getSelectionModel().getSelectedItem();
         int index = listViewCredentialsList.getFocusModel().getFocusedIndex();
         if (buttonEditCredentials.isDisabled()|| selectedEntry == null) {
@@ -457,7 +478,7 @@ public class MainWindowViewController implements MainWindowAUI {
                 public void onCancel() {
                     //nicht löschen
                     listViewCredentialsList.getSelectionModel().clearSelection();
-                    setCopyAndShowButtonsDisabled();
+                    disableAllEntryControls();
                     //listViewCredentialsList.getFocusModel().focus(-1);
                 }
             };
@@ -477,6 +498,7 @@ public class MainWindowViewController implements MainWindowAUI {
             currentCredentials.withPassword(password);
             passwordManagerController.checkQuality(currentCredentials);
         }
+        setSaveButonDisabled();
     }
 
     @Override
@@ -610,22 +632,23 @@ public class MainWindowViewController implements MainWindowAUI {
         buttonCredentialsAddSecurityQuestion.setDisable(disabled);
         buttonCredentialsRemoveSecurityQuestion.setDisable(disabled);
         buttonCredentialsGeneratePassword.setDisable(disabled);
-        buttonSaveCredentials.setDisable(disabled);
-        buttonEditCredentials.setDisable(!disabled);
         buttonCredentialsAddCategories.setDisable(disabled);
         checkBoxCredentialsUseReminder.setDisable(disabled);
         choiceBoxCredentialsCategories.setDisable(disabled);
 
         buttonEditCategoryMain.setDisable(!disabled);
         buttonRemoveCategoryMain.setDisable(!disabled);
+        buttonEditCredentials.setDisable(!disabled);
+        buttonSaveCredentials.setDisable(disabled);
+        
     }
 
-    private void setCopyAndShowButtonsDisabled() {
+    private void disableAllEntryControls() {
         buttonCredentialsShowPassword.setDisable(true);
         buttonCredentialsCopy.setDisable(true);
         progressBarCredentialsCopyTimer.setOpacity(0.0);
         progressBarCredentialsQuality.setProgress(0.0);
-        
+        comboBoxCredentialsSecurityQuestion.setDisable(true);
     }
 
     private void updateCredentialsBuilderCopy() {
@@ -648,5 +671,29 @@ public class MainWindowViewController implements MainWindowAUI {
             currentCredentials.withChangeReminderDays(null);
         }
         currentCredentials.withChangeReminderDays(changeReminderDays);
+    }
+    
+    private void setSaveButonDisabled() {
+        updateCredentialsBuilderCopy();
+        System.out.println(currentCredentials.getName());
+        System.out.println(currentCredentials.getUserName());
+        System.out.println(currentCredentials.getPassword());
+        System.out.println(currentCredentials.getWebsite());
+        if (currentCredentials != null &&
+            currentCredentials.getName() != "" &&
+            currentCredentials.getName() != null &&
+            currentCredentials.getUserName() != "" &&
+            currentCredentials.getUserName() != null &&
+            currentCredentials.getPassword() != "" &&
+            currentCredentials.getPassword() != null &&
+            currentCredentials.getWebsite() != "" &&
+            currentCredentials.getWebsite() != null) {
+            System.out.println("enable");
+
+            buttonSaveCredentials.setDisable(false);
+        } else {
+            System.out.println("disable");
+            buttonSaveCredentials.setDisable(true);
+        }
     }
 }
