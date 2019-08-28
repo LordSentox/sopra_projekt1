@@ -167,7 +167,9 @@ public class MainWindowViewController implements MainWindowAUI {
         //Die Strategie initilisieren - sind zu Beginn Identitätsbeziehungen, d.h. ändern nichts am Input
         selectionStrategy = new SelectAllStrategy(); //es wird keine Auswahl getroffen
         orderStrategy = new AlphabeticOrderStrategy(); //es wird nicht sortiert
-
+        
+        
+        
     }
 
     public void setPasswordManagerController(PasswordManagerController passwordManagerController) {
@@ -198,7 +200,7 @@ public class MainWindowViewController implements MainWindowAUI {
         return masterPasswordViewController;
     }
 
-    CredentialsBuilder getCredentialsBuilder() {
+    public CredentialsBuilder getCredentialsBuilder() {
         return currentCredentials;
     }
 

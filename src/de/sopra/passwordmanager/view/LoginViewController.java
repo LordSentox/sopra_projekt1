@@ -5,8 +5,13 @@ import java.io.File;
 import com.jfoenix.controls.JFXPasswordField;
 
 import de.sopra.passwordmanager.controller.PasswordManagerController;
+import javafx.event.ActionEvent;
+import javafx.event.Event;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 
 public class LoginViewController extends AbstractViewController implements LoginViewAUI {
