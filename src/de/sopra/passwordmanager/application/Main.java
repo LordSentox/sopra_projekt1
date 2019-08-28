@@ -10,6 +10,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 import java.io.File;
 import java.io.IOException;
@@ -49,6 +50,7 @@ public class Main extends Application {
 
                 Scene loginScene = new Scene(loginPane);
                 loginScene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+                primaryStage.initStyle(StageStyle.UNDECORATED);
                 primaryStage.setScene(loginScene);
                 primaryStage.show();
 

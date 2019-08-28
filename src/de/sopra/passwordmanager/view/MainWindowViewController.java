@@ -125,7 +125,7 @@ public class MainWindowViewController implements MainWindowAUI {
                 progressBarCredentialsCopyTimer.setProgress(progressBarCredentialsCopyTimer.progressProperty().doubleValue() - 0.001);
 
                 if (progressBarCredentialsCopyTimer.progressProperty().doubleValue() <= 0.0) {
-                    buttonCredentialsCopy.setOpacity(1.0);
+                    buttonCredentialsCopy.getStyleClass().remove("copy-button");
                 }
             }
         }));
@@ -167,6 +167,8 @@ public class MainWindowViewController implements MainWindowAUI {
         //Die Strategie initilisieren - sind zu Beginn Identitätsbeziehungen, d.h. ändern nichts am Input
         selectionStrategy = new SelectAllStrategy(); //es wird keine Auswahl getroffen
         orderStrategy = new AlphabeticOrderStrategy(); //es wird nicht sortiert
+        
+        textFieldCredentialsNotes.setWrapText(true);
 
     }
 
@@ -303,7 +305,7 @@ public class MainWindowViewController implements MainWindowAUI {
     public void onCopyPasswordClicked() {
         CredentialsController credController = passwordManagerController.getCredentialsController();
         credController.copyPasswordToClipboard(currentCredentials);
-        buttonCredentialsCopy.setOpacity(0.5);
+        buttonCredentialsCopy.getStyleClass().add("copy-button");
         timeline.stop();
         progressBarCredentialsCopyTimer.setOpacity(1.0);
         progressBarCredentialsCopyTimer.setProgress(1.0);

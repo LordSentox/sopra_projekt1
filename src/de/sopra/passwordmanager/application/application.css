@@ -1,13 +1,138 @@
 /* JavaFX CSS - Leave this comment until you have at least created one rule which uses -fx-Property */
 
-.text-area *.text {
-    -fx-text-alignment: center;
+* {
+	-primary: #039be5;
+	-light-text: #e1f5fe;
+	-dark-text: #000000;
+	-background: #263238;
+	-error: #fa8a02;
+	-background-lighter: #455a64;
+	-background-darker: #222d32;
+	-analogous: #6e54f7;
+	
 }
 
-.button {
-	-fx-background-color: #aaaaaa;
-}	
+.label {
+	-fx-text-fill: -light-text;
+}
+.errorLabel{
+	-fx-text-fill: -error;
+}
+
+.jfx-button {
+	-fx-text-fill: -dark-text;
+	-fx-background-color: -primary;
+}
+
+.copy-button {
+	-fx-background-color: transparent;
+}
+.show-button .label{
+	-fx-text-fill: -dark-text;
+}
+.jfx-text-field, .jfx-password-field, .jfx-text-area{
+	-fx-text-fill: -light-text;
+	-jfx-unfocus-color: -background-lighter;
+	-jfx-focus-color: -primary;
+}
+.text-area {
+	-fx-text-fill: -light-text;
+	-fx-background-color: -background-darker; 
+	-fx-background-radius: 5;
+	-fx-border-color: transparent;
+}
+.text-area .content {
+	-fx-background-color: -background-darker;
+	-fx-background-radius: 0;
+
+}
+ 
+
 
 .jfx-toggle-node {
-	-jfx-toggle-color: green;
+	-jfx-toggle-line-color: -dark-text;
+	-jfx-untoggle-line-color: -dark-text;
+	-jfx-untoggle-color: -primary; 
+	-jfx-toggle-color: -analogous;
+}
+.background {
+	-fx-background-color: -primary,-background;
+	-fx-background-insets: 0, 3;
+	-fx-background-radius: 6, 6;
+}
+
+.progress-bar .bar {
+	-fx-background-color: -analogous;
+}
+
+.progress-bar .track {
+	-fx-background-color: -background-darker;
+}
+
+.copy-timer .track {
+	-fx-background-color: -primary;
+}
+.jfx-list-view{
+	-fx-background-radius: 5;
+	-fx-background-color: -background-darker;
+	-fx-text-fill: -light-text;
+}
+
+.jfx-list-view .list-cell {
+	-fx-background-color: -background-darker;
+	-fx-background-radius: 5;
+	-fx-text-fill: -light-text;
+	/* 
+	-fx-border-style: solid;
+	-fx-border-width: 0 0 1 0;
+	-fx-border-color: #455a64;
+	 * */
+}
+
+.jfx-combo-box {
+	-jfx-focus-color: transparent;
+	-jfx-unfocus-color: transparent;
+	-fx-background-radius: 5;
+	-fx-background-color: -primary;
+	
+}
+
+.jfx-combo-box .list-cell{
+	-fx-text-fill: -light-text;
+	-fx-background-color: -background-darker;
+	-fx-background-radius: 4;
+}
+.jfx-combo-box .list-view {
+	-fx-background-color: -primary;
+	-fx-border-color: -primary;
+}
+.multi-selection-combo-box {
+	-jfx-focus-color: transparent;
+	-jfx-unfocus-color: transparent;
+	-fx-background-radius: 5;
+	-fx-background-color: -primary;
+}
+
+.multi-selection-combo-box .list-cell{
+	-fx-text-fill: -light-text;
+	-fx-background-color: -background-darker;
+	-fx-background-radius: 4;
+}
+.multi-selection-combo-box .list-view {
+	-fx-background-color: -primary;
+	-fx-border-radius: 5;
+	-fx-border-color: -primary;
+}
+.jfx-check-box {
+	-fx-text-fill: -light-text;
+	-jfx-checked-color: -analogous;
+	-jfx-unchecked-color: -light-text;
+}
+.spinner {
+	-fx-text-fill: -light-text;
+	-fx-background-color: -primary;
+}
+
+.rectangle {
+	-fx-stroke: -primary;
 }
