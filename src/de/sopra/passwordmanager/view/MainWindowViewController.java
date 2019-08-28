@@ -474,7 +474,6 @@ public class MainWindowViewController extends AbstractViewController implements 
         oldCredentials = listViewCredentialsList.getSelectionModel().getSelectedItem().getCredentials();
         listViewCredentialsList.getSelectionModel().clearSelection();
         setState(UNSET);
-        //listViewCredentialsList.getFocusModel().focus(-1);
         credController.removeCredentials(oldCredentials);
         oldCredentials = null;
         currentCredentials = new CredentialsBuilder();
@@ -704,6 +703,9 @@ public class MainWindowViewController extends AbstractViewController implements 
             boolean selected = categories.contains(item.getContent().getCategory());
             choiceBoxCredentialsCategories.setSelected(item, selected);
         }
+
+        changeState(START_EDITING_ENTRY, EDITED_ENTRY);
+
     }
 
     @Override
