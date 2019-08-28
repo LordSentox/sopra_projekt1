@@ -266,7 +266,9 @@ public class IOController {
 
             moepse.setAttribute("key-salt", salt);
             moepse.setAttribute("key-hash", hash);
-            moepse.setAttribute("last-changed", lastChanged.toString());
+            if (lastChanged != null) {
+                moepse.setAttribute("last-changed", lastChanged.toString());
+            }
             moepse.setAttribute("change-reminder-days", Integer.toString(changeReminder));
 
             // Den Tag für die Kategorien und den Tag in dem die Daten gespeichert werden erstellen
@@ -307,7 +309,9 @@ public class IOController {
         addTextTagChild(entry, "website", credentials.getWebsite(), document);
         addTextTagChild(entry, "created", credentials.getCreatedAt().toString(), document);
         addTextTagChild(entry, "last-changed", credentials.getLastChanged().toString(), document);
-        addTextTagChild(entry, "change-reminder-days", credentials.getChangeReminderDays().toString(), document);
+        if (credentials.getChangeReminderDays() != null) {
+            addTextTagChild(entry, "change-reminder-days", credentials.getChangeReminderDays().toString(), document);
+        }
         if (credentials.getNotes() != null) {
             addTextTagChild(entry, "notes", credentials.getNotes(), document);
         }

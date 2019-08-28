@@ -24,7 +24,7 @@ public class IOControllerTest {
     }
 
     @Test
-    public void exportFileTest() {
+    public void exportImportFileTest() {
         PasswordManagerController passwordManagerController = PasswordManagerControllerDummy.getNewController();
         PasswordManager passwordManager = passwordManagerController.getPasswordManager();
         UtilityController utilityController = passwordManagerController.getUtilityController();
