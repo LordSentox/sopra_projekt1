@@ -90,6 +90,10 @@ public class MultiSelectionComboBox<T> extends ComboBox<SelectableComboItem<T>> 
         }
     };
 
+    public void setSelected(SelectableComboItem<T> target, boolean selected) {
+        updateProvider(target.getItemName(), selected);
+    }
+
     private void updateProvider(String itemName, boolean isSelected) {
         for (SelectableComboItem uiVO : getItems()) {
             if (uiVO.getItemName().equalsIgnoreCase(itemName)) {

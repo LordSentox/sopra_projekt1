@@ -1,4 +1,4 @@
-package de.sopra.passwordmanager.util.dialog;
+package de.sopra.passwordmanager.view.dialog;
 
 import javafx.scene.control.Alert;
 
