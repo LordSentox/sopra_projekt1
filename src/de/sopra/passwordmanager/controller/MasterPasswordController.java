@@ -39,7 +39,7 @@ public class MasterPasswordController {
      * @throws NullPointerException falls statt eines Passwortstrings <code>null</code> übergeben wird
      */
     public void checkQuality(String password) throws NullPointerException {
-        int quality = passwordManagerController.getUtilityController().checkQuality(password,"passwort");
+        int quality = passwordManagerController.getUtilityController().checkQuality(password,null);
         passwordManagerController.getMasterPasswordViewAUI().refreshQuality(quality);
 
     }

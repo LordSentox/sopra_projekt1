@@ -51,7 +51,7 @@ public class MasterPasswordControllerTest {
 
         for (String password: passwords) {
             // TODO: Sollten hier feste Werte angegeben werden, statt einen Aufruf auf checkQuality zu tätigen?
-            int passwordQuality = this.passwordManagerController.getUtilityController().checkQuality(password, "passwort");
+            int passwordQuality = this.passwordManagerController.getUtilityController().checkQuality(password,null);
 
             this.masterPasswordController.checkQuality(password);
 

@@ -34,6 +34,7 @@ public class SettingsViewController extends AbstractViewController {
             loginStage.setScene(setMasterPasswordScene);
             masterPasswordViewController.setStage(loginStage);
             masterPasswordViewController.setMainWindowViewController(mainWindowViewController);
+            mainWindowViewController.getPasswordManagerController().setMasterPasswordViewAUI(masterPasswordViewController);
             masterPasswordViewController.init();
             loginStage.show();
 
