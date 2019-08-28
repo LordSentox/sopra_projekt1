@@ -226,12 +226,17 @@ public class UtilityController {
 
 		// Gibt es ein bestimmtes Doppelzeichen drei oder mehr mal?
 		RepeatCharactersRule repeatCharacters = new RepeatCharactersRule(2, 3);
-
-		List<WeighedRule> list = new ArrayList<>(Arrays.asList(new WeighedRule(characterOrdinaryRule, 0.5),
-				new WeighedRule(characterSpecialRule, 0.75), 
-				new WeighedRule(notAllTheSame, 0.5),
-				new WeighedRule(minimumLength, 1.0), 
-				new WeighedRule(repeatCharacters, 0.75)));
+		
+		//Gibt es wiederholte regulaere Ausdruecke?
+		RepeatCharacterRegexRule regex = new RepeatCharacterRegexRule(3);
+		
+		List<WeighedRule> list = new ArrayList<>(Arrays.asList(new WeighedRule(characterOrdinaryRule, 0.25),
+				new WeighedRule(characterSpecialRule, 0.5), 
+				new WeighedRule(notAllTheSame, 0.25),
+				new WeighedRule(minimumLength, 0.75), 
+				new WeighedRule(repeatCharacters, 0.5),
+				new WeighedRule(regex,1.0)
+				));
 		if (checkUsername) {
 			// Stelle sicher, dass im Passwort wenig alphabetische Sequenzen
 			// vorkomen.
@@ -253,7 +258,11 @@ public class UtilityController {
         boolean checkusername = !(username == null);
         if (checkusername) {
         	pwData.setUsername(username);
-        }
+        }	
+        int length = text.length();
+    	if(length == 0){
+    		return 0;
+    	}
         List<WeighedRule> rules = generateRules(checkusername);
         // Für jede Regel die eingehalten wird, wird das Gewicht als Wert der unangepassten Qualität hinzugefügt
         double quality = 0.0;
@@ -280,6 +289,9 @@ public class UtilityController {
             wholePercent = 100;
         } else {
             wholePercent = (int) percent;
+        }
+        if(length < 8){
+        	return wholePercent/2;
         }
 
         return wholePercent;
