@@ -56,20 +56,8 @@ public class IOController {
             }
 
             // Überprüfe, ob das Masterpasswort richtig ist und breche ab, falls es fehlschlägt
-            // TODO: Passwordtüberprüfung in eigene Funktion
             NamedNodeMap attributes = moepse.getAttributes();
-            if (attributes == null) {
-                System.err.println("MoePse has too few attributes");
-                return false;
-            }
-            byte[] keySalt = parseHexBinary(attributes.getNamedItem("key-salt").getNodeValue());
-            byte[] keyHash = parseHexBinary(attributes.getNamedItem("key-hash").getNodeValue());
-
-            byte[] decryptionPasswordBytes = decryptionPassword.getBytes(StandardCharsets.UTF_8);
-            byte[] enteredKeyHash = hashString(decryptionPasswordBytes, keySalt)[0];
-
-            if (!Arrays.equals(keyHash, enteredKeyHash)) {
-                System.err.println("The password entered was not correct");
+            if (!checkMoepseAttributes(decryptionPassword, attributes)) {
                 return false;
             }
 
@@ -82,25 +70,7 @@ public class IOController {
             }
             int changeReminderDays = Integer.parseUnsignedInt(changeReminderDaysString);
 
-            List<Node> childNodes = IntStream.range(0, moepse.getChildNodes().getLength()).mapToObj(moepse.getChildNodes()::item).collect(Collectors.toList());
-
-            Node treeNode = childNodes.stream().filter(node -> node.getNodeName().equals("tree")).findFirst().get();
-            Node dataNode = childNodes.stream().filter(node -> node.getNodeName().equals("data")).findFirst().get();
-            Validate.notNull(treeNode, "TreeNode does not exist");
-            Validate.notNull(dataNode, "DataNode does not exist");
-
-            // Die entschlüsselten Daten auslesen.
-            List<CredentialsBuilder> dataList = extractCredentials(dataNode, decryptionPassword);
-            Validate.notNull(dataList, "The credentials could not be read. Incorrect format");
-
-            // Setzen des Masterpasswortes und Verschlüsselung der Daten
-            // TODO: Sehr unschön, da man es bei dieser Methode nicht erwarten würde, wenn man setMasterPassword auf false setzt
-            this.passwordManagerController.getPasswordManager().setMasterPassword(encryptionPassword);
-            Map<String, Credentials> credentials = dataList.stream().collect(Collectors.toMap(CredentialsBuilder::getName, builder -> builder.build(passwordManagerController.getUtilityController())));
-
-            // TODO: Merge into the old MasterPasswordController instead of resetting the root
-            this.passwordManagerController.getPasswordManager().clearAll();
-            extractAndFillCategories(this.passwordManagerController.getPasswordManager().getRootCategory(), treeNode, credentials);
+            extractXMLContents(moepse, decryptionPassword, encryptionPassword);
 
             // Wenn das Masterpasswort neu gesetzt werden soll muss der Änderungswecker und das Erstellungsdatum im
             // Passwortmanager gesetzt werden.
@@ -109,11 +79,51 @@ public class IOController {
                 this.passwordManagerController.getPasswordManager().setMasterPasswordReminderDays(changeReminderDays);
             }
         } catch (Exception e) {
-            // TODO: Schönere Fehlerbehandlung
             e.printStackTrace();
             return false;
         }
 
+        return true;
+    }
+
+    private void extractXMLContents(Node moepse, String decryptionPassword, String encryptionPassword) {
+        List<Node> childNodes = IntStream.range(0, moepse.getChildNodes().getLength()).mapToObj(moepse.getChildNodes()::item).collect(Collectors.toList());
+
+        Node treeNode = childNodes.stream().filter(node -> node.getNodeName().equals("tree")).findFirst().get();
+        Node dataNode = childNodes.stream().filter(node -> node.getNodeName().equals("data")).findFirst().get();
+        Validate.notNull(treeNode, "TreeNode does not exist");
+        Validate.notNull(dataNode, "DataNode does not exist");
+
+        // Die entschlüsselten Daten auslesen.
+        List<CredentialsBuilder> dataList = extractCredentials(dataNode, decryptionPassword);
+        Validate.notNull(dataList, "The credentials could not be read. Incorrect format");
+
+        // Setzen des Masterpasswortes und Verschlüsselung der Daten
+        // TODO: Sehr unschön, da man es bei dieser Methode nicht erwarten würde, wenn man setMasterPassword auf false setzt
+        this.passwordManagerController.getPasswordManager().setMasterPassword(encryptionPassword);
+        Map<String, Credentials> credentials = dataList.stream().collect(Collectors.toMap(CredentialsBuilder::getName, builder -> builder.build(passwordManagerController.getUtilityController())));
+
+        // TODO: Merge into the old MasterPasswordController instead of resetting the root
+        this.passwordManagerController.getPasswordManager().clearAll();
+        extractAndFillCategories(this.passwordManagerController.getPasswordManager().getRootCategory(), treeNode, credentials);
+    }
+
+    private static boolean checkMoepseAttributes(String decryptionPassword, NamedNodeMap attributes) {
+        if (attributes == null) {
+            System.err.println("MoePse has too few attributes");
+            return false;
+        }
+
+        byte[] keySalt = parseHexBinary(attributes.getNamedItem("key-salt").getNodeValue());
+        byte[] keyHash = parseHexBinary(attributes.getNamedItem("key-hash").getNodeValue());
+
+        byte[] decryptionPasswordBytes = decryptionPassword.getBytes(StandardCharsets.UTF_8);
+        byte[] enteredKeyHash = hashString(decryptionPasswordBytes, keySalt)[0];
+
+        if (!Arrays.equals(keyHash, enteredKeyHash)) {
+            System.err.println("The password entered was not correct");
+            return false;
+        }
         return true;
     }
 
@@ -151,52 +161,62 @@ public class IOController {
 
     private CredentialsBuilder extractCredentialsObject(Node entry, String decryptionPassword) {
         CredentialsBuilder bobTheBuilder = new CredentialsBuilder();
-
-        // Finde das Namensattribut
-        if (!entry.hasAttributes()) {
-            return null;
-        }
-        NamedNodeMap attributes = entry.getAttributes();
-        if (attributes == null) {
-            return null;
-        }
-        Node name = attributes.getNamedItem("name");
-        if (name == null) {
-            return null;
-        }
-        bobTheBuilder.withName(name.getNodeValue());
+        if (!extractNameToBuilder(entry, bobTheBuilder)) return null;
 
         // Lese den Inhalt der Credentials
         List<Node> elements = listFromNodeList(entry.getChildNodes());
         for (Node element : elements) {
-            switch (element.getNodeName()) {
-                case "username":
-                    bobTheBuilder.withUserName(element.getTextContent());
-                    break;
-                case "website":
-                    bobTheBuilder.withWebsite(element.getTextContent());
-                    break;
-                case "created":
-                    bobTheBuilder.withCreated(LocalDateTime.parse(element.getTextContent()));
-                    break;
-                case "last-changed":
-                    bobTheBuilder.withLastChanged(LocalDateTime.parse(element.getTextContent()));
-                    break;
-                case "notes":
-                    bobTheBuilder.withNotes(element.getTextContent());
-                    break;
-                case "change-reminder-days":
-                    bobTheBuilder.withChangeReminderDays(Integer.parseUnsignedInt(element.getTextContent()));
-                    break;
-                case "password":
-                    bobTheBuilder.withPassword(UtilityController.decryptText(new EncryptedString(element.getTextContent()), decryptionPassword));
-                    break;
-                case "questions":
-                    extractSecurityQuestionsIntoBuilder(element, bobTheBuilder, decryptionPassword);
-            }
+            updateBuilderFromElement(element, bobTheBuilder, decryptionPassword);
         }
 
         return bobTheBuilder;
+    }
+
+    private void updateBuilderFromElement(Node element, CredentialsBuilder bobTheBuilder, String decryptionPassword) {
+        switch (element.getNodeName()) {
+            case "username":
+                bobTheBuilder.withUserName(element.getTextContent());
+                break;
+            case "website":
+                bobTheBuilder.withWebsite(element.getTextContent());
+                break;
+            case "created":
+                bobTheBuilder.withCreated(LocalDateTime.parse(element.getTextContent()));
+                break;
+            case "last-changed":
+                bobTheBuilder.withLastChanged(LocalDateTime.parse(element.getTextContent()));
+                break;
+            case "notes":
+                bobTheBuilder.withNotes(element.getTextContent());
+                break;
+            case "change-reminder-days":
+                bobTheBuilder.withChangeReminderDays(Integer.parseUnsignedInt(element.getTextContent()));
+                break;
+            case "password":
+                bobTheBuilder.withPassword(UtilityController.decryptText(new EncryptedString(element.getTextContent()), decryptionPassword));
+                break;
+            case "questions":
+                extractSecurityQuestionsIntoBuilder(element, bobTheBuilder, decryptionPassword);
+        }
+    }
+
+    // Versucht das Namensattribut des entrys auszulesen und es im Builder als Namen zu speichern. Gelingt es, gibt die
+    // Funktion true zurück, sonst false
+    private static boolean extractNameToBuilder(Node entry, CredentialsBuilder bobTheBuilder) {
+        // Finde das Namensattribut
+        if (!entry.hasAttributes()) {
+            return false;
+        }
+        NamedNodeMap attributes = entry.getAttributes();
+        if (attributes == null) {
+            return false;
+        }
+        Node name = attributes.getNamedItem("name");
+        if (name == null) {
+            return false;
+        }
+        bobTheBuilder.withName(name.getNodeValue());
+        return true;
     }
 
     private void extractSecurityQuestionsIntoBuilder(Node element, CredentialsBuilder bobTheBuilder, String decryptionPassword) {
@@ -331,9 +351,9 @@ public class IOController {
     private static String bytesToHex(byte[] bytes) {
         char[] hexChars = new char[bytes.length * 2];
         for (int i = 0; i < bytes.length; i++) {
-            int v = bytes[i] & 0xFF;
-            hexChars[i * 2] = HEX_ARRAY[v >>> 4];
-            hexChars[i * 2 + 1] = HEX_ARRAY[v & 0x0F];
+            int currentByte = bytes[i] & 0xFF;
+            hexChars[i * 2] = HEX_ARRAY[currentByte >>> 4];
+            hexChars[i * 2 + 1] = HEX_ARRAY[currentByte & 0x0F];
         }
         return new String(hexChars);
     }
@@ -361,18 +381,18 @@ public class IOController {
         }
 
         //hashing vorbereiten
-        MessageDigest md = null;
+        MessageDigest messageDigest = null;
         try {
-            md = MessageDigest.getInstance("SHA-512"); //algorithmus fürs hashing festlegen
+            messageDigest = MessageDigest.getInstance("SHA-512"); //algorithmus fürs hashing festlegen
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         }
 
         //salt setzen
-        md.update(salt);
+        messageDigest.update(salt);
 
         //den Eingabe-String per SHA-512 hashen
-        byte[] result = md.digest(input);
+        byte[] result = messageDigest.digest(input);
 
         return new byte[][]{result, salt};
     }

@@ -41,15 +41,15 @@ public class IOControllerTest {
         root.addSubCategory(sub);
         Category sub1 = new Category("sub1");
         sub.addSubCategory(sub1);
-        Credentials c1 = new CredentialsBuilder("c1", "c2", "pw", "url")
+        Credentials credentials1 = new CredentialsBuilder("c1", "c2", "pw", "url")
                 .withChangeReminderDays(5)
                 .build(utilityController);
-        Credentials c2 = new CredentialsBuilder("c21", "c22", "pw2", "url2")
+        Credentials credentials2 = new CredentialsBuilder("c21", "c22", "pw2", "url2")
                 .withChangeReminderDays(6)
                 .build(utilityController);
-        sub.addCredentials(c1);
-        sub.addCredentials(c2);
-        sub1.addCredentials(c2);
+        sub.addCredentials(credentials1);
+        sub.addCredentials(credentials2);
+        sub1.addCredentials(credentials2);
 
         //Test
         ioController.exportFile(file);
@@ -75,12 +75,12 @@ public class IOControllerTest {
         Assert.assertEquals(subCategory2.getCredentials().size(), 1);
 
         Credentials credentials = subCategory2.getCredentials().stream().findFirst().get();
-        Assert.assertEquals(credentials.getName(), c2.getName());
-        Assert.assertEquals(credentials.getUserName(), c2.getUserName());
-        Assert.assertEquals(credentials.getPassword(), c2.getPassword());
-        Assert.assertEquals(credentials.getWebsite(), c2.getWebsite());
-        Assert.assertEquals(credentials.getChangeReminderDays(), c2.getChangeReminderDays());
-        Assert.assertEquals(credentials.getNotes(), c2.getNotes());
+        Assert.assertEquals(credentials.getName(), credentials2.getName());
+        Assert.assertEquals(credentials.getUserName(), credentials2.getUserName());
+        Assert.assertEquals(credentials.getPassword(), credentials2.getPassword());
+        Assert.assertEquals(credentials.getWebsite(), credentials2.getWebsite());
+        Assert.assertEquals(credentials.getChangeReminderDays(), credentials2.getChangeReminderDays());
+        Assert.assertEquals(credentials.getNotes(), credentials2.getNotes());
 
         //aufräumen
         file.delete();
