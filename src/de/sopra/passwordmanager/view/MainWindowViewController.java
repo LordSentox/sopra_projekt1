@@ -31,20 +31,51 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.TextFormatter;
+import javafx.scene.control.TextFormatter.Change;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
+import javafx.util.converter.IntegerStringConverter;
 
 import java.io.IOException;
+import java.text.NumberFormat;
+import java.text.ParsePosition;
 import java.util.*;
+import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
 import static de.sopra.passwordmanager.view.MainWindowViewController.WindowState.*;
 
 public class MainWindowViewController extends AbstractViewController implements MainWindowAUI {
 
+	public final TextFormatter<Integer> spinnerTextFormatter = new TextFormatter<Integer>(new IntegerStringConverter(), 1,
+			new UnaryOperator<TextFormatter.Change>(){
+
+			NumberFormat format = NumberFormat.getIntegerInstance();
+				@Override
+				public Change apply(Change c) {
+					if (c.isContentChange()) {
+				        ParsePosition parsePosition = new ParsePosition(0);
+				        // NumberFormat evaluates the beginning of the text
+				        format.parse(c.getControlNewText(), parsePosition);
+				        if (parsePosition.getIndex() == 0 ||
+				                parsePosition.getIndex() < c.getControlNewText().length()) {
+				            // reject parsing the complete text failed
+				            return null;
+				        }
+				      //Länge begrenzen
+				        if(c.getControlNewText().length() > 3){
+				        	return null;
+				        }
+				        Integer number = Integer.parseInt(c.getControlNewText());
+				        if(number < 1)
+				        	return null;
+				    }
+				    return c;
+				}} );
     //controller attributes
     private PasswordManagerController passwordManagerController;
     private SecurityQuestionViewController securityQuestionViewController;
@@ -130,6 +161,7 @@ public class MainWindowViewController extends AbstractViewController implements 
 
         spinnerCredentialsReminderDays.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 999));
         spinnerCredentialsReminderDays.setDisable(true);
+        spinnerCredentialsReminderDays.getEditor().setTextFormatter(spinnerTextFormatter);
 
         labelCredentialsSecurityAnswer.setVisible(false);
 
@@ -254,7 +286,7 @@ public class MainWindowViewController extends AbstractViewController implements 
     }
     //endregion
 
-    CredentialsBuilder getCredentialsBuilder() {
+    public CredentialsBuilder getCredentialsBuilder() {
         return currentCredentials;
     }
 

@@ -1,14 +1,23 @@
 package de.sopra.passwordmanager.view;
 
+import java.text.NumberFormat;
+import java.text.ParsePosition;
+import java.util.function.UnaryOperator;
+
 import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXProgressBar;
 
 import de.sopra.passwordmanager.util.CredentialsBuilder;
+import de.sopra.passwordmanager.view.dialog.SimpleDialog;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.TextFormatter.Change;
 import javafx.scene.control.Label;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
+import javafx.scene.control.TextFormatter;
 import javafx.stage.Stage;
+import javafx.util.converter.IntegerStringConverter;
 
 public class MasterPasswordViewController extends AbstractViewController implements MasterPasswordViewAUI {
 	@FXML private JFXPasswordField passwordFieldSet;
@@ -17,9 +26,37 @@ public class MasterPasswordViewController extends AbstractViewController impleme
 	@FXML private Label labelError;
 	@FXML private JFXProgressBar progressBarQuality;
 	
+	public final TextFormatter<Integer> spinnerTextFormatter = new TextFormatter<Integer>(new IntegerStringConverter(), 1, 
+			new UnaryOperator<TextFormatter.Change>(){
+
+			NumberFormat format = NumberFormat.getIntegerInstance();
+				@Override
+				public Change apply(Change c) {
+					if (c.isContentChange()) {
+				        ParsePosition parsePosition = new ParsePosition(0);
+				        // NumberFormat evaluates the beginning of the text
+				        format.parse(c.getControlNewText(), parsePosition);
+				        if (parsePosition.getIndex() == 0 ||
+				                parsePosition.getIndex() < c.getControlNewText().length()) {
+				            // reject parsing the complete text failed
+				            return null;
+				        }
+				        //Länge begrenzen
+				        if(c.getControlNewText().length() > 3){ 
+				        	return null;
+				        }
+				        Integer number = Integer.parseInt(c.getControlNewText());
+				        if(number < 1)
+				        	return null;
+				    }
+				    return c;
+				}} );
+	
 	private Stage stage, mainStage;
 	
     private MainWindowViewController mainWindowViewController;
+    
+    private boolean openedBySettings = false;
 
     public void setMainWindowViewController(MainWindowViewController mainWindowViewController) {
         this.mainWindowViewController = mainWindowViewController;
@@ -35,11 +72,16 @@ public class MasterPasswordViewController extends AbstractViewController impleme
 
     public void init(){
         spinnerReminderDays.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1,999));
+        spinnerReminderDays.getEditor().setTextFormatter(spinnerTextFormatter);
 
         passwordFieldSet.textProperty().addListener((obs, oldText, newText) -> {
             onPasswordChanged();
         });
 
+    }
+    
+    public void openedBySettings(){
+    	openedBySettings=true;
     }
 
     public void onSaveClicked() {
@@ -47,8 +89,16 @@ public class MasterPasswordViewController extends AbstractViewController impleme
     		
     		int newReminder = spinnerReminderDays.getValue(); 
     		mainWindowViewController.getPasswordManagerController().getMasterPasswordController().changePassword(passwordFieldSet.getText(), newReminder);
-    		mainStage.show();
-            stage.close();
+    		stage.close();
+    		if(!openedBySettings){
+    			mainStage.show();
+    		}
+    		else {
+    			SimpleDialog dialog = new SimpleDialog("Information", null, "Neues Masterpasswort erfolgreich gesetzt.");
+    			dialog.setAlertType(AlertType.INFORMATION);
+    			dialog.open();
+    		}
+            
     	}else {
     		labelError.setVisible(true);
     	}
