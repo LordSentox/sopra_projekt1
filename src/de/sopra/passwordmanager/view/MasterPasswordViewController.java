@@ -2,13 +2,16 @@ package de.sopra.passwordmanager.view;
 
 import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXProgressBar;
-
 import de.sopra.passwordmanager.util.CredentialsBuilder;
+import de.sopra.passwordmanager.view.dialog.SimpleDialog;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Label;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
+import javafx.scene.control.TextFormatter;
 import javafx.stage.Stage;
+import javafx.util.converter.IntegerStringConverter;
 
 public class MasterPasswordViewController extends AbstractViewController implements MasterPasswordViewAUI {
 	@FXML private JFXPasswordField passwordFieldSet;
@@ -17,9 +20,14 @@ public class MasterPasswordViewController extends AbstractViewController impleme
 	@FXML private Label labelError;
 	@FXML private JFXProgressBar progressBarQuality;
 	
+	private final TextFormatter<Integer> spinnerTextFormatter = new TextFormatter<Integer>(
+			new IntegerStringConverter(), 1, MainWindowViewController.SPINNER_FILTER);
+	
 	private Stage stage, mainStage;
 	
     private MainWindowViewController mainWindowViewController;
+    
+    private boolean openedBySettings = false;
 
     public void setMainWindowViewController(MainWindowViewController mainWindowViewController) {
         this.mainWindowViewController = mainWindowViewController;
@@ -35,11 +43,16 @@ public class MasterPasswordViewController extends AbstractViewController impleme
 
     public void init(){
         spinnerReminderDays.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1,999));
+        spinnerReminderDays.getEditor().setTextFormatter(spinnerTextFormatter);
 
         passwordFieldSet.textProperty().addListener((obs, oldText, newText) -> {
             onPasswordChanged();
         });
 
+    }
+    
+    public void openedBySettings(){
+    	openedBySettings=true;
     }
 
     public void onSaveClicked() {
@@ -47,8 +60,16 @@ public class MasterPasswordViewController extends AbstractViewController impleme
     		
     		int newReminder = spinnerReminderDays.getValue(); 
     		mainWindowViewController.getPasswordManagerController().getMasterPasswordController().changePassword(passwordFieldSet.getText(), newReminder);
-    		mainStage.show();
-            stage.close();
+    		stage.close();
+    		if(!openedBySettings){
+    			mainStage.show();
+    		}
+    		else {
+    			SimpleDialog dialog = new SimpleDialog("Information", null, "Neues Masterpasswort erfolgreich gesetzt.");
+    			dialog.setAlertType(AlertType.INFORMATION);
+    			dialog.open();
+    		}
+            
     	}else {
     		labelError.setVisible(true);
     	}

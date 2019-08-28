@@ -84,6 +84,7 @@ public class CredentialsController {
             category.addCredentials(credentials);
         }
         passwordManagerController.getMainWindowAUI().refreshLists();
+        passwordManagerController.getIOController().exportFile(PasswordManagerController.SAVE_FILE);
     }
 
     /**
@@ -95,6 +96,7 @@ public class CredentialsController {
     public void removeCredentials(Credentials credentials) {
         passwordManagerController.getPasswordManager().getRootCategory().removeCredentialsFromTree(credentials);
         passwordManagerController.getMainWindowAUI().refreshLists();
+        passwordManagerController.getIOController().exportFile(PasswordManagerController.SAVE_FILE);
     }
 
     /**
@@ -239,6 +241,8 @@ public class CredentialsController {
             cred.clearSecurityQuesions();
             cred.addSecurityQuestions(newQuestions);
         });
+
+        passwordManagerController.getIOController().exportFile(PasswordManagerController.SAVE_FILE);
     }
 
     private static void setClipboardContents(String contents) {

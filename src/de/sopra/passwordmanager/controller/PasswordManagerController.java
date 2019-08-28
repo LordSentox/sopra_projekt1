@@ -115,8 +115,7 @@ public class PasswordManagerController {
      * Setzt den PasswordManager zurück und löscht alle Passwörter und Kategorien. Das Masterpasswort bleibt erhalten.
      */
     public void removeAll() {
-        passwordManager.getRootCategory().getSubCategories().clear();
-        passwordManager.getRootCategory().getCredentials().clear();
+        this.passwordManager.clearAll();
         SAVE_FILE.delete();
         mainWindowAUI.refreshListStrategies(new SelectAllStrategy(), new AlphabeticOrderStrategy());
         mainWindowAUI.refreshEntry();

@@ -13,6 +13,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 
 public class Main extends Application {
 
@@ -46,7 +47,7 @@ public class Main extends Application {
                 loginViewController.setMainWindowViewController(mainWindowViewController);
                 loginViewController.setStage(primaryStage);
                 loginViewController.setMainStage(mainStage);
-
+                
                 Scene loginScene = new Scene(loginPane);
                 loginScene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
                 primaryStage.initStyle(StageStyle.UNDECORATED);
@@ -74,6 +75,11 @@ public class Main extends Application {
 
                 //set AUI link
                 passwordManagerController.setMasterPasswordViewAUI(masterPasswordViewController);
+                
+                //Beispieleintrag
+                LocalDateTime created = LocalDateTime.now();
+                mainWindowViewController.getCredentialsBuilder().withName("Beispieleintrag").withPassword("Beispielpasswort").withUserName("Maxine Musterfrau").withChangeReminderDays(5).withCreated(created).withLastChanged(created).withNotes("Hier könnten Ihre Notizen stehen").withSecurityQuestion("Name des Haustieres", "Godzilla").withWebsite("www.yolo.com/yolo");
+                mainWindowViewController.refreshEntry();
             }
         } catch (Exception e) {
             if (aui != null) {

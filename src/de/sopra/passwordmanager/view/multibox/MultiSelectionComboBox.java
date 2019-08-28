@@ -1,8 +1,12 @@
 package de.sopra.passwordmanager.view.multibox;
 
+import com.jfoenix.controls.JFXCheckBox;
 import javafx.collections.FXCollections;
 import javafx.event.EventHandler;
-import javafx.scene.control.*;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
+import javafx.scene.control.Skin;
 import javafx.scene.input.MouseEvent;
 import javafx.util.Callback;
 
@@ -66,7 +70,7 @@ public class MultiSelectionComboBox<T> extends ComboBox<SelectableComboItem<T>> 
                         protected void updateItem(SelectableComboItem<T> item, boolean empty) {
                             super.updateItem(item, empty);
                             if (!empty && item != null) {
-                                CheckBox cb = new CheckBox(item.getItemName());
+                                JFXCheckBox cb = new JFXCheckBox(item.getItemName());
                                 cb.setSelected(item.isSelected());
                                 cb.addEventHandler(MouseEvent.MOUSE_CLICKED, onCheckBoxClick);
                                 setGraphic(cb);
@@ -80,7 +84,7 @@ public class MultiSelectionComboBox<T> extends ComboBox<SelectableComboItem<T>> 
             };
 
     private EventHandler<MouseEvent> onCheckBoxClick = event -> {
-        CheckBox chk = (CheckBox) event.getSource();
+        JFXCheckBox chk = (JFXCheckBox) event.getSource();
         String itemName = chk.getText();
 
         if (chk.isSelected()) {
