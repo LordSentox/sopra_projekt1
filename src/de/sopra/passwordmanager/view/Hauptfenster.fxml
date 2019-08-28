@@ -5,10 +5,10 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.shape.Rectangle?>
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="576.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.sopra.passwordmanager.view.MainWindowViewController">
+<AnchorPane styleClass="background" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="576.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.sopra.passwordmanager.view.MainWindowViewController">
    <children>
-      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="450.0" layoutX="310.0" layoutY="80.0" stroke="BLACK" strokeType="INSIDE" width="480.0" />
-      <JFXTextField fx:id="textFieldSearch" layoutX="10.0" layoutY="10.0" onAction="#onSearchClicked" />
+      <Rectangle styleClass="rectangle" arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="450.0" layoutX="310.0" layoutY="80.0" stroke="BLACK" strokeType="INSIDE" width="480.0" />
+      <JFXTextField fx:id="textFieldSearch" layoutX="10.0" layoutY="10.0" />
       <JFXButton fx:id="buttonSearch" layoutX="186.0" layoutY="10.0" mnemonicParsing="false" prefWidth="114.0" text="Lupe" onAction="#onSearchClicked"/>
       <JFXComboBox fx:id="comboBoxCategorySelectionMain" layoutX="10.0" layoutY="44.0" prefWidth="171.0" />
       <JFXButton fx:id="buttonAddCategoryMain" layoutX="186.0" layoutY="44.0" mnemonicParsing="false" text="+" onAction="#onAddCategoryClicked"/>
@@ -25,20 +25,20 @@
       <JFXTextField fx:id="textFieldCredentialsPassword" layoutX="430.0" layoutY="147.0"/>
       <JFXPasswordField fx:id="passwordFieldCredentialsPassword" layoutX="430.0" layoutY="147.0"/>
       <!--  <JFXToggleNode fx:id="buttonCredentialsShowPassword" layoutX="606.0" layoutY="140.0" mnemonicParsing="false" text="Anzeigen" onAction="#onShowPasswordClicked"/>  -->
-      <JFXToggleNode fx:id="buttonCredentialsShowPassword" layoutX="607.0" layoutY="145.0">
+      <JFXToggleNode styleClass="show-button" fx:id="buttonCredentialsShowPassword" layoutX="607.0" layoutY="145.0">
       	<Label text="Anzeigen"/>
       </JFXToggleNode>
       <JFXButton fx:id="buttonCredentialsCopy" layoutX="690.0" layoutY="144.0" mnemonicParsing="false" prefHeight="28.0" text="Kopieren" onAction="#onCopyPasswordClicked"/>
       <JFXProgressBar fx:id="progressBarCredentialsQuality" layoutX="430.0" layoutY="183.0" prefHeight="20.0" prefWidth="171.0" progress="0.0" />
-      <JFXProgressBar fx:id="progressBarCredentialsCopyTimer" layoutX="691.0" layoutY="145.0" prefHeight="26.0" prefWidth="74.0" progress="0.0" />
+      <JFXProgressBar styleClass="copy-timer" fx:id="progressBarCredentialsCopyTimer" layoutX="691.0" layoutY="145.0" prefHeight="26.0" prefWidth="74.0" progress="0.0" />
       <JFXButton fx:id="buttonCredentialsGeneratePassword" layoutX="606.0" layoutY="179.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="160.0" text="Neu generieren" onAction="#onGeneratePasswordClicked"/>
       <Label layoutX="315.0" layoutY="225.0" text="Webseite" />
       <JFXTextField fx:id="textFieldCredentialsWebsite" layoutX="430.0" layoutY="220.0" />
-      <JFXCheckBox fx:id="checkBoxCredentialsUseReminder" layoutX="315.0" layoutY="251.0" mnemonicParsing="false" text="Erinnern an Passwortänderung in" onAction="#onCheckBoxClicked"/>
-      <Spinner fx:id="spinnerCredentialsReminderDays" layoutX="430.0" layoutY="274.0" prefHeight="26.0" prefWidth="100.0" editable="true" />
+      <JFXCheckBox styleClass="jfx-check-box" fx:id="checkBoxCredentialsUseReminder" layoutX="315.0" layoutY="251.0" mnemonicParsing="false" text="Erinnern an Passwortänderung in" onAction="#onCheckBoxClicked"/>
+      <Spinner styleClass="spinner" fx:id="spinnerCredentialsReminderDays" layoutX="430.0" layoutY="274.0" prefHeight="26.0" prefWidth="100.0" />
       <Label layoutX="544.0" layoutY="279.0" text="Tagen" />
       <Label layoutX="315.0" layoutY="367.0" text="Kategorien" />
-      <MultiSelectionComboBox fx:id="choiceBoxCredentialsCategories" layoutX="430.0" layoutY="362.0" prefWidth="171.0" />
+      <MultiSelectionComboBox styleClass="multi-selection-combo-box" fx:id="choiceBoxCredentialsCategories" layoutX="430.0" layoutY="362.0" prefWidth="171.0" />
       <JFXButton fx:id="buttonCredentialsAddCategories" layoutX="606.0" layoutY="362.0" mnemonicParsing="false" text="+" onAction="#onAddCategoryClicked"/>
       <Label layoutX="315.0" layoutY="310.0" text="Sicherheitsfrage" />
       <JFXComboBox fx:id="comboBoxCredentialsSecurityQuestion" layoutX="430.0" layoutY="305.0" prefWidth="171.0" onAction="#onChooseQuestionClicked"/>
