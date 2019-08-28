@@ -22,7 +22,11 @@ public abstract class AbstractViewController {
         this.mainWindowViewController = mainWindowViewController;
     }
 
-    protected  <T extends AbstractViewController> T openModal(String ressource, Class<T> clazz, Consumer<T> preOpen) throws IOException {
+    protected <T extends AbstractViewController> T openModal(String ressource, Class<T> clazz, Consumer<T> preOpen) throws IOException {
+        return openModal(stage, ressource, clazz, preOpen);
+    }
+
+    protected <T extends AbstractViewController> T openModal(Stage parent, String ressource, Class<T> clazz, Consumer<T> preOpen) throws IOException {
         AnchorPane categoryEditPane;
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(ressource));
         categoryEditPane = fxmlLoader.load();
@@ -30,7 +34,7 @@ public abstract class AbstractViewController {
 
         Stage newStage = new Stage();
         Scene newScene = new Scene(categoryEditPane);
-        newStage.initOwner(stage);
+        newStage.initOwner(parent);
         newStage.initModality(Modality.WINDOW_MODAL);
         newScene.getStylesheets().add(getClass().getResource("../application/application.css").toExternalForm());
         newStage.setScene(newScene);
