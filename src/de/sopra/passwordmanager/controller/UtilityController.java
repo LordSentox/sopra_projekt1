@@ -36,12 +36,12 @@ import static javax.xml.bind.DatatypeConverter.parseHexBinary;
 public class UtilityController {
 	public enum Charset {
 		CHARSET_LOWERCASE(new char[] { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p',
-				'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z' }), CHARSET_UPPERCASE(new char[] { 'A', 'B', 'C', 'D',
+				'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z' }), 
+		CHARSET_UPPERCASE(new char[] { 'A', 'B', 'C', 'D',
 						'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W',
-						'X', 'Y', 'Z' }), CHARSET_NUMBER(
-								new char[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' }), CHARSET_SPECIAL(
-										new char[] { '$', '!', '^', '@', '?', '#', '[', '&', '{', '}', '(', '=', '*',
-												')', '+', ']' });
+						'X', 'Y', 'Z' }), 
+		CHARSET_NUMBER(new char[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' }), 
+		CHARSET_SPECIAL(new char[] { '$', '!', '^', '@', '?', '#', '[', '&', '{', '}', '(', '=', '*', ')', '+', ']' });
 
 		private char[] chars;
 
@@ -230,18 +230,17 @@ public class UtilityController {
 		//Gibt es wiederholte regulaere Ausdruecke?
 		RepeatCharacterRegexRule regex = new RepeatCharacterRegexRule(3);
 		
-		List<WeighedRule> list = new ArrayList<>(Arrays.asList(new WeighedRule(characterOrdinaryRule, 0.25),
-				new WeighedRule(characterSpecialRule, 0.5), 
-				new WeighedRule(notAllTheSame, 0.25),
-				new WeighedRule(minimumLength, 0.75), 
-				new WeighedRule(repeatCharacters, 0.5),
-				new WeighedRule(regex,1.0)
-				));
+		List<WeighedRule> list = new ArrayList<>(Arrays.asList(new WeighedRule(characterOrdinaryRule, 1.25),
+				new WeighedRule(characterSpecialRule, 1.5), 
+				new WeighedRule(notAllTheSame, 1.25),
+				new WeighedRule(minimumLength, 1.75), 
+				new WeighedRule(repeatCharacters, 1.5),
+				new WeighedRule(regex,2.0)));
 		if (checkUsername) {
 			// Stelle sicher, dass im Passwort wenig alphabetische Sequenzen
 			// vorkomen.
 			UsernameRule username = new UsernameRule();
-			list.add(new WeighedRule(username, 1.0));	
+			list.add(new WeighedRule(username, 2.0));	
 		}
 		return list;
 	}
@@ -254,6 +253,9 @@ public class UtilityController {
      */
     // TODO: Sollte noch den Nutzernamen bekommen, um es mit dem Passwort zu vergleichen
     int checkQuality(String text, String username) {
+    	if(text == null){
+    		return 0;
+    	}
         PasswordData pwData = new PasswordData(text);
         boolean checkusername = !(username == null);
         if (checkusername) {
