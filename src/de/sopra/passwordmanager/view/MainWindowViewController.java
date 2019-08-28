@@ -754,32 +754,41 @@ public class MainWindowViewController extends AbstractViewController implements 
             case UNSET:
                 setDisable(true);
                 disableAllEntryControls(true, 0.0);
-                saveCredentialsButton(true);
+                disableSaveCredentialsButton(true);
+                disableEditCredentialsButton(true);
                 break;
             case VIEW_ENTRY:
                 setDisable(true);
                 disableAllEntryControls(false, 1.0);
-                saveCredentialsButton(true);
+                disableSaveCredentialsButton(true);
+                disableEditCredentialsButton(false);
                 break;
             case CREATING_NEW_ENTRY:
                 setDisable(false);
                 disableAllEntryControls(false, 1.0);
-                saveCredentialsButton(false);
+                disableSaveCredentialsButton(false);
+                disableEditCredentialsButton(true);
                 break;
             case START_EDITING_ENTRY:
                 setDisable(false);
                 disableAllEntryControls(false, 1.0);
-                saveCredentialsButton(true);
+                disableSaveCredentialsButton(true);
+                disableEditCredentialsButton(true);
                 break;
             case EDITED_ENTRY:
                 setDisable(false);
                 disableAllEntryControls(false, 1.0);
-                saveCredentialsButton(false);
+                disableSaveCredentialsButton(false);
+                disableEditCredentialsButton(true);
                 break;
         }
     }
 
-    private void saveCredentialsButton(boolean disabled) {
+    private void disableEditCredentialsButton(boolean disabled) {
+        buttonEditCredentials.setDisable(disabled || listViewCredentialsList.getSelectionModel().getSelectedItem() == null);
+    }
+
+    private void disableSaveCredentialsButton(boolean disabled) {
         if (currentCredentials.getName() == null
                 || currentCredentials.getPassword() == null
                 || currentCredentials.getUserName() == null
