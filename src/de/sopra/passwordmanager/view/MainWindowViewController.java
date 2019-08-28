@@ -444,12 +444,10 @@ public class MainWindowViewController extends AbstractViewController implements 
 
         setState(CREATING_NEW_ENTRY);
 
-        //TODO state -> disable/enable
         oldCredentials = null;
         currentCredentials = new CredentialsBuilder();
         listViewCredentialsList.getSelectionModel().clearSelection();
-        //listViewCredentialsList.getFocusModel().focus(-1);
-        buttonCredentialsCopy.setDisable(false);
+        buttonCredentialsCopy.setDisable(false); //TODO
         buttonCredentialsShowPassword.setDisable(false);
 
         if (currentCredentials == null ||
@@ -525,6 +523,14 @@ public class MainWindowViewController extends AbstractViewController implements 
     }
 
     public void onChooseQuestionClicked() {
+
+        //Wenn es geleert wurde, einfach die Ansicht zurücksetzen
+        if (comboBoxCredentialsSecurityQuestion.getSelectionModel().getSelectedIndex() == -1) {
+            labelCredentialsSecurityAnswer.setText("");
+            labelCredentialsSecurityAnswer.setVisible(false);
+            return;
+        }
+
         //STATE - soll nur in CREATING_NEW_ENTRY, START_EDITING_ENTRY und EDITED_ENTRY funktionieren
         if (state.match(UNSET)) {
             showError("Du kannst aktuell keine Sicherheitsfrage auswählen");
@@ -535,8 +541,7 @@ public class MainWindowViewController extends AbstractViewController implements 
         String answer = currentCredentials.getSecurityQuestions().get(selectedQuestion);
         labelCredentialsSecurityAnswer.setText(answer);
         labelCredentialsSecurityAnswer.setVisible(true);
-        //comboBoxCredentialsSecurityQuestion.getSelectionModel().select(selectedQuestion);
-        //refreshEntry();
+
     }
 
     public void onEntryChosen() {

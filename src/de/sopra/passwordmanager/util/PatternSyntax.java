@@ -70,7 +70,7 @@ public class PatternSyntax {
         WEBSITE("web", "page", "net", "website") {
             @Override
             public String apply(Credentials credentials) {
-                return credentials.getName() + "(website: " + credentials.getWebsite() + ")";
+                return credentials.getName() + " (website: " + credentials.getWebsite() + ")";
             }
 
             @Override
@@ -81,7 +81,8 @@ public class PatternSyntax {
         NOTES("note", "notes") {
             @Override
             public String apply(Credentials credentials) {
-                return credentials.getName() + "(notes: " + credentials.getNotes().substring(0, 20) + "...)";
+                return credentials.getName() + " (notes: " + credentials.getNotes()
+                        .replace("\n", "|").substring(0, 20) + "...)";
             }
 
             @Override
