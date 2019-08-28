@@ -3,7 +3,7 @@
 <?import com.jfoenix.controls.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.AnchorPane?>
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="286.0" prefWidth="323.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.sopra.passwordmanager.view.MasterPasswordViewController">
+<AnchorPane styleClass="background" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="286.0" prefWidth="323.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.sopra.passwordmanager.view.MasterPasswordViewController">
    <children>
       <JFXPasswordField fx:id="passwordFieldSet" layoutX="40.0" layoutY="45.0" prefHeight="26.0" prefWidth="242.0" />
       <JFXPasswordField fx:id="passwordFieldCheck" layoutX="40.0" layoutY="133.0" prefHeight="26.0" prefWidth="242.0" />
@@ -12,7 +12,7 @@
       <JFXProgressBar fx:id="progressBarQuality" layoutX="40.0" layoutY="83.0" prefHeight="20.0" prefWidth="242.0" progress="0.0" />
       <JFXButton fx:id="buttonSave" layoutX="99.0" layoutY="250.0" mnemonicParsing="false" text="Speichern" onAction="#onSaveClicked"/>
       <JFXButton fx:id="buttonCancel" layoutX="193.0" layoutY="250.0" mnemonicParsing="false" text="Abbrechen" onAction="#onMasterPasswordCancelClicked" />
-      <Label fx:id="labelError" layoutX="40.0" layoutY="226.0" visible="false" text="Warnung oder Fehlermeldung" />
+      <Label fx:id="labelError" layoutX="40.0" layoutY="226.0" visible="false" text="Passwörter sind nicht gleich" />
       <Spinner fx:id="spinnerReminderDays"  layoutX="40.0" layoutY="190.0" prefHeight="26.0" prefWidth="104.0" editable="true" />
       <Label layoutX="40.0" layoutY="174.0" text="An Änderung erinnern in:" />
       <Label layoutX="161.0" layoutY="195.0" prefHeight="0.0" prefWidth="41.0" text="Tagen" />

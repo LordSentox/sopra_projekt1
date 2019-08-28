@@ -23,8 +23,6 @@ import de.sopra.passwordmanager.view.multibox.SelectableComboItem;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -33,20 +31,51 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.TextFormatter;
+import javafx.scene.control.TextFormatter.Change;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
+import javafx.util.converter.IntegerStringConverter;
 
 import java.io.IOException;
+import java.text.NumberFormat;
+import java.text.ParsePosition;
 import java.util.*;
+import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
 import static de.sopra.passwordmanager.view.MainWindowViewController.WindowState.*;
 
 public class MainWindowViewController extends AbstractViewController implements MainWindowAUI {
 
+	public final TextFormatter<Integer> spinnerTextFormatter = new TextFormatter<Integer>(new IntegerStringConverter(), 1,
+			new UnaryOperator<TextFormatter.Change>(){
+
+			NumberFormat format = NumberFormat.getIntegerInstance();
+				@Override
+				public Change apply(Change c) {
+					if (c.isContentChange()) {
+				        ParsePosition parsePosition = new ParsePosition(0);
+				        // NumberFormat evaluates the beginning of the text
+				        format.parse(c.getControlNewText(), parsePosition);
+				        if (parsePosition.getIndex() == 0 ||
+				                parsePosition.getIndex() < c.getControlNewText().length()) {
+				            // reject parsing the complete text failed
+				            return null;
+				        }
+				      //Länge begrenzen
+				        if(c.getControlNewText().length() > 3){
+				        	return null;
+				        }
+				        Integer number = Integer.parseInt(c.getControlNewText());
+				        if(number < 1)
+				        	return null;
+				    }
+				    return c;
+				}} );
     //controller attributes
     private PasswordManagerController passwordManagerController;
     private SecurityQuestionViewController securityQuestionViewController;
@@ -132,6 +161,7 @@ public class MainWindowViewController extends AbstractViewController implements 
 
         spinnerCredentialsReminderDays.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 999));
         spinnerCredentialsReminderDays.setDisable(true);
+        spinnerCredentialsReminderDays.getEditor().setTextFormatter(spinnerTextFormatter);
 
         labelCredentialsSecurityAnswer.setVisible(false);
 
@@ -142,14 +172,10 @@ public class MainWindowViewController extends AbstractViewController implements 
         progressBarCredentialsCopyTimer.setOpacity(0.0);
         progressBarCredentialsCopyTimer.setProgress(1);
         progressBarCredentialsCopyTimer.setStyle("-fx-accent: green");
-        timeline = new Timeline(new KeyFrame(Duration.millis(10), new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                progressBarCredentialsCopyTimer.setProgress(progressBarCredentialsCopyTimer.progressProperty().doubleValue() - 0.001);
-
-                if (progressBarCredentialsCopyTimer.progressProperty().doubleValue() <= 0.0) {
-                    buttonCredentialsCopy.setOpacity(1.0);
-                }
+        timeline = new Timeline(new KeyFrame(Duration.millis(10), event -> {
+            progressBarCredentialsCopyTimer.setProgress(progressBarCredentialsCopyTimer.progressProperty().doubleValue() - 0.001);
+            if (progressBarCredentialsCopyTimer.progressProperty().doubleValue() <= 0.0) {
+                buttonCredentialsCopy.setOpacity(1.0);
             }
         }));
         timeline.setCycleCount(1000);
@@ -176,7 +202,6 @@ public class MainWindowViewController extends AbstractViewController implements 
                 currentCredentials.withName(newText);
                 changeState(START_EDITING_ENTRY, EDITED_ENTRY);
             }
-            //setSaveButonDisabled();
         });
         textFieldCredentialsUserName.textProperty().addListener((obs, oldText, newText) -> {
             if (oldText == null || newText == null) return;
@@ -185,7 +210,6 @@ public class MainWindowViewController extends AbstractViewController implements 
                 changeState(START_EDITING_ENTRY, EDITED_ENTRY);
                 passwordManagerController.checkQuality(currentCredentials);
             }
-            //setSaveButonDisabled();
         });
         textFieldCredentialsWebsite.textProperty().addListener((obs, oldText, newText) -> {
             if (oldText == null || newText == null) return;
@@ -193,7 +217,6 @@ public class MainWindowViewController extends AbstractViewController implements 
                 currentCredentials.withWebsite(newText);
                 changeState(START_EDITING_ENTRY, EDITED_ENTRY);
             }
-            //setSaveButonDisabled();
         });
         textFieldCredentialsPassword.textProperty().addListener((obs, oldText, newText) -> {
             if (oldText == null || newText == null) return;
@@ -229,6 +252,8 @@ public class MainWindowViewController extends AbstractViewController implements 
         selectionStrategy = new SelectAllStrategy(); //es wird keine Auswahl getroffen
         orderStrategy = new AlphabeticOrderStrategy(); //es wird nicht sortiert
 
+        textFieldCredentialsNotes.setWrapText(true);
+
     }
 
     //region controller
@@ -261,7 +286,7 @@ public class MainWindowViewController extends AbstractViewController implements 
     }
     //endregion
 
-    CredentialsBuilder getCredentialsBuilder() {
+    public CredentialsBuilder getCredentialsBuilder() {
         return currentCredentials;
     }
 
@@ -369,7 +394,7 @@ public class MainWindowViewController extends AbstractViewController implements 
 
         CredentialsController credController = passwordManagerController.getCredentialsController();
         credController.copyPasswordToClipboard(currentCredentials);
-        buttonCredentialsCopy.setOpacity(0.5);
+        buttonCredentialsCopy.getStyleClass().add("copy-button");
         timeline.stop();
         progressBarCredentialsCopyTimer.setOpacity(1.0);
         progressBarCredentialsCopyTimer.setProgress(1.0);

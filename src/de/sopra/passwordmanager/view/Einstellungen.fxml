@@ -4,7 +4,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import com.jfoenix.controls.*?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="222.0" prefWidth="227.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.sopra.passwordmanager.view.SettingsViewController">
+<AnchorPane styleClass="background" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="222.0" prefWidth="227.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.sopra.passwordmanager.view.SettingsViewController">
    <children>
       <JFXButton fx:id="buttonSetMP" layoutX="27.0" layoutY="26.0" mnemonicParsing="false" text="Masterpasswort ändern" onAction="#onChangeMasterpasswordClicked"/>
       <JFXButton fx:id="buttonImport" layoutX="27.0" layoutY="62.0" mnemonicParsing="false" prefWidth="171.0" text="Datensatz importieren" onAction="#onImportDataClicked"/>
