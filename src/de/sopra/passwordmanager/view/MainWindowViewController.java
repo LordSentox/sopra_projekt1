@@ -285,6 +285,10 @@ public class MainWindowViewController extends AbstractViewController implements 
     //region action handler
     public void onSettingsClicked() {
         //STATE - soll unabhängig funktionieren
+        if (state.match(CREATING_NEW_ENTRY, EDITED_ENTRY)) {
+            showError("Ein Eintrag wird gerade editiert, die Änderung müssen vorher gespeichert oder verworfen werden.");
+            return;
+        }
         try {
             /* Einstellungen öffnen */
             openModal("../view/Einstellungen.fxml", SettingsViewController.class, identity -> {
@@ -400,6 +404,9 @@ public class MainWindowViewController extends AbstractViewController implements 
 
         boolean checkBoxSelected = checkBoxCredentialsUseReminder.isSelected();
         spinnerCredentialsReminderDays.setDisable(!checkBoxSelected);
+
+        changeState(START_EDITING_ENTRY, EDITED_ENTRY);
+
     }
 
     public void onAddSecurityQuestionClicked() {
@@ -452,14 +459,7 @@ public class MainWindowViewController extends AbstractViewController implements 
         currentCredentials = new CredentialsBuilder();
         listViewCredentialsList.getSelectionModel().clearSelection();
 
-        if (currentCredentials == null ||
-                currentCredentials.getName() == null ||
-                currentCredentials.getUserName() == null ||
-                currentCredentials.getPassword() == null ||
-                currentCredentials.getWebsite() == null) {
-
-            buttonSaveCredentials.setDisable(true);
-        }
+        updateView();
         refreshEntry();
     }
 
@@ -471,7 +471,6 @@ public class MainWindowViewController extends AbstractViewController implements 
         }
 
         CredentialsController credController = passwordManagerController.getCredentialsController();
-        oldCredentials = listViewCredentialsList.getSelectionModel().getSelectedItem().getCredentials();
         listViewCredentialsList.getSelectionModel().clearSelection();
         setState(UNSET);
         credController.removeCredentials(oldCredentials);
@@ -548,20 +547,7 @@ public class MainWindowViewController extends AbstractViewController implements 
     public void onEntryChosen() {
         //STATE - soll unabhängig funktionieren, aber zur state relative Entscheidungen treffen
 
-        if (buttonCredentialsShowPassword.isDisabled()) {
-            buttonCredentialsShowPassword.setDisable(false);
-        }
-        if (buttonCredentialsCopy.isDisabled()) {
-            buttonCredentialsCopy.setDisable(false);
-            progressBarCredentialsCopyTimer.setOpacity(1.0);
-        }
-        if (comboBoxCredentialsSecurityQuestion.isDisabled()) {
-            comboBoxCredentialsSecurityQuestion.setDisable(false);
-        }
-
-        buttonCredentialsShowPassword.setSelected(false);
         CredentialsItem selectedEntry = listViewCredentialsList.getSelectionModel().getSelectedItem();
-        int index = listViewCredentialsList.getFocusModel().getFocusedIndex();
 
         //Wenn Eingaben vorliegen, nach Verwerfung dieser Eingaben fragen
         if (state.match(EDITED_ENTRY, CREATING_NEW_ENTRY)) {
@@ -573,14 +559,13 @@ public class MainWindowViewController extends AbstractViewController implements 
                     //Änderungen nicht übernehmen
                     oldCredentials = selectedEntry.getCredentials();
                     currentCredentials = selectedEntry.getNewBuilder(passwordManagerController.getUtilityController());
-                    listViewCredentialsList.getSelectionModel().select(index);
                     setState(VIEW_ENTRY);
                     refreshEntry();
                 }
 
                 @Override
                 public void onCancel() {
-                    //nicht löschen
+                    //Änderungen behalten
                     listViewCredentialsList.getSelectionModel().clearSelection();
                     updateView();
                 }
