@@ -9,6 +9,11 @@ import de.sopra.passwordmanager.util.Validate;
 import exceptions.DecryptionException;
 import exceptions.EncryptionException;
 import org.passay.*;
+//import org.passay.;
+
+
+
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
@@ -121,7 +126,7 @@ public class UtilityController {
             }
 
             password = passwordBuilder.toString();
-        } while (checkQuality(password) < 100);
+        } while (checkQuality(password,"passwort") < 100);
 
         credentials.withPassword(password);
         passwordManagerController.getMainWindowAUI().refreshEntry();
@@ -209,12 +214,16 @@ public class UtilityController {
 
         // Gibt es ein bestimmtes Doppelzeichen drei oder mehr mal?
         RepeatCharactersRule repeatCharacters = new RepeatCharactersRule(2, 3);
-
+        
+        //Stelle sicher, dass im Passwort wenig alphabetische Sequenzen vorkomen.
+        UsernameRule username = new UsernameRule();
         return Arrays.asList(new WeighedRule(characterOrdinaryRule, 0.5),
                 new WeighedRule(characterSpecialRule, 0.75),
                 new WeighedRule(notAllTheSame, 0.5),
                 new WeighedRule(minimumLength, 1.0),
-                new WeighedRule(repeatCharacters, 0.75));
+                new WeighedRule(repeatCharacters, 0.75),
+                new WeighedRule(username, 1.0)
+        		);
     }
 
     /**
@@ -224,9 +233,9 @@ public class UtilityController {
      * @return Es wird ein Wert von 0 bis 100 geliefert, der die Qualität des Passwortes angibt, dabei steht 0 für sehr schlecht und 100 für sehr sicher
      */
     // TODO: Sollte noch den Nutzernamen bekommen, um es mit dem Passwort zu vergleichen
-    int checkQuality(String text) {
+    int checkQuality(String text, String username) {
         PasswordData pwData = new PasswordData(text);
-
+        pwData.setUsername(username);
         List<WeighedRule> rules = generateRules();
 
         // Für jede Regel die eingehalten wird, wird das Gewicht als Wert der unangepassten Qualität hinzugefügt
@@ -238,11 +247,11 @@ public class UtilityController {
         }
 
         // Die Qualität auf einen int im Bereich von 0 bis 100 anpassen.
-        double totalWeight = 0.f;
+        double totalWeight = 0.0;
         for (WeighedRule rule : rules) {
             totalWeight += rule.getWeight();
         }
-        double percent = quality / totalWeight * 100.f;
+        double percent = quality / totalWeight * 100.0;
 
         // Überprüfe auf Bereichsüberschreitungen und gebe den entsprechenden Wert zurück
         int wholePercent;

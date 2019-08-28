@@ -38,7 +38,7 @@ public class UtilityControllerTest {
     	CredentialsBuilder credBuilder = new CredentialsBuilder("Hi", "How", "name", "asd");
         utilityController.generatePassword(credBuilder);
 
-        Assert.assertTrue(utilityController.checkQuality(credBuilder.getPassword()) > PasswordManagerController.MINIMUM_SAFE_QUALITY);
+        Assert.assertTrue(utilityController.checkQuality(credBuilder.getPassword(), credBuilder.getUserName()) > PasswordManagerController.MINIMUM_SAFE_QUALITY);
     }
 
     @Test
