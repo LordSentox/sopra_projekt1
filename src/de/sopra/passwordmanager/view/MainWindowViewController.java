@@ -252,7 +252,7 @@ public class MainWindowViewController extends AbstractViewController implements 
     //region action handler
     public void onSettingsClicked() {
         try {
-            /* Einstellungen */
+            /* Einstellungen öffnen */
             AnchorPane settingsPane;
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("../view/Einstellungen.fxml"));
             settingsPane = fxmlLoader.load();
@@ -276,6 +276,7 @@ public class MainWindowViewController extends AbstractViewController implements 
     public void onSearchClicked() {
         CredentialsController credentialsController = passwordManagerController.getCredentialsController();
         String pattern = textFieldSearch.getText();
+        //mit neuem Pattern filtern, refresh erfolgt über controller
         credentialsController.filterCredentials(new PatternSyntax(pattern));
     }
 

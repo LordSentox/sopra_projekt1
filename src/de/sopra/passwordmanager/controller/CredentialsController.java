@@ -65,7 +65,7 @@ public class CredentialsController {
         Credentials credentials = newCredentials.build(passwordManagerController.getUtilityController());
         for (Category category : categories) {
             category.addCredentials(credentials);
-		}
+        }
         passwordManagerController.getMainWindowAUI().refreshLists();
     }
 
@@ -129,12 +129,14 @@ public class CredentialsController {
      * @see CredentialsBuilder
      */
     public void filterCredentials(PatternSyntax pattern) {
+
+        //XXX: remove when program is finish, this is just the dev tool
         if (pattern.getPatternFilter() == PatternSyntax.PatternSyntaxFilter.COMMAND) {
-            //TODO: remove when program is finish, this is just the dev tool
             DevTool.fillWithData(passwordManagerController);
             passwordManagerController.getMainWindowAUI().refreshLists();
             return;
         }
+
         EntryListSelectionStrategy strategy = credentials -> {
             LinkedList<CredentialsItem> selection = new LinkedList<>();
             for (Credentials creds : credentials) {
