@@ -1,17 +1,11 @@
 package de.sopra.passwordmanager.view;
 
-import java.text.NumberFormat;
-import java.text.ParsePosition;
-import java.util.function.UnaryOperator;
-
 import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXProgressBar;
-
 import de.sopra.passwordmanager.util.CredentialsBuilder;
 import de.sopra.passwordmanager.view.dialog.SimpleDialog;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.TextFormatter.Change;
 import javafx.scene.control.Label;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
@@ -26,31 +20,8 @@ public class MasterPasswordViewController extends AbstractViewController impleme
 	@FXML private Label labelError;
 	@FXML private JFXProgressBar progressBarQuality;
 	
-	public final TextFormatter<Integer> spinnerTextFormatter = new TextFormatter<Integer>(new IntegerStringConverter(), 1, 
-			new UnaryOperator<TextFormatter.Change>(){
-
-			NumberFormat format = NumberFormat.getIntegerInstance();
-				@Override
-				public Change apply(Change c) {
-					if (c.isContentChange()) {
-				        ParsePosition parsePosition = new ParsePosition(0);
-				        // NumberFormat evaluates the beginning of the text
-				        format.parse(c.getControlNewText(), parsePosition);
-				        if (parsePosition.getIndex() == 0 ||
-				                parsePosition.getIndex() < c.getControlNewText().length()) {
-				            // reject parsing the complete text failed
-				            return null;
-				        }
-				        //Länge begrenzen
-				        if(c.getControlNewText().length() > 3){ 
-				        	return null;
-				        }
-				        Integer number = Integer.parseInt(c.getControlNewText());
-				        if(number < 1)
-				        	return null;
-				    }
-				    return c;
-				}} );
+	private final TextFormatter<Integer> spinnerTextFormatter = new TextFormatter<Integer>(
+			new IntegerStringConverter(), 1, MainWindowViewController.SPINNER_FILTER);
 	
 	private Stage stage, mainStage;
 	
