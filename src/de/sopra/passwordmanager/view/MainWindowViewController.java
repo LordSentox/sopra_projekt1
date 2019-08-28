@@ -27,11 +27,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.Label;
-import javafx.scene.control.Spinner;
-import javafx.scene.control.SpinnerValueFactory;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextFormatter;
+import javafx.scene.control.*;
 import javafx.scene.control.TextFormatter.Change;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
@@ -51,31 +47,34 @@ import static de.sopra.passwordmanager.view.MainWindowViewController.WindowState
 
 public class MainWindowViewController extends AbstractViewController implements MainWindowAUI {
 
-	public final TextFormatter<Integer> spinnerTextFormatter = new TextFormatter<Integer>(new IntegerStringConverter(), 1,
-			new UnaryOperator<TextFormatter.Change>(){
+    public static final UnaryOperator<TextFormatter.Change> SPINNER_FILTER = new UnaryOperator<TextFormatter.Change>() {
+        NumberFormat format = NumberFormat.getIntegerInstance();
+        @Override
+        public Change apply(Change c) {
+            if (c.isContentChange()) {
+                ParsePosition parsePosition = new ParsePosition(0);
+                // NumberFormat evaluates the beginning of the text
+                format.parse(c.getControlNewText(), parsePosition);
+                if (parsePosition.getIndex() == 0 ||
+                        parsePosition.getIndex() < c.getControlNewText().length()) {
+                    // reject parsing the complete text failed
+                    return null;
+                }
+                //Länge begrenzen
+                if (c.getControlNewText().length() > 3) {
+                    return null;
+                }
+                Integer number = Integer.parseInt(c.getControlNewText());
+                if (number < 1)
+                    return null;
+            }
+            return c;
+        }
+    };
 
-			NumberFormat format = NumberFormat.getIntegerInstance();
-				@Override
-				public Change apply(Change c) {
-					if (c.isContentChange()) {
-				        ParsePosition parsePosition = new ParsePosition(0);
-				        // NumberFormat evaluates the beginning of the text
-				        format.parse(c.getControlNewText(), parsePosition);
-				        if (parsePosition.getIndex() == 0 ||
-				                parsePosition.getIndex() < c.getControlNewText().length()) {
-				            // reject parsing the complete text failed
-				            return null;
-				        }
-				      //Länge begrenzen
-				        if(c.getControlNewText().length() > 3){
-				        	return null;
-				        }
-				        Integer number = Integer.parseInt(c.getControlNewText());
-				        if(number < 1)
-				        	return null;
-				    }
-				    return c;
-				}} );
+    private final TextFormatter<Integer> spinnerTextFormatter =
+            new TextFormatter<Integer>(new IntegerStringConverter(), 1, SPINNER_FILTER);
+
     //controller attributes
     private PasswordManagerController passwordManagerController;
     private SecurityQuestionViewController securityQuestionViewController;
@@ -161,6 +160,7 @@ public class MainWindowViewController extends AbstractViewController implements 
 
         spinnerCredentialsReminderDays.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 999));
         spinnerCredentialsReminderDays.setDisable(true);
+        spinnerCredentialsReminderDays.setEditable(true);
         spinnerCredentialsReminderDays.getEditor().setTextFormatter(spinnerTextFormatter);
 
         labelCredentialsSecurityAnswer.setVisible(false);
