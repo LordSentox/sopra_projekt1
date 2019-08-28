@@ -23,7 +23,7 @@ public class SettingsViewController extends AbstractViewController {
     public void onChangeMasterpasswordClicked() {
         try {
             
-            openModal("../view/Masterpasswort-setzen.fxml", MasterPasswordViewController.class, control -> {control.init(); control.openedBySettings();});
+            openModal(settingsStage, "../view/Masterpasswort-setzen.fxml", MasterPasswordViewController.class, control -> {control.init(); control.openedBySettings();});
             
 
         } catch (Exception e) {
@@ -36,7 +36,7 @@ public class SettingsViewController extends AbstractViewController {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Öffne Datei");
         fileChooser.getExtensionFilters().addAll(new ExtensionFilter("XML", "*.xml"));
-        File fileToOpen = fileChooser.showOpenDialog(null);
+        File fileToOpen = fileChooser.showOpenDialog(settingsStage);
 
         if(fileToOpen != null) {
 	        try {
@@ -51,7 +51,7 @@ public class SettingsViewController extends AbstractViewController {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Speichere Datei");
         fileChooser.getExtensionFilters().addAll(new ExtensionFilter("XML", "*.xml"));
-        File fileToSave = fileChooser.showSaveDialog(null);
+        File fileToSave = fileChooser.showSaveDialog(settingsStage);
         if(fileToSave != null)
         	mainWindowViewController.getPasswordManagerController().getIOController().exportFile(fileToSave);
     }
