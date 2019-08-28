@@ -4,6 +4,7 @@ import de.sopra.passwordmanager.controller.PasswordManagerController;
 import de.sopra.passwordmanager.controller.PasswordManagerControllerDummy;
 import de.sopra.passwordmanager.controller.UtilityController;
 import de.sopra.passwordmanager.model.Credentials;
+import de.sopra.passwordmanager.util.strategy.EntryListOrderStrategy;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -11,6 +12,7 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class EntryListOrderStrategyTest {
 
@@ -27,12 +29,13 @@ public class EntryListOrderStrategyTest {
     @Test
     public void orderTest() {
         EntryListOrderStrategy strategy = list -> {
-            list.sort(Comparator.comparing(Credentials::getName));
-            return list;
+            List<Credentials> collect = list.stream().map(CredentialsItem::getCredentials).collect(Collectors.toList());
+            collect.sort(Comparator.comparing(Credentials::getName));
+            return collect.stream().map(CredentialsItem::new).collect(Collectors.toList());
         };
 
         EntryListOrderStrategy strategy2 = list -> {
-            list.sort(Comparator.comparing(Credentials::getLastChanged));
+            list.sort(Comparator.comparing(creds -> creds.getCredentials().getLastChanged()));
             return list;
         };
 
@@ -46,7 +49,7 @@ public class EntryListOrderStrategyTest {
         credentials.add(credC);
         credentials.add(credA);
 
-        chained.order(credentials);
+        chained.order(credentials.stream().map(CredentialsItem::new).collect(Collectors.toList()));
 
         Assert.assertEquals("ordering failed", credA, credentials.get(0));
         Assert.assertEquals("ordering failed", credB, credentials.get(1));

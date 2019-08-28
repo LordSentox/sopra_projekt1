@@ -7,14 +7,19 @@ import de.sopra.passwordmanager.controller.CredentialsController;
 import de.sopra.passwordmanager.controller.PasswordManagerController;
 import de.sopra.passwordmanager.model.Category;
 import de.sopra.passwordmanager.model.Credentials;
-import de.sopra.passwordmanager.model.SecurityQuestion;
 import de.sopra.passwordmanager.util.CredentialsBuilder;
-import de.sopra.passwordmanager.util.EntryListOrderStrategy;
-import de.sopra.passwordmanager.util.EntryListSelectionStrategy;
+import de.sopra.passwordmanager.util.CredentialsItem;
 import de.sopra.passwordmanager.util.Path;
+import de.sopra.passwordmanager.util.PatternSyntax;
 import de.sopra.passwordmanager.util.dialog.SimpleConfirmation;
 import de.sopra.passwordmanager.util.dialog.SimpleDialog;
 import de.sopra.passwordmanager.util.dialog.TwoOptionConfirmation;
+import de.sopra.passwordmanager.util.strategy.AlphabeticOrderStrategy;
+import de.sopra.passwordmanager.util.strategy.EntryListOrderStrategy;
+import de.sopra.passwordmanager.util.strategy.EntryListSelectionStrategy;
+import de.sopra.passwordmanager.util.strategy.SelectAllStrategy;
+import de.sopra.passwordmanager.view.multibox.MultiSelectionComboBox;
+import de.sopra.passwordmanager.view.multibox.SelectableComboItem;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.collections.ObservableList;
@@ -24,7 +29,10 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.*;
+import javafx.scene.control.Label;
+import javafx.scene.control.Spinner;
+import javafx.scene.control.SpinnerValueFactory;
+import javafx.scene.control.TextArea;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -77,13 +85,13 @@ public class MainWindowViewController implements MainWindowAUI {
     @FXML
     private JFXComboBox<CategoryItem> comboBoxCategorySelectionMain;
     @FXML
-    private JFXComboBox<SecurityQuestion> comboBoxCredentialsSecurityQuestion;
+    private JFXComboBox<String> comboBoxCredentialsSecurityQuestion;
 
     @FXML
     private JFXCheckBox checkBoxCredentialsUseReminder;
 
     @FXML
-    private ChoiceBox<Category> choiceBoxCredentialsCategories;
+    private MultiSelectionComboBox<CategoryItem> choiceBoxCredentialsCategories;
 
     @FXML
     private JFXProgressBar progressBarCredentialsCopyTimer;
@@ -142,8 +150,13 @@ public class MainWindowViewController implements MainWindowAUI {
             onCredentialsPasswordChanged();
         });
 
-        listViewCredentialsList.getSelectionModel().selectedItemProperty().addListener((obs, oldText, newText) -> {
-            onEntryChosen();
+        listViewCredentialsList.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null && !newValue.equals(oldValue))
+                onEntryChosen();
+        });
+        
+        comboBoxCategorySelectionMain.getSelectionModel().selectedItemProperty().addListener((obs, oldText, newText) -> {
+            refreshEntryListWhenCategoryChosen();
         });
 
         //Die ComboBox initialisieren - enthält zu Beginn nur die Root-Kategorie
@@ -152,8 +165,8 @@ public class MainWindowViewController implements MainWindowAUI {
         comboBoxCategorySelectionMain.getSelectionModel().select(rootCategoryItem);
 
         //Die Strategie initilisieren - sind zu Beginn Identitätsbeziehungen, d.h. ändern nichts am Input
-        selectionStrategy = identity -> identity; //es wird keine Auswahl getroffen
-        orderStrategy = identity -> identity; //es wird nicht sortiert
+        selectionStrategy = new SelectAllStrategy(); //es wird keine Auswahl getroffen
+        orderStrategy = new AlphabeticOrderStrategy(); //es wird nicht sortiert
 
     }
 
@@ -211,13 +224,9 @@ public class MainWindowViewController implements MainWindowAUI {
     }
 
     public void onSearchClicked() {
-
-        //FIXME
         CredentialsController credentialsController = passwordManagerController.getCredentialsController();
-        Path categoryPath = comboBoxCategorySelectionMain.getValue().getPath();
-
         String pattern = textFieldSearch.getText();
-        credentialsController.filterCredentials(categoryPath, pattern);
+        credentialsController.filterCredentials(new PatternSyntax(pattern));
     }
 
     public void onAddCategoryClicked() {
@@ -299,6 +308,9 @@ public class MainWindowViewController implements MainWindowAUI {
         progressBarCredentialsCopyTimer.setOpacity(1.0);
         progressBarCredentialsCopyTimer.setProgress(1.0);
         timeline.playFromStart();
+
+        timeline.setOnFinished(event -> passwordManagerController.getCredentialsController().clearPasswordFromClipboard(currentCredentials));
+
     }
 
     public void onGeneratePasswordClicked() {
@@ -314,10 +326,10 @@ public class MainWindowViewController implements MainWindowAUI {
     public void onAddSecurityQuestionClicked() {
         try {
             /* Sicherheitsfrage hinzufügen */
-            AnchorPane securityQuestionAddPane = new AnchorPane();
+            AnchorPane securityQuestionAddPane;
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("../view/Sicherheitsfrage-und-Antwort.fxml"));
             securityQuestionAddPane = fxmlLoader.load();
-            securityQuestionViewController = (SecurityQuestionViewController) fxmlLoader.getController();
+            securityQuestionViewController = fxmlLoader.getController();
 
             Stage securityQuestionAddStage = new Stage();
             Scene securityQuestionAddScene = new Scene(securityQuestionAddPane);
@@ -325,27 +337,36 @@ public class MainWindowViewController implements MainWindowAUI {
             securityQuestionAddScene.getStylesheets().add(getClass().getResource("../application/application.css").toExternalForm());
             securityQuestionAddStage.setScene(securityQuestionAddScene);
             securityQuestionViewController.setStage(securityQuestionAddStage);
-            securityQuestionAddStage.show();
+            securityQuestionViewController.setMainWindowViewController(this);
+            securityQuestionAddStage.showAndWait();
+
+            comboBoxCredentialsSecurityQuestion.getItems().clear();
+            for (Map.Entry<String, String> question : currentCredentials.getSecurityQuestions().entrySet()) {
+
+                comboBoxCredentialsSecurityQuestion.getItems().add(question.getKey());
+            }
+
+            comboBoxCredentialsSecurityQuestion.getSelectionModel().select(1);
+            String selectedQuestion = comboBoxCredentialsSecurityQuestion.getSelectionModel().getSelectedItem();
+            System.out.println(selectedQuestion);
         } catch (Exception e) {
             showError(e);
             throw new RuntimeException(e);
         }
-
     }
 
     public void onRemoveSecurityQuestionClicked() {
         CredentialsController credController = passwordManagerController.getCredentialsController();
-        SecurityQuestion question = comboBoxCredentialsSecurityQuestion.getValue();
-
-        //FIXME
-        //String question = comboBoxCredentialsSecurityQuestion.getValue();
-        credController.removeSecurityQuestion(question, currentCredentials);
+        String question = comboBoxCredentialsSecurityQuestion.getValue();
+        credController.removeSecurityQuestion(question, currentCredentials.getSecurityQuestions().get(question), currentCredentials);
     }
 
     public void onAddCredentialsClicked() {
         oldCredentials = null;
         //TODO check if correct
-        listViewCredentialsList.getFocusModel().focus(-1);
+        listViewCredentialsList.getSelectionModel().clearSelection();
+        setCopyAndShowButtonsDisabled();
+        //listViewCredentialsList.getFocusModel().focus(-1);
         currentCredentials = new CredentialsBuilder();
         setDisable(false);
         buttonCredentialsCopy.setDisable(false);
@@ -356,7 +377,9 @@ public class MainWindowViewController implements MainWindowAUI {
     public void onRemoveCredentialsClicked() {
         CredentialsController credController = passwordManagerController.getCredentialsController();
         oldCredentials = listViewCredentialsList.getSelectionModel().getSelectedItem().getCredentials();
-        listViewCredentialsList.getFocusModel().focus(-1);
+        listViewCredentialsList.getSelectionModel().clearSelection();
+        setCopyAndShowButtonsDisabled();
+        //listViewCredentialsList.getFocusModel().focus(-1);
         credController.removeCredentials(oldCredentials);
         oldCredentials = null;
         currentCredentials = new CredentialsBuilder();
@@ -378,48 +401,45 @@ public class MainWindowViewController implements MainWindowAUI {
 
         updateCredentialsBuilderCopy();
 
-        List<Category> categories = new ArrayList<>();
-        categories.add(passwordManagerController.getPasswordManager().getRootCategory());
-        //categories.add(comboBoxCategorySelectionMain.getSelectionModel().getSelectedItem().getCategory());
-        //TODO auslesen aus choiceBox und an liste anhängen
-        //categories = choiceBoxCredentialsCategories.getItems();
-
+        List<CategoryItem> categoryItems = choiceBoxCredentialsCategories.getSelectedContentList();
+        List<Category> categoryList = categoryItems.stream()
+                .map(CategoryItem::getCategory)
+                .collect(Collectors.toList());
 
         if (oldCredentials == null) {
-            credController.addCredentials(currentCredentials, categories);
+            credController.addCredentials(currentCredentials, categoryList);
         } else {
-            credController.updateCredentials(oldCredentials, currentCredentials, categories);
+            credController.updateCredentials(oldCredentials, currentCredentials, categoryList);
         }
-
+        refreshEntry();
     }
 
     public void onChooseCategoryClicked() {
-        CredentialsController credController = passwordManagerController.getCredentialsController();
-        CategoryController categoryController = passwordManagerController.getCategoryController();
-
-        CategoryItem category = comboBoxCategorySelectionMain.getValue();
-        Path categoryPath = categoryController.getPathForCategory(category.getCategory());
-        String pattern = textFieldSearch.getText();
-        credController.filterCredentials(categoryPath, pattern);
+        refreshLists();
     }
 
     public void onChooseQuestionClicked() {
-        CredentialsController credController = passwordManagerController.getCredentialsController();
-        Map<String, String> questions = currentCredentials.getSecurityQuestions();
 
-        //TODO Methode hinzufügen für decrypt von Question und Answer
-        //SecurityQuestion chosenQuestion = credController.
-        SecurityQuestion selectedQuestion = comboBoxCredentialsSecurityQuestion.getValue();
-        selectedQuestion.getQuestion();
-        String answer = "";
+        String selectedQuestion = comboBoxCredentialsSecurityQuestion.getValue();
+        String answer = currentCredentials.getSecurityQuestions().get(selectedQuestion);
         labelCredentialsSecurityAnswer.setText(answer);
         labelCredentialsSecurityAnswer.setVisible(true);
+        refreshEntry();
+        comboBoxCredentialsSecurityQuestion.getSelectionModel().select(selectedQuestion);
     }
 
     public void onEntryChosen() {
+
+        if (buttonCredentialsShowPassword.isDisabled()) {
+            buttonCredentialsShowPassword.setDisable(false);
+        }
+        if (buttonCredentialsCopy.isDisabled()) {
+            buttonCredentialsCopy.setDisable(false);
+            progressBarCredentialsCopyTimer.setOpacity(1.0);
+        }
         CredentialsItem selectedEntry = listViewCredentialsList.getSelectionModel().getSelectedItem();
         int index = listViewCredentialsList.getFocusModel().getFocusedIndex();
-        if (buttonEditCredentials.isDisabled()) {
+        if (buttonEditCredentials.isDisabled()|| selectedEntry == null) {
             SimpleConfirmation confirmation = new SimpleConfirmation("Änderung verwerfen?",
                     "Zur Zeit wird ein Eintrag bearbeitet",
                     "Wollen Sie wirklich abbrechen? \n Alle Änderungen werden gelöscht.") {
@@ -429,14 +449,16 @@ public class MainWindowViewController implements MainWindowAUI {
                     oldCredentials = selectedEntry.getCredentials();
                     currentCredentials = selectedEntry.getNewBuilder(passwordManagerController.getUtilityController());
                     setDisable(true);
-                    listViewCredentialsList.getFocusModel().focus(-1);
+                    listViewCredentialsList.getFocusModel().focus(index);
                     refreshEntry();
                 }
 
                 @Override
                 public void onCancel() {
                     //nicht löschen
-                    listViewCredentialsList.getFocusModel().focus(-1);
+                    listViewCredentialsList.getSelectionModel().clearSelection();
+                    setCopyAndShowButtonsDisabled();
+                    //listViewCredentialsList.getFocusModel().focus(-1);
                 }
             };
             confirmation.setAlertType(AlertType.CONFIRMATION);
@@ -448,6 +470,7 @@ public class MainWindowViewController implements MainWindowAUI {
         }
     }
 
+
     public void onCredentialsPasswordChanged() {
         String password = passwordFieldCredentialsPassword.getText();
         if (password != null) {
@@ -455,7 +478,6 @@ public class MainWindowViewController implements MainWindowAUI {
             passwordManagerController.checkQuality(currentCredentials);
         }
     }
-
 
     @Override
     public void refreshLists() {
@@ -465,10 +487,25 @@ public class MainWindowViewController implements MainWindowAUI {
 
         //Alle Kategorien in die Kombobox einpflegen
         CategoryItem chosenCat = comboBoxCategorySelectionMain.getSelectionModel().getSelectedItem();
+        //alte Inhalte entfernen
         comboBoxCategorySelectionMain.getItems().clear();
-        cats.keySet().stream()
-                .map(path -> new CategoryItem(path, cats.get(path)))
+        //neue Inhalte einfügen
+        cats.entrySet().stream()
+                .map(entry -> new CategoryItem(entry.getKey(), entry.getValue()))
                 .forEach(comboBoxCategorySelectionMain.getItems()::add);
+
+        List<SelectableComboItem<CategoryItem>> oldList = choiceBoxCredentialsCategories.getListProvider();
+
+        List<SelectableComboItem<CategoryItem>> catItems = cats.entrySet().stream()
+                .map(entry -> new SelectableComboItem<>(new CategoryItem(entry.getKey(), entry.getValue())))
+                .collect(Collectors.toList());
+        for (SelectableComboItem<CategoryItem> item : catItems) {
+            if (oldList.stream().anyMatch(itemx -> itemx.getContent().getPath().equals(item.getContent().getPath()) && itemx.isSelected()))
+                item.setSelected(true);
+        }
+        choiceBoxCredentialsCategories.setListProvider(catItems);
+
+        //vorherige Auswahl wiederherstellen, wenn möglich
         List<CategoryItem> items = comboBoxCategorySelectionMain.getItems();
         if (!items.stream().anyMatch(item -> item.getPath().equals(chosenCat.getPath()))) {
             CategoryItem selected = items.stream().filter(item -> item.getPath().equals(Path.ROOT_CATEGORY_PATH)).findAny().get();
@@ -478,12 +515,20 @@ public class MainWindowViewController implements MainWindowAUI {
             comboBoxCategorySelectionMain.getSelectionModel().select(selected);
         }
 
+        refreshEntryListWhenCategoryChosen();
+
+    }
+
+    private void refreshEntryListWhenCategoryChosen() {
         //Inhalt der Kategorie in Liste anzeigen
         CategoryItem chosenCat2 = comboBoxCategorySelectionMain.getSelectionModel().getSelectedItem();
-        Collection<Credentials> credentials = chosenCat2.getCategory().getCredentials();
+        //getAllCredentials damit die aktuelle Kategorie, ihre Inhalte und alle untergeordneten Inhalte berücksichtigt werden
+        Collection<Credentials> credentials = chosenCat2 == null ? 
+                passwordManagerController.getPasswordManager().getRootCategory().getAllCredentials() : chosenCat2.getCategory().getAllCredentials();
         if (!credentials.isEmpty()) {
-            ObservableList<CredentialsItem> credsToShow = new ObservableListWrapper<>(
-                    credentials.stream().map(CredentialsItem::new).collect(Collectors.toList()));
+            List<CredentialsItem> selection = selectionStrategy.select(new LinkedList<>(credentials));
+            List<CredentialsItem> ordered = orderStrategy.order(selection);
+            ObservableList<CredentialsItem> credsToShow = new ObservableListWrapper<>(ordered);
             listViewCredentialsList.setItems(credsToShow);
         } else {
             //TODO
@@ -492,7 +537,6 @@ public class MainWindowViewController implements MainWindowAUI {
             currentCredentials = null;
             refreshEntry();
         }
-
     }
 
     @Override
@@ -514,6 +558,15 @@ public class MainWindowViewController implements MainWindowAUI {
         Integer changeReminderDays = currentCredentials.getChangeReminderDays();
         spinnerCredentialsReminderDays.getValueFactory().setValue(changeReminderDays != null ? changeReminderDays : 1);
         checkBoxCredentialsUseReminder.setSelected(changeReminderDays != null);
+
+        //SecurityQuestionComboBox refreshen
+
+        comboBoxCredentialsSecurityQuestion.getItems().clear();
+        for (Map.Entry<String, String> question : currentCredentials.getSecurityQuestions().entrySet()) {
+
+            comboBoxCredentialsSecurityQuestion.getItems().add(question.getKey());
+        }
+
     }
 
     @Override
@@ -562,6 +615,17 @@ public class MainWindowViewController implements MainWindowAUI {
         buttonCredentialsAddCategories.setDisable(disabled);
         checkBoxCredentialsUseReminder.setDisable(disabled);
         choiceBoxCredentialsCategories.setDisable(disabled);
+
+        buttonEditCategoryMain.setDisable(!disabled);
+        buttonRemoveCategoryMain.setDisable(!disabled);
+    }
+
+    private void setCopyAndShowButtonsDisabled() {
+        buttonCredentialsShowPassword.setDisable(true);
+        buttonCredentialsCopy.setDisable(true);
+        progressBarCredentialsCopyTimer.setOpacity(0.0);
+        progressBarCredentialsQuality.setProgress(0.0);
+        
     }
 
     private void updateCredentialsBuilderCopy() {

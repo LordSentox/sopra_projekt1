@@ -3,14 +3,16 @@ package de.sopra.passwordmanager.controller;
 import de.sopra.passwordmanager.model.Category;
 import de.sopra.passwordmanager.model.Credentials;
 import de.sopra.passwordmanager.util.CredentialsBuilder;
-import de.sopra.passwordmanager.util.EntryListOrderStrategy;
-import de.sopra.passwordmanager.util.EntryListSelectionStrategy;
+import de.sopra.passwordmanager.util.CredentialsItem;
+import de.sopra.passwordmanager.util.strategy.EntryListOrderStrategy;
+import de.sopra.passwordmanager.util.strategy.EntryListSelectionStrategy;
 import de.sopra.passwordmanager.view.LoginViewAUI;
 import de.sopra.passwordmanager.view.MainWindowAUI;
 import de.sopra.passwordmanager.view.MasterPasswordViewAUI;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * <h1>projekt1</h1>
@@ -51,7 +53,7 @@ public class PasswordManagerControllerDummy {
         private List<Credentials> currentCredentialsList = null;
         private List<String> errorsShown = new ArrayList<>();
         private int passwordQuality = -1;
-        private EntryListSelectionStrategy strategy = identity -> identity;
+        private EntryListSelectionStrategy strategy = identity -> identity.stream().map(CredentialsItem::new).collect(Collectors.toList());
         private EntryListOrderStrategy orderStrategy = identity -> identity;
         private CredentialsBuilder currentCredentials = null;
         private Category currentSelectedCategory = null;
@@ -63,13 +65,14 @@ public class PasswordManagerControllerDummy {
 
         @Override
         public void refreshLists() {
+            //XXX entfernen?
             Category category = controller.getPasswordManager().getRootCategory();
             if (currentSelectedCategory != null) category = currentSelectedCategory;
 
             List<Credentials> credentials = new ArrayList<>(controller.getPasswordManager().getRootCategory().getAllCredentials());
-            List<Credentials> selected = strategy.select(credentials);
-            List<Credentials> ordered = orderStrategy.order(selected);
-            this.currentCredentialsList = ordered;
+            List<CredentialsItem> selected = strategy.select(credentials);
+            List<CredentialsItem> ordered = orderStrategy.order(selected);
+            this.currentCredentialsList = ordered.stream().map(CredentialsItem::getCredentials).collect(Collectors.toList());
         }
 
         @Override
