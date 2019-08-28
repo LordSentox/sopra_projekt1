@@ -158,6 +158,7 @@ public class MainWindowViewController extends AbstractViewController implements 
     //endregion
 
     public void init() {
+        currentCredentials = new CredentialsBuilder();
         updateView();
 
         spinnerCredentialsReminderDays.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 999));
@@ -205,8 +206,7 @@ public class MainWindowViewController extends AbstractViewController implements 
             if (oldText == null || newText == null) return;
             if (Math.abs(oldText.length() - newText.length()) <= 1) {
                 currentCredentials.withName(newText);
-                if (state.match(START_EDITING_ENTRY))
-                    setState(EDITED_ENTRY);
+                changeState(START_EDITING_ENTRY, EDITED_ENTRY);
             }
             //setSaveButonDisabled();
         });
@@ -214,8 +214,8 @@ public class MainWindowViewController extends AbstractViewController implements 
             if (oldText == null || newText == null) return;
             if (Math.abs(oldText.length() - newText.length()) <= 1) {
                 currentCredentials.withUserName(newText);
-                if (state.match(START_EDITING_ENTRY))
-                    setState(EDITED_ENTRY);
+                changeState(START_EDITING_ENTRY, EDITED_ENTRY);
+                passwordManagerController.checkQuality(currentCredentials);
             }
             //setSaveButonDisabled();
         });
@@ -223,8 +223,7 @@ public class MainWindowViewController extends AbstractViewController implements 
             if (oldText == null || newText == null) return;
             if (Math.abs(oldText.length() - newText.length()) <= 1) {
                 currentCredentials.withWebsite(newText);
-                if (state.match(START_EDITING_ENTRY))
-                    setState(EDITED_ENTRY);
+                changeState(START_EDITING_ENTRY, EDITED_ENTRY);
             }
             //setSaveButonDisabled();
         });
@@ -232,8 +231,7 @@ public class MainWindowViewController extends AbstractViewController implements 
             if (oldText == null || newText == null) return;
             if (Math.abs(oldText.length() - newText.length()) <= 1) {
                 currentCredentials.withPassword(newText);
-                if (state.match(START_EDITING_ENTRY))
-                    setState(EDITED_ENTRY);
+                changeState(START_EDITING_ENTRY, EDITED_ENTRY);
                 passwordManagerController.checkQuality(currentCredentials);
             }
         });
@@ -241,8 +239,7 @@ public class MainWindowViewController extends AbstractViewController implements 
             if (oldText == null || newText == null) return;
             if (Math.abs(oldText.length() - newText.length()) <= 1) {
                 currentCredentials.withNotes(newText);
-                if (state.match(START_EDITING_ENTRY))
-                    setState(EDITED_ENTRY);
+                changeState(START_EDITING_ENTRY, EDITED_ENTRY);
             }
         });
 
@@ -460,7 +457,12 @@ public class MainWindowViewController extends AbstractViewController implements 
             return;
         }
 
-        throw new UnsupportedOperationException("Not yet implemented");
+        String selectedItem = comboBoxCredentialsSecurityQuestion.getSelectionModel().getSelectedItem();
+        String value = currentCredentials.getSecurityQuestions().get(selectedItem);
+        currentCredentials.withoutSecurityQuestion(selectedItem, value);
+
+        refreshEntry();
+
         //CredentialsController credController = passwordManagerController.getCredentialsController();
         //String question = comboBoxCredentialsSecurityQuestion.getValue();
         //FIXME: Direkte Änderungen sollen nicht vorgenommen werden. erst am current, beim save am tatsächlichen objekt
@@ -475,14 +477,9 @@ public class MainWindowViewController extends AbstractViewController implements 
         }
 
         setState(CREATING_NEW_ENTRY);
-
-        //TODO state -> disable/enable
         oldCredentials = null;
         currentCredentials = new CredentialsBuilder();
         listViewCredentialsList.getSelectionModel().clearSelection();
-        //listViewCredentialsList.getFocusModel().focus(-1);
-        buttonCredentialsCopy.setDisable(false);
-        buttonCredentialsShowPassword.setDisable(false);
 
         if (currentCredentials == null ||
                 currentCredentials.getName() == null ||
@@ -557,6 +554,14 @@ public class MainWindowViewController extends AbstractViewController implements 
     }
 
     public void onChooseQuestionClicked() {
+
+        //Wenn es geleert wurde, einfach die Ansicht zurücksetzen
+        if (comboBoxCredentialsSecurityQuestion.getSelectionModel().getSelectedIndex() == -1) {
+            labelCredentialsSecurityAnswer.setText("");
+            labelCredentialsSecurityAnswer.setVisible(false);
+            return;
+        }
+
         //STATE - soll nur in CREATING_NEW_ENTRY, START_EDITING_ENTRY und EDITED_ENTRY funktionieren
         if (state.match(UNSET)) {
             showError("Du kannst aktuell keine Sicherheitsfrage auswählen");
@@ -567,8 +572,7 @@ public class MainWindowViewController extends AbstractViewController implements 
         String answer = currentCredentials.getSecurityQuestions().get(selectedQuestion);
         labelCredentialsSecurityAnswer.setText(answer);
         labelCredentialsSecurityAnswer.setVisible(true);
-        //comboBoxCredentialsSecurityQuestion.getSelectionModel().select(selectedQuestion);
-        //refreshEntry();
+
     }
 
     public void onEntryChosen() {
@@ -640,6 +644,8 @@ public class MainWindowViewController extends AbstractViewController implements 
                 .map(entry -> new CategoryItem(entry.getKey(), entry.getValue()))
                 .forEach(comboBoxCategorySelectionMain.getItems()::add);
 
+        comboBoxCategorySelectionMain.getItems().sort(Comparator.comparing(item -> item.getPath().length()));
+
         List<SelectableComboItem<CategoryItem>> oldList = choiceBoxCredentialsCategories.getListProvider();
 
         List<SelectableComboItem<CategoryItem>> catItems = cats.entrySet().stream()
@@ -649,6 +655,7 @@ public class MainWindowViewController extends AbstractViewController implements 
             if (oldList.stream().anyMatch(itemx -> itemx.getContent().getPath().equals(item.getContent().getPath()) && itemx.isSelected()))
                 item.setSelected(true);
         }
+        catItems.sort(Comparator.comparing(item -> item.getContent().getPath().length()));
         choiceBoxCredentialsCategories.setListProvider(catItems);
 
         //vorherige Auswahl wiederherstellen, wenn möglich
@@ -677,9 +684,9 @@ public class MainWindowViewController extends AbstractViewController implements 
             List<CredentialsItem> ordered = orderStrategy.order(selection);
             ObservableList<CredentialsItem> credsToShow = new ObservableListWrapper<>(ordered);
             listViewCredentialsList.setItems(credsToShow);
-            listViewCredentialsList.getSelectionModel().select(0);
+            if (credsToShow.size() > 0)
+                listViewCredentialsList.getSelectionModel().select(0);
         } else {
-            //TODO
             listViewCredentialsList.setItems(new ObservableListWrapper<>(Collections.emptyList()));
             setState(UNSET);
             oldCredentials = null;
@@ -725,7 +732,6 @@ public class MainWindowViewController extends AbstractViewController implements 
         for (SelectableComboItem<CategoryItem> item : listProvider) {
             boolean selected = categories.contains(item.getContent().getCategory());
             choiceBoxCredentialsCategories.setSelected(item, selected);
-            System.out.println("category \"" + item.getContent().getCategory().getName() + "\": " + selected);
         }
     }
 
@@ -766,8 +772,15 @@ public class MainWindowViewController extends AbstractViewController implements 
 
     //endregion
 
+    void changeState(WindowState expected, WindowState newState) {
+        if (this.state == expected)
+            setState(newState);
+        updateView();
+    }
+
     private void setState(WindowState state) {
-        System.out.println("state changed: " + this.state + " -> " + state);
+        if (state != this.state)
+            System.out.println("state changed: " + this.state + " -> " + state);
         this.state = state;
         updateView();
     }
@@ -777,29 +790,61 @@ public class MainWindowViewController extends AbstractViewController implements 
             case UNSET:
                 setDisable(true);
                 disableAllEntryControls(true, 0.0);
-                buttonSaveCredentials.setDisable(true);
+                disableSaveCredentialsButton(true);
+                disableEditCredentialsButton(true);
+                disableInteractEntry(true);
                 break;
             case VIEW_ENTRY:
                 setDisable(true);
                 disableAllEntryControls(false, 1.0);
-                buttonSaveCredentials.setDisable(true);
+                disableSaveCredentialsButton(true);
+                disableEditCredentialsButton(false);
+                disableInteractEntry(false);
                 break;
             case CREATING_NEW_ENTRY:
                 setDisable(false);
                 disableAllEntryControls(false, 1.0);
-                buttonSaveCredentials.setDisable(false);
+                disableSaveCredentialsButton(false);
+                disableEditCredentialsButton(true);
+                disableInteractEntry(false);
                 break;
             case START_EDITING_ENTRY:
                 setDisable(false);
                 disableAllEntryControls(false, 1.0);
-                buttonSaveCredentials.setDisable(true);
+                disableSaveCredentialsButton(true);
+                disableEditCredentialsButton(true);
+                disableInteractEntry(false);
                 break;
             case EDITED_ENTRY:
                 setDisable(false);
                 disableAllEntryControls(false, 1.0);
-                buttonSaveCredentials.setDisable(false);
+                disableSaveCredentialsButton(false);
+                disableEditCredentialsButton(true);
+                disableInteractEntry(false);
                 break;
         }
+    }
+
+    private void disableInteractEntry(boolean disable) {
+        buttonCredentialsCopy.setDisable(disable);
+        buttonCredentialsShowPassword.setDisable(disable);
+    }
+
+    private void disableEditCredentialsButton(boolean disabled) {
+        buttonEditCredentials.setDisable(disabled || listViewCredentialsList.getSelectionModel().getSelectedItem() == null);
+    }
+
+    private void disableSaveCredentialsButton(boolean disabled) {
+        if (currentCredentials.getName() == null
+                || currentCredentials.getPassword() == null
+                || currentCredentials.getUserName() == null
+                || currentCredentials.getWebsite() == null
+                || currentCredentials.getName().isEmpty()
+                || currentCredentials.getPassword().isEmpty()
+                || currentCredentials.getUserName().isEmpty()
+                || currentCredentials.getWebsite().isEmpty()) {
+            buttonSaveCredentials.setDisable(true);
+        } else buttonSaveCredentials.setDisable(disabled);
     }
 
     private void setDisable(boolean disabled) {
