@@ -11,6 +11,7 @@ import org.w3c.dom.*;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
@@ -254,21 +255,7 @@ public class IOController {
 
             // moepse-tag generieren und als root benutzen. Die notwendigen Attribute werden hier direkt aus dem
             // Passwordmanager gesetzt.
-            Element moepse = document.createElement("moepse");
-            document.appendChild(moepse);
-
-            byte[][] hashAndSalt = hashString(passwordManagerController.getPasswordManager().getMasterPassword().getBytes(StandardCharsets.UTF_8), null);
-            String salt = bytesToHex(hashAndSalt[1]);
-            String hash = bytesToHex(hashAndSalt[0]);
-            LocalDateTime lastChanged = passwordManagerController.getPasswordManager().getMasterPasswordLastChanged();
-            int changeReminder = passwordManagerController.getPasswordManager().getMasterPasswordReminderDays();
-
-            moepse.setAttribute("key-salt", salt);
-            moepse.setAttribute("key-hash", hash);
-            if (lastChanged != null) {
-                moepse.setAttribute("last-changed", lastChanged.toString());
-            }
-            moepse.setAttribute("change-reminder-days", Integer.toString(changeReminder));
+            Element moepse = initMoepseTag(document, passwordManagerController);
 
             // Den Tag für die Kategorien und den Tag in dem die Daten gespeichert werden erstellen
             Element tree = document.createElement("tree");
@@ -285,17 +272,40 @@ public class IOController {
             credentials.values().forEach(cred -> writeCredentials(cred, data, document));
 
             // Speichere die Datei am vorgegebenen Ort
-            DOMSource domSource = new DOMSource(document);
-            StreamResult streamResult = new StreamResult(file);
-
-            Transformer transformer = TransformerFactory.newInstance().newTransformer();
-            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-            transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
-            transformer.transform(domSource, streamResult);
+            writeDocumentToFile(document, file);
         } catch (Exception e) {
             e.printStackTrace();
             passwordManagerController.getMainWindowAUI().showError("Datei konnte nicht exportiert werden. Pech gehabt.");
         }
+    }
+
+    private static Element initMoepseTag(Document document, PasswordManagerController passwordManagerController) {
+        Element moepse = document.createElement("moepse");
+        document.appendChild(moepse);
+
+        byte[][] hashAndSalt = hashString(passwordManagerController.getPasswordManager().getMasterPassword().getBytes(StandardCharsets.UTF_8), null);
+        String salt = bytesToHex(hashAndSalt[1]);
+        String hash = bytesToHex(hashAndSalt[0]);
+        LocalDateTime lastChanged = passwordManagerController.getPasswordManager().getMasterPasswordLastChanged();
+        int changeReminder = passwordManagerController.getPasswordManager().getMasterPasswordReminderDays();
+
+        moepse.setAttribute("key-salt", salt);
+        moepse.setAttribute("key-hash", hash);
+        if (lastChanged != null) {
+            moepse.setAttribute("last-changed", lastChanged.toString());
+        }
+        moepse.setAttribute("change-reminder-days", Integer.toString(changeReminder));
+        return moepse;
+    }
+
+    private static void writeDocumentToFile(Document document, File file) throws TransformerException {
+        DOMSource domSource = new DOMSource(document);
+        StreamResult streamResult = new StreamResult(file);
+
+        Transformer transformer = TransformerFactory.newInstance().newTransformer();
+        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+        transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
+        transformer.transform(domSource, streamResult);
     }
 
     private static void writeCredentials(Credentials credentials, Element data, Document document) {
