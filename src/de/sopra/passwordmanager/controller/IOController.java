@@ -282,7 +282,7 @@ public class IOController {
         addTextTagChild(entry, "username", credentials.getUserName(), document);
         addTextTagChild(entry, "password", credentials.getPassword().getEncryptedContent(), document);
         addTextTagChild(entry, "website", credentials.getWebsite(), document);
-        addTextTagChild(entry, "created", credentials.getUserName(), document);
+        addTextTagChild(entry, "created", credentials.getCreatedAt().toString(), document);
         addTextTagChild(entry, "last-changed", credentials.getLastChanged().toString(), document);
         if (credentials.getNotes() != null) {
             addTextTagChild(entry, "notes", credentials.getNotes(), document);
