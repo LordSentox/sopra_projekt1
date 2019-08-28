@@ -99,7 +99,7 @@ public class MainWindowViewController implements MainWindowAUI {
     private JFXProgressBar progressBarCredentialsQuality;
 
     @FXML
-    private Label labelCredentialsSecurityAnswer, lableCredentialsLastChanged, lableCredentialsCreated;
+    private Label labelCredentialsSecurityAnswer, labelCredentialsLastChanged, labelCredentialsCreated;
 
 
     public void init() {
