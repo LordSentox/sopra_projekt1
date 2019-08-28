@@ -608,6 +608,8 @@ public class MainWindowViewController extends AbstractViewController implements 
                 .map(entry -> new CategoryItem(entry.getKey(), entry.getValue()))
                 .forEach(comboBoxCategorySelectionMain.getItems()::add);
 
+        comboBoxCategorySelectionMain.getItems().sort(Comparator.comparing(item -> item.getPath().length()));
+
         List<SelectableComboItem<CategoryItem>> oldList = choiceBoxCredentialsCategories.getListProvider();
 
         List<SelectableComboItem<CategoryItem>> catItems = cats.entrySet().stream()
@@ -617,6 +619,7 @@ public class MainWindowViewController extends AbstractViewController implements 
             if (oldList.stream().anyMatch(itemx -> itemx.getContent().getPath().equals(item.getContent().getPath()) && itemx.isSelected()))
                 item.setSelected(true);
         }
+        catItems.sort(Comparator.comparing(item -> item.getContent().getPath().length()));
         choiceBoxCredentialsCategories.setListProvider(catItems);
 
         //vorherige Auswahl wiederherstellen, wenn möglich
@@ -648,7 +651,6 @@ public class MainWindowViewController extends AbstractViewController implements 
             if (credsToShow.size() > 0)
                 listViewCredentialsList.getSelectionModel().select(0);
         } else {
-            //TODO
             listViewCredentialsList.setItems(new ObservableListWrapper<>(Collections.emptyList()));
             setState(UNSET);
             oldCredentials = null;
