@@ -8,7 +8,7 @@
 <AnchorPane styleClass="background" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="576.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.sopra.passwordmanager.view.MainWindowViewController">
    <children>
       <Rectangle styleClass="rectangle" arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="450.0" layoutX="310.0" layoutY="80.0" stroke="BLACK" strokeType="INSIDE" width="480.0" />
-      <JFXTextField fx:id="textFieldSearch" layoutX="10.0" layoutY="10.0" />
+      <JFXTextField fx:id="textFieldSearch" layoutX="10.0" layoutY="10.0" onAction="#onSearchClicked"/>
       <JFXButton fx:id="buttonSearch" layoutX="186.0" layoutY="10.0" mnemonicParsing="false" prefWidth="114.0" text="Lupe" onAction="#onSearchClicked"/>
       <JFXComboBox fx:id="comboBoxCategorySelectionMain" layoutX="10.0" layoutY="44.0" prefWidth="171.0" />
       <JFXButton fx:id="buttonAddCategoryMain" layoutX="186.0" layoutY="44.0" mnemonicParsing="false" text="+" onAction="#onAddCategoryClicked"/>
@@ -53,6 +53,6 @@
       <Label fx:id="labelCredentialsCreated" layoutX="698.0" layoutY="104.0" text="Datum" />
       <JFXButton fx:id="buttonEditCredentials" layoutX="310.0" layoutY="540.0" mnemonicParsing="false" text="Eintrag bearbeiten" onAction="#onStartEditCredentialsClicked"/>
       <JFXButton fx:id="buttonSaveCredentials" layoutX="604.0" layoutY="540.0" mnemonicParsing="false" text="Änderungen übernehmen" onAction="#onSaveCredentialsClicked"/>
-      <JFXButton fx:id="buttonSettings" layoutX="717.0" layoutY="10.0" mnemonicParsing="false" text="Zahnrad" onAction="#onSettingsClicked"/>
+      <JFXButton fx:id="buttonSettings" layoutX="717.0" layoutY="10.0" mnemonicParsing="false" text="⚙" onAction="#onSettingsClicked"/>
    </children>
 </AnchorPane>

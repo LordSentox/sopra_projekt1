@@ -22,21 +22,9 @@ public class SettingsViewController extends AbstractViewController {
 
     public void onChangeMasterpasswordClicked() {
         try {
-            /* MasterpasswortSetzenFenster */
-            AnchorPane setMasterPasswordPane = new AnchorPane();
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("../view/Masterpasswort-setzen.fxml"));
-            setMasterPasswordPane = fxmlLoader.load();
-            MasterPasswordViewController masterPasswordViewController = (MasterPasswordViewController) fxmlLoader.getController();
 
-            loginStage = new Stage();
-            Scene setMasterPasswordScene = new Scene(setMasterPasswordPane);
-            //setMasterPasswordScene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
-            loginStage.setScene(setMasterPasswordScene);
-            masterPasswordViewController.setStage(loginStage);
-            masterPasswordViewController.setMainWindowViewController(mainWindowViewController);
-            mainWindowViewController.getPasswordManagerController().setMasterPasswordViewAUI(masterPasswordViewController);
-            masterPasswordViewController.init();
-            loginStage.show();
+            openModal(settingsStage, "../view/Masterpasswort-setzen.fxml", MasterPasswordViewController.class, control -> {control.init(); control.openedBySettings();});
+
 
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -48,12 +36,14 @@ public class SettingsViewController extends AbstractViewController {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Öffne Datei");
         fileChooser.getExtensionFilters().addAll(new ExtensionFilter("XML", "*.xml"));
-        File fileToOpen = fileChooser.showOpenDialog(null);
+        File fileToOpen = fileChooser.showOpenDialog(settingsStage);
 
-        try {
-            openModal("../view/Einloggen.fxml", LoginViewController.class, controller -> controller.setSourceFile(fileToOpen));
-        } catch (Exception e) {
-            e.printStackTrace();
+        if(fileToOpen != null) {
+	        try {
+	            openModal("../view/Einloggen.fxml", LoginViewController.class, controller -> controller.setSourceFile(fileToOpen));
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	        }
         }
     }
 
@@ -61,8 +51,9 @@ public class SettingsViewController extends AbstractViewController {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Speichere Datei");
         fileChooser.getExtensionFilters().addAll(new ExtensionFilter("XML", "*.xml"));
-        File fileToSave = fileChooser.showSaveDialog(null);
-        mainWindowViewController.getPasswordManagerController().getIOController().exportFile(fileToSave);
+        File fileToSave = fileChooser.showSaveDialog(settingsStage);
+        if(fileToSave != null)
+        	mainWindowViewController.getPasswordManagerController().getIOController().exportFile(fileToSave);
     }
 
     public void onResetDataClicked() {

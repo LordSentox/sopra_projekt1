@@ -32,6 +32,11 @@ public abstract class AbstractViewController {
         categoryEditPane = fxmlLoader.load();
         T controller = fxmlLoader.getController();
 
+        if (controller instanceof MasterPasswordViewAUI)
+            mainWindowViewController.getPasswordManagerController().setMasterPasswordViewAUI((MasterPasswordViewAUI) controller);
+        else if (controller instanceof LoginViewAUI)
+            mainWindowViewController.getPasswordManagerController().setLoginViewAUI((LoginViewAUI) controller);
+
         Stage newStage = new Stage();
         Scene newScene = new Scene(categoryEditPane);
         newStage.initOwner(parent);
