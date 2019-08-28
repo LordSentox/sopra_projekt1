@@ -1,7 +1,8 @@
 /* JavaFX CSS - Leave this comment until you have at least created one rule which uses -fx-Property */
 
 * {
-	-primary: #039be5;
+	-primary-raw: #039be5;
+	-primary: linear-gradient(#039be5, #039be5, #6e54f7);
 	-light-text: #e1f5fe;
 	-dark-text: #000000;
 	-background: #263238;
@@ -22,6 +23,7 @@
 .jfx-button {
 	-fx-text-fill: -dark-text;
 	-fx-background-color: -primary;
+	-jfx-button-type: RAISED;
 }
 
 .copy-button {
@@ -46,15 +48,14 @@
 	-fx-background-radius: 0;
 
 }
- 
-
 
 .jfx-toggle-node {
 	-jfx-toggle-line-color: -dark-text;
 	-jfx-untoggle-line-color: -dark-text;
-	-jfx-untoggle-color: -primary; 
+	-jfx-untoggle-color: -primary-raw;
 	-jfx-toggle-color: -analogous;
 }
+
 .background {
 	-fx-background-color: -primary,-background;
 	-fx-background-insets: 0, 3;
@@ -94,7 +95,6 @@
 	-jfx-unfocus-color: transparent;
 	-fx-background-radius: 5;
 	-fx-background-color: -primary;
-	
 }
 
 .jfx-combo-box .list-cell{
@@ -132,6 +132,23 @@
 	-fx-text-fill: -light-text;
 	-fx-background-color: -primary;
 }
+
+.spinner .text-field {
+	-fx-text-fill: -light-text;
+	-fx-background-color: -background-darker;
+	-fx-border-color: transparent;
+}
+
+.list-view .list-cell:selected {
+	-fx-border-color: -primary;
+	-fx-border-radius: 5px;
+}
+
+.spinner .increment-arrow-button,
+.spinner .decrement-arrow-button {
+	-fx-body-color: -primary;
+}
+
 
 .rectangle {
 	-fx-stroke: -primary;

@@ -130,6 +130,8 @@ public class MainWindowViewController extends AbstractViewController implements 
         currentCredentials = new CredentialsBuilder();
         updateView();
 
+        buttonSearch.setPickOnBounds(true);
+
         spinnerCredentialsReminderDays.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 999));
         spinnerCredentialsReminderDays.setDisable(true);
 
