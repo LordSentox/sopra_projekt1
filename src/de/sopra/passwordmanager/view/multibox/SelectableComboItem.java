@@ -1,5 +1,7 @@
 package de.sopra.passwordmanager.view.multibox;
 
+import javafx.scene.control.CheckBox;
+
 /**
  * <h1>projekt1</h1>
  *
@@ -8,6 +10,8 @@ package de.sopra.passwordmanager.view.multibox;
  * @since 27.08.2019
  */
 public class SelectableComboItem<T> {
+
+    private CheckBox reference;
 
     private T content;
     private boolean isSelected;
@@ -23,6 +27,10 @@ public class SelectableComboItem<T> {
 
     public void setSelected(boolean selected) {
         isSelected = selected;
+    }
+
+    public void updateReference() {
+        reference.setSelected(isSelected);
     }
 
     public boolean isSelected() {

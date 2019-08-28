@@ -22,6 +22,7 @@ public class PatternSyntax {
     public PatternSyntax(String pattern) {
         String[] split = pattern.split(Pattern.quote(":"), 2);
         if (split.length == 1) {
+            patternFilter = PatternSyntaxFilter.NAME;
             rawPattern = split[0];
         } else {
             patternFilter = PatternSyntaxFilter.getByKeyword(split[0]);
