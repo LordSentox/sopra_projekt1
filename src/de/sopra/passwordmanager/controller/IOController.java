@@ -47,7 +47,6 @@ public class IOController {
     boolean importFile(File file, String decryptionPassword, String encryptionPassword, boolean setMaster) {
         try {
             Document document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(file);
-
             document.getDocumentElement().normalize();
             Node moepse = document.getDocumentElement();
             if (!moepse.getNodeName().equals("moepse")) {
