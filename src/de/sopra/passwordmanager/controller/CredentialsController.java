@@ -54,6 +54,23 @@ public class CredentialsController {
     }
 
     /**
+     * Erstellt eine Liste aller Kategorien, welche von der gegebenen Kategorie aus alle Kategorien enthält,
+     * die ihrerseits wiederum das {@link Credentials} Objekt enthalten.
+     *
+     * @param category    die Kategorie in der gesucht werden soll
+     * @param credentials die Credentials, nach welchen gesucht werden soll
+     * @return eine Liste mit allen Kategorien, die die Credentials enthalten. Kann leer, aber nicht <code>null</code> sein
+     */
+    public Collection<Category> getCategoriesOfCredentials(Category category, Credentials credentials) {
+        LinkedList<Category> categories = new LinkedList<>();
+        if (category.getCredentials().contains(credentials))
+            categories.add(category);
+        for (Category subCat : category.getSubCategories())
+            categories.addAll(getCategoriesOfCredentials(subCat, credentials));
+        return categories;
+    }
+
+    /**
      * Speichert neue {@link Credentials} im {@link PasswordManager}
      *
      * @param newCredentials Die neuen Anmeldedaten. Falls <code>null</code>, geschieht nichts

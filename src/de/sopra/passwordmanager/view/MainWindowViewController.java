@@ -480,9 +480,10 @@ public class MainWindowViewController extends AbstractViewController implements 
     public void onStartEditCredentialsClicked() {
         //STATE - soll nur in VIEW_ENTRY funktionieren
         if (!state.match(VIEW_ENTRY)) {
-            showError("Du kannst aktuell keinen Eintrag bearbeiten");
+            showError("Du kannst aktuell keinen Eintrag bearbeiten.\nEs muss ein Eintrag ausgewählt sein, um ihn bearbeiten zu können.");
             return;
         }
+
         setState(START_EDITING_ENTRY);
     }
 
@@ -535,7 +536,7 @@ public class MainWindowViewController extends AbstractViewController implements 
     }
 
     public void onEntryChosen() {
-        //STATE - soll unabhängig funktionieren, aber relative zum state Entscheidunge treffen
+        //STATE - soll unabhängig funktionieren, aber zur state relative Entscheidungen treffen
 
         if (buttonCredentialsShowPassword.isDisabled()) {
             buttonCredentialsShowPassword.setDisable(false);
@@ -674,21 +675,22 @@ public class MainWindowViewController extends AbstractViewController implements 
         checkBoxCredentialsUseReminder.setSelected(changeReminderDays != null);
 
         //SecurityQuestionComboBox refreshen
-
-//        comboBoxCredentialsSecurityQuestion.getItems().clear();
-//        for (Map.Entry<String, String> question : currentCredentials.getSecurityQuestions().entrySet()) {
-//            comboBoxCredentialsSecurityQuestion.getItems().add(question.getKey());
-//        }
-
-        //FIXME: moved from securityQuestions
         comboBoxCredentialsSecurityQuestion.getItems().clear();
         for (Map.Entry<String, String> question : currentCredentials.getSecurityQuestions().entrySet()) {
             comboBoxCredentialsSecurityQuestion.getItems().add(question.getKey());
         }
         if (!currentCredentials.getSecurityQuestions().entrySet().isEmpty())
             comboBoxCredentialsSecurityQuestion.getSelectionModel().select(0);
-        //String selectedQuestion = comboBoxCredentialsSecurityQuestion.getSelectionModel().getSelectedItem();
 
+        //MultiSelectionComboBox updaten
+        Collection<Category> categories = passwordManagerController.getCredentialsController().getCategoriesOfCredentials(
+                passwordManagerController.getPasswordManager().getRootCategory(), oldCredentials);
+        List<SelectableComboItem<CategoryItem>> listProvider = choiceBoxCredentialsCategories.getListProvider();
+        for (SelectableComboItem<CategoryItem> item : listProvider) {
+            boolean selected = categories.contains(item.getContent().getCategory());
+            choiceBoxCredentialsCategories.setSelected(item, selected);
+            System.out.println("category \"" + item.getContent().getCategory().getName() + "\": " + selected);
+        }
     }
 
     @Override
