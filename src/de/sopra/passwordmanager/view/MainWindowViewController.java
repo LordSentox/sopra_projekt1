@@ -11,10 +11,7 @@ import de.sopra.passwordmanager.util.CredentialsBuilder;
 import de.sopra.passwordmanager.util.CredentialsItem;
 import de.sopra.passwordmanager.util.Path;
 import de.sopra.passwordmanager.util.PatternSyntax;
-import de.sopra.passwordmanager.util.strategy.AlphabeticOrderStrategy;
-import de.sopra.passwordmanager.util.strategy.EntryListOrderStrategy;
-import de.sopra.passwordmanager.util.strategy.EntryListSelectionStrategy;
-import de.sopra.passwordmanager.util.strategy.SelectAllStrategy;
+import de.sopra.passwordmanager.util.strategy.*;
 import de.sopra.passwordmanager.view.dialog.SimpleConfirmation;
 import de.sopra.passwordmanager.view.dialog.SimpleDialog;
 import de.sopra.passwordmanager.view.dialog.TwoOptionConfirmation;
@@ -252,7 +249,7 @@ public class MainWindowViewController extends AbstractViewController implements 
 
         //Die Strategie initilisieren - sind zu Beginn Identitätsbeziehungen, d.h. ändern nichts am Input
         selectionStrategy = new SelectAllStrategy(); //es wird keine Auswahl getroffen
-        orderStrategy = new AlphabeticOrderStrategy(); //es wird nicht sortiert
+        orderStrategy = new AlphabeticOrderStrategy().nextOrder(new ReminderSecondaryStrategy()); //es wird nicht sortiert
 
         textFieldCredentialsNotes.setWrapText(true);
 
