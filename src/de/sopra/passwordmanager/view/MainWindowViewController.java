@@ -572,7 +572,16 @@ public class MainWindowViewController implements MainWindowAUI {
     @Override
     public void refreshEntryPasswordQuality(int quality) {
         //XXX change quality to double between 0 and 1
-        progressBarCredentialsQuality.setProgress((double) quality / 100);
+    	double progress = quality / 100.0;  
+    	progressBarCredentialsQuality.setProgress(progress); 
+
+    	if (progress<0.3) {
+    		progressBarCredentialsQuality.setStyle("-fx-accent: red;");
+    	} else if (progress>=0.3 && progress <= 0.6){
+    		progressBarCredentialsQuality.setStyle("-fx-accent: yellow;");
+    	} else {
+    		progressBarCredentialsQuality.setStyle("-fx-accent: green;");
+    	}
     }
 
     public void showError(Exception exception) {
