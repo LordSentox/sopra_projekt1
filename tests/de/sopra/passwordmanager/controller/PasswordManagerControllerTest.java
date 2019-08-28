@@ -10,9 +10,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 public class PasswordManagerControllerTest {
     private PasswordManagerController passwordManagerController;
@@ -123,8 +121,37 @@ public class PasswordManagerControllerTest {
     }
 
     @Test
-    public void saveEntryTest() {
-        //TODO doc fehlt
+    public void saveEntryTestAdd() {
+        CredentialsBuilder credentialsBuilder = new CredentialsBuilder("Namea", "Benutzernamea", "Hello_world", "URL");
+        Category cat = new Category("saas");
+        passwordManager.getRootCategory().addSubCategory(cat);
+        Set<Category> categories = new HashSet<>();
+        categories.add(cat);
+
+        passwordManagerController.saveEntry(null, credentialsBuilder, categories);
+        Assert.assertTrue(cat.getCredentials().contains(credentialsBuilder.build(uc)));
+    }
+
+    @Test
+    public void saveEntryTestReplace() {
+        CredentialsBuilder credentialsBuilder = new CredentialsBuilder("Namea", "Benutzernamea", "Hello_world", "URL");
+        CredentialsBuilder credentialsBuilder2 = new CredentialsBuilder("Nameb", "Benutzernameb", "Hello_worlds", "URLs");
+        Category cat = new Category("saas");
+        Category cat2 = new Category("soos");
+        passwordManager.getRootCategory().addSubCategory(cat);
+        passwordManager.getRootCategory().addSubCategory(cat2);
+        Set<Category> categories = new HashSet<>();
+        categories.add(cat);
+        Set<Category> categories2 = new HashSet<>();
+        categories2.add(cat2);
+
+        passwordManagerController.saveEntry(null, credentialsBuilder, categories);
+        Assert.assertTrue("saving entry failed", cat.getCredentials().contains(credentialsBuilder.build(uc)));
+
+        passwordManagerController.saveEntry(credentialsBuilder.build(uc), credentialsBuilder2, categories2);
+        Assert.assertFalse("old credentials not removed", cat.getCredentials().contains(credentialsBuilder.build(uc)));
+        Assert.assertFalse("new credentials still in old category", cat.getCredentials().contains(credentialsBuilder2.build(uc)));
+        Assert.assertTrue("new credentials not saved", cat2.getCredentials().contains(credentialsBuilder2.build(uc)));
     }
 
     @Test

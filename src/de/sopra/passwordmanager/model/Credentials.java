@@ -179,6 +179,6 @@ public class Credentials {
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, userName, website, notes, created, securityQuestions, lastChanged, changeReminderDays);
+        return Objects.hash(lastChanged, changeReminderDays, name, userName, website, notes, created, securityQuestions);
     }
 }

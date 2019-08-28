@@ -1,8 +1,8 @@
 package de.sopra.passwordmanager.view;
 
 import de.sopra.passwordmanager.model.Credentials;
-import de.sopra.passwordmanager.util.EntryListOrderStrategy;
-import de.sopra.passwordmanager.util.EntryListSelectionStrategy;
+import de.sopra.passwordmanager.util.strategy.EntryListOrderStrategy;
+import de.sopra.passwordmanager.util.strategy.EntryListSelectionStrategy;
 
 /**
  * @author Etienne

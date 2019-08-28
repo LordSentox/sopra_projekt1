@@ -20,6 +20,7 @@ import java.time.LocalDateTime;
 public class UtilityControllerTest {
 	private PasswordManagerController passwordManagerController;
 	private UtilityController utilityController;
+    //XXX entfernen?
 	private MainView mainWindowAUI;
 	private PasswordManager passwordManager;
 
@@ -33,16 +34,16 @@ public class UtilityControllerTest {
 
     @Test
     public void generatePasswordTest() {
-        //utilityController.generatePassword();
-        String password = mainWindowAUI.getPasswordShown();
+    	CredentialsBuilder credBuilder = new CredentialsBuilder("Hi", "How", "name", "asd");
+        utilityController.generatePassword(credBuilder);
 
-        Assert.assertTrue(utilityController.checkQuality(password) > PasswordManagerController.MINIMUM_SAFE_QUALITY);
+        Assert.assertTrue(utilityController.checkQuality(credBuilder.getPassword()) > PasswordManagerController.MINIMUM_SAFE_QUALITY);
     }
 
     @Test
     public void exportImportFileTest() {
     	//daten in das Modell eintragen
-    	File file = null; //FIXME: Dateipfad festlegen
+    	File file = PasswordManagerController.SAVE_FILE; //FIXME: Dateipfad festlegen
     	String masterPassword = "test";
 		passwordManager.setMasterPassword(masterPassword);
 		passwordManager.setMasterPasswordReminderDays(5);
@@ -108,10 +109,19 @@ public class UtilityControllerTest {
         Assert.assertNotEquals("decryption does not decrypt", decrypted, encrypted.getEncryptedContent());
     }
 
+    @Test
+	public void encryptTextBreak() {
+    	Assert.assertNull("Encryption did not break :(", utilityController.encryptText(null));
+	}
+
+	@Test
+	public void decryptTextBreak() {
+		Assert.assertNull("Decryption did not break :(", utilityController.decryptText(new EncryptedString(null)));
+	}
+
 
     @Test
     public void checkQuality() {
         //TODO:Braucht jetzt nicht.
-
     }
 }

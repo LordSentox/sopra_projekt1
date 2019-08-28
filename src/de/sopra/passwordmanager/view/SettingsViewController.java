@@ -1,13 +1,12 @@
 package de.sopra.passwordmanager.view;
 
+import de.sopra.passwordmanager.util.dialog.SimpleConfirmation;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
-
-import de.sopra.passwordmanager.util.dialog.SimpleConfirmation;
 
 import java.io.File;
 
@@ -35,7 +34,7 @@ public class SettingsViewController extends AbstractViewController{
 			masterPasswordStage.setScene(setMasterPasswordScene);
 			masterPasswordViewController.setStage(masterPasswordStage);
 			masterPasswordViewController.setMainWindowViewController(mainWindowViewController);
-			masterPasswordViewController.initSpinner();
+			masterPasswordViewController.init();
 			masterPasswordStage.show();
 
 		} catch (Exception e) {
@@ -48,6 +47,7 @@ public class SettingsViewController extends AbstractViewController{
 		FileChooser fileChooser = new FileChooser();
 		fileChooser.setTitle("Öffne Datei");
 		fileChooser.getExtensionFilters().addAll(new ExtensionFilter("XML", "*.xml"));
+		//XXX entfernen?
 		File fileToOpen = fileChooser.showOpenDialog(null);
 		//TODO UtilityController -> import
 		//Login Fenster wird geöffnet und richtige Vorraussetzungen müssen für onLoginClicked gegeben sein
@@ -65,12 +65,6 @@ public class SettingsViewController extends AbstractViewController{
 	public void onResetDataClicked() {
 
 		SimpleConfirmation removeConfirmation = new SimpleConfirmation("Passwortmanager zurücksetzen", null, "Passwortmanager wirklich zurücksetzen?") {
-
-			@Override
-			public void onCancel() {
-
-			}
-
 			@Override
 			public void onSuccess() {
 				mainWindowViewController.getPasswordManagerController().removeAll();

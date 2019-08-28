@@ -1,6 +1,7 @@
-package de.sopra.passwordmanager.util;
+package de.sopra.passwordmanager.util.strategy;
 
 import de.sopra.passwordmanager.model.Credentials;
+import de.sopra.passwordmanager.util.CredentialsItem;
 
 import java.util.List;
 
@@ -22,6 +23,6 @@ public interface EntryListSelectionStrategy {
      * @param credentials alle bekannten Elemente
      * @return die Liste mit allen Inhalten, die zur Anzeige gebracht werden sollen
      */
-    List<Credentials> select(List<Credentials> credentials);
+    List<CredentialsItem> select(List<Credentials> credentials);
 
 }

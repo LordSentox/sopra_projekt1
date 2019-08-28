@@ -239,6 +239,7 @@ public class CredentialsBuilderTest {
         String name = "cred1";
         String userName = "user1";
         String password = "passwort123";
+        //XXX entfernen?
         EncryptedString encryptedPassword = uc.encryptText(password);
         String website = "www.hallo.de";
         int changeReminder = 3;
@@ -276,6 +277,7 @@ public class CredentialsBuilderTest {
         String name = "cred1";
         String userName = "user1";
         String password = "passwort123";
+        //XXX entfernen?
         EncryptedString encryptedPassword = uc.encryptText(password);
         String website = "www.hallo.de";
         Integer changeReminder = 3;

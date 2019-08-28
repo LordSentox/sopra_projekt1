@@ -48,7 +48,7 @@ public class CategoryTest {
         assertFalse("adding subcategory failed", category.getSubCategories().isEmpty());
         category.removeSubCategory(categorySub);
         assertTrue("removing subcategory failed", category.getSubCategories().isEmpty());
-
+        category.toString();
     }
 
     @Test
@@ -120,7 +120,6 @@ public class CategoryTest {
         assertTrue("path map does not contain second layer category", pathMap.containsKey(new Path("root/layer")));
         assertTrue("path map does not contain second layer category", pathMap.containsKey(new Path("root/sameLayer")));
         assertTrue("path map does not contain third layer category", pathMap.containsKey(new Path("root/layer/deeper")));
-
     }
 
 }

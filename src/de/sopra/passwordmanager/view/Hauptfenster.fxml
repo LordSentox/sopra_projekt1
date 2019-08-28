@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.jfoenix.controls.*?>
+<?import de.sopra.passwordmanager.view.multibox.MultiSelectionComboBox?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.shape.Rectangle?>
-<?import javafx.scene.control.Label?>
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="576.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.sopra.passwordmanager.view.MainWindowViewController">
    <children>
       <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="450.0" layoutX="310.0" layoutY="80.0" stroke="BLACK" strokeType="INSIDE" width="480.0" />
@@ -14,10 +14,10 @@
       <JFXButton fx:id="buttonAddCategoryMain" layoutX="186.0" layoutY="44.0" mnemonicParsing="false" text="+" onAction="#onAddCategoryClicked"/>
       <JFXButton fx:id="buttonEditCategoryMain" layoutX="220.0" layoutY="44.0" mnemonicParsing="false" prefWidth="46.0" text="edit" onAction="#onEditCategoryClicked"/>
       <JFXButton fx:id="buttonRemoveCategoryMain" layoutX="271.0" layoutY="44.0" mnemonicParsing="false" prefWidth="29.0" text="-" onAction="#onRemoveCategoryClicked"/>
-      <JFXListView fx:id="listViewCredentialsList" layoutX="10.0" layoutY="80.0" prefHeight="450.0" prefWidth="290.0" />
+      <JFXListView fx:id="listViewCredentialsList" layoutX="10.0" layoutY="80.0" prefHeight="450.0" prefWidth="290.0"/>
       <JFXButton fx:id="buttonAddCredentials" layoutX="10.0" layoutY="540.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="124.0" text="Neuer Eintrag" onAction="#onAddCredentialsClicked" />
       <JFXButton fx:id="buttonRemoveCredentials" layoutX="163.0" layoutY="540.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="137.0" text="Eintrag löschen" onAction="#onRemoveCredentialsClicked" />
-      <Label layoutX="315.0" layoutY="90.0" text="Name" />
+      <Label layoutX="315.0" layoutY="90.0" text="Eintragsname" />
       <JFXTextField fx:id="textFieldCredentialsName" layoutX="430.0" layoutY="85.0" />
       <Label layoutX="315.0" layoutY="121.0" text="Benutzername" />
       <JFXTextField fx:id="textFieldCredentialsUserName" layoutX="430.0" layoutY="116.0" />
@@ -38,10 +38,10 @@
       <Spinner fx:id="spinnerCredentialsReminderDays" layoutX="430.0" layoutY="274.0" prefHeight="26.0" prefWidth="100.0" />
       <Label layoutX="544.0" layoutY="279.0" text="Tagen" />
       <Label layoutX="315.0" layoutY="367.0" text="Kategorien" />
-      <ChoiceBox fx:id="choiceBoxCredentialsCategories" layoutX="430.0" layoutY="362.0" prefWidth="171.0" />
+      <MultiSelectionComboBox fx:id="choiceBoxCredentialsCategories" layoutX="430.0" layoutY="362.0" prefWidth="171.0" />
       <JFXButton fx:id="buttonCredentialsAddCategories" layoutX="606.0" layoutY="362.0" mnemonicParsing="false" text="+" onAction="#onAddCategoryClicked"/>
       <Label layoutX="315.0" layoutY="310.0" text="Sicherheitsfrage" />
-      <JFXComboBox fx:id="comboBoxCredentialsSecurityQuestion" layoutX="430.0" layoutY="305.0" prefWidth="171.0" />
+      <JFXComboBox fx:id="comboBoxCredentialsSecurityQuestion" layoutX="430.0" layoutY="305.0" prefWidth="171.0" onAction="#onChooseQuestionClicked"/>
       <JFXButton fx:id="buttonCredentialsAddSecurityQuestion" layoutX="606.0" layoutY="305.0" mnemonicParsing="false" text="+" onAction="#onAddSecurityQuestionClicked"/>
       <JFXButton fx:id="buttonCredentialsRemoveSecurityQuestion" layoutX="640.0" layoutY="305.0" mnemonicParsing="false" prefWidth="29.0" text="-" onAction="#onRemoveSecurityQuestionClicked"/>
       <Label fx:id="labelCredentialsSecurityAnswer" layoutX="430.0" layoutY="336.0" prefWidth="171.0" text="Antwort" />

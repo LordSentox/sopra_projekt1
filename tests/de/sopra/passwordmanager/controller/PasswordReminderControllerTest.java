@@ -8,7 +8,8 @@ import org.junit.Test;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 import static org.junit.Assert.*;
 
@@ -28,7 +29,6 @@ public class PasswordReminderControllerTest {
 	@Test
 	public void testPasswordReminderController() {
 		//TODO: testPasswordReminderController
-		fail("Not yet implemented");
 	}
 
 	@Test
@@ -37,17 +37,18 @@ public class PasswordReminderControllerTest {
 		Credentials credentials = new CredentialsBuilder("Name", "Benutzername", "Hello_world", "URL")
 				.withChangeReminderDays(5)
 				.build(uc);
-		LocalDateTime sixDaysEarlier = LocalDateTime.now().minus(6, ChronoUnit.DAYS);
+		LocalDateTime now = LocalDateTime.now();
+		LocalDateTime sixDaysEarlier = now.minus(6, ChronoUnit.DAYS);
 		//ändert LanstChanged-Datum des Passworteintrages auf vor 6 Tagen
 		credentials.setLastChanged(sixDaysEarlier);	
 		//prüft, ob hasToBeChanged für den Passworteintrag true zurückgibt
         assertTrue(this.passwordManagerController.getPasswordReminderController().hasToBeChanged(credentials));
 
-		LocalDateTime fourDaysEarlier = LocalDateTime.now().minus(4, ChronoUnit.DAYS);
+		LocalDateTime fourDaysEarlier = now.minus(4, ChronoUnit.DAYS);
         credentials.setLastChanged(fourDaysEarlier);
         assertFalse(this.passwordManagerController.getPasswordReminderController().hasToBeChanged(credentials));
 
-		LocalDateTime fiveDaysEarlier = LocalDateTime.now().minus(5, ChronoUnit.DAYS);
+		LocalDateTime fiveDaysEarlier = now.minus(5, ChronoUnit.DAYS);
         credentials.setLastChanged(fiveDaysEarlier);
         assertTrue("Grenzfall", this.passwordManagerController.getPasswordReminderController().hasToBeChanged(credentials));
         
@@ -73,9 +74,9 @@ public class PasswordReminderControllerTest {
 				.build(uc);
 		//legt Testdaten an
 		LocalDateTime sevenDaysEarlier = LocalDateTime.now().minus(7, ChronoUnit.DAYS);
-		LocalDateTime fourDaysEarlier = LocalDateTime.now().minus(6, ChronoUnit.DAYS);
+		LocalDateTime fourDaysEarlier = LocalDateTime.now().minus(4, ChronoUnit.DAYS);
 		//legt ArrayListe mit Passworteinträgen an
-		ArrayList<Credentials> credentials = new ArrayList<>();
+		Set<Credentials> credentials = new HashSet<>();
 		credentials.add(credentialsa);
 		credentials.add(credentialsb);
 		credentials.add(credentialsc);
@@ -83,26 +84,29 @@ public class PasswordReminderControllerTest {
 		credentials.add(credentialse);
 		
 		//ändert die Testliste so ab, dass die LastChanged-Daten sieben Tage zurück liegen
-		for(int i=0; i<5; i++){
-			credentials.get(i).setLastChanged(sevenDaysEarlier);
-		}
+		credentials.forEach(cred -> {
+			cred.setLastChanged(sevenDaysEarlier);
+			passwordManager.getRootCategory().addCredentials(cred);
+		});
+
+
 		//prüft, ob die komplette Testliste zurückgegeben wird, bei der alle Timer abgelaufen sind
-		assertEquals(this.passwordManagerController.getPasswordReminderController().passwordsToBeChanged(), credentials);
-		
-		//Legt Arrayliste mit Passworteinträgen an, die angezeigt werden müssen, wenn vier Tage vergangen sind
-		ArrayList<Credentials> credentialsTestPartial = new ArrayList<Credentials>();
+		{
+			Set<Credentials> toBeChanged = this.passwordManagerController.getPasswordReminderController().passwordsToBeChanged();
+			assertEquals("Filtering did not return all credentials", toBeChanged, credentials);
+		}
+
+		//Legt Set mit Passworteinträgen an, die angezeigt werden müssen, wenn vier Tage vergangen sind
+		Set<Credentials> credentialsTestPartial = new HashSet<>();
 		credentialsTestPartial.add(credentialsa);
 		credentialsTestPartial.add(credentialsb);
 		credentialsTestPartial.add(credentialsc);
 		
 		//ändert die Testliste so ab, dass die LastChanged-Daten vier Tage zurück liegen
-		for(int i=0; i<5; i++){
-			credentials.get(i).setLastChanged(fourDaysEarlier);
-		}
-		
+		credentials.forEach(cred -> cred.setLastChanged(fourDaysEarlier));
+
 		//prüft, ob die credentialsTestPartial-Liste von passwordsToBeChanged zurückgegeben wird
 		assertEquals(this.passwordManagerController.getPasswordReminderController().passwordsToBeChanged(), credentialsTestPartial);
-		
 	}
 
 }
