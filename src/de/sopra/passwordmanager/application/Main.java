@@ -14,7 +14,7 @@ public class Main extends Application{
 		
 	@Override
 	public void start(Stage primaryStage) {
-		
+
 		try {
 			/* Hauptfenster */
 			AnchorPane mainPane = new AnchorPane();
@@ -61,7 +61,6 @@ public class Main extends Application{
 				masterPasswordScene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 				primaryStage.setScene(masterPasswordScene);
 				primaryStage.show();
-				
 			}
 		} catch (Exception e) {
 			throw new RuntimeException(e);

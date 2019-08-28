@@ -12,6 +12,7 @@ import org.passay.*;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
+import javax.rmi.CORBA.Util;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.File;
 import java.nio.charset.StandardCharsets;
@@ -23,6 +24,8 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import org.w3c.dom.*;
+
+import static javax.xml.bind.DatatypeConverter.parseHexBinary;
 
 /**
  * Der UtilityController stellt verschiedene Hilfsdienste zur Verfügung
@@ -274,6 +277,33 @@ public class UtilityController {
                 System.err.println("Root has wrong Name");
                 return false;
             }
+
+            // Überprüfe, ob das Masterpasswort richtig ist und breche ab, falls es fehlschlägt
+            NamedNodeMap attributes = moepse.getAttributes();
+            if (attributes == null) {
+                System.err.println("MoePse has too few attributes");
+                return false;
+            }
+            byte[] keySalt = parseHexBinary(attributes.getNamedItem("key-salt").getNodeValue());
+            byte[] keyHash = parseHexBinary(attributes.getNamedItem("key-hash").getNodeValue());
+
+            byte[] decryptionPasswordBytes = decryptionPassword.getBytes(StandardCharsets.UTF_8);
+            byte[] enteredKeyHash = hashString(decryptionPasswordBytes, keySalt)[0];
+
+            if (!Arrays.equals(keyHash, enteredKeyHash)) {
+                System.err.println("The password entered was not correct");
+                return false;
+            }
+
+            // Der Änderungswecker und die letzte Passwortänderung müssen beim Masterpasswort zwingend gesetzt sein
+            LocalDateTime passwordLastChanged = LocalDateTime.parse(attributes.getNamedItem("last-changed").getNodeValue());
+            String changeReminderDaysString = attributes.getNamedItem("change-reminder-days").getNodeValue();
+            if (changeReminderDaysString == null) {
+                System.err.println("The master password needs a change reminder");
+                return false;
+            }
+            int changeReminderDays = Integer.parseUnsignedInt(changeReminderDaysString);
+
             List<Node> childNodes = IntStream.range(0, moepse.getChildNodes().getLength()).mapToObj(moepse.getChildNodes()::item).collect(Collectors.toList());
 
             Node treeNode = childNodes.stream().filter(node -> node.getNodeName().equals("tree")).findFirst().get();
@@ -296,7 +326,10 @@ public class UtilityController {
 
             // Wenn das Masterpasswort neu gesetzt werden soll muss der Änderungswecker und das Erstellungsdatum im
             // Passwortmanager gesetzt werden.
-
+            if (setMaster) {
+                this.passwordManagerController.getPasswordManager().setMasterPasswordLastChanged(passwordLastChanged);
+                this.passwordManagerController.getPasswordManager().setMasterPasswordReminderDays(changeReminderDays);
+            }
         } catch (Exception e) {
             // TODO: Schönere Fehlerbehandlung
             e.printStackTrace();
@@ -405,17 +438,31 @@ public class UtilityController {
     public void exportFile(File file) throws IllegalArgumentException {
     }
 
+    private static final java.nio.charset.Charset SHA_CHARSET = StandardCharsets.UTF_8;
+
+    private static final char[] HEX_ARRAY = "0123456789abcdef".toCharArray();
+    private static String bytesToHex(byte[] bytes) {
+        char[] hexChars = new char[bytes.length * 2];
+        for (int i = 0; i < bytes.length; i++) {
+            int v = bytes[i] & 0xFF;
+            hexChars[i * 2] = HEX_ARRAY[v >>> 4];
+            hexChars[i * 2 + 1] = HEX_ARRAY[v & 0x0F];
+        }
+        return new String(hexChars);
+    }
+
     /**
      * Generiert ein zufälligen neuen Salt
      *
      * @return ein neuer Salt
      */
-    private static String generateRandomSalt() {
+    private static byte[] generateRandomSalt() {
         //zu hohe Längen können die Effizienz beinträchtigen, 16 ist Standard
         final int saltLength = 16;
         byte[] salt = new byte[saltLength];
+
         new Random().nextBytes(salt);
-        return new String(salt, StandardCharsets.UTF_8);
+        return salt;
     }
 
     /**
@@ -427,8 +474,7 @@ public class UtilityController {
      * @param salt  der Salt für die Hash-Operation, wenn <code>null</code> wird ein neuer salt generiert
      * @return ein array, welche an index 0 den salt und and index 1 den gehashten String beinhaltet
      */
-    private static String[] hashString(String input, String salt) {
-
+    private static byte[][] hashString(byte[] input, byte[] salt) {
         //wenn kein salt vorhanden, wird ein zufälliges neues salt ergänzt
         if (salt == null) {
             salt = generateRandomSalt();
@@ -443,15 +489,11 @@ public class UtilityController {
         }
 
         //salt setzen
-        md.update(salt.getBytes(StandardCharsets.UTF_8));
+        md.update(salt);
 
         //den Eingabe-String per SHA-512 hashen
-        byte[] result = md.digest(input.getBytes(StandardCharsets.UTF_8));
+        byte[] result = md.digest(input);
 
-        //byte arrays in String umwandeln
-        String resultHash, resultSalt;
-        resultHash = new String(result, StandardCharsets.UTF_8);
-
-        return new String[]{salt, resultHash};
+        return new byte[][]{result, salt};
     }
 }
