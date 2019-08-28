@@ -443,12 +443,9 @@ public class MainWindowViewController extends AbstractViewController implements 
         }
 
         setState(CREATING_NEW_ENTRY);
-
         oldCredentials = null;
         currentCredentials = new CredentialsBuilder();
         listViewCredentialsList.getSelectionModel().clearSelection();
-        buttonCredentialsCopy.setDisable(false); //TODO
-        buttonCredentialsShowPassword.setDisable(false);
 
         if (currentCredentials == null ||
                 currentCredentials.getName() == null ||
@@ -761,32 +758,42 @@ public class MainWindowViewController extends AbstractViewController implements 
                 disableAllEntryControls(true, 0.0);
                 disableSaveCredentialsButton(true);
                 disableEditCredentialsButton(true);
+                disableInteractEntry(true);
                 break;
             case VIEW_ENTRY:
                 setDisable(true);
                 disableAllEntryControls(false, 1.0);
                 disableSaveCredentialsButton(true);
                 disableEditCredentialsButton(false);
+                disableInteractEntry(false);
                 break;
             case CREATING_NEW_ENTRY:
                 setDisable(false);
                 disableAllEntryControls(false, 1.0);
                 disableSaveCredentialsButton(false);
                 disableEditCredentialsButton(true);
+                disableInteractEntry(false);
                 break;
             case START_EDITING_ENTRY:
                 setDisable(false);
                 disableAllEntryControls(false, 1.0);
                 disableSaveCredentialsButton(true);
                 disableEditCredentialsButton(true);
+                disableInteractEntry(false);
                 break;
             case EDITED_ENTRY:
                 setDisable(false);
                 disableAllEntryControls(false, 1.0);
                 disableSaveCredentialsButton(false);
                 disableEditCredentialsButton(true);
+                disableInteractEntry(false);
                 break;
         }
+    }
+
+    private void disableInteractEntry(boolean disable) {
+        buttonCredentialsCopy.setDisable(disable);
+        buttonCredentialsShowPassword.setDisable(disable);
     }
 
     private void disableEditCredentialsButton(boolean disabled) {
