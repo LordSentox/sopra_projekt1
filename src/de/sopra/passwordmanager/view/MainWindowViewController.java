@@ -11,10 +11,7 @@ import de.sopra.passwordmanager.util.CredentialsBuilder;
 import de.sopra.passwordmanager.util.CredentialsItem;
 import de.sopra.passwordmanager.util.Path;
 import de.sopra.passwordmanager.util.PatternSyntax;
-import de.sopra.passwordmanager.util.strategy.AlphabeticOrderStrategy;
-import de.sopra.passwordmanager.util.strategy.EntryListOrderStrategy;
-import de.sopra.passwordmanager.util.strategy.EntryListSelectionStrategy;
-import de.sopra.passwordmanager.util.strategy.SelectAllStrategy;
+import de.sopra.passwordmanager.util.strategy.*;
 import de.sopra.passwordmanager.view.dialog.SimpleConfirmation;
 import de.sopra.passwordmanager.view.dialog.SimpleDialog;
 import de.sopra.passwordmanager.view.dialog.TwoOptionConfirmation;
@@ -24,14 +21,9 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.*;
 import javafx.scene.control.TextFormatter.Change;
-import javafx.scene.layout.AnchorPane;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
 import javafx.util.converter.IntegerStringConverter;
@@ -252,7 +244,7 @@ public class MainWindowViewController extends AbstractViewController implements 
 
         //Die Strategie initilisieren - sind zu Beginn Identitätsbeziehungen, d.h. ändern nichts am Input
         selectionStrategy = new SelectAllStrategy(); //es wird keine Auswahl getroffen
-        orderStrategy = new AlphabeticOrderStrategy(); //es wird nicht sortiert
+        orderStrategy = new AlphabeticOrderStrategy().nextOrder(new ReminderSecondaryStrategy()); //es wird nicht sortiert
 
         textFieldCredentialsNotes.setWrapText(true);
 
@@ -297,20 +289,7 @@ public class MainWindowViewController extends AbstractViewController implements 
         //STATE - soll unabhängig funktionieren
         try {
             /* Einstellungen öffnen */
-            AnchorPane settingsPane;
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("../view/Einstellungen.fxml"));
-            settingsPane = fxmlLoader.load();
-            settingsViewController = fxmlLoader.getController();
-
-            Stage settingsStage = new Stage();
-            Scene settingsScene = new Scene(settingsPane);
-            settingsStage.initModality(Modality.WINDOW_MODAL);
-            settingsStage.initOwner(stage);
-            settingsScene.getStylesheets().add(getClass().getResource("../application/application.css").toExternalForm());
-            settingsStage.setScene(settingsScene);
-            settingsViewController.setStage(settingsStage);
-            settingsViewController.setMainWindowViewController(this);
-            settingsStage.show();
+            openModal("../view/Einstellungen.fxml", SettingsViewController.class, identity -> {});
         } catch (Exception e) {
             showError(e);
             throw new RuntimeException(e);
