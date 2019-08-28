@@ -23,8 +23,6 @@ import de.sopra.passwordmanager.view.multibox.SelectableComboItem;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -142,14 +140,10 @@ public class MainWindowViewController extends AbstractViewController implements 
         progressBarCredentialsCopyTimer.setOpacity(0.0);
         progressBarCredentialsCopyTimer.setProgress(1);
         progressBarCredentialsCopyTimer.setStyle("-fx-accent: green");
-        timeline = new Timeline(new KeyFrame(Duration.millis(10), new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                progressBarCredentialsCopyTimer.setProgress(progressBarCredentialsCopyTimer.progressProperty().doubleValue() - 0.001);
-
-                if (progressBarCredentialsCopyTimer.progressProperty().doubleValue() <= 0.0) {
-                    buttonCredentialsCopy.getStyleClass().remove("copy-button");
-                }
+        timeline = new Timeline(new KeyFrame(Duration.millis(10), event -> {
+            progressBarCredentialsCopyTimer.setProgress(progressBarCredentialsCopyTimer.progressProperty().doubleValue() - 0.001);
+            if (progressBarCredentialsCopyTimer.progressProperty().doubleValue() <= 0.0) {
+                buttonCredentialsCopy.setOpacity(1.0);
             }
         }));
         timeline.setCycleCount(1000);
@@ -176,7 +170,6 @@ public class MainWindowViewController extends AbstractViewController implements 
                 currentCredentials.withName(newText);
                 changeState(START_EDITING_ENTRY, EDITED_ENTRY);
             }
-            //setSaveButonDisabled();
         });
         textFieldCredentialsUserName.textProperty().addListener((obs, oldText, newText) -> {
             if (oldText == null || newText == null) return;
@@ -185,7 +178,6 @@ public class MainWindowViewController extends AbstractViewController implements 
                 changeState(START_EDITING_ENTRY, EDITED_ENTRY);
                 passwordManagerController.checkQuality(currentCredentials);
             }
-            //setSaveButonDisabled();
         });
         textFieldCredentialsWebsite.textProperty().addListener((obs, oldText, newText) -> {
             if (oldText == null || newText == null) return;
@@ -193,7 +185,6 @@ public class MainWindowViewController extends AbstractViewController implements 
                 currentCredentials.withWebsite(newText);
                 changeState(START_EDITING_ENTRY, EDITED_ENTRY);
             }
-            //setSaveButonDisabled();
         });
         textFieldCredentialsPassword.textProperty().addListener((obs, oldText, newText) -> {
             if (oldText == null || newText == null) return;
@@ -228,7 +219,7 @@ public class MainWindowViewController extends AbstractViewController implements 
         //Die Strategie initilisieren - sind zu Beginn Identitätsbeziehungen, d.h. ändern nichts am Input
         selectionStrategy = new SelectAllStrategy(); //es wird keine Auswahl getroffen
         orderStrategy = new AlphabeticOrderStrategy(); //es wird nicht sortiert
-        
+
         textFieldCredentialsNotes.setWrapText(true);
 
     }
