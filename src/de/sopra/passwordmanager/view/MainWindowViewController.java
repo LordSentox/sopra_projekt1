@@ -150,13 +150,13 @@ public class MainWindowViewController implements MainWindowAUI {
             onCredentialsPasswordChanged();
         });
         textFieldCredentialsName.textProperty().addListener((obs, oldText, newText) -> {
-            setSaveButonDisabled();
+            //setSaveButonDisabled();
         });
         textFieldCredentialsUserName.textProperty().addListener((obs, oldText, newText) -> {
-            setSaveButonDisabled();
+            //setSaveButonDisabled();
         });
         textFieldCredentialsWebsite.textProperty().addListener((obs, oldText, newText) -> {
-            setSaveButonDisabled();
+            //setSaveButonDisabled();
         });
 
         listViewCredentialsList.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
@@ -458,6 +458,8 @@ public class MainWindowViewController implements MainWindowAUI {
         if (comboBoxCredentialsSecurityQuestion.isDisabled()) {
             comboBoxCredentialsSecurityQuestion.setDisable(false);
         }
+        
+        buttonCredentialsShowPassword.setSelected(false);
         CredentialsItem selectedEntry = listViewCredentialsList.getSelectionModel().getSelectedItem();
         int index = listViewCredentialsList.getFocusModel().getFocusedIndex();
         if (buttonEditCredentials.isDisabled()|| selectedEntry == null) {
@@ -498,7 +500,7 @@ public class MainWindowViewController implements MainWindowAUI {
             currentCredentials.withPassword(password);
             passwordManagerController.checkQuality(currentCredentials);
         }
-        setSaveButonDisabled();
+        //setSaveButonDisabled();
     }
 
     @Override
@@ -672,7 +674,7 @@ public class MainWindowViewController implements MainWindowAUI {
         }
         currentCredentials.withChangeReminderDays(changeReminderDays);
     }
-    
+    /*
     private void setSaveButonDisabled() {
         updateCredentialsBuilderCopy();
         System.out.println(currentCredentials.getName());
@@ -696,4 +698,5 @@ public class MainWindowViewController implements MainWindowAUI {
             buttonSaveCredentials.setDisable(true);
         }
     }
+    */
 }
