@@ -11,13 +11,13 @@ import de.sopra.passwordmanager.util.CredentialsBuilder;
 import de.sopra.passwordmanager.util.CredentialsItem;
 import de.sopra.passwordmanager.util.Path;
 import de.sopra.passwordmanager.util.PatternSyntax;
-import de.sopra.passwordmanager.util.dialog.SimpleConfirmation;
-import de.sopra.passwordmanager.util.dialog.SimpleDialog;
-import de.sopra.passwordmanager.util.dialog.TwoOptionConfirmation;
 import de.sopra.passwordmanager.util.strategy.AlphabeticOrderStrategy;
 import de.sopra.passwordmanager.util.strategy.EntryListOrderStrategy;
 import de.sopra.passwordmanager.util.strategy.EntryListSelectionStrategy;
 import de.sopra.passwordmanager.util.strategy.SelectAllStrategy;
+import de.sopra.passwordmanager.view.dialog.SimpleConfirmation;
+import de.sopra.passwordmanager.view.dialog.SimpleDialog;
+import de.sopra.passwordmanager.view.dialog.TwoOptionConfirmation;
 import de.sopra.passwordmanager.view.multibox.MultiSelectionComboBox;
 import de.sopra.passwordmanager.view.multibox.SelectableComboItem;
 import javafx.animation.KeyFrame;
@@ -43,8 +43,7 @@ import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static de.sopra.passwordmanager.view.MainWindowViewController.WindowState.UNSET;
-import static de.sopra.passwordmanager.view.MainWindowViewController.WindowState.VIEW_ENTRY;
+import static de.sopra.passwordmanager.view.MainWindowViewController.WindowState.*;
 
 public class MainWindowViewController extends AbstractViewController implements MainWindowAUI {
 
@@ -171,10 +170,6 @@ public class MainWindowViewController extends AbstractViewController implements 
         //textFieldCredentialsPassword und passwordFieldCredentialsPassword erhalten beide den gleichen Text.
         textFieldCredentialsPassword.textProperty().bindBidirectional(passwordFieldCredentialsPassword.textProperty());
 
-
-        textFieldCredentialsPassword.textProperty().addListener((obs, oldText, newText) -> {
-            onCredentialsPasswordChanged();
-        });
         textFieldCredentialsName.textProperty().addListener((obs, oldText, newText) -> {
             if (oldText == null || newText == null) return;
             if (Math.abs(oldText.length() - newText.length()) <= 1) {
@@ -200,6 +195,7 @@ public class MainWindowViewController extends AbstractViewController implements 
             if (oldText == null || newText == null) return;
             if (Math.abs(oldText.length() - newText.length()) <= 1) {
                 currentCredentials.withPassword(newText);
+                passwordManagerController.checkQuality(currentCredentials);
             }
         });
         textFieldCredentialsNotes.textProperty().addListener((obs, oldText, newText) -> {
@@ -435,12 +431,14 @@ public class MainWindowViewController extends AbstractViewController implements 
             return;
         }
 
-        //TODO: Markierung - Code Überarbeitung hier fortsetzen
+        state = CREATING_NEW_ENTRY;
+
+        //TODO state -> disable/enable
         oldCredentials = null;
+        currentCredentials = new CredentialsBuilder();
         listViewCredentialsList.getSelectionModel().clearSelection();
         disableAllEntryControls();
         //listViewCredentialsList.getFocusModel().focus(-1);
-        currentCredentials = new CredentialsBuilder();
         setDisable(false);
         buttonCredentialsCopy.setDisable(false);
         buttonCredentialsShowPassword.setDisable(false);
@@ -457,6 +455,12 @@ public class MainWindowViewController extends AbstractViewController implements 
     }
 
     public void onRemoveCredentialsClicked() {
+        //STATE - soll nur in und VIEW_ENTRY funktionieren
+        if (!state.match(VIEW_ENTRY)) {
+            showError("Du kannst aktuell keine Einträge entfernen");
+            return;
+        }
+
         CredentialsController credController = passwordManagerController.getCredentialsController();
         oldCredentials = listViewCredentialsList.getSelectionModel().getSelectedItem().getCredentials();
         listViewCredentialsList.getSelectionModel().clearSelection();
@@ -469,10 +473,23 @@ public class MainWindowViewController extends AbstractViewController implements 
     }
 
     public void onStartEditCredentialsClicked() {
+        //STATE - soll nur in VIEW_ENTRY funktionieren
+        if (!state.match(VIEW_ENTRY)) {
+            showError("Du kannst aktuell keinen Eintrag bearbeiten");
+            return;
+        }
+
         setDisable(false);
+        state = START_EDITING_ENTRY;
     }
 
     public void onSaveCredentialsClicked() {
+        //STATE - soll nur in CREATING_NEW_ENTRY und EDITED_ENTRY funktionieren
+        if (!state.match(CREATING_NEW_ENTRY, EDITED_ENTRY)) {
+            showError("Du kannst aktuell keine neuen Einträge erstellen");
+            return;
+        }
+
         setDisable(true);
 
         spinnerCredentialsReminderDays.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 999));
@@ -500,6 +517,12 @@ public class MainWindowViewController extends AbstractViewController implements 
     }
 
     public void onChooseQuestionClicked() {
+        //STATE - soll nur in CREATING_NEW_ENTRY, START_EDITING_ENTRY und EDITED_ENTRY funktionieren
+        if (!state.match(CREATING_NEW_ENTRY, EDITED_ENTRY, START_EDITING_ENTRY)) {
+            showError("Du kannst aktuell keine neuen Einträge erstellen");
+            return;
+        }
+
         String selectedQuestion = comboBoxCredentialsSecurityQuestion.getValue();
         String answer = currentCredentials.getSecurityQuestions().get(selectedQuestion);
         labelCredentialsSecurityAnswer.setText(answer);
@@ -509,6 +532,7 @@ public class MainWindowViewController extends AbstractViewController implements 
     }
 
     public void onEntryChosen() {
+        //STATE - soll unabhängig funktionieren, aber relative zum state Entscheidunge treffen
 
         if (buttonCredentialsShowPassword.isDisabled()) {
             buttonCredentialsShowPassword.setDisable(false);
@@ -553,16 +577,6 @@ public class MainWindowViewController extends AbstractViewController implements 
             currentCredentials = selectedEntry.getNewBuilder(passwordManagerController.getUtilityController());
             refreshEntry();
         }
-    }
-
-
-    public void onCredentialsPasswordChanged() {
-        String password = passwordFieldCredentialsPassword.getText();
-        if (password != null) {
-            currentCredentials.withPassword(password);
-            passwordManagerController.checkQuality(currentCredentials);
-        }
-        //setSaveButonDisabled();
     }
 
     //endregion

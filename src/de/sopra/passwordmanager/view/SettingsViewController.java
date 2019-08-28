@@ -1,6 +1,6 @@
 package de.sopra.passwordmanager.view;
 
-import de.sopra.passwordmanager.util.dialog.SimpleConfirmation;
+import de.sopra.passwordmanager.view.dialog.SimpleConfirmation;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
