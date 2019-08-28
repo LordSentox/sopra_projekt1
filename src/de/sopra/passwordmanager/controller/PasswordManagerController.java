@@ -159,7 +159,7 @@ public class PasswordManagerController {
     }
 
     /**
-     * Ersetzt die alten {@link Credentials} mit den Neuen.
+     * Ersetzt die alten asswordManagerControllerTe{@link Credentials} mit den Neuen.
      *
      * @param oldCredentials Die zu ersetzenden {@link Credentials}
      * @param newCredentials Die {@link Credentials}, die die alten ersetzen

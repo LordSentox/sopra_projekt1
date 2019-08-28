@@ -9,10 +9,6 @@ import de.sopra.passwordmanager.util.Validate;
 import exceptions.DecryptionException;
 import exceptions.EncryptionException;
 import org.passay.*;
-//import org.passay.;
-
-
-
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -221,8 +217,8 @@ public class UtilityController {
                 new WeighedRule(characterSpecialRule, 0.75),
                 new WeighedRule(notAllTheSame, 0.5),
                 new WeighedRule(minimumLength, 1.0),
-                new WeighedRule(repeatCharacters, 0.75)//,
-                //new WeighedRule(username, 1.0)
+                new WeighedRule(repeatCharacters, 0.75),
+                new WeighedRule(username, 1.0)
         		);
     }
 
