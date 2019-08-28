@@ -49,10 +49,12 @@ public class SettingsViewController extends AbstractViewController {
         fileChooser.getExtensionFilters().addAll(new ExtensionFilter("XML", "*.xml"));
         File fileToOpen = fileChooser.showOpenDialog(null);
 
-        try {
-            openModal("../view/Einloggen.fxml", LoginViewController.class, controller -> controller.setSourceFile(fileToOpen));
-        } catch (Exception e) {
-            e.printStackTrace();
+        if(fileToOpen != null) {
+	        try {
+	            openModal("../view/Einloggen.fxml", LoginViewController.class, controller -> controller.setSourceFile(fileToOpen));
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	        }
         }
     }
 
@@ -61,7 +63,8 @@ public class SettingsViewController extends AbstractViewController {
         fileChooser.setTitle("Speichere Datei");
         fileChooser.getExtensionFilters().addAll(new ExtensionFilter("XML", "*.xml"));
         File fileToSave = fileChooser.showSaveDialog(null);
-        mainWindowViewController.getPasswordManagerController().getIOController().exportFile(fileToSave);
+        if(fileToSave != null)
+        	mainWindowViewController.getPasswordManagerController().getIOController().exportFile(fileToSave);
     }
 
     public void onResetDataClicked() {
