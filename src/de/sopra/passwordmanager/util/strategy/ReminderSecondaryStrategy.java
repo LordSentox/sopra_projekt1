@@ -40,7 +40,9 @@ public class ReminderSecondaryStrategy implements EntryListOrderStrategy {
 
     private boolean hasToBeChanged(CredentialsItem item) {
         Credentials credentials1 = item.getCredentials();
-        Integer reminderDays = credentials1.getChangeReminderDays() == null ? 0 : credentials1.getChangeReminderDays();
+        if (credentials1.getChangeReminderDays() == null)
+            return false;
+        Integer reminderDays = credentials1.getChangeReminderDays();
         LocalDateTime time1 = credentials1.getLastChanged().plusDays(reminderDays);
         return time1.isBefore(LocalDateTime.now());
     }

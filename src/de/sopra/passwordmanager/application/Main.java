@@ -10,10 +10,11 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+
+import static de.sopra.passwordmanager.controller.PasswordManagerController.SAVE_FILE;
 
 public class Main extends Application {
 
@@ -38,29 +39,37 @@ public class Main extends Application {
             mainWindowViewController.setMainWindowViewController(mainWindowViewController);
             mainWindowViewController.setStage(mainStage);
 
-            if (PasswordManagerController.SAVE_FILE.exists()) {
+            if (SAVE_FILE.exists()) {
                 /* Loginfenster */
-                fxmlLoader = new FXMLLoader(getClass().getResource("../view/Einloggen.fxml"));
-                AnchorPane loginPane = fxmlLoader.load();
-                LoginViewController loginViewController = fxmlLoader.getController();
-                loginViewController.setSourceFile(PasswordManagerController.SAVE_FILE);
-                loginViewController.setMainWindowViewController(mainWindowViewController);
-                loginViewController.setStage(primaryStage);
-                
-                Scene loginScene = new Scene(loginPane);
-                loginScene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
-                primaryStage.initStyle(StageStyle.UNDECORATED);
-                primaryStage.setScene(loginScene);
-                primaryStage.show();
+
+                LoginViewController login = mainWindowViewController.openModal("../view/Einloggen.fxml",
+                        LoginViewController.class, preOpen ->
+                        {
+                            preOpen.setSourceFile(SAVE_FILE);
+                            preOpen.setBackTo(mainStage);
+                        });
+
+//                fxmlLoader = new FXMLLoader(getClass().getResource("../view/Einloggen.fxml"));
+//                AnchorPane loginPane = fxmlLoader.load();
+//                LoginViewController loginViewController = fxmlLoader.getController();
+//                loginViewController.setSourceFile(SAVE_FILE);
+//                loginViewController.setMainWindowViewController(mainWindowViewController);
+//                loginViewController.setStage(primaryStage);
+//
+//
+//                Scene loginScene = new Scene(loginPane);
+//                loginScene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+//                primaryStage.initStyle(StageStyle.UNDECORATED);
+//                primaryStage.setScene(loginScene);
+//                primaryStage.show();
 
                 //set AUI link
-                passwordManagerController.setLoginViewAUI(loginViewController);
+                passwordManagerController.setLoginViewAUI(login);
 
             } else {
                 /* Masterpasswort zum Erststart / Registrierung setzen */
-                AnchorPane masterPasswordPane = new AnchorPane();
                 fxmlLoader = new FXMLLoader(getClass().getResource("../view/Masterpasswort-setzen.fxml"));
-                masterPasswordPane = fxmlLoader.load();
+                AnchorPane masterPasswordPane = fxmlLoader.load();
                 MasterPasswordViewController masterPasswordViewController = fxmlLoader.getController();
                 masterPasswordViewController.setMainWindowViewController(mainWindowViewController);
                 masterPasswordViewController.setStage(primaryStage);

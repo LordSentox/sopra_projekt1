@@ -2,8 +2,9 @@ package de.sopra.passwordmanager.util;
 
 import de.sopra.passwordmanager.controller.UtilityController;
 import de.sopra.passwordmanager.model.Credentials;
-
-import java.util.function.Function;
+import de.sopra.passwordmanager.util.strategy.AdaptableNamingStrategy;
+import de.sopra.passwordmanager.util.strategy.GenerateReminderPrefixStrategy;
+import de.sopra.passwordmanager.util.strategy.ItemNamingStrategy;
 
 /**
  * <h1>projekt1</h1>
@@ -15,7 +16,7 @@ import java.util.function.Function;
 public class CredentialsItem {
 
     private Credentials credentials;
-    private Function<Credentials, String> namingStrategy;
+    private ItemNamingStrategy<Credentials> namingStrategy;
 
     public CredentialsItem(Credentials credentials) {
         this.credentials = credentials;
@@ -23,8 +24,11 @@ public class CredentialsItem {
         this.namingStrategy = creds -> creds.getName();
     }
 
-    public void setNamingStrategy(Function<Credentials, String> namingStrategy) {
-        this.namingStrategy = namingStrategy == null ? this.namingStrategy : namingStrategy;
+    public void setNamingStrategy(ItemNamingStrategy<Credentials> namingStrategy) {
+        if (namingStrategy != null) {
+            this.namingStrategy = AdaptableNamingStrategy.as(namingStrategy)
+                    .withPrefix(new GenerateReminderPrefixStrategy());
+        }
     }
 
     public Credentials getCredentials() {
@@ -37,6 +41,6 @@ public class CredentialsItem {
 
     @Override
     public String toString() {
-        return namingStrategy.apply(credentials);
+        return namingStrategy.getName(credentials);
     }
 }

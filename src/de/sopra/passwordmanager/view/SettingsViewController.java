@@ -3,17 +3,14 @@ package de.sopra.passwordmanager.view;
 import de.sopra.passwordmanager.view.dialog.SimpleConfirmation;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
-import javafx.stage.Stage;
 
 import java.io.File;
 
 public class SettingsViewController extends AbstractViewController {
 
-    private Stage settingsStage, loginStage;
-
     public void onChangeMasterpasswordClicked() {
         try {
-            openModal(settingsStage, "../view/Masterpasswort-setzen.fxml", MasterPasswordViewController.class, control -> {control.init(); control.openedBySettings();});
+            openModal(stage, "../view/Masterpasswort-setzen.fxml", MasterPasswordViewController.class, control -> {control.init(); control.openedBySettings();});
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -24,11 +21,14 @@ public class SettingsViewController extends AbstractViewController {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Öffne Datei");
         fileChooser.getExtensionFilters().addAll(new ExtensionFilter("XML", "*.xml"));
-        File fileToOpen = fileChooser.showOpenDialog(settingsStage);
-
+        File fileToOpen = fileChooser.showOpenDialog(stage);
         if(fileToOpen != null) {
 	        try {
-	            openModal("../view/Einloggen.fxml", LoginViewController.class, controller -> controller.setSourceFile(fileToOpen));
+	            openModal(stage,"../view/Einloggen.fxml", LoginViewController.class, controller ->
+                {
+                    controller.setSourceFile(fileToOpen);
+                    controller.setBackTo(stage);
+                });
 	        } catch (Exception e) {
 	            e.printStackTrace();
 	        }
@@ -39,31 +39,23 @@ public class SettingsViewController extends AbstractViewController {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Speichere Datei");
         fileChooser.getExtensionFilters().addAll(new ExtensionFilter("XML", "*.xml"));
-        File fileToSave = fileChooser.showSaveDialog(settingsStage);
+        File fileToSave = fileChooser.showSaveDialog(stage);
         if(fileToSave != null)
         	mainWindowViewController.getPasswordManagerController().getIOController().exportFile(fileToSave);
     }
 
     public void onResetDataClicked() {
-
         SimpleConfirmation removeConfirmation = new SimpleConfirmation("Passwortmanager zurücksetzen", null, "Passwortmanager wirklich zurücksetzen?") {
             @Override
             public void onSuccess() {
                 mainWindowViewController.getPasswordManagerController().removeAll();
             }
         };
-
         removeConfirmation.open();
-
     }
 
     public void onCancelSettingsClicked() {
-        settingsStage.close();
+        stage.close();
     }
-
-    public void setStage(Stage settingsStage) {
-        this.settingsStage = settingsStage;
-    }
-
 
 }

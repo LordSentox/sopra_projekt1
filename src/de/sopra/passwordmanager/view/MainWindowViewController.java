@@ -41,6 +41,7 @@ public class MainWindowViewController extends AbstractViewController implements 
 
     public static final UnaryOperator<TextFormatter.Change> SPINNER_FILTER = new UnaryOperator<TextFormatter.Change>() {
         NumberFormat format = NumberFormat.getIntegerInstance();
+
         @Override
         public Change apply(Change c) {
             if (c.isContentChange()) {
@@ -150,8 +151,6 @@ public class MainWindowViewController extends AbstractViewController implements 
         currentCredentials = new CredentialsBuilder();
         updateView();
 
-        buttonSearch.setPickOnBounds(true);
-
         spinnerCredentialsReminderDays.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 999));
         spinnerCredentialsReminderDays.setDisable(true);
         spinnerCredentialsReminderDays.setEditable(true);
@@ -165,7 +164,6 @@ public class MainWindowViewController extends AbstractViewController implements 
         //Timer initialisieren mit Farbe, vollem Balken, als unsichtbar und mit 10-Sekunden-Ablauf-Balken
         progressBarCredentialsCopyTimer.setOpacity(0.0);
         progressBarCredentialsCopyTimer.setProgress(1);
-        progressBarCredentialsCopyTimer.setStyle("-fx-accent: green");
         timeline = new Timeline(new KeyFrame(Duration.millis(10), event -> {
             progressBarCredentialsCopyTimer.setProgress(progressBarCredentialsCopyTimer.progressProperty().doubleValue() - 0.001);
             if (progressBarCredentialsCopyTimer.progressProperty().doubleValue() <= 0.0) {
@@ -289,7 +287,8 @@ public class MainWindowViewController extends AbstractViewController implements 
         //STATE - soll unabhängig funktionieren
         try {
             /* Einstellungen öffnen */
-            openModal("../view/Einstellungen.fxml", SettingsViewController.class, identity -> {});
+            openModal("../view/Einstellungen.fxml", SettingsViewController.class, identity -> {
+            });
         } catch (Exception e) {
             showError(e);
             throw new RuntimeException(e);
@@ -747,7 +746,7 @@ public class MainWindowViewController extends AbstractViewController implements 
     void changeState(WindowState expected, WindowState newState) {
         if (this.state == expected)
             setState(newState);
-        updateView();
+        else updateView();
     }
 
     private void setState(WindowState state) {
