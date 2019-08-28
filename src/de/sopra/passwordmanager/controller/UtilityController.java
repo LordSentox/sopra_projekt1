@@ -221,8 +221,8 @@ public class UtilityController {
                 new WeighedRule(characterSpecialRule, 0.75),
                 new WeighedRule(notAllTheSame, 0.5),
                 new WeighedRule(minimumLength, 1.0),
-                new WeighedRule(repeatCharacters, 0.75),
-                new WeighedRule(username, 1.0)
+                new WeighedRule(repeatCharacters, 0.75)//,
+                //new WeighedRule(username, 1.0)
         		);
     }
 
@@ -234,8 +234,8 @@ public class UtilityController {
      */
     // TODO: Sollte noch den Nutzernamen bekommen, um es mit dem Passwort zu vergleichen
     int checkQuality(String text, String username) {
-        PasswordData pwData = new PasswordData(text);
-        pwData.setUsername(username);
+        PasswordData pwData = new PasswordData(username, text);
+
         List<WeighedRule> rules = generateRules();
 
         // Für jede Regel die eingehalten wird, wird das Gewicht als Wert der unangepassten Qualität hinzugefügt
