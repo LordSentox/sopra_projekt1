@@ -1,5 +1,6 @@
 package de.sopra.passwordmanager.view;
 
+import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXProgressBar;
 import de.sopra.passwordmanager.util.CredentialsBuilder;
@@ -24,6 +25,8 @@ public class MasterPasswordViewController extends AbstractViewController impleme
     private Label labelError;
     @FXML
     private JFXProgressBar progressBarQuality;
+    @FXML
+    private JFXButton buttonSave;
 
     private final TextFormatter<Integer> spinnerTextFormatter = new TextFormatter<Integer>(
             new IntegerStringConverter(), 1, MainWindowViewController.SPINNER_FILTER);
@@ -49,7 +52,7 @@ public class MasterPasswordViewController extends AbstractViewController impleme
         passwordFieldSet.textProperty().addListener((obs, oldText, newText) -> {
             onPasswordChanged();
         });
-
+        buttonSave.setDisable(true);
     }
 
     public void openedBySettings() {
@@ -57,7 +60,7 @@ public class MasterPasswordViewController extends AbstractViewController impleme
     }
 
     public void onSaveClicked() {
-        if (passwordFieldSet.getText().isEmpty() || passwordFieldSet.getText().equals(passwordFieldCheck.getText())) {
+        if (!passwordFieldSet.getText().isEmpty() && passwordFieldSet.getText().equals(passwordFieldCheck.getText())) {
 
             int newReminder = spinnerReminderDays.getValue();
             mainWindowViewController.getPasswordManagerController().getMasterPasswordController().changePassword(passwordFieldSet.getText(), newReminder);
@@ -86,11 +89,15 @@ public class MasterPasswordViewController extends AbstractViewController impleme
 
     public void onPasswordChanged() {
         String password = passwordFieldSet.getText();
-        if (password != null) {
+        if (password != null || !password.isEmpty()) {
             //TODO change credentials to String in check Quality
             //XXX entfernen?
             CredentialsBuilder credBuilder = new CredentialsBuilder().withPassword(password);
             mainWindowViewController.getPasswordManagerController().getMasterPasswordController().checkQuality(password);
+            buttonSave.setDisable(false);
+        } else {
+        	buttonSave.setDisable(true);
+        	System.out.println("hi");
         }
     }
 
