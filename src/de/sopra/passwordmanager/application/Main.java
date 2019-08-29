@@ -43,7 +43,7 @@ public class Main extends Application {
             mainStage.setResizable(false);
             mainStage.initStyle(StageStyle.UNDECORATED);
 
-            mainWindowViewController.setStyleSheet("black-and-white");
+            mainWindowViewController.setStyleSheet("light");
 
             if (SAVE_FILE.exists()) {
                 /* Loginfenster */
