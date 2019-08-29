@@ -26,6 +26,17 @@ public class MultiSelectionComboBox<T> extends ComboBox<SelectableComboItem<T>> 
 
     private List<SelectableComboItem<T>> listProvider;
 
+    private EventHandler<MouseEvent> onCheckBoxClick = event -> {
+        JFXCheckBox chk = (JFXCheckBox) event.getSource();
+        String itemName = chk.getText();
+
+        if (chk.isSelected()) {
+            updateProvider(itemName, true);
+        } else {
+            updateProvider(itemName, false);
+        }
+    };
+
     public MultiSelectionComboBox() {
         init(new LinkedList<>());
     }
@@ -82,17 +93,6 @@ public class MultiSelectionComboBox<T> extends ComboBox<SelectableComboItem<T>> 
                     return cell;
                 }
             };
-
-    private EventHandler<MouseEvent> onCheckBoxClick = event -> {
-        JFXCheckBox chk = (JFXCheckBox) event.getSource();
-        String itemName = chk.getText();
-
-        if (chk.isSelected()) {
-            updateProvider(itemName, true);
-        } else {
-            updateProvider(itemName, false);
-        }
-    };
 
     public void setSelected(SelectableComboItem<T> target, boolean selected) {
         updateProvider(target.getItemName(), selected);

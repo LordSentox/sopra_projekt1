@@ -26,7 +26,7 @@ public class CredentialsItem {
 
     public void setNamingStrategy(ItemNamingStrategy<Credentials> namingStrategy) {
         if (namingStrategy != null) {
-            this.namingStrategy = AdaptableNamingStrategy.as(namingStrategy)
+            this.namingStrategy = AdaptableNamingStrategy.asItemNamingStrategy(namingStrategy)
                     .withPrefix(new GenerateReminderPrefixStrategy());
         }
     }

@@ -21,13 +21,9 @@ public class PatternSyntax {
 
     public PatternSyntax(String pattern) {
         String[] split = pattern.split(Pattern.quote(":"), 2);
-        if (split.length == 1) {
-            patternFilter = PatternSyntaxFilter.NAME;
-            rawPattern = split[0];
-        } else {
-            patternFilter = PatternSyntaxFilter.getByKeyword(split[0]);
-            rawPattern = split[1];
-        }
+        boolean hasFilterWord = split.length != 1;
+        patternFilter = hasFilterWord ? PatternSyntaxFilter.NAME : PatternSyntaxFilter.getByKeyword(split[0]);
+        rawPattern = split[hasFilterWord ? 1 : 0];
     }
 
     public PatternSyntaxFilter getPatternFilter() {

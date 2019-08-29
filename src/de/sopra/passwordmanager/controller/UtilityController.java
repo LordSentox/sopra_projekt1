@@ -1,32 +1,13 @@
 package de.sopra.passwordmanager.controller;
 
 import aes.AES;
-import de.sopra.passwordmanager.model.Category;
-import de.sopra.passwordmanager.model.Credentials;
 import de.sopra.passwordmanager.model.EncryptedString;
 import de.sopra.passwordmanager.util.CredentialsBuilder;
-import de.sopra.passwordmanager.util.Validate;
 import exceptions.DecryptionException;
 import exceptions.EncryptionException;
 import org.passay.*;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-
-import javax.rmi.CORBA.Util;
-import javax.xml.parsers.DocumentBuilderFactory;
-import java.io.File;
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-
-import org.w3c.dom.*;
-
-import static javax.xml.bind.DatatypeConverter.parseHexBinary;
 
 /**
  * Der UtilityController stellt verschiedene Hilfsdienste zur Verfügung
@@ -260,7 +241,7 @@ public class UtilityController {
             pwData.setUsername(username);
         }
         int length = text.length();
-        if (length == 0) {
+        if (text.isEmpty()) {
             return 0;
         }
         List<WeighedRule> rules = generateRules(checkUsername);

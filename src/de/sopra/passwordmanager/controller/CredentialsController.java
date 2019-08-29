@@ -112,9 +112,9 @@ public class CredentialsController {
      * @see Credentials
      */
     public void addSecurityQuestion(String question, String answer, CredentialsBuilder credentials) throws NullPointerException {
-        Validate.notNull(question, "question is null");
-        Validate.notNull(answer, "answer is null");
-        Validate.notNull(credentials, "credentials object is null");
+        ValidationUtil.notNull(question, "question is null");
+        ValidationUtil.notNull(answer, "answer is null");
+        ValidationUtil.notNull(credentials, "credentials object is null");
         credentials.withSecurityQuestion(question, answer);
     }
 
@@ -152,7 +152,7 @@ public class CredentialsController {
 
         //XXX: remove when program is finish, this is just the dev tool
         if (pattern.getPatternFilter() == PatternSyntax.PatternSyntaxFilter.COMMAND) {
-            DevTool.fillWithData(passwordManagerController);
+            DevUtil.fillWithData(passwordManagerController);
             passwordManagerController.getMainWindowAUI().refreshLists();
             return;
         }
