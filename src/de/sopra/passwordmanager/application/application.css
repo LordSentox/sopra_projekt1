@@ -2,15 +2,15 @@
 
 * {
 	-primary-raw: #039be5;
-	-primary: linear-gradient(#039be5, #039be5, #6e54f7);
+	-primary: linear-gradient(-primary-raw, -primary-raw, -analogous);
 	-light-text: #e1f5fe;
 	-dark-text: #000000;
 	-background: #263238;
-	-error: #fa8a02;
+	-error: linear-gradient(#fa8a02, #ff0000);
 	-background-lighter: #455a64;
 	-background-darker: #222d32;
 	-analogous: #6e54f7;
-	
+
 }
 
 .label {
@@ -29,23 +29,6 @@
 .copy-button {
 	-fx-background-color: transparent;
 }
-.close-button {
-	-fx-background-color: -error;
-	-fx-background-radius: 90;
-	-fx-min-height: 15px;
-	-fx-max-height: 15px;
-	-fx-min-width: 15px;
-	-fx-max-width: 15px;
-}
-.button-settings {
-	-fx-background-color: -primary;
-	-fx-font-size: 13;
-	-fx-background-radius: 90;
-	-fx-min-height: 30px;
-	-fx-max-height: 30px;
-	-fx-min-width: 30px;
-	-fx-max-width: 30px;
-}
 .show-button .label{
 	-fx-text-fill: -dark-text;
 }
@@ -56,7 +39,7 @@
 }
 .text-area {
 	-fx-text-fill: -light-text;
-	-fx-background-color: -background-darker; 
+	-fx-background-color: -background-darker;
 	-fx-background-radius: 5;
 	-fx-border-color: transparent;
 }
@@ -100,7 +83,7 @@
 	-fx-background-color: -background-darker;
 	-fx-background-radius: 5;
 	-fx-text-fill: -light-text;
-	/* 
+	/*
 	-fx-border-style: solid;
 	-fx-border-width: 0 0 1 0;
 	-fx-border-color: #455a64;
@@ -169,4 +152,12 @@
 
 .rectangle {
 	-fx-stroke: -primary;
+}
+
+.jfx-list-view .list-cell:selected.reminder-on-list-cell  {
+	-fx-border-color: -error !important;
+}
+
+.jfx-list-view .list-cell.reminder-on-list-cell  {
+	-fx-text-fill: -error;
 }
