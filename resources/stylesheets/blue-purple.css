@@ -1,0 +1,11 @@
+* {
+    -primary-raw: #039be5;
+    -primary: linear-gradient(-primary-raw, -primary-raw, -analogous);
+    -light-text: #e1f5fe;
+    -dark-text: #000000;
+    -background: #263238;
+    -error:linear-gradient( #fa8a02, #ff2c2f);
+    -background-lighter: #455a64;
+    -background-darker: #222d32;
+    -analogous: #6e54f7;
+}
