@@ -69,6 +69,7 @@ public class MainWindowViewController extends AbstractViewController implements 
     };
 
     public static MediaPlayer player = null;
+    public static String currentTheme = null;
 
     private final TextFormatter<Integer> spinnerTextFormatter =
             new TextFormatter<Integer>(new IntegerStringConverter(), 1, SPINNER_FILTER);

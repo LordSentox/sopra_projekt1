@@ -16,6 +16,7 @@ import java.util.Properties;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import static de.sopra.passwordmanager.view.MainWindowViewController.currentTheme;
 import static de.sopra.passwordmanager.view.MainWindowViewController.player;
 
 public class SettingsViewController extends AbstractViewController {
@@ -54,15 +55,15 @@ public class SettingsViewController extends AbstractViewController {
         }
 
         public void playMusic() {
-            if(player == null)
-            {
+            if (player == null) {
+                if (musicPath == null) return;
                 Media media = new Media(ClassLoader.getSystemResource(musicPath).toString());
                 player = new MediaPlayer(media);
                 player.setAutoPlay(true);
+                player.setCycleCount(MediaPlayer.INDEFINITE);
                 player.play();
                 player.setVolume(1.0);
-            }
-            else {
+            } else {
                 player.stop();
                 player = null;
                 playMusic();
@@ -133,14 +134,6 @@ public class SettingsViewController extends AbstractViewController {
         removeConfirmation.open();
     }
 
-    public void onSelectThemeClicked() {
-        comboBoxSelectTheme.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            newValue.setTheme(SettingsViewController.this);
-            newValue.setTheme(mainWindowViewController);
-            newValue.playMusic();
-        });
-    }
-
     public void init() {
         Properties properties = new Properties();
         try {
@@ -154,7 +147,17 @@ public class SettingsViewController extends AbstractViewController {
                 .collect(Collectors.toList());
         items.add(0, new ThemeItem(" - Kein Theme - ", null));
         comboBoxSelectTheme.setItems(FXCollections.observableArrayList(items));
-        comboBoxSelectTheme.getSelectionModel().select(0);
+        if (currentTheme == null)
+            comboBoxSelectTheme.getSelectionModel().select(0);
+        else
+            comboBoxSelectTheme.getSelectionModel().select(
+                    comboBoxSelectTheme.getItems().stream().filter(item -> item.getName().equals(currentTheme)).findAny().get());
+        comboBoxSelectTheme.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            currentTheme = newValue.getName();
+            newValue.setTheme(SettingsViewController.this);
+            newValue.setTheme(mainWindowViewController);
+            newValue.playMusic();
+        });
     }
 
     public void onCancelSettingsClicked() {
