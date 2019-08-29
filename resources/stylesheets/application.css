@@ -175,11 +175,13 @@
     -fx-focus-traversable: false;
 	-fx-max-width: 300px;
 }
+
 .jfx-check-box {
 	-fx-text-fill: -light-text;
 	-jfx-checked-color: -analogous;
 	-jfx-unchecked-color: -light-text;
 }
+
 .spinner {
 	-fx-text-fill: -light-text;
 	-fx-background-color: -primary;

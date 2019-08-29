@@ -7,7 +7,7 @@
     -background: #202020;
     -background-lighter: #404040;
     -background-darker: #101010;
-    -analogous: #ffffff;
+    -analogous: #888888;
 }
 
 .background {
@@ -41,4 +41,16 @@
     -fx-background-position: center;
     -fx-background-radius: 0px;
     -fx-border-color: transparent;
+}
+
+#buttonSearch {
+    -fx-background-image: url('../textures/minecraft/stone.png');
+    -fx-background-size: 1.5em;
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: center;
+}
+
+.jfx-check-box {
+    -jfx-checked-color: -analogous;
+    -jfx-unchecked-color: -light-text;
 }
