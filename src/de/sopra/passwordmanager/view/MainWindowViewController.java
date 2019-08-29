@@ -254,9 +254,10 @@ public class MainWindowViewController extends AbstractViewController implements 
 
         //visual color for active reminders
         listViewCredentialsList.setCellFactory(param -> {
-            ListCell<CredentialsItem> cell = new ListCell<CredentialsItem>() {
+            ListCell<CredentialsItem> cell = new JFXListCell<CredentialsItem>() {
                 @Override
-                protected void updateItem(CredentialsItem item, boolean empty) {
+                public void updateItem(CredentialsItem item, boolean empty) {
+                    super.updateItem(item, empty);
                     if (item != null && item.hasToBeChanged())
                         getStyleClass().add("reminder-on-list-cell");
                 }
