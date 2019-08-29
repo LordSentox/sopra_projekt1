@@ -606,7 +606,7 @@ public class MainWindowViewController extends AbstractViewController implements 
         CredentialsItem selectedEntry = listViewCredentialsList.getSelectionModel().getSelectedItem();
 
         //Wenn Eingaben vorliegen, nach Verwerfung dieser Eingaben fragen
-        if (!selectedEntry.getCredentials().equals(oldCredentials)) {
+        if (selectedEntry != null && !selectedEntry.getCredentials().equals(oldCredentials)) {
             if (state.match(EDITED_ENTRY, CREATING_NEW_ENTRY)) {
                 SimpleConfirmation confirmation = new SimpleConfirmation("Änderung verwerfen?",
                         "Zur Zeit wird ein Eintrag bearbeitet",
