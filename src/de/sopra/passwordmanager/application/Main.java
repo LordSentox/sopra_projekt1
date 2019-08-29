@@ -37,13 +37,11 @@ public class Main extends Application {
             Scene mainScene = new Scene(mainPane);
             mainScene.getStylesheets().add(getClass().getResource("/stylesheets/application.css").toExternalForm());
             mainStage.setScene(mainScene);
-            mainWindowViewController.setScene(mainScene);
             mainWindowViewController.setMainWindowViewController(mainWindowViewController);
             mainWindowViewController.setStage(mainStage);
+            mainWindowViewController.setScene(mainScene);
             mainStage.setResizable(false);
-            mainStage.initStyle(StageStyle.TRANSPARENT);
-
-            mainWindowViewController.setStyleSheet("minecraft");
+            mainStage.initStyle(StageStyle.UNDECORATED);
 
             if (SAVE_FILE.exists()) {
                 /* Loginfenster */
