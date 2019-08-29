@@ -41,9 +41,9 @@ public class Main extends Application {
             mainWindowViewController.setMainWindowViewController(mainWindowViewController);
             mainWindowViewController.setStage(mainStage);
             mainStage.setResizable(false);
-            mainStage.initStyle(StageStyle.UNDECORATED);
+            mainStage.initStyle(StageStyle.TRANSPARENT);
 
-            mainWindowViewController.setStyleSheet("light");
+            mainWindowViewController.setStyleSheet("minecraft");
 
             if (SAVE_FILE.exists()) {
                 /* Loginfenster */
