@@ -44,6 +44,7 @@ public class CredentialsController {
      * @see Credentials
      */
     public void updateCredentials(Credentials oldCredentials, CredentialsBuilder newCredentials, Collection<Category> categories) throws NullPointerException {
+        ValidationUtil.notNull(oldCredentials, "Old credentials null");
         if (newCredentials == null) return;
         passwordManagerController.getPasswordManager().getRootCategory().removeCredentialsFromTree(oldCredentials);
         oldCredentials = newCredentials.build(passwordManagerController.getUtilityController());
