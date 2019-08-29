@@ -1,0 +1,13 @@
+/* JavaFX CSS - Leave this comment until you have at least created one rule which uses -fx-Property */
+
+* {
+    -primary-raw: #301000;
+    -primary: linear-gradient(-primary-raw, -dark-text, -background);
+    -light-text: #ff029e;
+    -dark-text: #000000;
+    -error:linear-gradient(#00ffff, #ff0000, #ff00ff, #00ff00, #0000ff, #ffff00);
+    -background: #0000FF;
+    -background-lighter: #FF0000;
+    -background-darker: #00FF00;
+    -analogous: #ff8000;
+}

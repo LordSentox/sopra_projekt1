@@ -265,16 +265,15 @@ public class MainWindowViewController extends AbstractViewController implements 
         textFieldCredentialsNotes.setWrapText(true);
 
         //visual color for active reminders
-        listViewCredentialsList.setCellFactory(param -> {
-            ListCell<CredentialsItem> cell = new JFXListCell<CredentialsItem>() {
-                @Override
-                public void updateItem(CredentialsItem item, boolean empty) {
-                    super.updateItem(item, empty);
-                    if (item != null && item.hasToBeChanged())
-                        getStyleClass().add("reminder-on-list-cell");
-                }
-            };
-            return cell;
+        listViewCredentialsList.setCellFactory(param -> new JFXListCell<CredentialsItem>() {
+            @Override
+            public void updateItem(CredentialsItem item, boolean empty) {
+                super.updateItem(item, empty);
+                if (item != null && item.hasToBeChanged())
+                    getStyleClass().add("reminder-on-list-cell");
+                else
+                    getStyleClass().remove("reminder-on-list-cell");
+            }
         });
 
     }

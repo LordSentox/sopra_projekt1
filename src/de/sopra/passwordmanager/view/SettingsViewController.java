@@ -42,8 +42,13 @@ public class SettingsViewController extends AbstractViewController {
         fileChooser.setTitle("Speichere Datei");
         fileChooser.getExtensionFilters().addAll(new ExtensionFilter("XML", "*.xml"));
         File fileToSave = fileChooser.showSaveDialog(stage);
-        if(fileToSave != null)
-        	mainWindowViewController.getPasswordManagerController().getIOController().exportFile(fileToSave);
+        if(fileToSave != null) {
+            // Hinzufügen der XML-Dateiendung, falls sie noch nicht vom Benutzer eingetragen wurde.
+            if (!fileToSave.toString().toLowerCase().endsWith(".xml")) {
+                fileToSave = new File(fileToSave.toString().concat(".xml"));
+            }
+            mainWindowViewController.getPasswordManagerController().getIOController().exportFile(fileToSave);
+        }
     }
 
     public void onResetDataClicked() {
