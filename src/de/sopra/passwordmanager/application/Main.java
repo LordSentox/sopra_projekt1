@@ -24,7 +24,7 @@ public class Main extends Application {
         MainWindowAUI aui = null;
         try {
             /* Hauptfenster */
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("../view/Hauptfenster.fxml"));
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/Hauptfenster.fxml"));
             AnchorPane mainPane = fxmlLoader.load();
             MainWindowViewController mainWindowViewController = fxmlLoader.getController();
             PasswordManagerController passwordManagerController = new PasswordManagerController();
@@ -47,7 +47,7 @@ public class Main extends Application {
 
             if (SAVE_FILE.exists()) {
                 /* Loginfenster */
-                LoginViewController login = mainWindowViewController.openModal("../view/Einloggen.fxml",
+                LoginViewController login = mainWindowViewController.openModal("/Einloggen.fxml",
                         LoginViewController.class, preOpen ->
                         {
                             preOpen.setSourceFile(SAVE_FILE);
@@ -60,7 +60,7 @@ public class Main extends Application {
             } else {
                 /* Masterpasswort zum Erststart / Registrierung setzen */
                 MasterPasswordViewController masterPasswordViewController =
-                        mainWindowViewController.openModal("../view/Masterpasswort-setzen.fxml",
+                        mainWindowViewController.openModal("/Masterpasswort-setzen.fxml",
                                 MasterPasswordViewController.class, preOpen ->
                                 {
                                     preOpen.setBackTo(mainStage);
