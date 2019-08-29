@@ -11,9 +11,9 @@
       <JFXTextField fx:id="textFieldSearch" layoutX="10.0" layoutY="10.0" onAction="#onSearchClicked"/>
       <JFXButton fx:id="buttonSearch" layoutX="186.0" layoutY="10.0" mnemonicParsing="false" prefWidth="114.0" text="Lupe" onAction="#onSearchClicked"/>
       <JFXComboBox fx:id="comboBoxCategorySelectionMain" layoutX="10.0" layoutY="44.0" prefWidth="171.0" />
-      <JFXButton fx:id="buttonAddCategoryMain" layoutX="186.0" layoutY="44.0" mnemonicParsing="false" text="+" onAction="#onAddCategoryClicked"/>
-      <JFXButton fx:id="buttonEditCategoryMain" layoutX="220.0" layoutY="44.0" mnemonicParsing="false" prefWidth="46.0" text="edit" onAction="#onEditCategoryClicked"/>
-      <JFXButton fx:id="buttonRemoveCategoryMain" layoutX="271.0" layoutY="44.0" mnemonicParsing="false" prefWidth="29.0" text="-" onAction="#onRemoveCategoryClicked"/>
+      <JFXButton fx:id="buttonAddCategoryMain" layoutX="186.0" layoutY="44.0" mnemonicParsing="false" text="+" onAction="#onAddCategoryClicked" focusTraversable="false"/>
+      <JFXButton fx:id="buttonEditCategoryMain" layoutX="220.0" layoutY="44.0" mnemonicParsing="false" prefWidth="46.0" text="edit" onAction="#onEditCategoryClicked" focusTraversable="false"/>
+      <JFXButton fx:id="buttonRemoveCategoryMain" layoutX="271.0" layoutY="44.0" mnemonicParsing="false" prefWidth="29.0" text="-" onAction="#onRemoveCategoryClicked" focusTraversable="false"/>
       <JFXListView fx:id="listViewCredentialsList" layoutX="10.0" layoutY="80.0" prefHeight="450.0" prefWidth="290.0"/>
       <JFXButton fx:id="buttonAddCredentials" layoutX="10.0" layoutY="540.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="124.0" text="Neuer Eintrag" onAction="#onAddCredentialsClicked" />
       <JFXButton fx:id="buttonRemoveCredentials" layoutX="163.0" layoutY="540.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="137.0" text="Eintrag löschen" onAction="#onRemoveCredentialsClicked" />
@@ -35,7 +35,7 @@
       <Label layoutX="315.0" layoutY="225.0" text="Webseite" />
       <JFXTextField fx:id="textFieldCredentialsWebsite" layoutX="430.0" layoutY="220.0" />
       <JFXCheckBox styleClass="jfx-check-box" fx:id="checkBoxCredentialsUseReminder" layoutX="315.0" layoutY="251.0" mnemonicParsing="false" text="Erinnern an Passwortänderung in" onAction="#onCheckBoxClicked"/>
-      <Spinner styleClass="spinner" fx:id="spinnerCredentialsReminderDays" layoutX="430.0" layoutY="274.0" prefHeight="26.0" prefWidth="100.0" />
+      <Spinner styleClass="spinner" fx:id="spinnerCredentialsReminderDays" layoutX="430.0" layoutY="274.0" prefHeight="26.0" prefWidth="100.0" focusTraversable="false"/>
       <Label layoutX="544.0" layoutY="279.0" text="Tagen" />
       <Label layoutX="315.0" layoutY="367.0" text="Kategorien" />
       <MultiSelectionComboBox styleClass="multi-selection-combo-box" fx:id="choiceBoxCredentialsCategories" layoutX="430.0" layoutY="362.0" prefWidth="171.0" />

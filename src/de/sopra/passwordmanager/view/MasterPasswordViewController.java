@@ -2,7 +2,6 @@ package de.sopra.passwordmanager.view;
 
 import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXProgressBar;
-
 import de.sopra.passwordmanager.util.CredentialsBuilder;
 import de.sopra.passwordmanager.view.dialog.SimpleDialog;
 import javafx.fxml.FXML;
@@ -58,7 +57,7 @@ public class MasterPasswordViewController extends AbstractViewController impleme
     }
 
     public void onSaveClicked() {
-        if (passwordFieldSet.getText().equals(passwordFieldCheck.getText())) {
+        if (passwordFieldSet.getText().isEmpty() || passwordFieldSet.getText().equals(passwordFieldCheck.getText())) {
 
             int newReminder = spinnerReminderDays.getValue();
             mainWindowViewController.getPasswordManagerController().getMasterPasswordController().changePassword(passwordFieldSet.getText(), newReminder);
@@ -72,6 +71,14 @@ public class MasterPasswordViewController extends AbstractViewController impleme
             }
 
         } else {
+            if(passwordFieldSet.getText().isEmpty())
+            {
+                labelError.setText("Das Passwort darf nicht leer sein");
+            }
+            else
+            {
+                labelError.setText("Die Passwörter sind nicht gleich");
+            }
             labelError.setVisible(true);
         }
     }
@@ -90,9 +97,11 @@ public class MasterPasswordViewController extends AbstractViewController impleme
     public void onMasterPasswordCancelClicked() {
         stage.close();
     }
-    public void onCloseClicked(){
-    	stage.close();
+
+    public void onCloseClicked() {
+        stage.close();
     }
+
     @Override
     public void refreshQuality(int quality) {
         double progress = quality / 100.0;
