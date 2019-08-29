@@ -37,10 +37,13 @@ public class Main extends Application {
             Scene mainScene = new Scene(mainPane);
             mainScene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
             mainStage.setScene(mainScene);
+            mainWindowViewController.setScene(mainScene);
             mainWindowViewController.setMainWindowViewController(mainWindowViewController);
             mainWindowViewController.setStage(mainStage);
             mainStage.setResizable(false);
             mainStage.initStyle(StageStyle.UNDECORATED);
+
+            mainWindowViewController.setStyleSheet("light-blue");
 
             if (SAVE_FILE.exists()) {
                 /* Loginfenster */
@@ -73,6 +76,7 @@ public class Main extends Application {
                 mainWindowViewController.refreshEntry();
             }
         } catch (Exception e) {
+            e.printStackTrace();
             if (aui != null) {
                 aui.showError(e.toString() + " while creating the main view - fatal error");
             }

@@ -56,10 +56,10 @@ public class CredentialsBuilder {
      *
      * @see #build(UtilityController)
      */
-    public CredentialsBuilder(Credentials cred, UtilityController uc) {
+    public CredentialsBuilder(Credentials cred, UtilityController utilityController) {
         this.name = cred.getName();
         this.userName = cred.getUserName();
-        this.password = uc.decryptText(cred.getPassword());
+        this.password = utilityController.decryptText(cred.getPassword());
         this.website = cred.getWebsite();
         this.changeReminderDays = cred.getChangeReminderDays();
         this.created = cred.getCreatedAt();
@@ -67,8 +67,8 @@ public class CredentialsBuilder {
         this.notes = cred.getNotes();
         this.securityQuestions = new HashMap<>();
         cred.getSecurityQuestions().forEach(securityQuestion -> {
-            String decryptedQuestion = uc.decryptText(securityQuestion.getQuestion());
-            String decryptedAnswer = uc.decryptText(securityQuestion.getAnswer());
+            String decryptedQuestion = utilityController.decryptText(securityQuestion.getQuestion());
+            String decryptedAnswer = utilityController.decryptText(securityQuestion.getAnswer());
             securityQuestions.put(decryptedQuestion, decryptedAnswer);
         });
     }
@@ -88,10 +88,10 @@ public class CredentialsBuilder {
      *                                     - {@code #changeReminderDays}, falls angegeben, weniger als 1 Tag ist
      */
     public Credentials build(UtilityController utilityController) throws CredentialsBuilderException {
-        Validate.notNull(name, "CredentialsBuilder: name is null");
-        Validate.notNull(userName, "CredentialsBuilder: userName is null");
-        Validate.notNull(password, "CredentialsBuilder: password is null");
-        Validate.notNull(website, "CredentialsBuilder: website is null");
+        ValidationUtil.notNull(name, "CredentialsBuilder: name is null");
+        ValidationUtil.notNull(userName, "CredentialsBuilder: userName is null");
+        ValidationUtil.notNull(password, "CredentialsBuilder: password is null");
+        ValidationUtil.notNull(website, "CredentialsBuilder: website is null");
         if (changeReminderDays != null && changeReminderDays < 1)
             throw new CredentialsBuilderException("change reminder less than 1 day: " + changeReminderDays);
 
@@ -268,12 +268,12 @@ public class CredentialsBuilder {
 
     /**
      * Kopiert die Daten dieses {@link CredentialsBuilder} in das gegebene Credentials objekt. Die daten werden überschrieben
-     * @param uc Der zum verschlüsseln benötigte {@link UtilityController}
+     * @param utilityController Der zum verschlüsseln benötigte {@link UtilityController}
      */
-    public void copyTo(Credentials cred, UtilityController uc) {
+    public void copyTo(Credentials cred, UtilityController utilityController) {
         cred.setName(name);
         cred.setUserName(userName);
-        cred.setPassword(uc.encryptText(password));
+        cred.setPassword(utilityController.encryptText(password));
         cred.setWebsite(website);
         cred.setLastChanged(lastChanged);
         cred.setNotes(notes);
@@ -282,18 +282,18 @@ public class CredentialsBuilder {
         cred.addSecurityQuestions(
                 securityQuestions.entrySet().stream()
                         .map(seqQuestion -> new SecurityQuestion(
-                                uc.encryptText(seqQuestion.getKey()),
-                                uc.encryptText(seqQuestion.getValue())
+                                utilityController.encryptText(seqQuestion.getKey()),
+                                utilityController.encryptText(seqQuestion.getValue())
                         ))
                         .collect(Collectors.toSet())
         );
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        CredentialsBuilder that = (CredentialsBuilder) o;
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+        CredentialsBuilder that = (CredentialsBuilder) object;
         return Objects.equals(name, that.name) &&
                 Objects.equals(userName, that.userName) &&
                 Objects.equals(password, that.password) &&

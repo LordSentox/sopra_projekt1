@@ -2,11 +2,11 @@
 
 * {
 	-primary-raw: #039be5;
-	-primary: linear-gradient(#039be5, #039be5, #6e54f7);
+	-primary: linear-gradient(-primary-raw, -primary-raw, -analogous);
 	-light-text: #e1f5fe;
 	-dark-text: #000000;
 	-background: #263238;
-	-error: #fa8a02;
+	-error:linear-gradient( #fa8a02, #ff2c2f);
 	-background-lighter: #455a64;
 	-background-darker: #222d32;
 	-analogous: #6e54f7;
@@ -37,15 +37,7 @@
 	-fx-min-width: 15px;
 	-fx-max-width: 15px;
 }
-.button-settings {
-	-fx-background-color: -primary;
-	-fx-font-size: 13;
-	-fx-background-radius: 90;
-	-fx-min-height: 30px;
-	-fx-max-height: 30px;
-	-fx-min-width: 30px;
-	-fx-max-width: 30px;
-}
+
 .show-button .label{
 	-fx-text-fill: -dark-text;
 }
@@ -56,7 +48,7 @@
 }
 .text-area {
 	-fx-text-fill: -light-text;
-	-fx-background-color: -background-darker; 
+	-fx-background-color: -background-darker;
 	-fx-background-radius: 5;
 	-fx-border-color: transparent;
 }
@@ -94,6 +86,7 @@
 	-fx-background-radius: 5;
 	-fx-background-color: -background-darker;
 	-fx-text-fill: -light-text;
+	-fx-max-width: 400px;
 }
 
 .jfx-list-view .list-cell {
@@ -107,6 +100,32 @@
 	 * */
 }
 
+
+.scroll-bar:vertical .increment-arrow,
+.scroll-bar:vertical .decrement-arrow,
+.scroll-bar:vertical .increment-button,
+.scroll-bar:vertical .decrement-button,
+.scroll-bar:horizontal .increment-arrow,
+.scroll-bar:horizontal .decrement-arrow,
+.scroll-bar:horizontal .increment-button,
+.scroll-bar:horizontal .decrement-button {
+	-fx-background-color: -primary;
+	-fx-text-fill: -dark-text;
+}
+.scroll-bar .track {
+	-fx-background-color: -background-darker;
+}
+.scroll-bar .thumb {
+	-fx-background-color: -primary;
+}
+.scroll-bar {
+	-fx-background-color: -background-darker;
+
+}
+.scroll-bar .filler,
+.scroll-bar .corner{
+	-fx-background-color: -background-darker;
+}
 .jfx-combo-box {
 	-jfx-focus-color: transparent;
 	-jfx-unfocus-color: transparent;
@@ -122,6 +141,7 @@
 .jfx-combo-box .list-view {
 	-fx-background-color: -primary;
 	-fx-border-color: -primary;
+	-fx-max-width: 400px;
 }
 .multi-selection-combo-box {
 	-jfx-focus-color: transparent;
@@ -139,6 +159,8 @@
 	-fx-background-color: -primary;
 	-fx-border-radius: 5;
 	-fx-border-color: -primary;
+    -fx-focus-traversable: false;
+	-fx-max-width: 300px;
 }
 .jfx-check-box {
 	-fx-text-fill: -light-text;
@@ -163,10 +185,27 @@
 
 .spinner .increment-arrow-button,
 .spinner .decrement-arrow-button {
-	-fx-body-color: -primary;
+	-fx-background-color: transparent;
+}
+
+.spinner .increment-arrow-button .increment-arrow,
+.spinner .decrement-arrow-button .decrement-arrow {
+	-fx-background-color: -dark-text;
 }
 
 
 .rectangle {
 	-fx-stroke: -primary;
+}
+
+.jfx-list-view .list-cell:selected.reminder-on-list-cell  {
+	-fx-border-color: -error !important;
+}
+
+.jfx-list-view .list-cell.reminder-on-list-cell  {
+	-fx-text-fill: -error;
+}
+
+.arrow {
+	-fx-background-color: -dark-text;
 }

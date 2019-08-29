@@ -1,32 +1,16 @@
 package de.sopra.passwordmanager.controller;
 
 import aes.AES;
-import de.sopra.passwordmanager.model.Category;
-import de.sopra.passwordmanager.model.Credentials;
 import de.sopra.passwordmanager.model.EncryptedString;
 import de.sopra.passwordmanager.util.CredentialsBuilder;
-import de.sopra.passwordmanager.util.Validate;
 import exceptions.DecryptionException;
 import exceptions.EncryptionException;
 import org.passay.*;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-
-import javax.rmi.CORBA.Util;
-import javax.xml.parsers.DocumentBuilderFactory;
-import java.io.File;
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.time.LocalDateTime;
-import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-
-import org.w3c.dom.*;
-
-import static javax.xml.bind.DatatypeConverter.parseHexBinary;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
 
 /**
  * Der UtilityController stellt verschiedene Hilfsdienste zur Verfügung
@@ -53,6 +37,8 @@ public class UtilityController {
             return this.chars;
         }
     }
+
+    private static final int MINIMUM_PASSWORD_LENGTH = 8;
 
     /**
      * Referenz zum Passwortmanagercontroller
@@ -220,7 +206,7 @@ public class UtilityController {
         CharacterOccurrencesRule notAllTheSame = new CharacterOccurrencesRule(3);
 
         // Stelle sicher, dass die Länge nicht zu kurz ist.
-        LengthRule minimumLength = new LengthRule(8, 256);
+        LengthRule minimumLength = new LengthRule(MINIMUM_PASSWORD_LENGTH, 256);
 
         // Gibt es ein bestimmtes Doppelzeichen drei oder mehr mal?
         RepeatCharactersRule repeatCharacters = new RepeatCharactersRule(2, 3);
@@ -260,9 +246,9 @@ public class UtilityController {
             pwData.setUsername(username);
         }
         int length = text.length();
-       /* if (length == 0) {
+        if (text.isEmpty()) {
             return 0;
-        }*/
+        }
         List<WeighedRule> rules = generateRules(checkUsername);
         // Für jede Regel die eingehalten wird, wird das Gewicht als Wert der unangepassten Qualität hinzugefügt
         double quality = 0.0;
@@ -296,7 +282,7 @@ public class UtilityController {
         } else {
             wholePercent = (int) percent;
         }
-        if (length < 8) {
+        if (length < MINIMUM_PASSWORD_LENGTH) {
             return wholePercent / 2;
         }
 

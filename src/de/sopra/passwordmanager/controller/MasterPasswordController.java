@@ -28,6 +28,7 @@ public class MasterPasswordController {
         String oldMasterPassword = passwordManagerController.getPasswordManager().getMasterPassword();
         passwordManagerController.getPasswordManager().setMasterPassword(newPassword);
         passwordManagerController.getPasswordManager().setMasterPasswordReminderDays(newReminder);
+        passwordManagerController.getPasswordManager().setMasterPasswordLastChanged();
         passwordManagerController.getCredentialsController().reencryptAll(oldMasterPassword, newPassword);
     }
 

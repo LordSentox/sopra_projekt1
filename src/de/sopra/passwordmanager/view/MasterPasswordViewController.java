@@ -1,7 +1,10 @@
 package de.sopra.passwordmanager.view;
 
+import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXProgressBar;
+import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
+
 import de.sopra.passwordmanager.util.CredentialsBuilder;
 import de.sopra.passwordmanager.view.dialog.SimpleDialog;
 import javafx.fxml.FXML;
@@ -24,6 +27,8 @@ public class MasterPasswordViewController extends AbstractViewController impleme
     private Label labelError;
     @FXML
     private JFXProgressBar progressBarQuality;
+    @FXML
+    private JFXButton buttonSave;
 
     private final TextFormatter<Integer> spinnerTextFormatter = new TextFormatter<Integer>(
             new IntegerStringConverter(), 1, MainWindowViewController.SPINNER_FILTER);
@@ -47,9 +52,12 @@ public class MasterPasswordViewController extends AbstractViewController impleme
         spinnerReminderDays.getEditor().setTextFormatter(spinnerTextFormatter);
 
         passwordFieldSet.textProperty().addListener((obs, oldText, newText) -> {
+            if ( newText == null || newText.isEmpty()){
+            	buttonSave.setDisable(true);
+            }
             onPasswordChanged();
         });
-
+        buttonSave.setDisable(true);
     }
 
     public void openedBySettings() {
@@ -57,7 +65,7 @@ public class MasterPasswordViewController extends AbstractViewController impleme
     }
 
     public void onSaveClicked() {
-        if (passwordFieldSet.getText().isEmpty() || passwordFieldSet.getText().equals(passwordFieldCheck.getText())) {
+        if (!passwordFieldSet.getText().isEmpty() && passwordFieldSet.getText().equals(passwordFieldCheck.getText())) {
 
             int newReminder = spinnerReminderDays.getValue();
             mainWindowViewController.getPasswordManagerController().getMasterPasswordController().changePassword(passwordFieldSet.getText(), newReminder);
@@ -86,11 +94,11 @@ public class MasterPasswordViewController extends AbstractViewController impleme
 
     public void onPasswordChanged() {
         String password = passwordFieldSet.getText();
-        if (password != null) {
-            //TODO change credentials to String in check Quality
-            //XXX entfernen?
-            CredentialsBuilder credBuilder = new CredentialsBuilder().withPassword(password);
+        if (password != null && !password.isEmpty()) {
             mainWindowViewController.getPasswordManagerController().getMasterPasswordController().checkQuality(password);
+            buttonSave.setDisable(false);
+        } else {
+        	buttonSave.setDisable(true);
         }
     }
 

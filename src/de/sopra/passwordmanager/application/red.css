@@ -1,16 +1,16 @@
 /* JavaFX CSS - Leave this comment until you have at least created one rule which uses -fx-Property */
 
 * {
-	-primary-raw: #A0FF00;
-	-analogous: #f6e900;
+	-primary-raw: #ff0000;
 	-primary: linear-gradient(-primary-raw, -primary-raw, -analogous);
-	-light-text: #f4ffe7;
+	-light-text: #e1f5fe;
 	-dark-text: #000000;
-	-background: #212121;
-	-error: #9a67ff;
-	-background-lighter: #303030;
-	-background-darker: #151515;
-	
+	-error:linear-gradient(#00ffff, #00ff80);
+	-background: #250000;
+	-background-lighter: #300000;
+	-background-darker: #200000;
+	-analogous: #ff8000;
+
 }
 
 .label {

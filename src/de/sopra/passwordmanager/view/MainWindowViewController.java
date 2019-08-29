@@ -28,7 +28,6 @@ import javafx.stage.StageStyle;
 import javafx.util.Duration;
 import javafx.util.converter.IntegerStringConverter;
 
-import java.io.IOException;
 import java.text.NumberFormat;
 import java.text.ParsePosition;
 import java.time.format.DateTimeFormatter;
@@ -168,7 +167,7 @@ public class MainWindowViewController extends AbstractViewController implements 
         timeline = new Timeline(new KeyFrame(Duration.millis(10), event -> {
             progressBarCredentialsCopyTimer.setProgress(progressBarCredentialsCopyTimer.progressProperty().doubleValue() - 0.001);
             if (progressBarCredentialsCopyTimer.progressProperty().doubleValue() <= 0.0) {
-                buttonCredentialsCopy.setOpacity(1.0);
+                buttonCredentialsCopy.getStyleClass().remove("copy-button");
             }
         }));
         timeline.setCycleCount(1000);
@@ -192,7 +191,7 @@ public class MainWindowViewController extends AbstractViewController implements 
         textFieldCredentialsName.textProperty().addListener((obs, oldText, newText) -> {
             if (newText == null) return;
             if (oldText == null) oldText = "";
-            if (Math.abs(oldText.length() - newText.length()) <= 1) {
+            if (!oldText.equals(newText)) {
                 currentCredentials.withName(newText);
                 changeState(START_EDITING_ENTRY, EDITED_ENTRY);
             }
@@ -200,7 +199,7 @@ public class MainWindowViewController extends AbstractViewController implements 
         textFieldCredentialsUserName.textProperty().addListener((obs, oldText, newText) -> {
             if (newText == null) return;
             if (oldText == null) oldText = "";
-            if (Math.abs(oldText.length() - newText.length()) <= 1) {
+            if (!oldText.equals(newText)) {
                 currentCredentials.withUserName(newText);
                 changeState(START_EDITING_ENTRY, EDITED_ENTRY);
                 passwordManagerController.checkQuality(currentCredentials);
@@ -209,7 +208,7 @@ public class MainWindowViewController extends AbstractViewController implements 
         textFieldCredentialsWebsite.textProperty().addListener((obs, oldText, newText) -> {
             if (newText == null) return;
             if (oldText == null) oldText = "";
-            if (Math.abs(oldText.length() - newText.length()) <= 1) {
+            if (!oldText.equals(newText)) {
                 currentCredentials.withWebsite(newText);
                 changeState(START_EDITING_ENTRY, EDITED_ENTRY);
             }
@@ -217,7 +216,7 @@ public class MainWindowViewController extends AbstractViewController implements 
         textFieldCredentialsPassword.textProperty().addListener((obs, oldText, newText) -> {
             if (newText == null) return;
             if (oldText == null) oldText = "";
-            if (Math.abs(oldText.length() - newText.length()) <= 1) {
+            if (!oldText.equals(newText)) {
                 currentCredentials.withPassword(newText);
                 changeState(START_EDITING_ENTRY, EDITED_ENTRY);
                 passwordManagerController.checkQuality(currentCredentials);
@@ -226,7 +225,7 @@ public class MainWindowViewController extends AbstractViewController implements 
         textFieldCredentialsNotes.textProperty().addListener((obs, oldText, newText) -> {
             if (newText == null) return;
             if (oldText == null) oldText = "";
-            if (Math.abs(oldText.length() - newText.length()) <= 1) {
+            if (!oldText.equals(newText)) {
                 currentCredentials.withNotes(newText);
                 changeState(START_EDITING_ENTRY, EDITED_ENTRY);
             }
@@ -251,6 +250,19 @@ public class MainWindowViewController extends AbstractViewController implements 
         orderStrategy = new AlphabeticOrderStrategy().nextOrder(new ReminderSecondaryStrategy()); //es wird nicht sortiert
 
         textFieldCredentialsNotes.setWrapText(true);
+
+        //visual color for active reminders
+        listViewCredentialsList.setCellFactory(param -> {
+            ListCell<CredentialsItem> cell = new JFXListCell<CredentialsItem>() {
+                @Override
+                public void updateItem(CredentialsItem item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (item != null && item.hasToBeChanged())
+                        getStyleClass().add("reminder-on-list-cell");
+                }
+            };
+            return cell;
+        });
 
     }
 
@@ -313,20 +325,19 @@ public class MainWindowViewController extends AbstractViewController implements 
         credentialsController.filterCredentials(new PatternSyntax(pattern));
     }
 
-    private void openCategoryEditWindow(Path path) throws IOException {
-        categoryEditViewController = openModal("../view/Kategorie_anlegen-aendern.fxml",
-                CategoryEditViewController.class, preOpen ->
-                {
-                    preOpen.initComboBox();
-                    preOpen.setCurrentlyEdited(path);
-                });
-    }
-
     public void onAddCategoryClicked() {
         //STATE - soll unabhängig funktionieren
         try {
+            CategoryItem selectedItem = comboBoxCategorySelectionMain.getSelectionModel().getSelectedItem();
+            Path path = selectedItem.getPath();
             /* Kategorie hinzufügen - leeres Fenster öffnen */
-            openCategoryEditWindow(null);
+            categoryEditViewController = openModal("../view/Kategorie_anlegen-aendern.fxml",
+                    CategoryEditViewController.class, preOpen ->
+                    {
+                        preOpen.setShouldAdd(true);
+                        preOpen.setCurrentlyEdited(path);
+                        preOpen.init();
+                    });
         } catch (Exception e) {
             showError(e);
             throw new RuntimeException(e);
@@ -346,9 +357,12 @@ public class MainWindowViewController extends AbstractViewController implements 
                 showError("Das Ändern der Hauptkategorie ist nicht erlaubt.");
                 return;
             }
-            openCategoryEditWindow(path);
-            //aktuelle Auswahl zur Bearbeitung angeben
-            categoryEditViewController.setCurrentlyEdited(path);
+            categoryEditViewController = openModal("../view/Kategorie_anlegen-aendern.fxml",
+                    CategoryEditViewController.class, preOpen ->
+                    {
+                        preOpen.setCurrentlyEdited(path);
+                        preOpen.init();
+                    });
         } catch (Exception e) {
             showError(e);
             throw new RuntimeException(e);
@@ -607,14 +621,19 @@ public class MainWindowViewController extends AbstractViewController implements 
 
         //Alle Kategorien in die Kombobox einpflegen
         CategoryItem chosenCat = comboBoxCategorySelectionMain.getSelectionModel().getSelectedItem();
-        //alte Inhalte entfernen
-        comboBoxCategorySelectionMain.getItems().clear();
-        //neue Inhalte einfügen
-        cats.entrySet().stream()
-                .map(entry -> new CategoryItem(entry.getKey(), entry.getValue()))
-                .forEach(comboBoxCategorySelectionMain.getItems()::add);
 
-        comboBoxCategorySelectionMain.getItems().sort(Comparator.comparing(item -> item.getPath().length()));
+        //alte Inhalte entfernen
+        if (state.match(UNSET, VIEW_ENTRY, START_EDITING_ENTRY)) {
+            comboBoxCategorySelectionMain.getItems().clear();
+            //neue Inhalte einfügen
+            cats.entrySet().stream()
+                    .map(entry -> new CategoryItem(entry.getKey(), entry.getValue()))
+                    .forEach(comboBoxCategorySelectionMain.getItems()::add);
+
+            comboBoxCategorySelectionMain.getItems().sort(Comparator.comparing(item -> item.getPath().length()));
+        }
+
+        //Choicebox updaten
 
         List<SelectableComboItem<CategoryItem>> oldList = choiceBoxCredentialsCategories.getListProvider();
 
@@ -628,17 +647,22 @@ public class MainWindowViewController extends AbstractViewController implements 
         catItems.sort(Comparator.comparing(item -> item.getContent().getPath().length()));
         choiceBoxCredentialsCategories.setListProvider(catItems);
 
-        //vorherige Auswahl wiederherstellen, wenn möglich
-        List<CategoryItem> items = comboBoxCategorySelectionMain.getItems();
-        if (!items.stream().anyMatch(item -> item.getPath().equals(chosenCat.getPath()))) {
-            CategoryItem selected = items.stream().filter(item -> item.getPath().equals(Path.ROOT_CATEGORY_PATH)).findAny().get();
-            comboBoxCategorySelectionMain.getSelectionModel().select(selected);
-        } else {
-            CategoryItem selected = items.stream().filter(item -> item.getPath().equals(chosenCat.getPath())).findAny().get();
-            comboBoxCategorySelectionMain.getSelectionModel().select(selected);
+        if (state.match(UNSET, VIEW_ENTRY, START_EDITING_ENTRY)) {
+
+            //vorherige Auswahl wiederherstellen, wenn möglich
+            List<CategoryItem> items = comboBoxCategorySelectionMain.getItems();
+            if (!items.stream().anyMatch(item -> item.getPath().equals(chosenCat.getPath()))) {
+                CategoryItem selected = items.stream().filter(item -> item.getPath().equals(Path.ROOT_CATEGORY_PATH)).findAny().get();
+                comboBoxCategorySelectionMain.getSelectionModel().select(selected);
+            } else {
+                CategoryItem selected = items.stream().filter(item -> item.getPath().equals(chosenCat.getPath())).findAny().get();
+                comboBoxCategorySelectionMain.getSelectionModel().select(selected);
+            }
+
         }
 
-        refreshEntryListWhenCategoryChosen();
+        if (state.match(UNSET, VIEW_ENTRY, START_EDITING_ENTRY))
+            refreshEntryListWhenCategoryChosen();
 
         listViewCredentialsList.getFocusModel().focus(-1);
 
@@ -652,7 +676,9 @@ public class MainWindowViewController extends AbstractViewController implements 
         Collection<Credentials> credentials = chosenCat2 == null ?
                 passwordManagerController.getPasswordManager().getRootCategory().getAllCredentials() : chosenCat2.getCategory().getAllCredentials();
         if (!credentials.isEmpty()) {
+            //select
             List<CredentialsItem> selection = selectionStrategy.select(new LinkedList<>(credentials));
+            //order
             List<CredentialsItem> ordered = orderStrategy.order(selection);
             ObservableList<CredentialsItem> credsToShow = new ObservableListWrapper<>(ordered);
             listViewCredentialsList.setItems(credsToShow);

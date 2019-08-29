@@ -6,6 +6,8 @@ import de.sopra.passwordmanager.util.strategy.AdaptableNamingStrategy;
 import de.sopra.passwordmanager.util.strategy.GenerateReminderPrefixStrategy;
 import de.sopra.passwordmanager.util.strategy.ItemNamingStrategy;
 
+import java.time.LocalDateTime;
+
 /**
  * <h1>projekt1</h1>
  *
@@ -26,7 +28,7 @@ public class CredentialsItem {
 
     public void setNamingStrategy(ItemNamingStrategy<Credentials> namingStrategy) {
         if (namingStrategy != null) {
-            this.namingStrategy = AdaptableNamingStrategy.as(namingStrategy)
+            this.namingStrategy = AdaptableNamingStrategy.asItemNamingStrategy(namingStrategy)
                     .withPrefix(new GenerateReminderPrefixStrategy());
         }
     }
@@ -37,6 +39,14 @@ public class CredentialsItem {
 
     public CredentialsBuilder getNewBuilder(UtilityController utilityController) {
         return new CredentialsBuilder(credentials, utilityController);
+    }
+
+    public boolean hasToBeChanged() {
+        if (credentials.getChangeReminderDays() == null)
+            return false;
+        Integer reminderDays = credentials.getChangeReminderDays();
+        LocalDateTime time1 = credentials.getLastChanged().plusDays(reminderDays);
+        return time1.isBefore(LocalDateTime.now());
     }
 
     @Override
