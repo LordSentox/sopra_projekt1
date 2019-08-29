@@ -35,6 +35,12 @@
 	-fx-max-height: 15px;
 	-fx-min-width: 15px;
 	-fx-max-width: 15px;
+	/*
+	-fx-background-image: url('../x2.png');
+	-fx-background-size: 10px;
+	-fx-background-repeat: no-repeat;
+	-fx-background-position: center;
+	 */
 }
 
 .show-button .label{

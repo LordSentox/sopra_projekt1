@@ -40,11 +40,6 @@ public class MasterPasswordControllerTest {
 
     }
 
-    @Test (expected = NullPointerException.class)
-    public void checkQualityTestNull() {
-        this.masterPasswordController.checkQuality(null);
-    }
-
     @Test
     public void checkQualityTest() {
         List<String> passwords = Arrays.asList("123", "", "Hello, there", "142aB5][9p5assw15ort!5xD", "aA53]@`");
