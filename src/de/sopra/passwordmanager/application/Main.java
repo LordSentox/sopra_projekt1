@@ -35,7 +35,7 @@ public class Main extends Application {
 
             Stage mainStage = new Stage();
             Scene mainScene = new Scene(mainPane);
-            mainScene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+            mainScene.getStylesheets().add(getClass().getResource("/stylesheets/application.css").toExternalForm());
             mainStage.setScene(mainScene);
             mainWindowViewController.setScene(mainScene);
             mainWindowViewController.setMainWindowViewController(mainWindowViewController);

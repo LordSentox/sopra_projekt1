@@ -1,6 +1,7 @@
 package de.sopra.passwordmanager.view.multibox;
 
 import com.jfoenix.controls.JFXCheckBox;
+import com.jfoenix.controls.JFXListCell;
 import javafx.collections.FXCollections;
 import javafx.event.EventHandler;
 import javafx.scene.control.ComboBox;
@@ -76,13 +77,14 @@ public class MultiSelectionComboBox<T> extends ComboBox<SelectableComboItem<T>> 
 
                 @Override
                 public ListCell<SelectableComboItem<T>> call(ListView<SelectableComboItem<T>> param) {
-                    ListCell<SelectableComboItem<T>> cell = new ListCell<SelectableComboItem<T>>() {
+                    ListCell<SelectableComboItem<T>> cell = new JFXListCell<SelectableComboItem<T>>() {
                         @Override
-                        protected void updateItem(SelectableComboItem<T> item, boolean empty) {
+                        public void updateItem(SelectableComboItem<T> item, boolean empty) {
                             super.updateItem(item, empty);
                             if (!empty && item != null) {
                                 JFXCheckBox cb = new JFXCheckBox(item.getItemName());
                                 cb.setSelected(item.isSelected());
+                                cb.setFocusTraversable(false);
                                 cb.addEventHandler(MouseEvent.MOUSE_CLICKED, onCheckBoxClick);
                                 setGraphic(cb);
                             } else {
@@ -99,9 +101,9 @@ public class MultiSelectionComboBox<T> extends ComboBox<SelectableComboItem<T>> 
     }
 
     private void updateProvider(String itemName, boolean isSelected) {
-        for (SelectableComboItem uiVO : getItems()) {
-            if (uiVO.getItemName().equalsIgnoreCase(itemName)) {
-                uiVO.setSelected(isSelected);
+        for (SelectableComboItem item : getItems()) {
+            if (item.getItemName().equalsIgnoreCase(itemName)) {
+                item.setSelected(isSelected);
                 break;
             }
         }
@@ -113,6 +115,10 @@ public class MultiSelectionComboBox<T> extends ComboBox<SelectableComboItem<T>> 
         listTemp.addAll(getItems());
         getItems().clear();
         setItems(FXCollections.observableArrayList(listTemp));
+        //if none is selected, select the first entry
+        if (getSelectedContentList().isEmpty()) {
+            setSelected(getListProvider().get(0), true);
+        }
     }
 
 }
