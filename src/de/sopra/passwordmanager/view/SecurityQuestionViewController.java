@@ -5,6 +5,7 @@ import com.jfoenix.controls.JFXTextField;
 import de.sopra.passwordmanager.controller.CredentialsController;
 import de.sopra.passwordmanager.util.CredentialsBuilder;
 import javafx.fxml.FXML;
+import javafx.scene.control.Label;
 
 
 public class SecurityQuestionViewController extends AbstractViewController {
