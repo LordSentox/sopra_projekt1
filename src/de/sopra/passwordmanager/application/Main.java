@@ -5,6 +5,7 @@ import de.sopra.passwordmanager.view.LoginViewController;
 import de.sopra.passwordmanager.view.MainWindowAUI;
 import de.sopra.passwordmanager.view.MainWindowViewController;
 import de.sopra.passwordmanager.view.MasterPasswordViewController;
+import de.sopra.passwordmanager.view.dialog.SimpleConfirmation;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -46,7 +47,9 @@ public class Main extends Application {
             //mainWindowViewController.setStyleSheet("green-yellow");
 
             if (SAVE_FILE.exists()) {
-                /* Loginfenster */
+            
+
+            	/* Loginfenster */
                 LoginViewController login = mainWindowViewController.openModal("/Einloggen.fxml",
                         LoginViewController.class, preOpen ->
                         {
@@ -56,6 +59,7 @@ public class Main extends Application {
 
                 //set AUI link
                 passwordManagerController.setLoginViewAUI(login);
+
 
             } else {
                 /* Masterpasswort zum Erststart / Registrierung setzen */

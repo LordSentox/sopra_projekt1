@@ -59,7 +59,7 @@ public class MasterPasswordController {
      *
      * @return true, wenn Masterpasswort geändert werden muss. false, sonst.
      */
-    boolean hasToBeChanged() {
+    public boolean hasToBeChanged() {
         LocalDateTime lastChanged = passwordManagerController.getPasswordManager().getMasterPasswordLastChanged();
         int reminderDays = passwordManagerController.getPasswordManager().getMasterPasswordReminderDays();
         LocalDateTime targetTime = lastChanged.plusDays(reminderDays);
