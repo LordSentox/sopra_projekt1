@@ -11,7 +11,7 @@
 }
 
 .background {
-    -fx-background-image: url('../minecraft/spruce.png');
+    -fx-background-image: url('../textures/minecraft/spruce.png');
     -fx-background-size: 64px;
     -fx-background-repeat: repeat;
     -fx-background-position: center;
@@ -19,7 +19,7 @@
 }
 
 .button {
-    -fx-background-image: url('../minecraft/stone.png');
+    -fx-background-image: url('../textures/minecraft/stone.png');
     -fx-background-size: 64px;
     -fx-background-repeat: repeat;
     -fx-background-position: center;
@@ -27,7 +27,7 @@
 }
 
 .close-button {
-    -fx-background-image: url('../minecraft/redstone_block.png');
+    -fx-background-image: url('../textures/minecraft/redstone_block.png');
     -fx-background-size: 16px;
     -fx-background-repeat: repeat;
     -fx-background-position: center;
@@ -35,7 +35,7 @@
 }
 
 .progress-bar .bar {
-    -fx-background-image: url('../minecraft/lava.png');
+    -fx-background-image: url('../textures/minecraft/lava.png');
     -fx-background-size: 800px 40px;
     -fx-background-repeat: repeat;
     -fx-background-position: center;
