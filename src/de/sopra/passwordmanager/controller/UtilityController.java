@@ -7,7 +7,10 @@ import exceptions.DecryptionException;
 import exceptions.EncryptionException;
 import org.passay.*;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
 
 /**
  * Der UtilityController stellt verschiedene Hilfsdienste zur Verfügung
@@ -34,6 +37,8 @@ public class UtilityController {
             return this.chars;
         }
     }
+
+    private static final int MINIMUM_PASSWORD_LENGTH = 8;
 
     /**
      * Referenz zum Passwortmanagercontroller
@@ -201,7 +206,7 @@ public class UtilityController {
         CharacterOccurrencesRule notAllTheSame = new CharacterOccurrencesRule(3);
 
         // Stelle sicher, dass die Länge nicht zu kurz ist.
-        LengthRule minimumLength = new LengthRule(8, 256);
+        LengthRule minimumLength = new LengthRule(MINIMUM_PASSWORD_LENGTH, 256);
 
         // Gibt es ein bestimmtes Doppelzeichen drei oder mehr mal?
         RepeatCharactersRule repeatCharacters = new RepeatCharactersRule(2, 3);
@@ -277,7 +282,7 @@ public class UtilityController {
         } else {
             wholePercent = (int) percent;
         }
-        if (length < 8) {
+        if (length < MINIMUM_PASSWORD_LENGTH) {
             return wholePercent / 2;
         }
 
