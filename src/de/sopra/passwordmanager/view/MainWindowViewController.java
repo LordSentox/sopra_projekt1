@@ -28,7 +28,6 @@ import javafx.stage.StageStyle;
 import javafx.util.Duration;
 import javafx.util.converter.IntegerStringConverter;
 
-import java.io.IOException;
 import java.text.NumberFormat;
 import java.text.ParsePosition;
 import java.time.format.DateTimeFormatter;
@@ -326,20 +325,19 @@ public class MainWindowViewController extends AbstractViewController implements 
         credentialsController.filterCredentials(new PatternSyntax(pattern));
     }
 
-    private void openCategoryEditWindow(Path path) throws IOException {
-        categoryEditViewController = openModal("../view/Kategorie_anlegen-aendern.fxml",
-                CategoryEditViewController.class, preOpen ->
-                {
-                    preOpen.init();
-                    preOpen.setCurrentlyEdited(path);
-                });
-    }
-
     public void onAddCategoryClicked() {
         //STATE - soll unabhängig funktionieren
         try {
+            CategoryItem selectedItem = comboBoxCategorySelectionMain.getSelectionModel().getSelectedItem();
+            Path path = selectedItem.getPath();
             /* Kategorie hinzufügen - leeres Fenster öffnen */
-            openCategoryEditWindow(null);
+            categoryEditViewController = openModal("../view/Kategorie_anlegen-aendern.fxml",
+                    CategoryEditViewController.class, preOpen ->
+                    {
+                        preOpen.setShouldAdd(true);
+                        preOpen.setCurrentlyEdited(path);
+                        preOpen.init();
+                    });
         } catch (Exception e) {
             showError(e);
             throw new RuntimeException(e);
@@ -359,9 +357,12 @@ public class MainWindowViewController extends AbstractViewController implements 
                 showError("Das Ändern der Hauptkategorie ist nicht erlaubt.");
                 return;
             }
-            openCategoryEditWindow(path);
-            //aktuelle Auswahl zur Bearbeitung angeben
-            categoryEditViewController.setCurrentlyEdited(path);
+            categoryEditViewController = openModal("../view/Kategorie_anlegen-aendern.fxml",
+                    CategoryEditViewController.class, preOpen ->
+                    {
+                        preOpen.setCurrentlyEdited(path);
+                        preOpen.init();
+                    });
         } catch (Exception e) {
             showError(e);
             throw new RuntimeException(e);
