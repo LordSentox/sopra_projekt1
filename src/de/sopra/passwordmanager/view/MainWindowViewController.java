@@ -448,6 +448,7 @@ public class MainWindowViewController extends AbstractViewController implements 
             /* Sicherheitsfrage hinzufügen */
             openModal("../view/Sicherheitsfrage-und-Antwort.fxml",
                     SecurityQuestionViewController.class, identity -> {
+                    	identity.init();
                     });
         } catch (Exception e) {
             showError(e);
