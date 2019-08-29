@@ -260,9 +260,9 @@ public class UtilityController {
             pwData.setUsername(username);
         }
         int length = text.length();
-        if (length == 0) {
+       /* if (length == 0) {
             return 0;
-        }
+        }*/
         List<WeighedRule> rules = generateRules(checkUsername);
         // Für jede Regel die eingehalten wird, wird das Gewicht als Wert der unangepassten Qualität hinzugefügt
         double quality = 0.0;

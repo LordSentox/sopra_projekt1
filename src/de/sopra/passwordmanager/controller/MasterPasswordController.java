@@ -36,9 +36,8 @@ public class MasterPasswordController {
      * {@link de.sopra.passwordmanager.view.MasterPasswordViewController}
      *
      * @param password Das Passwort, welches nach den festgelegten Qualitätsmerkmalen untersucht werden soll
-     * @throws NullPointerException falls statt eines Passwortstrings <code>null</code> übergeben wird
      */
-    public void checkQuality(String password) throws NullPointerException {
+    public void checkQuality(String password) {
         int quality = passwordManagerController.getUtilityController().checkQuality(password,null);
         passwordManagerController.getMasterPasswordViewAUI().refreshQuality(quality);
 
