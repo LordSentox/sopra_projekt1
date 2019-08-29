@@ -151,6 +151,7 @@ public class CredentialsController {
     public void filterCredentials(PatternSyntax pattern) {
 
         //XXX: remove when program is finish, this is just the dev tool
+        System.out.println(pattern.getPatternFilter().name());
         if (pattern.getPatternFilter() == PatternSyntax.PatternSyntaxFilter.COMMAND) {
             DevUtil.fillWithData(passwordManagerController);
             passwordManagerController.getMainWindowAUI().refreshLists();
