@@ -240,6 +240,9 @@ public class MainWindowViewController extends AbstractViewController implements 
             refreshEntryListWhenCategoryChosen();
         });
 
+        //connect both password fields
+        passwordFieldCredentialsPassword.disableProperty().bindBidirectional(textFieldCredentialsPassword.disableProperty());
+
         //Die ComboBox initialisieren - enthält zu Beginn nur die Root-Kategorie
         CategoryItem rootCategoryItem = new CategoryItem(Path.ROOT_CATEGORY_PATH, passwordManagerController.getPasswordManager().getRootCategory());
         comboBoxCategorySelectionMain.getItems().add(rootCategoryItem);
