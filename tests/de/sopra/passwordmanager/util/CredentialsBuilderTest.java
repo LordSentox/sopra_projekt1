@@ -111,7 +111,7 @@ public class CredentialsBuilderTest {
         Assert.assertEquals("Minimal built credentials not equal to expected", cred1, cred2);
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void missingNameTest() {
         String userName = "user1";
         String password = "passwort123";
@@ -125,7 +125,7 @@ public class CredentialsBuilderTest {
                 .build(uc);
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void missingUserNameTest() {
         String name = "cred1";
         String password = "passwort123";
@@ -140,7 +140,7 @@ public class CredentialsBuilderTest {
     }
 
 
-    @Test(expected = NullPointerException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void missingPasswordTest() {
         String name = "cred1";
         String userName = "user1";
@@ -154,7 +154,7 @@ public class CredentialsBuilderTest {
                 .build(uc);
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void missingWebsiteTest() {
         String name = "cred1";
         String userName = "user1";
