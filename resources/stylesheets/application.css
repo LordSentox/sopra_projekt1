@@ -1,16 +1,15 @@
 /* JavaFX CSS - Leave this comment until you have at least created one rule which uses -fx-Property */
 
 * {
-	-primary-raw: #A0FF00;
-	-analogous: #f6e900;
-	-primary: linear-gradient(-primary-raw, -primary-raw, -analogous);
-	-light-text: #f4ffe7;
+	-primary-raw: #039be5;
+	-primary: -primary-raw;
+	-light-text: #e1f5fe;
 	-dark-text: #000000;
-	-background: #212121;
-	-error: #9a67ff;
-	-background-lighter: #303030;
-	-background-darker: #151515;
-	
+	-background: #263238;
+	-error: #ff2040;
+	-background-lighter: #455a64;
+	-background-darker: #222d32;
+	-analogous: #00ff44;
 }
 
 .label {
@@ -93,7 +92,7 @@
 	-fx-background-color: -background-darker;
 	-fx-background-radius: 5;
 	-fx-text-fill: -light-text;
-	/*
+	/* 
 	-fx-border-style: solid;
 	-fx-border-width: 0 0 1 0;
 	-fx-border-color: #455a64;
@@ -159,7 +158,7 @@
 	-fx-background-color: -primary;
 	-fx-border-radius: 5;
 	-fx-border-color: -primary;
-	-fx-focus-traversable: false;
+    -fx-focus-traversable: false;
 	-fx-max-width: 300px;
 }
 .jfx-check-box {

@@ -24,7 +24,7 @@ public class Main extends Application {
         MainWindowAUI aui = null;
         try {
             /* Hauptfenster */
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("../view/Hauptfenster.fxml"));
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/Hauptfenster.fxml"));
             AnchorPane mainPane = fxmlLoader.load();
             MainWindowViewController mainWindowViewController = fxmlLoader.getController();
             PasswordManagerController passwordManagerController = new PasswordManagerController();
@@ -35,7 +35,7 @@ public class Main extends Application {
 
             Stage mainStage = new Stage();
             Scene mainScene = new Scene(mainPane);
-            mainScene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+            mainScene.getStylesheets().add(getClass().getResource("/stylesheets/application.css").toExternalForm());
             mainStage.setScene(mainScene);
             mainWindowViewController.setScene(mainScene);
             mainWindowViewController.setMainWindowViewController(mainWindowViewController);
@@ -43,11 +43,11 @@ public class Main extends Application {
             mainStage.setResizable(false);
             mainStage.initStyle(StageStyle.UNDECORATED);
 
-            mainWindowViewController.setStyleSheet("light-blue");
+            //mainWindowViewController.setStyleSheet("green-yellow");
 
             if (SAVE_FILE.exists()) {
                 /* Loginfenster */
-                LoginViewController login = mainWindowViewController.openModal("../view/Einloggen.fxml",
+                LoginViewController login = mainWindowViewController.openModal("/Einloggen.fxml",
                         LoginViewController.class, preOpen ->
                         {
                             preOpen.setSourceFile(SAVE_FILE);
@@ -60,7 +60,7 @@ public class Main extends Application {
             } else {
                 /* Masterpasswort zum Erststart / Registrierung setzen */
                 MasterPasswordViewController masterPasswordViewController =
-                        mainWindowViewController.openModal("../view/Masterpasswort-setzen.fxml",
+                        mainWindowViewController.openModal("/Masterpasswort-setzen.fxml",
                                 MasterPasswordViewController.class, preOpen ->
                                 {
                                     preOpen.setBackTo(mainStage);

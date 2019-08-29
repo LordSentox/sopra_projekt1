@@ -30,6 +30,7 @@ import javafx.util.converter.IntegerStringConverter;
 
 import java.text.NumberFormat;
 import java.text.ParsePosition;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.function.UnaryOperator;
@@ -240,6 +241,9 @@ public class MainWindowViewController extends AbstractViewController implements 
             refreshEntryListWhenCategoryChosen();
         });
 
+        //connect both password fields
+        passwordFieldCredentialsPassword.disableProperty().bindBidirectional(textFieldCredentialsPassword.disableProperty());
+
         //Die ComboBox initialisieren - enthält zu Beginn nur die Root-Kategorie
         CategoryItem rootCategoryItem = new CategoryItem(Path.ROOT_CATEGORY_PATH, passwordManagerController.getPasswordManager().getRootCategory());
         comboBoxCategorySelectionMain.getItems().add(rootCategoryItem);
@@ -309,7 +313,7 @@ public class MainWindowViewController extends AbstractViewController implements 
         }
         try {
             /* Einstellungen öffnen */
-            openModal("../view/Einstellungen.fxml", SettingsViewController.class, identity -> {
+            openModal("/Einstellungen.fxml", SettingsViewController.class, identity -> {
             });
         } catch (Exception e) {
             showError(e);
@@ -331,7 +335,7 @@ public class MainWindowViewController extends AbstractViewController implements 
             CategoryItem selectedItem = comboBoxCategorySelectionMain.getSelectionModel().getSelectedItem();
             Path path = selectedItem.getPath();
             /* Kategorie hinzufügen - leeres Fenster öffnen */
-            categoryEditViewController = openModal("../view/Kategorie_anlegen-aendern.fxml",
+            categoryEditViewController = openModal("/Kategorie_anlegen-aendern.fxml",
                     CategoryEditViewController.class, preOpen ->
                     {
                         preOpen.setShouldAdd(true);
@@ -357,7 +361,7 @@ public class MainWindowViewController extends AbstractViewController implements 
                 showError("Das Ändern der Hauptkategorie ist nicht erlaubt.");
                 return;
             }
-            categoryEditViewController = openModal("../view/Kategorie_anlegen-aendern.fxml",
+            categoryEditViewController = openModal("/Kategorie_anlegen-aendern.fxml",
                     CategoryEditViewController.class, preOpen ->
                     {
                         preOpen.setCurrentlyEdited(path);
@@ -444,8 +448,9 @@ public class MainWindowViewController extends AbstractViewController implements 
         try {
         	updateCredentialsBuilderCopy();
             /* Sicherheitsfrage hinzufügen */
-            openModal("../view/Sicherheitsfrage-und-Antwort.fxml",
+            openModal("/Sicherheitsfrage-und-Antwort.fxml",
                     SecurityQuestionViewController.class, identity -> {
+                    	identity.init();
                     });
         } catch (Exception e) {
             showError(e);
@@ -527,6 +532,8 @@ public class MainWindowViewController extends AbstractViewController implements 
         spinnerCredentialsReminderDays.setDisable(true);
 
         CredentialsController credController = passwordManagerController.getCredentialsController();
+        
+        currentCredentials.withLastChanged(LocalDateTime.now());
 
         updateCredentialsBuilderCopy();
 
@@ -665,8 +672,7 @@ public class MainWindowViewController extends AbstractViewController implements 
         if (state.match(UNSET, VIEW_ENTRY, START_EDITING_ENTRY))
             refreshEntryListWhenCategoryChosen();
 
-        listViewCredentialsList.getFocusModel().focus(-1);
-
+        listViewCredentialsList.getSelectionModel().clearSelection();
     }
 
     //Die Liste der Credentials updaten, wenn eine Kategorie zum Filtern ausgewählt wird
@@ -684,7 +690,7 @@ public class MainWindowViewController extends AbstractViewController implements 
             ObservableList<CredentialsItem> credsToShow = new ObservableListWrapper<>(ordered);
             listViewCredentialsList.setItems(credsToShow);
             if (credsToShow.size() > 0)
-                listViewCredentialsList.getSelectionModel().select(0);
+                listViewCredentialsList.getSelectionModel().selectFirst();
         } else {
             listViewCredentialsList.setItems(new ObservableListWrapper<>(Collections.emptyList()));
             setState(UNSET);
