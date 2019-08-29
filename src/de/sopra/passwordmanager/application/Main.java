@@ -12,7 +12,6 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
-import java.io.IOException;
 import java.time.LocalDateTime;
 
 import static de.sopra.passwordmanager.controller.PasswordManagerController.SAVE_FILE;
@@ -43,6 +42,10 @@ public class Main extends Application {
             mainStage.setResizable(false);
             mainStage.initStyle(StageStyle.UNDECORATED);
 
+            //Für clearSelection, das irgendwie komische Fehler wirft
+            Thread.currentThread().setUncaughtExceptionHandler((t, e) ->
+                    System.out.println("Ooops, da war ja ein Fehler-chan unterwegs... Gaaar nicht bemeerkt..."));
+
             if (SAVE_FILE.exists()) {
                 /* Loginfenster */
                 LoginViewController login = mainWindowViewController.openModal("/Einloggen.fxml",
@@ -72,9 +75,9 @@ public class Main extends Application {
                 LocalDateTime created = LocalDateTime.now();
                 mainWindowViewController.getCredentialsBuilder().withName("Beispieleintrag").withPassword("Beispielpasswort").withUserName("Maxine Musterfrau").withChangeReminderDays(5).withCreated(created).withLastChanged(created).withNotes("Hier könnten Ihre Notizen stehen").withSecurityQuestion("Name des Haustieres", "Godzilla").withWebsite("www.yolo.com/yolo");
                 mainWindowViewController.refreshEntry();
+
             }
         } catch (Exception e) {
-            e.printStackTrace();
             if (aui != null) {
                 aui.showError(e.toString() + " while creating the main view - fatal error");
             }
@@ -82,7 +85,7 @@ public class Main extends Application {
         }
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         launch(args);
     }
 }

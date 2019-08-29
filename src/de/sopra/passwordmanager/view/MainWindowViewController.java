@@ -240,8 +240,9 @@ public class MainWindowViewController extends AbstractViewController implements 
         listViewCredentialsList.getSelectionModel().getSelectedItems()
                 .addListener((ListChangeListener<CredentialsItem>) c -> {
                     if (c.next()) {
-                        if (c.getList() != null && !c.getList().isEmpty())
+                        if (c.getList() != null && !c.getList().isEmpty()) {
                             onEntryChosen();
+                        }
                     }
                 });
 
@@ -608,6 +609,8 @@ public class MainWindowViewController extends AbstractViewController implements 
 
         CredentialsItem selectedEntry = listViewCredentialsList.getSelectionModel().getSelectedItem();
 
+        System.out.println(selectedEntry.getCredentials().getName());
+
         //Wenn Eingaben vorliegen, nach Verwerfung dieser Eingaben fragen
         if (selectedEntry != null && !selectedEntry.getCredentials().equals(oldCredentials)) {
             if (state.match(EDITED_ENTRY, CREATING_NEW_ENTRY)) {
@@ -631,6 +634,11 @@ public class MainWindowViewController extends AbstractViewController implements 
                             CredentialsItem item = any.get();
                             listViewCredentialsList.getSelectionModel().select(item);
                             listViewCredentialsList.getFocusModel().focus(listViewCredentialsList.getItems().indexOf(item));
+                            listViewCredentialsList.refresh();
+                        } else {
+                            listViewCredentialsList.getSelectionModel()
+                                    .clearSelection(listViewCredentialsList.getItems().indexOf(selectedEntry));
+                            listViewCredentialsList.getFocusModel().focus(-1);
                             listViewCredentialsList.refresh();
                         }
                         updateView();
@@ -725,8 +733,6 @@ public class MainWindowViewController extends AbstractViewController implements 
             List<CredentialsItem> ordered = orderStrategy.order(selection);
             ObservableList<CredentialsItem> credsToShow = new ObservableListWrapper<>(ordered);
             listViewCredentialsList.setItems(credsToShow);
-            if (credsToShow.size() > 0)
-                listViewCredentialsList.getSelectionModel().selectFirst();
         } else {
             listViewCredentialsList.setItems(new ObservableListWrapper<>(Collections.emptyList()));
             setState(UNSET);
