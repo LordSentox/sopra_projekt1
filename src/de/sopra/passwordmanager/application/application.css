@@ -6,7 +6,7 @@
 	-light-text: #e1f5fe;
 	-dark-text: #000000;
 	-background: #263238;
-	-error:linear-gradient( #fa8a02, #aa2c2f);
+	-error:linear-gradient( #fa8a02, #ff2c2f);
 	-background-lighter: #455a64;
 	-background-darker: #222d32;
 	-analogous: #6e54f7;
@@ -29,6 +29,15 @@
 .copy-button {
 	-fx-background-color: transparent;
 }
+.close-button {
+	-fx-background-color: -error;
+	-fx-background-radius: 90;
+	-fx-min-height: 15px;
+	-fx-max-height: 15px;
+	-fx-min-width: 15px;
+	-fx-max-width: 15px;
+}
+
 .show-button .label{
 	-fx-text-fill: -dark-text;
 }
