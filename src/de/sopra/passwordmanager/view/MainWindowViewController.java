@@ -257,7 +257,7 @@ public class MainWindowViewController extends AbstractViewController implements 
             ListCell<CredentialsItem> cell = new ListCell<CredentialsItem>() {
                 @Override
                 protected void updateItem(CredentialsItem item, boolean empty) {
-                    if (item.hasToBeChanged())
+                    if (item != null && item.hasToBeChanged())
                         getStyleClass().add("reminder-on-list-cell");
                 }
             };
