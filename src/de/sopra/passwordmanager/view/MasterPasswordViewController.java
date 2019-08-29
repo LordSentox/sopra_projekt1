@@ -53,7 +53,7 @@ public class MasterPasswordViewController extends AbstractViewController impleme
 
         passwordFieldSet.textProperty().addListener((obs, oldText, newText) -> {
             if ( newText == null || newText.isEmpty()){
-            	buttonSave.setDisable(true); System.out.println("test");
+            	buttonSave.setDisable(true);
             }
             onPasswordChanged();
         });
@@ -97,10 +97,8 @@ public class MasterPasswordViewController extends AbstractViewController impleme
         if (password != null && !password.isEmpty()) {
             mainWindowViewController.getPasswordManagerController().getMasterPasswordController().checkQuality(password);
             buttonSave.setDisable(false);
-            System.out.println("test2");
         } else {
         	buttonSave.setDisable(true);
-        	System.out.println("hi");
         }
     }
 
