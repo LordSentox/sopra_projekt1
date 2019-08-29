@@ -233,12 +233,12 @@ public class UtilityController {
                 new WeighedRule(notAllTheSame, 1.25),
                 new WeighedRule(minimumLength, 0.5),
                 new WeighedRule(repeatCharacters, 0.5),
-                new WeighedRule(regex, 2.0)));
+                new WeighedRule(regex, 1.25)));
         if (checkUsername) {
             // Stelle sicher, dass im Passwort wenig alphabetische Sequenzen
             // vorkomen.
             UsernameRule username = new UsernameRule();
-            list.add(new WeighedRule(username, 2.0));
+            list.add(new WeighedRule(username, 5.0));
         }
         return list;
     }
