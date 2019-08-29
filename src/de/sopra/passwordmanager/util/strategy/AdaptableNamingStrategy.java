@@ -9,7 +9,7 @@ package de.sopra.passwordmanager.util.strategy;
  */
 public abstract class AdaptableNamingStrategy<T> implements ItemNamingStrategy<T> {
 
-    public static <A> AdaptableNamingStrategy<A> as(ItemNamingStrategy<A> strategy) {
+    public static <A> AdaptableNamingStrategy<A> asItemNamingStrategy(ItemNamingStrategy<A> strategy) {
         return new AdaptableNamingStrategy<A>() {
             @Override
             public String getName(A item) {

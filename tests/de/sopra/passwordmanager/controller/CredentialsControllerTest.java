@@ -325,9 +325,7 @@ public class CredentialsControllerTest {
 
     @Test
     public void removeSecurityQuestionTestNotExist() {
-        //XXX entfernen?
-        SecurityQuestion sq1 = securityQuestionFromStrings("Was", "Das");
-        SecurityQuestion sq2 = securityQuestionFromStrings("Warum", "Darum");
+        SecurityQuestion sq = securityQuestionFromStrings("Hello", "there");
 
         CredentialsBuilder credBuilder = new CredentialsBuilder()
                 .withName("Hello There")
@@ -340,6 +338,9 @@ public class CredentialsControllerTest {
         cc.removeSecurityQuestion("Warum", "Darum", credBuilder);
         Assert.assertEquals("A credential was added to/removed from the list", 1, credBuilder.getSecurityQuestions().size());
         Assert.assertEquals("The wrong Security Question was removed", "Das", credBuilder.getSecurityQuestions().getOrDefault("Was", null));
+
+        cc.removeSecurityQuestion(sq, credBuilder);
+        Assert.assertTrue("A SecurityQuestion was removed eventhough it did not match any in builder", credBuilder.getSecurityQuestions().containsKey("Was"));
     }
 
     @Test
