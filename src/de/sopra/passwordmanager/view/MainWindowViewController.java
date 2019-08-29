@@ -442,6 +442,7 @@ public class MainWindowViewController extends AbstractViewController implements 
         }
 
         try {
+        	updateCredentialsBuilderCopy();
             /* Sicherheitsfrage hinzufügen */
             openModal("../view/Sicherheitsfrage-und-Antwort.fxml",
                     SecurityQuestionViewController.class, identity -> {
@@ -462,7 +463,7 @@ public class MainWindowViewController extends AbstractViewController implements 
         String selectedItem = comboBoxCredentialsSecurityQuestion.getSelectionModel().getSelectedItem();
         String value = currentCredentials.getSecurityQuestions().get(selectedItem);
         currentCredentials.withoutSecurityQuestion(selectedItem, value);
-
+        updateCredentialsBuilderCopy();
         refreshEntry();
 
         //CredentialsController credController = passwordManagerController.getCredentialsController();
