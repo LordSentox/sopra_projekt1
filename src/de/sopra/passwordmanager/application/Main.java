@@ -13,22 +13,16 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
-import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.Properties;
 
 import static de.sopra.passwordmanager.controller.PasswordManagerController.SAVE_FILE;
 
 public class Main extends Application {
 
     private static LanguageProvider langProvider = new LanguageProvider();
-    //private static final String LANGUAGE = "en_EN";
-    private static final String LANGUAGE = "ja_JA";
 
     @Override
     public void start(Stage primaryStage) {
-
-        loadLanguage();
 
         MainWindowAUI aui = null;
         try {
@@ -101,13 +95,4 @@ public class Main extends Application {
         launch(args);
     }
 
-    private void loadLanguage() {
-        Properties properties = new Properties();
-        try {
-            properties.load(Main.class.getResourceAsStream("/lang/" + LANGUAGE + ".properties"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        langProvider.setBaseFile(properties);
-    }
 }
