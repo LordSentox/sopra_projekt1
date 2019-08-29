@@ -233,11 +233,6 @@ public class MainWindowViewController extends AbstractViewController implements 
             }
         });
 
-//        listViewCredentialsList.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-//            if (newValue != null && !newValue.equals(oldValue))
-//                onEntryChosen();
-//        });
-
         listViewCredentialsList.getSelectionModel().getSelectedItems()
                 .addListener((ListChangeListener<CredentialsItem>) c -> {
                     if (c.next()) {
@@ -257,6 +252,14 @@ public class MainWindowViewController extends AbstractViewController implements 
         CategoryItem rootCategoryItem = new CategoryItem(Path.ROOT_CATEGORY_PATH, passwordManagerController.getPasswordManager().getRootCategory());
         comboBoxCategorySelectionMain.getItems().add(rootCategoryItem);
         comboBoxCategorySelectionMain.getSelectionModel().select(rootCategoryItem);
+
+        checkBoxCredentialsUseReminder.disableProperty().addListener((observable, oldValue, newValue) ->
+                spinnerCredentialsReminderDays.setDisable(newValue || !checkBoxCredentialsUseReminder.isSelected()));
+
+        checkBoxCredentialsUseReminder.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            if (!checkBoxCredentialsUseReminder.isDisabled())
+                spinnerCredentialsReminderDays.setDisable(!newValue);
+        });
 
         //Die Strategie initilisieren - sind zu Beginn Identitätsbeziehungen, d.h. ändern nichts am Input
         selectionStrategy = new SelectAllStrategy(); //es wird keine Auswahl getroffen
@@ -381,16 +384,16 @@ public class MainWindowViewController extends AbstractViewController implements 
         }
 
     }
-    public void onCancelEditCredentialsClicked(){
-    	this.currentCredentials = null;
-    	refreshEntry();
-    	setState(VIEW_ENTRY);
-    	Optional<CredentialsItem> option = listViewCredentialsList.getItems().stream().filter(item -> item.getCredentials().equals(oldCredentials)).findAny();
-    	if(option.isPresent()) {
-    		listViewCredentialsList.getSelectionModel().select(option.get());
-    	}
-    	else listViewCredentialsList.getSelectionModel().select(-1);
-    	onEntryChosen();
+
+    public void onCancelEditCredentialsClicked() {
+        this.currentCredentials = null;
+        refreshEntry();
+        setState(VIEW_ENTRY);
+        Optional<CredentialsItem> option = listViewCredentialsList.getItems().stream().filter(item -> item.getCredentials().equals(oldCredentials)).findAny();
+        if (option.isPresent()) {
+            listViewCredentialsList.getSelectionModel().select(option.get());
+        } else listViewCredentialsList.getSelectionModel().select(-1);
+        onEntryChosen();
     }
 
     public void onRemoveCategoryClicked() {
@@ -448,12 +451,7 @@ public class MainWindowViewController extends AbstractViewController implements 
             showError("Du kannst aktuell den Änderungswecker nicht ändern");
             return;
         }
-
-        boolean checkBoxSelected = checkBoxCredentialsUseReminder.isSelected();
-        spinnerCredentialsReminderDays.setDisable(!checkBoxSelected);
-
         changeState(START_EDITING_ENTRY, EDITED_ENTRY);
-
     }
 
     public void onAddSecurityQuestionClicked() {
@@ -465,7 +463,7 @@ public class MainWindowViewController extends AbstractViewController implements 
         }
 
         try {
-        	updateCredentialsBuilderCopy();
+            updateCredentialsBuilderCopy();
             /* Sicherheitsfrage hinzufügen */
             openModal("/Sicherheitsfrage-und-Antwort.fxml",
                     SecurityQuestionViewController.class, identity -> {
@@ -519,7 +517,7 @@ public class MainWindowViewController extends AbstractViewController implements 
             return;
         }
 
-        SimpleConfirmation confirmation = new SimpleConfirmation("Eintrag löschen", "Sind Sie sicher?","Hiermit wird der gewählte Eintrag komplett gelöscht.") {
+        SimpleConfirmation confirmation = new SimpleConfirmation("Eintrag löschen", "Sind Sie sicher?", "Hiermit wird der gewählte Eintrag komplett gelöscht.") {
             @Override
             public void onSuccess() {
                 CredentialsController credController = passwordManagerController.getCredentialsController();
@@ -556,9 +554,6 @@ public class MainWindowViewController extends AbstractViewController implements 
         }
 
         setState(VIEW_ENTRY);
-
-        spinnerCredentialsReminderDays.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 999));
-        spinnerCredentialsReminderDays.setDisable(true);
 
         CredentialsController credController = passwordManagerController.getCredentialsController();
 
@@ -935,7 +930,7 @@ public class MainWindowViewController extends AbstractViewController implements 
         buttonRemoveCategoryMain.setDisable(!disabled);
         buttonEditCredentials.setDisable(!disabled);
         buttonSaveCredentials.setDisable(disabled);
-        
+
     }
 
     private void disableAllEntryControls(boolean disabled, double opacity) {
