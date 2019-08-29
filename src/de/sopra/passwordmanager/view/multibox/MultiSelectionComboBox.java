@@ -1,7 +1,6 @@
 package de.sopra.passwordmanager.view.multibox;
 
 import com.jfoenix.controls.JFXCheckBox;
-import com.jfoenix.controls.JFXListCell;
 import javafx.collections.FXCollections;
 import javafx.event.EventHandler;
 import javafx.scene.control.ComboBox;
@@ -77,7 +76,7 @@ public class MultiSelectionComboBox<T> extends ComboBox<SelectableComboItem<T>> 
 
                 @Override
                 public ListCell<SelectableComboItem<T>> call(ListView<SelectableComboItem<T>> param) {
-                    ListCell<SelectableComboItem<T>> cell = new JFXListCell<SelectableComboItem<T>>() {
+                    ListCell<SelectableComboItem<T>> cell = new ListCell<SelectableComboItem<T>>() {
                         @Override
                         public void updateItem(SelectableComboItem<T> item, boolean empty) {
                             super.updateItem(item, empty);

@@ -4,6 +4,8 @@ import com.jfoenix.controls.JFXComboBox;
 import de.sopra.passwordmanager.view.dialog.SimpleConfirmation;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 
@@ -13,6 +15,8 @@ import java.util.List;
 import java.util.Properties;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+
+import static de.sopra.passwordmanager.view.MainWindowViewController.player;
 
 public class SettingsViewController extends AbstractViewController {
 
@@ -47,6 +51,22 @@ public class SettingsViewController extends AbstractViewController {
 
         public void setTheme(AbstractViewController viewController) {
             viewController.setStyleSheet(themePath);
+        }
+
+        public void playMusic() {
+            if(player == null)
+            {
+                Media media = new Media(ClassLoader.getSystemResource(musicPath).toString());
+                player = new MediaPlayer(media);
+                player.setAutoPlay(true);
+                player.play();
+                player.setVolume(1.0);
+            }
+            else {
+                player.stop();
+                player = null;
+                playMusic();
+            }
         }
 
         @Override
@@ -117,7 +137,7 @@ public class SettingsViewController extends AbstractViewController {
         comboBoxSelectTheme.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             newValue.setTheme(SettingsViewController.this);
             newValue.setTheme(mainWindowViewController);
-            //TODO music
+            newValue.playMusic();
         });
     }
 
