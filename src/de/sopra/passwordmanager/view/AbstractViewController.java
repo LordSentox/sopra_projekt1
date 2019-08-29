@@ -16,17 +16,17 @@ public abstract class AbstractViewController {
     protected Scene scene;
     protected MainWindowViewController mainWindowViewController;
 
-    protected String styleSheet;
+    protected String styleSheet = "application";
 
     //Nur der Name der Datei: "application/style.css" -> "style"
     //Auf null setzen zum nicht verwenden
     public void setStyleSheet(String styleSheet) {
         if (this.styleSheet != null) {
-            scene.getStylesheets().remove(this.styleSheet);
+            scene.getStylesheets().remove(getClass().getResource("../application/" + this.styleSheet + ".css").toExternalForm());
         }
         this.styleSheet = styleSheet;
         if (this.styleSheet != null) {
-            scene.getStylesheets().add(this.styleSheet);
+            scene.getStylesheets().add(getClass().getResource("../application/" + this.styleSheet + ".css").toExternalForm());
         }
     }
 
