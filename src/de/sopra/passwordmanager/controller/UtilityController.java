@@ -7,6 +7,8 @@ import exceptions.DecryptionException;
 import exceptions.EncryptionException;
 import org.passay.*;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.*;
 
 /**
@@ -15,6 +17,11 @@ import java.util.*;
  * @author sopr049, sopr043
  */
 public class UtilityController {
+    /**
+     * Referenz zum Passwortmanagercontroller
+     */
+    private PasswordManagerController passwordManagerController;
+
     public enum Charset {
         CHARSET_LOWERCASE(new char[]{'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p',
                 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'}),
@@ -35,10 +42,7 @@ public class UtilityController {
         }
     }
 
-    /**
-     * Referenz zum Passwortmanagercontroller
-     */
-    private PasswordManagerController passwordManagerController;
+    private static final char[] HEX_ARRAY = "0123456789abcdef".toCharArray();
 
     UtilityController(PasswordManagerController controller) {
         this.passwordManagerController = controller;
