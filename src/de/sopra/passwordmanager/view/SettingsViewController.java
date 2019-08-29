@@ -10,6 +10,8 @@ public class SettingsViewController extends AbstractViewController {
 
     public void onChangeMasterpasswordClicked() {
         try {
+            /* MasterpasswortSetzenFenster */
+     
             openModal(stage, "../view/Masterpasswort-setzen.fxml", MasterPasswordViewController.class, control -> {control.init(); control.openedBySettings();});
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -56,6 +58,9 @@ public class SettingsViewController extends AbstractViewController {
 
     public void onCancelSettingsClicked() {
         stage.close();
+    }
+    public void onCloseClicked() {
+    	stage.close();
     }
 
 }

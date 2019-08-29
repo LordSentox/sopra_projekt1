@@ -2,6 +2,7 @@ package de.sopra.passwordmanager.view;
 
 import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXProgressBar;
+
 import de.sopra.passwordmanager.util.CredentialsBuilder;
 import de.sopra.passwordmanager.view.dialog.SimpleDialog;
 import javafx.fxml.FXML;
@@ -89,7 +90,9 @@ public class MasterPasswordViewController extends AbstractViewController impleme
     public void onMasterPasswordCancelClicked() {
         stage.close();
     }
-
+    public void onCloseClicked(){
+    	stage.close();
+    }
     @Override
     public void refreshQuality(int quality) {
         double progress = quality / 100.0;

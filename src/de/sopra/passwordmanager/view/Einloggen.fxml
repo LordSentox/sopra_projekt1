@@ -11,5 +11,6 @@
       <Label styleClass="errorLabel" fx:id="labelError" layoutX="15.0" layoutY="61.0" prefHeight="16.0" prefWidth="257.0" visible="false" text="Das eingegebene Passwort ist falsch!" />
       <JFXButton fx:id="buttonSave" styleClass="button" layoutX="147.0" layoutY="92.0" mnemonicParsing="false" text="OK" onAction="#onLoginClicked"/>
       <JFXButton fx:id="buttonCancel" cancelButton="true" layoutX="194.0" layoutY="92.0" mnemonicParsing="false" text="Abbrechen" onAction="#onCancelLoginClicked"/>
+      <JFXButton fx:id="buttonClose" styleClass="close-button" layoutX="273.0" layoutY="10.0" prefHeight="10" prefWidth="10" text="x" onAction="#onCloseClicked"/>
    </children>
 </AnchorPane>

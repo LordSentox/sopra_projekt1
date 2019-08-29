@@ -579,6 +579,10 @@ public class MainWindowViewController extends AbstractViewController implements 
             refreshEntry();
         }
     }
+    public void onCloseClicked(){
+    	//TODO Programm richtig beenden
+    	stage.close();
+    }
 
     //endregion
 
