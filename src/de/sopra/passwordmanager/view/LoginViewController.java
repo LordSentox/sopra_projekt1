@@ -4,6 +4,7 @@ import com.jfoenix.controls.JFXPasswordField;
 import de.sopra.passwordmanager.controller.PasswordManagerController;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
+import javafx.stage.Stage;
 
 import java.io.File;
 
@@ -15,6 +16,12 @@ public class LoginViewController extends AbstractViewController implements Login
     private Label labelError;
 
     private File sourceFile = PasswordManagerController.SAVE_FILE;
+
+    private Stage backTo;
+
+    public void setBackTo(Stage backTo) {
+        this.backTo = backTo;
+    }
 
     public void onLoginClicked() {
         mainWindowViewController.getPasswordManagerController().requestLogin(passwordField.getText(), this.sourceFile);
@@ -28,6 +35,7 @@ public class LoginViewController extends AbstractViewController implements Login
     public void handleLoginResult(boolean result) {
         if (result) {
             stage.close();
+            backTo.show();
         } else {
             labelError.setVisible(true);
         }

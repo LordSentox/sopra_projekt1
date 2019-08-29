@@ -12,6 +12,7 @@ import java.util.function.Consumer;
 
 public abstract class AbstractViewController {
     protected Stage stage;
+    protected Scene scene;
     protected MainWindowViewController mainWindowViewController;
 
     protected String styleSheet;
@@ -19,7 +20,17 @@ public abstract class AbstractViewController {
     //Nur der Name der Datei: "application/style.css" -> "style"
     //Auf null setzen zum nicht verwenden
     public void setStyleSheet(String styleSheet) {
+        if (this.styleSheet != null) {
+            scene.getStylesheets().remove(this.styleSheet);
+        }
         this.styleSheet = styleSheet;
+        if (this.styleSheet != null) {
+            scene.getStylesheets().add(this.styleSheet);
+        }
+    }
+
+    public void setScene(Scene scene) {
+        this.scene = scene;
     }
 
     public void setStage(Stage primaryStage) {
@@ -30,7 +41,7 @@ public abstract class AbstractViewController {
         this.mainWindowViewController = mainWindowViewController;
     }
 
-    protected <T extends AbstractViewController> T openModal(String ressource, Class<T> clazz, Consumer<T> preOpen) throws IOException {
+    public <T extends AbstractViewController> T openModal(String ressource, Class<T> clazz, Consumer<T> preOpen) throws IOException {
         return openModal(stage, ressource, clazz, preOpen);
     }
 
@@ -50,10 +61,9 @@ public abstract class AbstractViewController {
         newStage.initOwner(parent);
         newStage.initModality(Modality.WINDOW_MODAL);
         newScene.getStylesheets().add(getClass().getResource("../application/application.css").toExternalForm());
-        if (styleSheet != null)
-            newScene.getStylesheets().add(getClass().getResource("../application/" + styleSheet + ".css").toExternalForm());
         newStage.setScene(newScene);
         controller.setStage(newStage);
+        controller.setScene(newScene);
         controller.setStyleSheet(styleSheet);
         controller.setMainWindowViewController(mainWindowViewController);
         preOpen.accept(controller);
