@@ -2,12 +2,19 @@
 
 * {
     -primary-raw: #301000;
-    -primary: linear-gradient(-primary-raw, -dark-text, -background);
-    -light-text: #ff029e;
+    -primary: linear-gradient(-primary-raw, #00ffff, #ff0000, #ff00ff, #00ff00, #0000ff, #ffff00, #00ffff, #ff0000, #ff00ff, #00ff00, #0000ff, #ffff00);
+    -light-text: linear-gradient(-primary-raw, #00ffff, #ff0000, #ff00ff, #00ff00, #0000ff, #ffff00, #00ffff, #ff0000, #ff00ff, #00ff00, #0000ff, #ffff00);
     -dark-text: #000000;
     -error:linear-gradient(#00ffff, #ff0000, #ff00ff, #00ff00, #0000ff, #ffff00);
-    -background: #0000FF;
-    -background-lighter: #FF0000;
+    -background: radial-gradient(center 50% 50%, radius 100%, -primary-raw, #00ffff, #ff0000, #ff00ff, #00ff00, #0000ff, #ffff00, #00ffff, #ff0000, #ff00ff, #00ff00, #0000ff, #ffff00);
+    -background-lighter: radial-gradient(center 50% 50%, radius 100%, -primary-raw, #00ffff, #ff0000, #ff00ff, #00ff00, #0000ff, #ffff00, #00ffff, #ff0000, #ff00ff, #00ff00, #0000ff, #ffff00);
     -background-darker: #00FF00;
     -analogous: #ff8000;
+    
+    -fx-background-image: url('../lmao.png');
+    /*
+    -fx-background-size: 10px;
+     */
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: center;
 }
