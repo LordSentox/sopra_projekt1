@@ -324,8 +324,7 @@ public class MainWindowViewController extends AbstractViewController implements 
         }
         try {
             /* Einstellungen öffnen */
-            openModal("/Einstellungen.fxml", SettingsViewController.class, identity -> {
-            });
+            openModal("/Einstellungen.fxml", SettingsViewController.class, SettingsViewController::init);
         } catch (Exception e) {
             showError(e);
             throw new RuntimeException(e);
