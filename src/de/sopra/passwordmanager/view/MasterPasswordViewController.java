@@ -21,7 +21,7 @@ public class MasterPasswordViewController extends AbstractViewController impleme
     @FXML
     private Spinner<Integer> spinnerReminderDays;
     @FXML
-    private Label labelError, labelPasswordInsert, labelPasswordRepeat, labelReminder, labelReminderDays;
+    private Label labelError, labelPasswordInsert, labelPasswordRepeat, labelTextReminder, labelReminderDays;
     @FXML
     private JFXProgressBar progressBarQuality;
     @FXML
