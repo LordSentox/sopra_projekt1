@@ -42,8 +42,6 @@ public class UtilityController {
         }
     }
 
-    private static final char[] HEX_ARRAY = "0123456789abcdef".toCharArray();
-
     UtilityController(PasswordManagerController controller) {
         this.passwordManagerController = controller;
     }
