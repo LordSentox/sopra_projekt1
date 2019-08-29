@@ -300,6 +300,11 @@ public class UtilityController {
             return wholePercent / 2;
         }
 
-        return wholePercent;
+        // Dieses Passwort ist mindestens so gut wie das mit weniger Länge. Stelle sicher, dass es nicht schlechter
+        // bewertet werden kann, weil zusätzliche Regelverstöße dazugekommen sind.
+        String textWithoutLastChar = text.substring(text.length() - 1);
+        int qualityWithoutLastChar = checkQuality(textWithoutLastChar, username);
+
+        return Math.max(qualityWithoutLastChar, wholePercent);
     }
 }
