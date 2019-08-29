@@ -2,4 +2,5 @@
 # Einkommentieren, um die Ordner zu aendern
 model = "src/de/sopra/passwordmanager/model"
 controller = "src/de/sopra/passwordmanager/controller"
+additional="src/de/sopra/passwordmanager/util"
 # filter = ""
