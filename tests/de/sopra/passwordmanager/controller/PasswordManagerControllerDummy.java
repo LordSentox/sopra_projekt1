@@ -65,10 +65,6 @@ public class PasswordManagerControllerDummy {
 
         @Override
         public void refreshLists() {
-            //XXX entfernen?
-            Category category = controller.getPasswordManager().getRootCategory();
-            if (currentSelectedCategory != null) category = currentSelectedCategory;
-
             List<Credentials> credentials = new ArrayList<>(controller.getPasswordManager().getRootCategory().getAllCredentials());
             List<CredentialsItem> selected = strategy.select(credentials);
             List<CredentialsItem> ordered = orderStrategy.order(selected);

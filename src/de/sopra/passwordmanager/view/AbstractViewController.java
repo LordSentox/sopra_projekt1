@@ -16,7 +16,7 @@ public abstract class AbstractViewController {
     protected Scene scene;
     protected MainWindowViewController mainWindowViewController;
 
-    protected String styleSheet = "application";
+    protected String styleSheet;
 
     //Nur der Name der Datei: "application/style.css" -> "style"
     //Auf null setzen zum nicht verwenden

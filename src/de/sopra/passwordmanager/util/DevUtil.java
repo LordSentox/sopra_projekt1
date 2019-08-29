@@ -13,9 +13,10 @@ import java.time.LocalDateTime;
  * @version 27.08.2019
  * @since 27.08.2019
  */
-public class DevTool {
+public class DevUtil {
 
     public static void fillWithData(PasswordManagerController controller) {
+        // Kategorien erstellen
         Category rootCategory = controller.getPasswordManager().getRootCategory();
         rootCategory.getSubCategories().clear();
         rootCategory.getCredentials().clear();
@@ -29,6 +30,10 @@ public class DevTool {
         rootCategory.addSubCategory(subCategory2);
         subCategory2.addSubCategory(subsubCategory);
 
+        fillCategories(subCategory1, subCategory2, subsubCategory, controller);
+    }
+
+    private static void fillCategories(Category subCategory1, Category subCategory2, Category subsubCategory, PasswordManagerController controller) {
         Credentials creds1 = new CredentialsBuilder("TestEintrag1", "DerDödel3000", "MeinPasswort", "https://www.google.de/")
                 .withSecurityQuestion("Wer bist du?", "Keine Maschine")
                 .withCreated(LocalDateTime.now())

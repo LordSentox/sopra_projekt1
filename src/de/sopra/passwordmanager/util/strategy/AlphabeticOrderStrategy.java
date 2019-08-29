@@ -18,7 +18,7 @@ public class AlphabeticOrderStrategy implements EntryListOrderStrategy {
     @Override
     public List<CredentialsItem> order(List<CredentialsItem> credentials) {
         LinkedList<CredentialsItem> list = new LinkedList<>(credentials);
-        list.sort(Comparator.comparing(o -> o.getCredentials().getName()));
+        list.sort(Comparator.comparing(credentialsItem -> credentialsItem.getCredentials().getName()));
         return list;
     }
 
