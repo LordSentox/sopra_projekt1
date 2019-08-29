@@ -664,8 +664,7 @@ public class MainWindowViewController extends AbstractViewController implements 
         if (state.match(UNSET, VIEW_ENTRY, START_EDITING_ENTRY))
             refreshEntryListWhenCategoryChosen();
 
-        listViewCredentialsList.getFocusModel().focus(-1);
-
+        listViewCredentialsList.getSelectionModel().clearSelection();
     }
 
     //Die Liste der Credentials updaten, wenn eine Kategorie zum Filtern ausgewählt wird
@@ -683,7 +682,7 @@ public class MainWindowViewController extends AbstractViewController implements 
             ObservableList<CredentialsItem> credsToShow = new ObservableListWrapper<>(ordered);
             listViewCredentialsList.setItems(credsToShow);
             if (credsToShow.size() > 0)
-                listViewCredentialsList.getSelectionModel().select(0);
+                listViewCredentialsList.getSelectionModel().selectFirst();
         } else {
             listViewCredentialsList.setItems(new ObservableListWrapper<>(Collections.emptyList()));
             setState(UNSET);
