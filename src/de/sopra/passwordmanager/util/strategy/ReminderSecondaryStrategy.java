@@ -1,9 +1,7 @@
 package de.sopra.passwordmanager.util.strategy;
 
-import de.sopra.passwordmanager.model.Credentials;
 import de.sopra.passwordmanager.util.CredentialsItem;
 
-import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
@@ -25,8 +23,8 @@ public class ReminderSecondaryStrategy implements EntryListOrderStrategy {
                 return 1;
             if (item2 == null)
                 return -1;
-            boolean check1 = hasToBeChanged(item1);
-            boolean check2 = hasToBeChanged(item2);
+            boolean check1 = item1.hasToBeChanged();
+            boolean check2 = item2.hasToBeChanged();
             if (check1 && !check2)
                 return -1;
             else if (!check1 & check2)
@@ -36,15 +34,6 @@ public class ReminderSecondaryStrategy implements EntryListOrderStrategy {
         if (ordered != null)
             ordered.sort(comparator);
         return ordered;
-    }
-
-    private boolean hasToBeChanged(CredentialsItem item) {
-        Credentials credentials1 = item.getCredentials();
-        if (credentials1.getChangeReminderDays() == null)
-            return false;
-        Integer reminderDays = credentials1.getChangeReminderDays();
-        LocalDateTime time1 = credentials1.getLastChanged().plusDays(reminderDays);
-        return time1.isBefore(LocalDateTime.now());
     }
 
 }

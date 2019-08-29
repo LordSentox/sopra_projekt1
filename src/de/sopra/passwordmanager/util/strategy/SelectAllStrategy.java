@@ -2,6 +2,7 @@ package de.sopra.passwordmanager.util.strategy;
 
 import de.sopra.passwordmanager.model.Credentials;
 import de.sopra.passwordmanager.util.CredentialsItem;
+import de.sopra.passwordmanager.util.PatternSyntax;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -17,7 +18,9 @@ public class SelectAllStrategy implements EntryListSelectionStrategy {
 
     @Override
     public List<CredentialsItem> select(List<Credentials> credentials) {
-        return credentials.stream().map(CredentialsItem::new).collect(Collectors.toList());
+        List<CredentialsItem> items = credentials.stream().map(CredentialsItem::new).collect(Collectors.toList());
+        items.forEach(item -> item.setNamingStrategy(PatternSyntax.PatternSyntaxFilter.NAME));
+        return items;
     }
 }
 /***********************************************************************************************

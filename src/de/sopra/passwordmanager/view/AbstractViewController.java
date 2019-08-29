@@ -6,6 +6,7 @@ import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 import java.io.IOException;
 import java.util.function.Consumer;
@@ -15,17 +16,17 @@ public abstract class AbstractViewController {
     protected Scene scene;
     protected MainWindowViewController mainWindowViewController;
 
-    protected String styleSheet;
+    protected String styleSheet = "application";
 
     //Nur der Name der Datei: "application/style.css" -> "style"
     //Auf null setzen zum nicht verwenden
     public void setStyleSheet(String styleSheet) {
         if (this.styleSheet != null) {
-            scene.getStylesheets().remove(this.styleSheet);
+            scene.getStylesheets().remove(getClass().getResource("../application/" + this.styleSheet + ".css").toExternalForm());
         }
         this.styleSheet = styleSheet;
         if (this.styleSheet != null) {
-            scene.getStylesheets().add(this.styleSheet);
+            scene.getStylesheets().add(getClass().getResource("../application/" + this.styleSheet + ".css").toExternalForm());
         }
     }
 
@@ -59,7 +60,9 @@ public abstract class AbstractViewController {
         Stage newStage = new Stage();
         Scene newScene = new Scene(categoryEditPane);
         newStage.initOwner(parent);
+        newStage.initStyle(StageStyle.UNDECORATED);
         newStage.initModality(Modality.WINDOW_MODAL);
+        newStage.setResizable(false);
         newScene.getStylesheets().add(getClass().getResource("../application/application.css").toExternalForm());
         newStage.setScene(newScene);
         controller.setStage(newStage);
