@@ -371,10 +371,14 @@ public class MainWindowViewController extends AbstractViewController implements 
     }
     public void onCancelEditCredentialsClicked(){
     	this.currentCredentials = null;
-    	this.oldCredentials = null;
     	refreshEntry();
     	setState(VIEW_ENTRY);
-    	
+    	Optional<CredentialsItem> option = listViewCredentialsList.getItems().stream().filter(item -> item.getCredentials().equals(oldCredentials)).findAny();
+    	if(option.isPresent()) {
+    		listViewCredentialsList.getSelectionModel().select(option.get());
+    	}
+    	else listViewCredentialsList.getSelectionModel().select(-1);
+    	onEntryChosen();
     }
 
     public void onRemoveCategoryClicked() {
