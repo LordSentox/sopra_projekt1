@@ -168,7 +168,7 @@ public class MainWindowViewController extends AbstractViewController implements 
         timeline = new Timeline(new KeyFrame(Duration.millis(10), event -> {
             progressBarCredentialsCopyTimer.setProgress(progressBarCredentialsCopyTimer.progressProperty().doubleValue() - 0.001);
             if (progressBarCredentialsCopyTimer.progressProperty().doubleValue() <= 0.0) {
-                buttonCredentialsCopy.setOpacity(1.0);
+                buttonCredentialsCopy.getStyleClass().remove("copy-button");
             }
         }));
         timeline.setCycleCount(1000);
