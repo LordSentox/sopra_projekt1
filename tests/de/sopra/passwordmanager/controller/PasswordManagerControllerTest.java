@@ -109,7 +109,7 @@ public class PasswordManagerControllerTest {
 
         for (String password : passwords) {
             // TODO: Sollten hier feste Werte angegeben werden, statt einen Aufruf auf checkQuality zu tätigen?
-            int passwordQuality = this.passwordManagerController.getUtilityController().checkQuality(password);
+            int passwordQuality = this.passwordManagerController.getUtilityController().checkQuality(password,"passwort");
 
             builder.withPassword(password);
             this.passwordManagerController.checkQuality(builder);

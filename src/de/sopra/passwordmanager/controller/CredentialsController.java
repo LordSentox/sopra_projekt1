@@ -34,7 +34,7 @@ public class CredentialsController {
 
     /**
      * Überschreibt alte Anmeldedaten mit Neuen im {@link PasswordManager}
-     * Falls {@code oldCredentials} <code>null</code> ist, wird stattdessen ein neuer Eintrag mit den Daten von {@code newCredentials} erstellt
+     * Falls {@code oldCredentials} <code>null</code> ist, wird nichts getan.
      *
      * @param oldCredentials Die zu überschreibenden Anmeldedaten. Darf nicht <code>null</code> sein
      *                       Falls diese nicht im {@link PasswordManager} existieren, geschieht nichts.
@@ -51,6 +51,7 @@ public class CredentialsController {
             category.addCredentials(oldCredentials);
         }
         passwordManagerController.getMainWindowAUI().refreshLists();
+        passwordManagerController.getIOController().exportFile(PasswordManagerController.SAVE_FILE);
     }
 
     /**
@@ -84,6 +85,7 @@ public class CredentialsController {
             category.addCredentials(credentials);
         }
         passwordManagerController.getMainWindowAUI().refreshLists();
+        passwordManagerController.getIOController().exportFile(PasswordManagerController.SAVE_FILE);
     }
 
     /**
@@ -95,6 +97,7 @@ public class CredentialsController {
     public void removeCredentials(Credentials credentials) {
         passwordManagerController.getPasswordManager().getRootCategory().removeCredentialsFromTree(credentials);
         passwordManagerController.getMainWindowAUI().refreshLists();
+        passwordManagerController.getIOController().exportFile(PasswordManagerController.SAVE_FILE);
     }
 
     /**
@@ -139,8 +142,8 @@ public class CredentialsController {
     }
 
     /**
-     * Filtert die Liste der {@link Credentials} im {@link de.sopra.passwordmanager.view.MainWindowViewController} nach
-     * Kategorie und nach Inhalt seines Namens. Aktualisirt mit {@link MainWindowAUI#refreshLists()}
+     * Filtert die Liste der {@link Credentials} im {@link de.sopra.passwordmanager.view.MainWindowViewController}
+     * Aktualisirt mit {@link MainWindowAUI#refreshLists()}
      *
      * @param pattern Ein PatternSyntax, der in den {@link Credentials} enthalten sein soll.
      * @see CredentialsBuilder
@@ -165,6 +168,7 @@ public class CredentialsController {
             }
             return selection;
         };
+
         passwordManagerController.getMainWindowAUI().refreshListStrategies(strategy, null);
     }
 
@@ -177,19 +181,6 @@ public class CredentialsController {
      */
     public void copyPasswordToClipboard(CredentialsBuilder credentials) {
         setClipboardContents(credentials.getPassword());
-    }
-
-    /**
-     * Legt fest, ob das Passwort im {@link CredentialsBuilder} sichtbar in der UI angezeigt werden soll
-     *
-     * @param credentials Der {@link CredentialsBuilder}, dessen Passwort (nicht) angezeigt werden soll. Falls
-     *                    <code>null</code> geschieht nichts
-     * @param visible     Falls 'true', soll das Passwort im Klartext angezeigt werden, sonst nur Sternchen
-     * @deprecated in die MainView umlagern
-     */
-    @Deprecated
-    public void setPasswordShown(CredentialsBuilder credentials, boolean visible) {
-        throw new UnsupportedOperationException("not yet implemented");
     }
 
     /**
@@ -239,6 +230,8 @@ public class CredentialsController {
             cred.clearSecurityQuesions();
             cred.addSecurityQuestions(newQuestions);
         });
+
+        passwordManagerController.getIOController().exportFile(PasswordManagerController.SAVE_FILE);
     }
 
     private static void setClipboardContents(String contents) {
@@ -247,9 +240,9 @@ public class CredentialsController {
 
     private static String getClipboardContents() {
         try {
-        	if(Toolkit.getDefaultToolkit().getSystemClipboard().isDataFlavorAvailable(DataFlavor.stringFlavor)){
-        		return (String) Toolkit.getDefaultToolkit().getSystemClipboard().getData(DataFlavor.stringFlavor);
-        	}
+            if (Toolkit.getDefaultToolkit().getSystemClipboard().isDataFlavorAvailable(DataFlavor.stringFlavor)) {
+                return (String) Toolkit.getDefaultToolkit().getSystemClipboard().getData(DataFlavor.stringFlavor);
+            }
         } catch (UnsupportedFlavorException | IOException e) {
             e.printStackTrace();
         }

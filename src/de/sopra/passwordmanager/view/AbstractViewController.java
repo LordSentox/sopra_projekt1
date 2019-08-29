@@ -6,13 +6,33 @@ import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 import java.io.IOException;
 import java.util.function.Consumer;
 
 public abstract class AbstractViewController {
     protected Stage stage;
+    protected Scene scene;
     protected MainWindowViewController mainWindowViewController;
+
+    protected String styleSheet;
+
+    //Nur der Name der Datei: "application/style.css" -> "style"
+    //Auf null setzen zum nicht verwenden
+    public void setStyleSheet(String styleSheet) {
+        if (this.styleSheet != null) {
+            scene.getStylesheets().remove(this.styleSheet);
+        }
+        this.styleSheet = styleSheet;
+        if (this.styleSheet != null) {
+            scene.getStylesheets().add(this.styleSheet);
+        }
+    }
+
+    public void setScene(Scene scene) {
+        this.scene = scene;
+    }
 
     public void setStage(Stage primaryStage) {
         this.stage = primaryStage;
@@ -22,7 +42,7 @@ public abstract class AbstractViewController {
         this.mainWindowViewController = mainWindowViewController;
     }
 
-    protected <T extends AbstractViewController> T openModal(String ressource, Class<T> clazz, Consumer<T> preOpen) throws IOException {
+    public <T extends AbstractViewController> T openModal(String ressource, Class<T> clazz, Consumer<T> preOpen) throws IOException {
         return openModal(stage, ressource, clazz, preOpen);
     }
 
@@ -32,13 +52,22 @@ public abstract class AbstractViewController {
         categoryEditPane = fxmlLoader.load();
         T controller = fxmlLoader.getController();
 
+        if (controller instanceof MasterPasswordViewAUI)
+            mainWindowViewController.getPasswordManagerController().setMasterPasswordViewAUI((MasterPasswordViewAUI) controller);
+        else if (controller instanceof LoginViewAUI)
+            mainWindowViewController.getPasswordManagerController().setLoginViewAUI((LoginViewAUI) controller);
+
         Stage newStage = new Stage();
         Scene newScene = new Scene(categoryEditPane);
         newStage.initOwner(parent);
+        newStage.initStyle(StageStyle.UNDECORATED);
         newStage.initModality(Modality.WINDOW_MODAL);
+        newStage.setResizable(false);
         newScene.getStylesheets().add(getClass().getResource("../application/application.css").toExternalForm());
         newStage.setScene(newScene);
         controller.setStage(newStage);
+        controller.setScene(newScene);
+        controller.setStyleSheet(styleSheet);
         controller.setMainWindowViewController(mainWindowViewController);
         preOpen.accept(controller);
         newStage.show();

@@ -27,6 +27,11 @@ public class PasswordManager {
         rootCategory = new Category(Path.ROOT_CATEGORY);
     }
 
+    public void clearAll() {
+        this.getRootCategory().getSubCategories().clear();
+        this.getRootCategory().getCredentials().clear();
+    }
+
     public String getMasterPassword() {
         return masterPassword;
     }

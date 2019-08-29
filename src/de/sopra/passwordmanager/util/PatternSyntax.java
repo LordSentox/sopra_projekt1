@@ -1,10 +1,10 @@
 package de.sopra.passwordmanager.util;
 
 import de.sopra.passwordmanager.model.Credentials;
+import de.sopra.passwordmanager.util.strategy.ItemNamingStrategy;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.function.Function;
 import java.util.regex.Pattern;
 
 /**
@@ -44,10 +44,10 @@ public class PatternSyntax {
                 patternFilter.include(rawPattern, credentials);
     }
 
-    public enum PatternSyntaxFilter implements CredentialsFilter, Function<Credentials, String> {
+    public enum PatternSyntaxFilter implements CredentialsFilter, ItemNamingStrategy<Credentials> {
         NAME("name") {
             @Override
-            public String apply(Credentials credentials) {
+            public String getName(Credentials credentials) {
                 return credentials.getName();
             }
 
@@ -58,7 +58,7 @@ public class PatternSyntax {
         },
         USERNAME("user", "username") {
             @Override
-            public String apply(Credentials credentials) {
+            public String getName(Credentials credentials) {
                 return credentials.getName() + " (username: " + credentials.getUserName() + ")";
             }
 
@@ -69,7 +69,7 @@ public class PatternSyntax {
         },
         WEBSITE("web", "page", "net", "website") {
             @Override
-            public String apply(Credentials credentials) {
+            public String getName(Credentials credentials) {
                 return credentials.getName() + " (website: " + credentials.getWebsite() + ")";
             }
 
@@ -80,7 +80,7 @@ public class PatternSyntax {
         },
         NOTES("note", "notes") {
             @Override
-            public String apply(Credentials credentials) {
+            public String getName(Credentials credentials) {
                 return credentials.getName() + " (notes: " + credentials.getNotes()
                         .replace("\n", "|").substring(0, 20) + "...)";
             }
@@ -92,7 +92,7 @@ public class PatternSyntax {
         },
         COMMAND("cmd") {
             @Override
-            public String apply(Credentials credentials) {
+            public String getName(Credentials credentials) {
                 return credentials.getName();
             }
 

@@ -1,15 +1,15 @@
 /* JavaFX CSS - Leave this comment until you have at least created one rule which uses -fx-Property */
 
 * {
-	-primary-raw: #039be5;
-	-primary: linear-gradient(#039be5, #039be5, #6e54f7);
-	-light-text: #e1f5fe;
+	-primary-raw: #A0FF00;
+	-analogous: #f6e900;
+	-primary: linear-gradient(-primary-raw, -primary-raw, -analogous);
+	-light-text: #f4ffe7;
 	-dark-text: #000000;
-	-background: #263238;
-	-error: #fa8a02;
-	-background-lighter: #455a64;
-	-background-darker: #222d32;
-	-analogous: #6e54f7;
+	-background: #212121;
+	-error: #9a67ff;
+	-background-lighter: #303030;
+	-background-darker: #151515;
 	
 }
 
@@ -28,23 +28,6 @@
 
 .copy-button {
 	-fx-background-color: transparent;
-}
-.close-button {
-	-fx-background-color: -error;
-	-fx-background-radius: 90;
-	-fx-min-height: 15px;
-	-fx-max-height: 15px;
-	-fx-min-width: 15px;
-	-fx-max-width: 15px;
-}
-.button-settings {
-	-fx-background-color: -primary;
-	-fx-font-size: 13;
-	-fx-background-radius: 90;
-	-fx-min-height: 30px;
-	-fx-max-height: 30px;
-	-fx-min-width: 30px;
-	-fx-max-width: 30px;
 }
 .show-button .label{
 	-fx-text-fill: -dark-text;

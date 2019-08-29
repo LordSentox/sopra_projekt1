@@ -11,10 +11,7 @@ import de.sopra.passwordmanager.util.CredentialsBuilder;
 import de.sopra.passwordmanager.util.CredentialsItem;
 import de.sopra.passwordmanager.util.Path;
 import de.sopra.passwordmanager.util.PatternSyntax;
-import de.sopra.passwordmanager.util.strategy.AlphabeticOrderStrategy;
-import de.sopra.passwordmanager.util.strategy.EntryListOrderStrategy;
-import de.sopra.passwordmanager.util.strategy.EntryListSelectionStrategy;
-import de.sopra.passwordmanager.util.strategy.SelectAllStrategy;
+import de.sopra.passwordmanager.util.strategy.*;
 import de.sopra.passwordmanager.view.dialog.SimpleConfirmation;
 import de.sopra.passwordmanager.view.dialog.SimpleDialog;
 import de.sopra.passwordmanager.view.dialog.TwoOptionConfirmation;
@@ -23,29 +20,53 @@ import de.sopra.passwordmanager.view.multibox.SelectableComboItem;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.Label;
-import javafx.scene.control.Spinner;
-import javafx.scene.control.SpinnerValueFactory;
-import javafx.scene.control.TextArea;
-import javafx.scene.layout.AnchorPane;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
+import javafx.scene.control.*;
+import javafx.scene.control.TextFormatter.Change;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
+import javafx.util.converter.IntegerStringConverter;
 
 import java.io.IOException;
+import java.text.NumberFormat;
+import java.text.ParsePosition;
 import java.util.*;
+import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
 import static de.sopra.passwordmanager.view.MainWindowViewController.WindowState.*;
 
 public class MainWindowViewController extends AbstractViewController implements MainWindowAUI {
+
+    public static final UnaryOperator<TextFormatter.Change> SPINNER_FILTER = new UnaryOperator<TextFormatter.Change>() {
+        NumberFormat format = NumberFormat.getIntegerInstance();
+
+        @Override
+        public Change apply(Change c) {
+            if (c.isContentChange()) {
+                ParsePosition parsePosition = new ParsePosition(0);
+                // NumberFormat evaluates the beginning of the text
+                format.parse(c.getControlNewText(), parsePosition);
+                if (parsePosition.getIndex() == 0 ||
+                        parsePosition.getIndex() < c.getControlNewText().length()) {
+                    // reject parsing the complete text failed
+                    return null;
+                }
+                //Länge begrenzen
+                if (c.getControlNewText().length() > 3) {
+                    return null;
+                }
+                Integer number = Integer.parseInt(c.getControlNewText());
+                if (number < 1)
+                    return null;
+            }
+            return c;
+        }
+    };
+
+    private final TextFormatter<Integer> spinnerTextFormatter =
+            new TextFormatter<Integer>(new IntegerStringConverter(), 1, SPINNER_FILTER);
 
     //controller attributes
     private PasswordManagerController passwordManagerController;
@@ -132,6 +153,8 @@ public class MainWindowViewController extends AbstractViewController implements 
 
         spinnerCredentialsReminderDays.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 999));
         spinnerCredentialsReminderDays.setDisable(true);
+        spinnerCredentialsReminderDays.setEditable(true);
+        spinnerCredentialsReminderDays.getEditor().setTextFormatter(spinnerTextFormatter);
 
         labelCredentialsSecurityAnswer.setVisible(false);
 
@@ -141,15 +164,10 @@ public class MainWindowViewController extends AbstractViewController implements 
         //Timer initialisieren mit Farbe, vollem Balken, als unsichtbar und mit 10-Sekunden-Ablauf-Balken
         progressBarCredentialsCopyTimer.setOpacity(0.0);
         progressBarCredentialsCopyTimer.setProgress(1);
-        progressBarCredentialsCopyTimer.setStyle("-fx-accent: green");
-        timeline = new Timeline(new KeyFrame(Duration.millis(10), new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                progressBarCredentialsCopyTimer.setProgress(progressBarCredentialsCopyTimer.progressProperty().doubleValue() - 0.001);
-
-                if (progressBarCredentialsCopyTimer.progressProperty().doubleValue() <= 0.0) {
-                    buttonCredentialsCopy.getStyleClass().remove("copy-button");
-                }
+        timeline = new Timeline(new KeyFrame(Duration.millis(10), event -> {
+            progressBarCredentialsCopyTimer.setProgress(progressBarCredentialsCopyTimer.progressProperty().doubleValue() - 0.001);
+            if (progressBarCredentialsCopyTimer.progressProperty().doubleValue() <= 0.0) {
+                buttonCredentialsCopy.setOpacity(1.0);
             }
         }));
         timeline.setCycleCount(1000);
@@ -176,7 +194,6 @@ public class MainWindowViewController extends AbstractViewController implements 
                 currentCredentials.withName(newText);
                 changeState(START_EDITING_ENTRY, EDITED_ENTRY);
             }
-            //setSaveButonDisabled();
         });
         textFieldCredentialsUserName.textProperty().addListener((obs, oldText, newText) -> {
             if (oldText == null || newText == null) return;
@@ -185,7 +202,6 @@ public class MainWindowViewController extends AbstractViewController implements 
                 changeState(START_EDITING_ENTRY, EDITED_ENTRY);
                 passwordManagerController.checkQuality(currentCredentials);
             }
-            //setSaveButonDisabled();
         });
         textFieldCredentialsWebsite.textProperty().addListener((obs, oldText, newText) -> {
             if (oldText == null || newText == null) return;
@@ -193,7 +209,6 @@ public class MainWindowViewController extends AbstractViewController implements 
                 currentCredentials.withWebsite(newText);
                 changeState(START_EDITING_ENTRY, EDITED_ENTRY);
             }
-            //setSaveButonDisabled();
         });
         textFieldCredentialsPassword.textProperty().addListener((obs, oldText, newText) -> {
             if (oldText == null || newText == null) return;
@@ -227,8 +242,8 @@ public class MainWindowViewController extends AbstractViewController implements 
 
         //Die Strategie initilisieren - sind zu Beginn Identitätsbeziehungen, d.h. ändern nichts am Input
         selectionStrategy = new SelectAllStrategy(); //es wird keine Auswahl getroffen
-        orderStrategy = new AlphabeticOrderStrategy(); //es wird nicht sortiert
-        
+        orderStrategy = new AlphabeticOrderStrategy().nextOrder(new ReminderSecondaryStrategy()); //es wird nicht sortiert
+
         textFieldCredentialsNotes.setWrapText(true);
 
     }
@@ -263,29 +278,21 @@ public class MainWindowViewController extends AbstractViewController implements 
     }
     //endregion
 
-    CredentialsBuilder getCredentialsBuilder() {
+    public CredentialsBuilder getCredentialsBuilder() {
         return currentCredentials;
     }
 
     //region action handler
     public void onSettingsClicked() {
         //STATE - soll unabhängig funktionieren
+        if (state.match(CREATING_NEW_ENTRY, EDITED_ENTRY)) {
+            showError("Ein Eintrag wird gerade editiert, die Änderung müssen vorher gespeichert oder verworfen werden.");
+            return;
+        }
         try {
             /* Einstellungen öffnen */
-            AnchorPane settingsPane;
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("../view/Einstellungen.fxml"));
-            settingsPane = fxmlLoader.load();
-            settingsViewController = fxmlLoader.getController();
-
-            Stage settingsStage = new Stage();
-            Scene settingsScene = new Scene(settingsPane);
-            settingsStage.initModality(Modality.WINDOW_MODAL);
-            settingsStage.initOwner(stage);
-            settingsScene.getStylesheets().add(getClass().getResource("../application/application.css").toExternalForm());
-            settingsStage.setScene(settingsScene);
-            settingsViewController.setStage(settingsStage);
-            settingsViewController.setMainWindowViewController(this);
-            settingsStage.show();
+            openModal("../view/Einstellungen.fxml", SettingsViewController.class, identity -> {
+            });
         } catch (Exception e) {
             showError(e);
             throw new RuntimeException(e);
@@ -397,6 +404,9 @@ public class MainWindowViewController extends AbstractViewController implements 
 
         boolean checkBoxSelected = checkBoxCredentialsUseReminder.isSelected();
         spinnerCredentialsReminderDays.setDisable(!checkBoxSelected);
+
+        changeState(START_EDITING_ENTRY, EDITED_ENTRY);
+
     }
 
     public void onAddSecurityQuestionClicked() {
@@ -449,14 +459,7 @@ public class MainWindowViewController extends AbstractViewController implements 
         currentCredentials = new CredentialsBuilder();
         listViewCredentialsList.getSelectionModel().clearSelection();
 
-        if (currentCredentials == null ||
-                currentCredentials.getName() == null ||
-                currentCredentials.getUserName() == null ||
-                currentCredentials.getPassword() == null ||
-                currentCredentials.getWebsite() == null) {
-
-            buttonSaveCredentials.setDisable(true);
-        }
+        updateView();
         refreshEntry();
     }
 
@@ -468,10 +471,8 @@ public class MainWindowViewController extends AbstractViewController implements 
         }
 
         CredentialsController credController = passwordManagerController.getCredentialsController();
-        oldCredentials = listViewCredentialsList.getSelectionModel().getSelectedItem().getCredentials();
         listViewCredentialsList.getSelectionModel().clearSelection();
         setState(UNSET);
-        //listViewCredentialsList.getFocusModel().focus(-1);
         credController.removeCredentials(oldCredentials);
         oldCredentials = null;
         currentCredentials = new CredentialsBuilder();
@@ -546,20 +547,7 @@ public class MainWindowViewController extends AbstractViewController implements 
     public void onEntryChosen() {
         //STATE - soll unabhängig funktionieren, aber zur state relative Entscheidungen treffen
 
-        if (buttonCredentialsShowPassword.isDisabled()) {
-            buttonCredentialsShowPassword.setDisable(false);
-        }
-        if (buttonCredentialsCopy.isDisabled()) {
-            buttonCredentialsCopy.setDisable(false);
-            progressBarCredentialsCopyTimer.setOpacity(1.0);
-        }
-        if (comboBoxCredentialsSecurityQuestion.isDisabled()) {
-            comboBoxCredentialsSecurityQuestion.setDisable(false);
-        }
-
-        buttonCredentialsShowPassword.setSelected(false);
         CredentialsItem selectedEntry = listViewCredentialsList.getSelectionModel().getSelectedItem();
-        int index = listViewCredentialsList.getFocusModel().getFocusedIndex();
 
         //Wenn Eingaben vorliegen, nach Verwerfung dieser Eingaben fragen
         if (state.match(EDITED_ENTRY, CREATING_NEW_ENTRY)) {
@@ -571,14 +559,13 @@ public class MainWindowViewController extends AbstractViewController implements 
                     //Änderungen nicht übernehmen
                     oldCredentials = selectedEntry.getCredentials();
                     currentCredentials = selectedEntry.getNewBuilder(passwordManagerController.getUtilityController());
-                    listViewCredentialsList.getSelectionModel().select(index);
                     setState(VIEW_ENTRY);
                     refreshEntry();
                 }
 
                 @Override
                 public void onCancel() {
-                    //nicht löschen
+                    //Änderungen behalten
                     listViewCredentialsList.getSelectionModel().clearSelection();
                     updateView();
                 }
@@ -705,12 +692,32 @@ public class MainWindowViewController extends AbstractViewController implements 
             boolean selected = categories.contains(item.getContent().getCategory());
             choiceBoxCredentialsCategories.setSelected(item, selected);
         }
+
+        if (currentCredentials.getPassword() != null)
+            passwordManagerController.checkQuality(currentCredentials);
+
+        if (currentCredentials.getCreatedAt() != null)
+            labelCredentialsCreated.setText(currentCredentials.getCreatedAt().toString());
+        if (currentCredentials.getLastChanged() != null)
+            labelCredentialsLastChanged.setText(currentCredentials.getLastChanged().toString());
+
+        changeState(START_EDITING_ENTRY, EDITED_ENTRY);
+
     }
 
     @Override
     public void refreshEntryPasswordQuality(int quality) {
         //XXX change quality to double between 0 and 1
-        progressBarCredentialsQuality.setProgress((double) quality / 100);
+        double progress = quality / 100.0;
+        progressBarCredentialsQuality.setProgress(progress);
+
+        if (progress < 0.3) {
+            progressBarCredentialsQuality.setStyle("-fx-accent: red;");
+        } else if (progress >= 0.3 && progress <= 0.6) {
+            progressBarCredentialsQuality.setStyle("-fx-accent: yellow;");
+        } else {
+            progressBarCredentialsQuality.setStyle("-fx-accent: green;");
+        }
     }
 
     //endregion
@@ -747,7 +754,7 @@ public class MainWindowViewController extends AbstractViewController implements 
     void changeState(WindowState expected, WindowState newState) {
         if (this.state == expected)
             setState(newState);
-        updateView();
+        else updateView();
     }
 
     private void setState(WindowState state) {

@@ -1,42 +1,18 @@
 package de.sopra.passwordmanager.view;
 
 import de.sopra.passwordmanager.view.dialog.SimpleConfirmation;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
-import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
-import javafx.stage.Stage;
 
 import java.io.File;
 
 public class SettingsViewController extends AbstractViewController {
 
-    private MainWindowViewController mainWindowViewController;
-    private Stage settingsStage, loginStage;
-
-
-    public void setMainWindowViewController(MainWindowViewController mainWindowViewController) {
-        this.mainWindowViewController = mainWindowViewController;
-    }
-
     public void onChangeMasterpasswordClicked() {
         try {
             /* MasterpasswortSetzenFenster */
-            AnchorPane setMasterPasswordPane = new AnchorPane();
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("../view/Masterpasswort-setzen.fxml"));
-            setMasterPasswordPane = fxmlLoader.load();
-            MasterPasswordViewController masterPasswordViewController = (MasterPasswordViewController) fxmlLoader.getController();
-
-            loginStage = new Stage();
-            Scene setMasterPasswordScene = new Scene(setMasterPasswordPane);
-            setMasterPasswordScene.getStylesheets().add(getClass().getResource("../application/application.css").toExternalForm());
-            loginStage.setScene(setMasterPasswordScene);
-            masterPasswordViewController.setStage(loginStage);
-            masterPasswordViewController.setMainWindowViewController(mainWindowViewController);
-            masterPasswordViewController.init();
-            loginStage.show();
-
+     
+            openModal(stage, "../view/Masterpasswort-setzen.fxml", MasterPasswordViewController.class, control -> {control.init(); control.openedBySettings();});
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -47,12 +23,17 @@ public class SettingsViewController extends AbstractViewController {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Öffne Datei");
         fileChooser.getExtensionFilters().addAll(new ExtensionFilter("XML", "*.xml"));
-        File fileToOpen = fileChooser.showOpenDialog(null);
-
-        try {
-            openModal("../view/Einloggen.fxml", LoginViewController.class, controller -> controller.setSourceFile(fileToOpen));
-        } catch (Exception e) {
-            e.printStackTrace();
+        File fileToOpen = fileChooser.showOpenDialog(stage);
+        if(fileToOpen != null) {
+	        try {
+	            openModal(stage,"../view/Einloggen.fxml", LoginViewController.class, controller ->
+                {
+                    controller.setSourceFile(fileToOpen);
+                    controller.setBackTo(stage);
+                });
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	        }
         }
     }
 
@@ -60,33 +41,26 @@ public class SettingsViewController extends AbstractViewController {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Speichere Datei");
         fileChooser.getExtensionFilters().addAll(new ExtensionFilter("XML", "*.xml"));
-        File fileToSave = fileChooser.showSaveDialog(null);
-        mainWindowViewController.getPasswordManagerController().getIOController().exportFile(fileToSave);
+        File fileToSave = fileChooser.showSaveDialog(stage);
+        if(fileToSave != null)
+        	mainWindowViewController.getPasswordManagerController().getIOController().exportFile(fileToSave);
     }
 
     public void onResetDataClicked() {
-
         SimpleConfirmation removeConfirmation = new SimpleConfirmation("Passwortmanager zurücksetzen", null, "Passwortmanager wirklich zurücksetzen?") {
             @Override
             public void onSuccess() {
                 mainWindowViewController.getPasswordManagerController().removeAll();
             }
         };
-
         removeConfirmation.open();
-
     }
 
     public void onCancelSettingsClicked() {
-        settingsStage.close();
+        stage.close();
     }
     public void onCloseClicked() {
-    	settingsStage.close();
+    	stage.close();
     }
-
-    public void setStage(Stage settingsStage) {
-        this.settingsStage = settingsStage;
-    }
-
 
 }

@@ -5,6 +5,7 @@ import de.sopra.passwordmanager.model.Credentials;
 import de.sopra.passwordmanager.model.PasswordManager;
 import de.sopra.passwordmanager.util.CredentialsBuilder;
 import de.sopra.passwordmanager.util.strategy.AlphabeticOrderStrategy;
+import de.sopra.passwordmanager.util.strategy.ReminderSecondaryStrategy;
 import de.sopra.passwordmanager.util.strategy.SelectAllStrategy;
 import de.sopra.passwordmanager.view.LoginViewAUI;
 import de.sopra.passwordmanager.view.MainWindowAUI;
@@ -115,10 +116,10 @@ public class PasswordManagerController {
      * Setzt den PasswordManager zurück und löscht alle Passwörter und Kategorien. Das Masterpasswort bleibt erhalten.
      */
     public void removeAll() {
-        passwordManager.getRootCategory().getSubCategories().clear();
-        passwordManager.getRootCategory().getCredentials().clear();
+        this.passwordManager.clearAll();
         SAVE_FILE.delete();
-        mainWindowAUI.refreshListStrategies(new SelectAllStrategy(), new AlphabeticOrderStrategy());
+        mainWindowAUI.refreshListStrategies(new SelectAllStrategy(),
+                new AlphabeticOrderStrategy().nextOrder(new ReminderSecondaryStrategy()));
         mainWindowAUI.refreshEntry();
         mainWindowAUI.refreshLists();
         mainWindowAUI.refreshEntryPasswordQuality(0);
@@ -154,12 +155,12 @@ public class PasswordManagerController {
      * @throws NullPointerException falls statt eines {@link CredentialsBuilder} <code>null</code> übergeben wird
      */
     public void checkQuality(CredentialsBuilder credentials) throws NullPointerException {
-        int quality = utilityController.checkQuality(credentials.getPassword());
+        int quality = utilityController.checkQuality(credentials.getPassword(), credentials.getUserName());
         mainWindowAUI.refreshEntryPasswordQuality(quality);
     }
 
     /**
-     * Ersetzt die alten {@link Credentials} mit den Neuen.
+     * Ersetzt die alten asswordManagerControllerTe{@link Credentials} mit den Neuen.
      *
      * @param oldCredentials Die zu ersetzenden {@link Credentials}
      * @param newCredentials Die {@link Credentials}, die die alten ersetzen
