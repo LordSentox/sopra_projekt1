@@ -7,7 +7,6 @@ import de.sopra.passwordmanager.model.SecurityQuestion;
 
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * Builder für {@link Credentials}. Attribute sind gleich denen von {@link Credentials}
@@ -264,29 +263,6 @@ public class CredentialsBuilder {
 
     public Map<String, String> getSecurityQuestions() {
         return Collections.unmodifiableMap(securityQuestions);
-    }
-
-    /**
-     * Kopiert die Daten dieses {@link CredentialsBuilder} in das gegebene Credentials objekt. Die daten werden überschrieben
-     * @param utilityController Der zum verschlüsseln benötigte {@link UtilityController}
-     */
-    public void copyTo(Credentials cred, UtilityController utilityController) {
-        cred.setName(name);
-        cred.setUserName(userName);
-        cred.setPassword(utilityController.encryptText(password));
-        cred.setWebsite(website);
-        cred.setLastChanged(lastChanged);
-        cred.setNotes(notes);
-        cred.setChangeReminderDays(changeReminderDays);
-        cred.clearSecurityQuesions();
-        cred.addSecurityQuestions(
-                securityQuestions.entrySet().stream()
-                        .map(seqQuestion -> new SecurityQuestion(
-                                utilityController.encryptText(seqQuestion.getKey()),
-                                utilityController.encryptText(seqQuestion.getValue())
-                        ))
-                        .collect(Collectors.toSet())
-        );
     }
 
     @Override

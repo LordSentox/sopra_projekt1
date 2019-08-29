@@ -16,6 +16,8 @@ public abstract class SimpleConfirmation extends PasswordManagerDialog {
 
     private String title, headerText, contentText;
 
+    private String buttonOk1 = "Ok", buttonCancel = "Abbrechen";
+
     public SimpleConfirmation(String title, String headerText, String text) {
         this.title = title;
         this.headerText = headerText;
@@ -29,6 +31,14 @@ public abstract class SimpleConfirmation extends PasswordManagerDialog {
 
     }
 
+    public void setButtonOk(String name) {
+        this.buttonOk1 = name;
+    }
+
+    public void setButtonCancel(String name) {
+        this.buttonCancel = name;
+    }
+
     @Override
     public void open() {
         Alert alert = new Alert(alertType);
@@ -37,14 +47,18 @@ public abstract class SimpleConfirmation extends PasswordManagerDialog {
         alert.setHeaderText(headerText);
         alert.setContentText(contentText);
 
+        ButtonType buttonTypeOk = new ButtonType(buttonOk1);
+        ButtonType buttonTypeCancel = new ButtonType(buttonCancel);
+
+        alert.getButtonTypes().setAll(buttonTypeOk, buttonTypeCancel);
+
         Optional<ButtonType> result = alert.showAndWait();
-        if (result.get() == ButtonType.OK) {
+        if (result.get() == buttonTypeOk) {
             onSuccess();
         } else {
             onCancel();
         }
     }
-
 
 
 }

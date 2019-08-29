@@ -9,7 +9,7 @@
    <children>
       <Rectangle styleClass="rectangle" arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="450.0" layoutX="310.0" layoutY="80.0" stroke="BLACK" strokeType="INSIDE" width="480.0" />
       <JFXTextField fx:id="textFieldSearch" layoutX="10.0" layoutY="10.0" onAction="#onSearchClicked"/>
-      <JFXButton fx:id="buttonSearch" layoutX="186.0" layoutY="10.0" mnemonicParsing="false" prefWidth="114.0" text="Lupe" onAction="#onSearchClicked"/>
+      <JFXButton fx:id="buttonSearch" layoutX="186.0" layoutY="10.0" mnemonicParsing="false" prefWidth="114.0" text="" onAction="#onSearchClicked"/>
       <JFXComboBox fx:id="comboBoxCategorySelectionMain" layoutX="10.0" layoutY="44.0" prefWidth="171.0" />
       <JFXButton fx:id="buttonAddCategoryMain" layoutX="186.0" layoutY="44.0" mnemonicParsing="false" text="+" onAction="#onAddCategoryClicked" focusTraversable="false"/>
       <JFXButton fx:id="buttonEditCategoryMain" layoutX="220.0" layoutY="44.0" mnemonicParsing="false" prefWidth="46.0" text="edit" onAction="#onEditCategoryClicked" focusTraversable="false"/>
@@ -52,7 +52,8 @@
       <Label layoutX="698.0" layoutY="85.0" text="angelegt am:" />
       <Label fx:id="labelCredentialsCreated" layoutX="698.0" layoutY="104.0" text="Datum" />
       <JFXButton fx:id="buttonEditCredentials" layoutX="310.0" layoutY="540.0" mnemonicParsing="false" text="Eintrag bearbeiten" onAction="#onStartEditCredentialsClicked"/>
-      <JFXButton fx:id="buttonSaveCredentials" layoutX="604.0" layoutY="540.0" mnemonicParsing="false" text="Änderungen übernehmen" onAction="#onSaveCredentialsClicked"/>
+      <JFXButton fx:id="buttonCancelEditCredentials" layoutX="460.0" layoutY="540.0" prefHeight="10" prefWidth="135" mnemonicParsing="false" text="abbrechen" onAction="#onCancelEditCredentialsClicked"/>
+      <JFXButton fx:id="buttonSaveCredentials" layoutX="604.0" layoutY="540.0"  mnemonicParsing="false" text="Änderungen übernehmen" onAction="#onSaveCredentialsClicked"/>
       <JFXButton styleClass="button-settings" fx:id="buttonSettings" layoutX="740.0" layoutY="10.0" mnemonicParsing="false" text="⚙" onAction="#onSettingsClicked"/>
       <JFXButton fx:id="buttonClose" styleClass="close-button" layoutX="775.0" layoutY="10.0" prefHeight="10" prefWidth="10" text="x" onAction="#onCloseClicked"/>
    </children>

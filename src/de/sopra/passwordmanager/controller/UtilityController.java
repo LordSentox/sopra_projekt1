@@ -214,9 +214,9 @@ public class UtilityController {
         //Gibt es wiederholte regulaere Ausdruecke?
         RepeatCharacterRegexRule regex = new RepeatCharacterRegexRule(3);
 
-        List<WeighedRule> list = new ArrayList<>(Arrays.asList(new WeighedRule(characterOrdinaryRule, 1.25),
-                new WeighedRule(characterSpecialRule, 1.5),
-                new WeighedRule(notAllTheSame, 1.25),
+        List<WeighedRule> list = new ArrayList<>(Arrays.asList(new WeighedRule(characterOrdinaryRule, 1.0),
+                new WeighedRule(characterSpecialRule, 2.5),
+                new WeighedRule(notAllTheSame, 0.75),
                 new WeighedRule(minimumLength, 0.5),
                 new WeighedRule(repeatCharacters, 0.5),
                 new WeighedRule(regex, 1.25)));
@@ -232,15 +232,25 @@ public class UtilityController {
     /**
      * Diese Methode überprüft die Qualität eines Passwortes und gibt eine Zahl zwischen 0 und 100 zurück ,wobei mehr besser ist
      *
-     * @param text Das zu überprüfende Passwort
+     * @param  Das zu überprüfende Passwort
      * @return Es wird ein Wert von 0 bis 100 geliefert, der die Qualität des Passwortes angibt, dabei steht 0 für sehr schlecht und 100 für sehr sicher
      */
     // TODO: Sollte noch den Nutzernamen bekommen, um es mit dem Passwort zu vergleichen
-    int checkQuality(String text, String username) {
-        if (text == null || text.isEmpty()) {
+    int checkQuality(String password, String username) {
+        if (password == null || password.isEmpty()) {
             return 0;
         }
-
+        
+        String text = new String();
+        char previous = password.charAt(password.length()-1);
+        
+        for(char current : password.toCharArray()) {
+            if (current != previous) {
+                text = text + current;
+                previous = current;
+            }
+        }
+        
         PasswordData pwData = new PasswordData(text);
         boolean checkUsername = username != null;
         if (checkUsername) {
@@ -249,23 +259,18 @@ public class UtilityController {
         double ofOne = calculateRuleAdherence(pwData, checkUsername);
 
         // Die Punkte mit der Länge normalisieren, um auf eine bessere Qualitätsanzeige zu kommen
-        int thresholdLength = 12;
+        int thresholdLength = 16;
         if (text.length() <= thresholdLength) {
             ofOne *= (double) text.length() / (double) thresholdLength;
         }
 
         // Überprüfe auf Bereichsüberschreitungen und gebe den entsprechenden Wert zurück
         if (text.length() < MINIMUM_PASSWORD_LENGTH) {
-            ofOne /= 2.0;
+            ofOne /= 1.2;
         }
 
-        int wholePercent = scaleToWholePercent(ofOne);
-        // Dieses Passwort ist mindestens so gut wie das mit weniger Länge. Stelle sicher, dass es nicht schlechter
-        // bewertet werden kann, weil zusätzliche Regelverstöße dazugekommen sind.
-        String textWithoutLastChar = text.substring(0, text.length() - 1);
-        int qualityWithoutLastChar = checkQuality(textWithoutLastChar, username);
+        return scaleToWholePercent(ofOne);
 
-        return Math.max(qualityWithoutLastChar, wholePercent);
     }
 
     private static double calculateRuleAdherence(PasswordData pwData, boolean checkUsername) {

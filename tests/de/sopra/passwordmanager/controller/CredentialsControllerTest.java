@@ -111,11 +111,11 @@ public class CredentialsControllerTest {
         Assert.assertTrue("Credentials not added to category", sub.getCredentials().contains(credBuilder1.build(uc)));
         Credentials obar = sub.getCredentials().stream().findFirst().get();
         cc.updateCredentials(obar, credBuilder2, categories2);
-        Assert.assertFalse("Credentials still in old category", sub.getCredentials().contains(obar));
-        Assert.assertTrue("Credentials not in new category", bus.getCredentials().contains(obar));
+        Assert.assertFalse("Credentials still in old category", sub.getCredentials().contains(credBuilder1.build(uc)));
+        Assert.assertTrue("Credentials not in new category", bus.getCredentials().contains(credBuilder2.build(uc)));
         //Nach dem ersetzen darf nur 1 Eintrag im Passwortmanager existieren und dieser muss mit cred2 übereinstimmen
         Assert.assertEquals("Not exactly 1 Credentials saved after replacing",1, pm.getRootCategory().getAllCredentials().size());
-        Assert.assertTrue("Credentials not replaced", pm.getRootCategory().getAllCredentials().contains(obar));
+        Assert.assertTrue("Credentials not replaced", pm.getRootCategory().getAllCredentials().contains(credBuilder2.build(uc)));
     }
 
     @Test

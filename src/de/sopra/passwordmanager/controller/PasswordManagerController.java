@@ -118,7 +118,7 @@ public class PasswordManagerController {
      */
     public void removeAll() {
         this.passwordManager.clearAll();
-        SAVE_FILE.delete();
+        this.ioController.exportFile(SAVE_FILE);
         mainWindowAUI.refreshListStrategies(new SelectAllStrategy(),
                 new AlphabeticOrderStrategy().nextOrder(new ReminderSecondaryStrategy()));
         mainWindowAUI.refreshEntry();

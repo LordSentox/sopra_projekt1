@@ -10,6 +10,7 @@
 	-background-lighter: #455a64;
 	-background-darker: #222d32;
 	-analogous: #00ff44;
+
 }
 
 .label {
@@ -35,6 +36,12 @@
 	-fx-max-height: 15px;
 	-fx-min-width: 15px;
 	-fx-max-width: 15px;
+	/*
+	-fx-background-image: url('../x2.png');
+	-fx-background-size: 10px;
+	-fx-background-repeat: no-repeat;
+	-fx-background-position: center;
+	 */
 }
 
 .show-button .label{
@@ -62,6 +69,13 @@
 	-jfx-untoggle-line-color: -dark-text;
 	-jfx-untoggle-color: -primary-raw;
 	-jfx-toggle-color: -analogous;
+}
+
+#buttonSearch {
+	-fx-background-image: url('../lupe.png');
+	-fx-background-size: 1.5em;
+	-fx-background-repeat: no-repeat;
+	-fx-background-position: center;
 }
 
 .background {

@@ -1,0 +1,20 @@
+/* JavaFX CSS - Leave this comment until you have at least created one rule which uses -fx-Property */
+
+* {
+    -primary-raw: #ffffff;
+    -primary: -primary-raw;
+    -light-text: #ffffff;
+    -dark-text: #000000;
+    -error: #aaaaaa;
+    -background: #202020;
+    -background-lighter: #404040;
+    -background-darker: #101010;
+    -analogous: #ffffff;
+}
+
+.background {
+    -fx-background-color: radial-gradient(radius 120%, -background-lighter, -background);
+    -fx-border-color: -primary;
+    -fx-border-radius: 5px;
+    -fx-border-width: 3px;
+}

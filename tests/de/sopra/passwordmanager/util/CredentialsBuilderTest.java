@@ -111,7 +111,7 @@ public class CredentialsBuilderTest {
         Assert.assertEquals("Minimal built credentials not equal to expected", cred1, cred2);
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void missingNameTest() {
         String userName = "user1";
         String password = "passwort123";
@@ -125,7 +125,7 @@ public class CredentialsBuilderTest {
                 .build(uc);
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void missingUserNameTest() {
         String name = "cred1";
         String password = "passwort123";
@@ -140,7 +140,7 @@ public class CredentialsBuilderTest {
     }
 
 
-    @Test(expected = NullPointerException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void missingPasswordTest() {
         String name = "cred1";
         String userName = "user1";
@@ -154,7 +154,7 @@ public class CredentialsBuilderTest {
                 .build(uc);
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void missingWebsiteTest() {
         String name = "cred1";
         String userName = "user1";
@@ -232,42 +232,6 @@ public class CredentialsBuilderTest {
         CredentialsBuilder credBuilder2 = new CredentialsBuilder(cred1, uc);
 
         Assert.assertEquals("CredentialsBuilders not equal", credBuilder1, credBuilder2);
-    }
-
-    @Test
-    public void copyToTest(){
-        String name = "cred1";
-        String userName = "user1";
-        String password = "passwort123";
-        String website = "www.hallo.de";
-        int changeReminder = 3;
-        LocalDateTime created = LocalDateTime.now();
-        LocalDateTime lastChanged = LocalDateTime.now();
-        String notes = "Dies ist ein Debug Eintrag";
-        String question1 = "Warum?";
-        String answer1 = "Da so";
-
-        Credentials cred = new Credentials("Name", "userName", uc.encryptText("saaswort"), created);
-        cred.setLastChanged(LocalDateTime.now());
-        cred.setNotes("sooos");
-        cred.setWebsite("");
-        cred.setChangeReminderDays(1);
-        cred.addSecurityQuestion(securityQuestionFromStrings("Huh?", "oof"));
-
-        CredentialsBuilder credBuilder1 = new CredentialsBuilder()
-                .withName(name)
-                .withUserName(userName)
-                .withPassword(password)
-                .withWebsite(website)
-                .withChangeReminderDays(changeReminder)
-                .withCreated(created)
-                .withLastChanged(lastChanged)
-                .withNotes(notes)
-                .withSecurityQuestion(question1, answer1);
-        credBuilder1.copyTo(cred, uc);
-        Credentials cred2 = credBuilder1.build(uc);
-
-        Assert.assertEquals("copyTo failed", cred, cred2);
     }
 
     @Test
