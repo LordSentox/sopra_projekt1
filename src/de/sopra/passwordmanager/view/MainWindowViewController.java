@@ -607,14 +607,19 @@ public class MainWindowViewController extends AbstractViewController implements 
 
         //Alle Kategorien in die Kombobox einpflegen
         CategoryItem chosenCat = comboBoxCategorySelectionMain.getSelectionModel().getSelectedItem();
-        //alte Inhalte entfernen
-        comboBoxCategorySelectionMain.getItems().clear();
-        //neue Inhalte einfügen
-        cats.entrySet().stream()
-                .map(entry -> new CategoryItem(entry.getKey(), entry.getValue()))
-                .forEach(comboBoxCategorySelectionMain.getItems()::add);
 
-        comboBoxCategorySelectionMain.getItems().sort(Comparator.comparing(item -> item.getPath().length()));
+        //alte Inhalte entfernen
+        if (state.match(UNSET, VIEW_ENTRY, START_EDITING_ENTRY)) {
+            comboBoxCategorySelectionMain.getItems().clear();
+            //neue Inhalte einfügen
+            cats.entrySet().stream()
+                    .map(entry -> new CategoryItem(entry.getKey(), entry.getValue()))
+                    .forEach(comboBoxCategorySelectionMain.getItems()::add);
+
+            comboBoxCategorySelectionMain.getItems().sort(Comparator.comparing(item -> item.getPath().length()));
+        }
+
+        //Choicebox updaten
 
         List<SelectableComboItem<CategoryItem>> oldList = choiceBoxCredentialsCategories.getListProvider();
 
@@ -628,17 +633,22 @@ public class MainWindowViewController extends AbstractViewController implements 
         catItems.sort(Comparator.comparing(item -> item.getContent().getPath().length()));
         choiceBoxCredentialsCategories.setListProvider(catItems);
 
-        //vorherige Auswahl wiederherstellen, wenn möglich
-        List<CategoryItem> items = comboBoxCategorySelectionMain.getItems();
-        if (!items.stream().anyMatch(item -> item.getPath().equals(chosenCat.getPath()))) {
-            CategoryItem selected = items.stream().filter(item -> item.getPath().equals(Path.ROOT_CATEGORY_PATH)).findAny().get();
-            comboBoxCategorySelectionMain.getSelectionModel().select(selected);
-        } else {
-            CategoryItem selected = items.stream().filter(item -> item.getPath().equals(chosenCat.getPath())).findAny().get();
-            comboBoxCategorySelectionMain.getSelectionModel().select(selected);
+        if (state.match(UNSET, VIEW_ENTRY, START_EDITING_ENTRY)) {
+
+            //vorherige Auswahl wiederherstellen, wenn möglich
+            List<CategoryItem> items = comboBoxCategorySelectionMain.getItems();
+            if (!items.stream().anyMatch(item -> item.getPath().equals(chosenCat.getPath()))) {
+                CategoryItem selected = items.stream().filter(item -> item.getPath().equals(Path.ROOT_CATEGORY_PATH)).findAny().get();
+                comboBoxCategorySelectionMain.getSelectionModel().select(selected);
+            } else {
+                CategoryItem selected = items.stream().filter(item -> item.getPath().equals(chosenCat.getPath())).findAny().get();
+                comboBoxCategorySelectionMain.getSelectionModel().select(selected);
+            }
+
         }
 
-        refreshEntryListWhenCategoryChosen();
+        if (state.match(UNSET, VIEW_ENTRY, START_EDITING_ENTRY))
+            refreshEntryListWhenCategoryChosen();
 
         listViewCredentialsList.getFocusModel().focus(-1);
 
