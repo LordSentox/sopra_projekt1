@@ -313,7 +313,7 @@ public class MainWindowViewController extends AbstractViewController implements 
         }
         try {
             /* Einstellungen öffnen */
-            openModal("../view/Einstellungen.fxml", SettingsViewController.class, identity -> {
+            openModal("/Einstellungen.fxml", SettingsViewController.class, identity -> {
             });
         } catch (Exception e) {
             showError(e);
@@ -335,7 +335,7 @@ public class MainWindowViewController extends AbstractViewController implements 
             CategoryItem selectedItem = comboBoxCategorySelectionMain.getSelectionModel().getSelectedItem();
             Path path = selectedItem.getPath();
             /* Kategorie hinzufügen - leeres Fenster öffnen */
-            categoryEditViewController = openModal("../view/Kategorie_anlegen-aendern.fxml",
+            categoryEditViewController = openModal("/Kategorie_anlegen-aendern.fxml",
                     CategoryEditViewController.class, preOpen ->
                     {
                         preOpen.setShouldAdd(true);
@@ -361,7 +361,7 @@ public class MainWindowViewController extends AbstractViewController implements 
                 showError("Das Ändern der Hauptkategorie ist nicht erlaubt.");
                 return;
             }
-            categoryEditViewController = openModal("../view/Kategorie_anlegen-aendern.fxml",
+            categoryEditViewController = openModal("/Kategorie_anlegen-aendern.fxml",
                     CategoryEditViewController.class, preOpen ->
                     {
                         preOpen.setCurrentlyEdited(path);
@@ -447,8 +447,9 @@ public class MainWindowViewController extends AbstractViewController implements 
 
         try {
             /* Sicherheitsfrage hinzufügen */
-            openModal("../view/Sicherheitsfrage-und-Antwort.fxml",
+            openModal("/Sicherheitsfrage-und-Antwort.fxml",
                     SecurityQuestionViewController.class, identity -> {
+                    	identity.init();
                     });
         } catch (Exception e) {
             showError(e);
@@ -670,8 +671,7 @@ public class MainWindowViewController extends AbstractViewController implements 
         if (state.match(UNSET, VIEW_ENTRY, START_EDITING_ENTRY))
             refreshEntryListWhenCategoryChosen();
 
-        listViewCredentialsList.getFocusModel().focus(-1);
-
+        listViewCredentialsList.getSelectionModel().clearSelection();
     }
 
     //Die Liste der Credentials updaten, wenn eine Kategorie zum Filtern ausgewählt wird
@@ -689,7 +689,7 @@ public class MainWindowViewController extends AbstractViewController implements 
             ObservableList<CredentialsItem> credsToShow = new ObservableListWrapper<>(ordered);
             listViewCredentialsList.setItems(credsToShow);
             if (credsToShow.size() > 0)
-                listViewCredentialsList.getSelectionModel().select(0);
+                listViewCredentialsList.getSelectionModel().selectFirst();
         } else {
             listViewCredentialsList.setItems(new ObservableListWrapper<>(Collections.emptyList()));
             setState(UNSET);

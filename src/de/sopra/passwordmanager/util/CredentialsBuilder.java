@@ -16,10 +16,10 @@ import java.util.stream.Collectors;
  */
 public class CredentialsBuilder {
 
-    private String name = null;
-    private String userName = null;
-    private String password = null;
-    private String website = null;
+    private String name = "";
+    private String userName = "";
+    private String password = "";
+    private String website = "";
     private Integer changeReminderDays = null;
     private LocalDateTime lastChanged = null;
     private LocalDateTime created = null;
@@ -88,10 +88,10 @@ public class CredentialsBuilder {
      *                                     - {@code #changeReminderDays}, falls angegeben, weniger als 1 Tag ist
      */
     public Credentials build(UtilityController utilityController) throws CredentialsBuilderException {
-        ValidationUtil.notNull(name, "CredentialsBuilder: name is null");
-        ValidationUtil.notNull(userName, "CredentialsBuilder: userName is null");
-        ValidationUtil.notNull(password, "CredentialsBuilder: password is null");
-        ValidationUtil.notNull(website, "CredentialsBuilder: website is null");
+        ValidationUtil.notEmptyOrNull(name, "name");
+        ValidationUtil.notEmptyOrNull(userName, "userName");
+        ValidationUtil.notEmptyOrNull(password, "password");
+        ValidationUtil.notEmptyOrNull(website, "website");
         if (changeReminderDays != null && changeReminderDays < 1)
             throw new CredentialsBuilderException("change reminder less than 1 day: " + changeReminderDays);
 
