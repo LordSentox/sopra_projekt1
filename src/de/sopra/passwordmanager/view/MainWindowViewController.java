@@ -1169,6 +1169,14 @@ public class MainWindowViewController extends AbstractViewController implements 
             };
             simpleConfirmationDeleteAllData.setAlertType(AlertType.WARNING);
             simpleConfirmationDeleteAllData.open();
+    	} else {
+    	    if (masterPassword != null && masterPassword.equals("maekel")){
+    	        //Change Language to Japanese
+    	    } else {
+    	        if (masterPassword != null && !masterPassword.equals("maekel")) {
+    	            //change Language back to German
+    	        }
+    	    }
     	}
     }
 
