@@ -509,13 +509,23 @@ public class MainWindowViewController extends AbstractViewController implements 
             return;
         }
 
-        CredentialsController credController = passwordManagerController.getCredentialsController();
-        listViewCredentialsList.getSelectionModel().clearSelection();
-        setState(UNSET);
-        credController.removeCredentials(oldCredentials);
-        oldCredentials = null;
-        currentCredentials = new CredentialsBuilder();
-        refreshEntry();
+        SimpleConfirmation confirmation = new SimpleConfirmation("Eintrag löschen", "Sind Sie sicher?","Hiermit wird der gewählte Eintrag komplett gelöscht.") {
+            @Override
+            public void onSuccess() {
+                CredentialsController credController = passwordManagerController.getCredentialsController();
+                listViewCredentialsList.getSelectionModel().clearSelection();
+                setState(UNSET);
+                credController.removeCredentials(oldCredentials);
+                oldCredentials = null;
+                currentCredentials = new CredentialsBuilder();
+                refreshEntry();
+            }
+        };
+        confirmation.setButtonOk("Ja");
+        confirmation.setButtonCancel("Nein");
+
+        confirmation.open();
+
     }
 
     public void onStartEditCredentialsClicked() {
