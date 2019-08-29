@@ -22,6 +22,8 @@ import static de.sopra.passwordmanager.controller.PasswordManagerController.SAVE
 public class Main extends Application {
 
     private static LanguageProvider langProvider = new LanguageProvider();
+    //private static final String LANGUAGE = "en_EN";
+    private static final String LANGUAGE = "ja_JA";
 
     @Override
     public void start(Stage primaryStage) {
@@ -102,7 +104,7 @@ public class Main extends Application {
     private void loadLanguage() {
         Properties properties = new Properties();
         try {
-            properties.load(Main.class.getResourceAsStream("/lang/en_EN.properties"));
+            properties.load(Main.class.getResourceAsStream("/lang/" + LANGUAGE + ".properties"));
         } catch (IOException e) {
             e.printStackTrace();
         }
