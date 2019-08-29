@@ -631,6 +631,8 @@ public class MainWindowViewController extends AbstractViewController implements 
 
         refreshEntryListWhenCategoryChosen();
 
+        listViewCredentialsList.getFocusModel().focus(-1);
+
     }
 
     //Die Liste der Credentials updaten, wenn eine Kategorie zum Filtern ausgewählt wird
