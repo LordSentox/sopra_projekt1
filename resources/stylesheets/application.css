@@ -71,13 +71,6 @@
 	-jfx-toggle-color: -analogous;
 }
 
-#buttonSearch {
-	-fx-background-image: url('../textures/lupe.png');
-	-fx-background-size: 1.5em;
-	-fx-background-repeat: no-repeat;
-	-fx-background-position: center;
-}
-
 .background {
 	-fx-background-color: -primary,-background;
 	-fx-background-insets: 0, 3;
@@ -151,6 +144,7 @@
 	-fx-background-color: -background-darker;
 	-fx-background-radius: 4;
 }
+
 .jfx-combo-box .list-view {
 	-fx-background-color: -primary;
 	-fx-border-color: -primary;

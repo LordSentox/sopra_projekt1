@@ -1,5 +1,5 @@
 * {
-    -primary-raw: #ffffff;
+    -primary-raw: #888888;
     -primary: -primary-raw;
     -light-text: #ffffff;
     -dark-text: #000000;
@@ -7,7 +7,7 @@
     -background: #202020;
     -background-lighter: #404040;
     -background-darker: #101010;
-    -analogous: #888888;
+    -analogous: #686868;
 }
 
 .background {
@@ -16,6 +16,8 @@
     -fx-background-repeat: repeat;
     -fx-background-position: center;
     -fx-background-radius: 0px;
+    -fx-border-image-source: url('../textures/minecraft/stone.png');
+    -fx-border-width: 4px;
 }
 
 .button {
@@ -43,14 +45,34 @@
     -fx-border-color: transparent;
 }
 
-#buttonSearch {
-    -fx-background-image: url('../textures/minecraft/stone.png');
-    -fx-background-size: 1.5em;
-    -fx-background-repeat: no-repeat;
-    -fx-background-position: center;
-}
-
 .jfx-check-box {
     -jfx-checked-color: -analogous;
     -jfx-unchecked-color: -light-text;
+}
+
+.copy-button {
+    -fx-background-color: transparent;
+}
+
+.spinner {
+    -fx-text-fill: -light-text;
+    -fx-background-image: url('../textures/minecraft/stone.png');
+}
+
+.jfx-combo-box {
+    -jfx-focus-color: transparent;
+    -jfx-unfocus-color: transparent;
+    -fx-background-radius: 5;
+    -fx-background-image: url('../textures/minecraft/stone.png');
+}
+
+.jfx-list-view,
+.jfx-text-field, .jfx-password-field, .jfx-text-area{
+    -fx-background-image: url('../textures/minecraft/obsidian.png');
+    -fx-background-size: 64px;
+    -fx-background-repeat: repeat;
+    -fx-background-position: center;
+    -fx-background-radius: 0px;
+    -fx-border-width: 1px;
+    -fx-border-color: #ffffff;
 }
