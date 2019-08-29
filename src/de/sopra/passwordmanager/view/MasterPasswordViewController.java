@@ -3,6 +3,8 @@ package de.sopra.passwordmanager.view;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXProgressBar;
+import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
+
 import de.sopra.passwordmanager.util.CredentialsBuilder;
 import de.sopra.passwordmanager.view.dialog.SimpleDialog;
 import javafx.fxml.FXML;
@@ -50,6 +52,9 @@ public class MasterPasswordViewController extends AbstractViewController impleme
         spinnerReminderDays.getEditor().setTextFormatter(spinnerTextFormatter);
 
         passwordFieldSet.textProperty().addListener((obs, oldText, newText) -> {
+            if ( newText == null || newText.isEmpty()){
+            	buttonSave.setDisable(true); System.out.println("test");
+            }
             onPasswordChanged();
         });
         buttonSave.setDisable(true);
@@ -89,9 +94,10 @@ public class MasterPasswordViewController extends AbstractViewController impleme
 
     public void onPasswordChanged() {
         String password = passwordFieldSet.getText();
-        if (password != null || !password.isEmpty()) {
+        if (password != null && !password.isEmpty()) {
             mainWindowViewController.getPasswordManagerController().getMasterPasswordController().checkQuality(password);
             buttonSave.setDisable(false);
+            System.out.println("test2");
         } else {
         	buttonSave.setDisable(true);
         	System.out.println("hi");
