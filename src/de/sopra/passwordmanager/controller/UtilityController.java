@@ -170,27 +170,27 @@ public class UtilityController {
     // Helferklasse, um die Qualität des Passwortes auf bestimmte Merkmale zu
     // überprüfen, die unterschiedlich gewichtet
     // sind.
-    private final class WeighedRule {
+    private static final class WeighedRule {
         private final Rule rule;
         private final double weight;
 
-        public WeighedRule(Rule rule, double weight) {
+        WeighedRule(Rule rule, double weight) {
             this.rule = rule;
             this.weight = weight;
         }
 
-        public Rule getRule() {
+        Rule getRule() {
             return rule;
         }
 
-        public double getWeight() {
+        double getWeight() {
             return weight;
         }
     }
 
     // Generiert die Gesichtspunkte, nach denen ein Passwort beurteilt werden
     // soll
-    private List<WeighedRule> generateRules(boolean checkUsername) {
+    private static List<WeighedRule> generateRules(boolean checkUsername) {
         // Stelle sicher, dass mindestens ein kleiner und ein großer Buchstabe
         // vorkommt
         CharacterCharacteristicsRule characterOrdinaryRule = new CharacterCharacteristicsRule();
@@ -237,18 +237,38 @@ public class UtilityController {
      */
     // TODO: Sollte noch den Nutzernamen bekommen, um es mit dem Passwort zu vergleichen
     int checkQuality(String text, String username) {
-        if (text == null) {
+        if (text == null || text.isEmpty()) {
             return 0;
         }
+
         PasswordData pwData = new PasswordData(text);
         boolean checkUsername = username != null;
         if (checkUsername) {
             pwData.setUsername(username);
         }
-        int length = text.length();
-        if (text.isEmpty()) {
-            return 0;
+        double ofOne = calculateRuleAdherence(pwData, checkUsername);
+
+        // Die Punkte mit der Länge normalisieren, um auf eine bessere Qualitätsanzeige zu kommen
+        int thresholdLength = 12;
+        if (text.length() <= thresholdLength) {
+            ofOne *= (double) text.length() / (double) thresholdLength;
         }
+
+        // Überprüfe auf Bereichsüberschreitungen und gebe den entsprechenden Wert zurück
+        if (text.length() < MINIMUM_PASSWORD_LENGTH) {
+            ofOne /= 2.0;
+        }
+
+        int wholePercent = scaleToWholePercent(ofOne);
+        // Dieses Passwort ist mindestens so gut wie das mit weniger Länge. Stelle sicher, dass es nicht schlechter
+        // bewertet werden kann, weil zusätzliche Regelverstöße dazugekommen sind.
+        String textWithoutLastChar = text.substring(0, text.length() - 1);
+        int qualityWithoutLastChar = checkQuality(textWithoutLastChar, username);
+
+        return Math.max(qualityWithoutLastChar, wholePercent);
+    }
+
+    private static double calculateRuleAdherence(PasswordData pwData, boolean checkUsername) {
         List<WeighedRule> rules = generateRules(checkUsername);
         // Für jede Regel die eingehalten wird, wird das Gewicht als Wert der unangepassten Qualität hinzugefügt
         double quality = 0.0;
@@ -263,34 +283,22 @@ public class UtilityController {
         for (WeighedRule rule : rules) {
             totalWeight += rule.getWeight();
         }
-        double percent = quality / totalWeight * 100.0;
+        return quality / totalWeight;
+    }
 
-        // Die Punkte mit der Länge normalisieren, um auf eine bessere Qualitätsanzeige zu kommen
-        int thresholdLength = 12;
-        if (length <= thresholdLength) {
-            percent *= (double) length / (double) thresholdLength;
-        }
+    private static int scaleToWholePercent(double ofOne) {
+        double ofHundred = ofOne * 100.0;
 
-        // Überprüfe auf Bereichsüberschreitungen und gebe den entsprechenden Wert zurück
         int wholePercent;
-        final double LOWEST_POINTS = 0.5;
-        final double HIGHEST_POINTS = 99.5;
-        if (percent <= LOWEST_POINTS) {
+        final double LOWEST_POINTS = 0.005;
+        final double HIGHEST_POINTS = 0.995;
+        if (ofOne <= LOWEST_POINTS) {
             wholePercent = 0;
-        } else if (percent >= HIGHEST_POINTS) {
+        } else if (ofOne >= HIGHEST_POINTS) {
             wholePercent = 100;
         } else {
-            wholePercent = (int) percent;
+            wholePercent = (int) ofHundred;
         }
-        if (length < MINIMUM_PASSWORD_LENGTH) {
-            return wholePercent / 2;
-        }
-
-        // Dieses Passwort ist mindestens so gut wie das mit weniger Länge. Stelle sicher, dass es nicht schlechter
-        // bewertet werden kann, weil zusätzliche Regelverstöße dazugekommen sind.
-        String textWithoutLastChar = text.substring(0, text.length() - 1);
-        int qualityWithoutLastChar = checkQuality(textWithoutLastChar, username);
-
-        return Math.max(qualityWithoutLastChar, wholePercent);
+        return wholePercent;
     }
 }
