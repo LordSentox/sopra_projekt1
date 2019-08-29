@@ -580,9 +580,10 @@ public class MainWindowViewController extends AbstractViewController implements 
             refreshEntry();
         }
     }
-    public void onCloseClicked(){
-    	//TODO Programm richtig beenden
-    	stage.close();
+
+    public void onCloseClicked() {
+        //TODO Programm richtig beenden
+        stage.close();
     }
 
     //endregion
@@ -699,8 +700,10 @@ public class MainWindowViewController extends AbstractViewController implements 
 
         if (currentCredentials.getCreatedAt() != null)
             labelCredentialsCreated.setText(currentCredentials.getCreatedAt().format(DateTimeFormatter.ISO_DATE));
+        else labelCredentialsCreated.setText("");
         if (currentCredentials.getLastChanged() != null)
             labelCredentialsLastChanged.setText(currentCredentials.getLastChanged().format(DateTimeFormatter.ISO_DATE));
+        else labelCredentialsCreated.setText("");
 
         changeState(START_EDITING_ENTRY, EDITED_ENTRY);
 
