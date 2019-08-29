@@ -124,7 +124,7 @@ public class MainWindowViewController extends AbstractViewController implements 
     private JFXToggleNode buttonCredentialsShowPassword;
 
     @FXML
-    private JFXButton buttonAddCredentials, buttonRemoveCredentials, buttonCredentialsAddSecurityQuestion, buttonCredentialsRemoveSecurityQuestion, buttonAddCategoryMain, buttonRemoveCategoryMain, buttonSearch, buttonCredentialsGeneratePassword, buttonCredentialsCopy, buttonEditCredentials, buttonSaveCredentials, buttonCredentialsAddCategories, buttonSettings, buttonEditCategoryMain;
+    private JFXButton buttonAddCredentials, buttonRemoveCredentials, buttonCredentialsAddSecurityQuestion, buttonCredentialsRemoveSecurityQuestion, buttonAddCategoryMain, buttonRemoveCategoryMain, buttonSearch, buttonCredentialsGeneratePassword, buttonCredentialsCopy, buttonEditCredentials, buttonSaveCredentials, buttonCredentialsAddCategories, buttonSettings, buttonEditCategoryMain, buttonCancelEditCredentials;
 
     @FXML
     private JFXComboBox<CategoryItem> comboBoxCategorySelectionMain;
@@ -368,6 +368,13 @@ public class MainWindowViewController extends AbstractViewController implements 
             throw new RuntimeException(e);
         }
 
+    }
+    public void onCancelEditCredentialsClicked(){
+    	this.currentCredentials = null;
+    	this.oldCredentials = null;
+    	refreshEntry();
+    	setState(VIEW_ENTRY);
+    	
     }
 
     public void onRemoveCategoryClicked() {
@@ -813,6 +820,7 @@ public class MainWindowViewController extends AbstractViewController implements 
                 disableSaveCredentialsButton(true);
                 disableEditCredentialsButton(true);
                 disableInteractEntry(true);
+                buttonCancelEditCredentials.setDisable(true);
                 break;
             case VIEW_ENTRY:
                 setDisable(true);
@@ -820,6 +828,7 @@ public class MainWindowViewController extends AbstractViewController implements 
                 disableSaveCredentialsButton(true);
                 disableEditCredentialsButton(false);
                 disableInteractEntry(false);
+                buttonCancelEditCredentials.setDisable(true);
                 break;
             case CREATING_NEW_ENTRY:
                 setDisable(false);
@@ -827,6 +836,7 @@ public class MainWindowViewController extends AbstractViewController implements 
                 disableSaveCredentialsButton(false);
                 disableEditCredentialsButton(true);
                 disableInteractEntry(false);
+                buttonCancelEditCredentials.setDisable(false);
                 break;
             case START_EDITING_ENTRY:
                 setDisable(false);
@@ -834,6 +844,7 @@ public class MainWindowViewController extends AbstractViewController implements 
                 disableSaveCredentialsButton(true);
                 disableEditCredentialsButton(true);
                 disableInteractEntry(false);
+                buttonCancelEditCredentials.setDisable(false);
                 break;
             case EDITED_ENTRY:
                 setDisable(false);
@@ -841,6 +852,7 @@ public class MainWindowViewController extends AbstractViewController implements 
                 disableSaveCredentialsButton(false);
                 disableEditCredentialsButton(true);
                 disableInteractEntry(false);
+                buttonCancelEditCredentials.setDisable(false);
                 break;
         }
     }
@@ -885,6 +897,7 @@ public class MainWindowViewController extends AbstractViewController implements 
         buttonRemoveCategoryMain.setDisable(!disabled);
         buttonEditCredentials.setDisable(!disabled);
         buttonSaveCredentials.setDisable(disabled);
+        
     }
 
     private void disableAllEntryControls(boolean disabled, double opacity) {
