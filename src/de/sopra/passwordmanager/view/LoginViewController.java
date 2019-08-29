@@ -1,5 +1,6 @@
 package de.sopra.passwordmanager.view;
 
+import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXPasswordField;
 import de.sopra.passwordmanager.controller.PasswordManagerController;
 import javafx.fxml.FXML;
@@ -14,6 +15,11 @@ public class LoginViewController extends AbstractViewController implements Login
     private JFXPasswordField passwordField;
     @FXML
     private Label labelError;
+
+    @FXML
+    private Label labelInsertMasterPassword;
+    @FXML
+    private JFXButton buttonSave, buttonCancel;
 
     private File sourceFile = PasswordManagerController.SAVE_FILE;
 
@@ -30,9 +36,11 @@ public class LoginViewController extends AbstractViewController implements Login
     public void onCancelLoginClicked() {
         stage.close();
     }
-    public void onCloseClicked(){
-    	stage.close();
+
+    public void onCloseClicked() {
+        stage.close();
     }
+
     @Override
     public void handleLoginResult(boolean result) {
         if (result) {

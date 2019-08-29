@@ -83,6 +83,7 @@ public abstract class AbstractViewController {
         controller.setStage(newStage);
         controller.setScene(newScene);
         controller.setLanguageProvider(languageProvider);
+        languageProvider.updateNodes(clazz, controller);
         controller.setStyleSheet(styleSheet);
         controller.setMainWindowViewController(mainWindowViewController);
         preOpen.accept(controller);
