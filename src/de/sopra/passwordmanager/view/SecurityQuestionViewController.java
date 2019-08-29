@@ -26,9 +26,13 @@ public class SecurityQuestionViewController extends AbstractViewController {
     }
 
     public void onSecurityQuestionCancelClicked() {
+		mainWindowViewController.masterPassordIsShit();
+		
         stage.close();
     }
     public void onCloseClicked(){
+		mainWindowViewController.masterPassordIsShit();
+		
     	stage.close();
     }
     
@@ -44,6 +48,8 @@ public class SecurityQuestionViewController extends AbstractViewController {
     
 
     public void onSaveClicked() {
+		mainWindowViewController.masterPassordIsShit();
+		
         CredentialsBuilder credBuilder = mainWindowViewController.getCredentialsBuilder();
         CredentialsController credController = mainWindowViewController.getPasswordManagerController().getCredentialsController();
         credController.addSecurityQuestion(textFieldQuestion.getText(), textFieldAnswer.getText(), credBuilder);

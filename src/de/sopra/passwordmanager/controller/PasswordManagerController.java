@@ -27,6 +27,7 @@ public class PasswordManagerController {
      */
     public static final int MINIMUM_SAFE_QUALITY = 50;
     public static final File SAVE_FILE = new File("data.xml");
+    public static final int SHITTY_LENGTH = 3;
 
     private PasswordManager passwordManager;
 

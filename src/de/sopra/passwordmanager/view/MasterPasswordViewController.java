@@ -65,6 +65,8 @@ public class MasterPasswordViewController extends AbstractViewController impleme
     }
 
     public void onSaveClicked() {
+		mainWindowViewController.masterPassordIsShit();
+		
         if (!passwordFieldSet.getText().isEmpty() && passwordFieldSet.getText().equals(passwordFieldCheck.getText())) {
 
             int newReminder = spinnerReminderDays.getValue();
@@ -93,6 +95,8 @@ public class MasterPasswordViewController extends AbstractViewController impleme
 
 
     public void onPasswordChanged() {
+		mainWindowViewController.masterPassordIsShit();
+		
         String password = passwordFieldSet.getText();
         if (password != null && !password.isEmpty()) {
             mainWindowViewController.getPasswordManagerController().getMasterPasswordController().checkQuality(password);
@@ -103,10 +107,14 @@ public class MasterPasswordViewController extends AbstractViewController impleme
     }
 
     public void onMasterPasswordCancelClicked() {
+		mainWindowViewController.masterPassordIsShit();
+		
         stage.close();
     }
 
     public void onCloseClicked() {
+		mainWindowViewController.masterPassordIsShit();
+		
         stage.close();
     }
 

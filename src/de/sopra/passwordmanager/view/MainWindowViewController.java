@@ -438,7 +438,7 @@ public class MainWindowViewController extends AbstractViewController implements 
     }
 
     public void onAddSecurityQuestionClicked() {
-
+		mainWindowViewController.masterPassordIsShit();
         //STATE - soll NICHT in UNSET und VIEW_ENTRY funktionieren
         if (state.match(UNSET, VIEW_ENTRY)) {
             showError("Du kannst aktuell keine Sicherheitsfragen hinzufügen");
@@ -458,6 +458,7 @@ public class MainWindowViewController extends AbstractViewController implements 
     }
 
     public void onRemoveSecurityQuestionClicked() {
+		mainWindowViewController.masterPassordIsShit();
         //STATE - soll NICHT in UNSET und VIEW_ENTRY funktionieren
         if (state.match(UNSET, VIEW_ENTRY)) {
             showError("Du kannst aktuell keine Sicherheitsfragen entfernen");
@@ -477,6 +478,7 @@ public class MainWindowViewController extends AbstractViewController implements 
     }
 
     public void onAddCredentialsClicked() {
+		mainWindowViewController.masterPassordIsShit();
         //STATE - soll nur in UNSET und VIEW_ENTRY funktionieren
         if (!state.match(UNSET, VIEW_ENTRY)) {
             showError("Du kannst aktuell keine neuen Einträge erstellen");
@@ -493,6 +495,7 @@ public class MainWindowViewController extends AbstractViewController implements 
     }
 
     public void onRemoveCredentialsClicked() {
+		mainWindowViewController.masterPassordIsShit();
         //STATE - soll nur in und VIEW_ENTRY funktionieren
         if (!state.match(VIEW_ENTRY)) {
             showError("Du kannst aktuell keine Einträge entfernen");
@@ -509,6 +512,7 @@ public class MainWindowViewController extends AbstractViewController implements 
     }
 
     public void onStartEditCredentialsClicked() {
+		mainWindowViewController.masterPassordIsShit();
         //STATE - soll nur in VIEW_ENTRY funktionieren
         if (!state.match(VIEW_ENTRY)) {
             showError("Du kannst aktuell keinen Eintrag bearbeiten.\nEs muss ein Eintrag ausgewählt sein, um ihn bearbeiten zu können.");
@@ -519,6 +523,7 @@ public class MainWindowViewController extends AbstractViewController implements 
     }
 
     public void onSaveCredentialsClicked() {
+		mainWindowViewController.masterPassordIsShit();
         //STATE - soll nur in CREATING_NEW_ENTRY und EDITED_ENTRY funktionieren
         if (!state.match(CREATING_NEW_ENTRY, EDITED_ENTRY)) {
             showError("Du kannst aktuell keine Einträge speichern");
@@ -550,10 +555,12 @@ public class MainWindowViewController extends AbstractViewController implements 
     }
 
     public void onChooseCategoryClicked() {
+		mainWindowViewController.masterPassordIsShit();
         refreshLists();
     }
 
     public void onChooseQuestionClicked() {
+		mainWindowViewController.masterPassordIsShit();
 
         //Wenn es geleert wurde, einfach die Ansicht zurücksetzen
         if (comboBoxCredentialsSecurityQuestion.getSelectionModel().getSelectedIndex() == -1) {
@@ -576,6 +583,7 @@ public class MainWindowViewController extends AbstractViewController implements 
     }
 
     public void onEntryChosen() {
+		mainWindowViewController.masterPassordIsShit();
         //STATE - soll unabhängig funktionieren, aber zur state relative Entscheidungen treffen
 
         CredentialsItem selectedEntry = listViewCredentialsList.getSelectionModel().getSelectedItem();
@@ -612,6 +620,7 @@ public class MainWindowViewController extends AbstractViewController implements 
     }
 
     public void onCloseClicked() {
+		mainWindowViewController.masterPassordIsShit();
         //TODO Programm richtig beenden
         stage.close();
     }
@@ -622,6 +631,7 @@ public class MainWindowViewController extends AbstractViewController implements 
 
     @Override
     public void refreshLists() {
+		mainWindowViewController.masterPassordIsShit();
 
         //geänderte Daten aus dem Model beziehen
         Map<Path, Category> cats = passwordManagerController.getPasswordManager().getRootCategory().createPathMap(new Path());
@@ -921,6 +931,22 @@ public class MainWindowViewController extends AbstractViewController implements 
         } else {
             currentCredentials.withChangeReminderDays(null);
         }
+    }
+    
+    
+    //vollkommen nutzlose aber lustige methode
+
+    public void masterPassordIsShit(){
+    	if(getPasswordManagerController().getPasswordManager().getMasterPassword().length() < PasswordManagerController.SHITTY_LENGTH){
+    		SimpleConfirmation simpleConfirmation = new SimpleConfirmation("Das Masterpasswort ist scheiße","","Das MasterPasswort ist Mist bitte ändere es") {
+			
+				@Override
+				public void onSuccess() {
+					// do nothing
+				}
+			};
+			simpleConfirmation.open();
+    	}
     }
 
 }

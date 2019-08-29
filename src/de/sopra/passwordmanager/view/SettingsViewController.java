@@ -9,6 +9,8 @@ import java.io.File;
 public class SettingsViewController extends AbstractViewController {
 
     public void onChangeMasterpasswordClicked() {
+    		mainWindowViewController.masterPassordIsShit();
+
         try {
             /* MasterpasswortSetzenFenster */
      
@@ -20,6 +22,8 @@ public class SettingsViewController extends AbstractViewController {
     }
 
     public void onImportDataClicked() {
+		mainWindowViewController.masterPassordIsShit();
+		
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Öffne Datei");
         fileChooser.getExtensionFilters().addAll(new ExtensionFilter("XML", "*.xml"));
@@ -38,6 +42,8 @@ public class SettingsViewController extends AbstractViewController {
     }
 
     public void onExportDataClicked() {
+		mainWindowViewController.masterPassordIsShit();
+		
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Speichere Datei");
         fileChooser.getExtensionFilters().addAll(new ExtensionFilter("XML", "*.xml"));
@@ -47,6 +53,8 @@ public class SettingsViewController extends AbstractViewController {
     }
 
     public void onResetDataClicked() {
+		mainWindowViewController.masterPassordIsShit();
+		
         SimpleConfirmation removeConfirmation = new SimpleConfirmation("Passwortmanager zurücksetzen", null, "Passwortmanager wirklich zurücksetzen?") {
             @Override
             public void onSuccess() {

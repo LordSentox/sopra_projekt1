@@ -32,13 +32,16 @@ public class LoginViewController extends AbstractViewController implements Login
     }
 
     public void onLoginClicked() {
+		mainWindowViewController.masterPassordIsShit();
         mainWindowViewController.getPasswordManagerController().requestLogin(passwordField.getText(), this.sourceFile);
     }
 
     public void onCancelLoginClicked() {
+		mainWindowViewController.masterPassordIsShit();
         stage.close();
     }
     public void onCloseClicked(){
+		mainWindowViewController.masterPassordIsShit();
     	stage.close();
     }
     @Override
@@ -46,7 +49,6 @@ public class LoginViewController extends AbstractViewController implements Login
         if (result) {
             if(mainWindowViewController.getPasswordManagerController().getMasterPasswordController().hasToBeChanged() && sourceFile.equals(PasswordManagerController.SAVE_FILE) ){
                 
-            	System.out.println("lol");
                 SimpleConfirmation confirmation = new SimpleConfirmation("Information",
                         "",
                         "Das Masterpassswort ist abgelaufen. Wollen Sie es jetzt ändern?") {
