@@ -12,7 +12,7 @@ public class SettingsViewController extends AbstractViewController {
         try {
             /* MasterpasswortSetzenFenster */
      
-            openModal(stage, "../view/Masterpasswort-setzen.fxml", MasterPasswordViewController.class, control -> {control.init(); control.openedBySettings();});
+            openModal(stage, "/Masterpasswort-setzen.fxml", MasterPasswordViewController.class, control -> {control.init(); control.openedBySettings();});
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -26,7 +26,7 @@ public class SettingsViewController extends AbstractViewController {
         File fileToOpen = fileChooser.showOpenDialog(stage);
         if(fileToOpen != null) {
 	        try {
-	            openModal(stage,"../view/Einloggen.fxml", LoginViewController.class, controller ->
+	            openModal(stage,"/Einloggen.fxml", LoginViewController.class, controller ->
                 {
                     controller.setSourceFile(fileToOpen);
                     controller.setBackTo(stage);

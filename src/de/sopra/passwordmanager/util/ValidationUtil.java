@@ -15,4 +15,15 @@ public class ValidationUtil {
         }
     }
 
+    public static void notEmpty(String string, String errorMessage) {
+        if (string.isEmpty()) {
+            throw new IllegalArgumentException(errorMessage);
+        }
+    }
+
+    public static void notEmptyOrNull(String string, String stringName) {
+        notNull(string, stringName + " is null");
+        notEmpty(string, stringName + "is empty");
+    }
+
 }
