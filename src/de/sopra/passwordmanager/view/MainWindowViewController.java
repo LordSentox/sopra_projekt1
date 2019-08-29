@@ -192,7 +192,7 @@ public class MainWindowViewController extends AbstractViewController implements 
         textFieldCredentialsName.textProperty().addListener((obs, oldText, newText) -> {
             if (newText == null) return;
             if (oldText == null) oldText = "";
-            if (Math.abs(oldText.length() - newText.length()) <= 1) {
+            if (!oldText.equals(newText)) {
                 currentCredentials.withName(newText);
                 changeState(START_EDITING_ENTRY, EDITED_ENTRY);
             }
@@ -200,7 +200,7 @@ public class MainWindowViewController extends AbstractViewController implements 
         textFieldCredentialsUserName.textProperty().addListener((obs, oldText, newText) -> {
             if (newText == null) return;
             if (oldText == null) oldText = "";
-            if (Math.abs(oldText.length() - newText.length()) <= 1) {
+            if (!oldText.equals(newText)) {
                 currentCredentials.withUserName(newText);
                 changeState(START_EDITING_ENTRY, EDITED_ENTRY);
                 passwordManagerController.checkQuality(currentCredentials);
@@ -209,7 +209,7 @@ public class MainWindowViewController extends AbstractViewController implements 
         textFieldCredentialsWebsite.textProperty().addListener((obs, oldText, newText) -> {
             if (newText == null) return;
             if (oldText == null) oldText = "";
-            if (Math.abs(oldText.length() - newText.length()) <= 1) {
+            if (!oldText.equals(newText)) {
                 currentCredentials.withWebsite(newText);
                 changeState(START_EDITING_ENTRY, EDITED_ENTRY);
             }
@@ -217,7 +217,7 @@ public class MainWindowViewController extends AbstractViewController implements 
         textFieldCredentialsPassword.textProperty().addListener((obs, oldText, newText) -> {
             if (newText == null) return;
             if (oldText == null) oldText = "";
-            if (Math.abs(oldText.length() - newText.length()) <= 1) {
+            if (!oldText.equals(newText)) {
                 currentCredentials.withPassword(newText);
                 changeState(START_EDITING_ENTRY, EDITED_ENTRY);
                 passwordManagerController.checkQuality(currentCredentials);
@@ -226,7 +226,7 @@ public class MainWindowViewController extends AbstractViewController implements 
         textFieldCredentialsNotes.textProperty().addListener((obs, oldText, newText) -> {
             if (newText == null) return;
             if (oldText == null) oldText = "";
-            if (Math.abs(oldText.length() - newText.length()) <= 1) {
+            if (!oldText.equals(newText)) {
                 currentCredentials.withNotes(newText);
                 changeState(START_EDITING_ENTRY, EDITED_ENTRY);
             }
