@@ -185,7 +185,12 @@
 
 .spinner .increment-arrow-button,
 .spinner .decrement-arrow-button {
-	-fx-body-color: -primary;
+	-fx-background-color: transparent;
+}
+
+.spinner .increment-arrow-button .increment-arrow,
+.spinner .decrement-arrow-button .decrement-arrow {
+	-fx-background-color: -dark-text;
 }
 
 
@@ -199,4 +204,8 @@
 
 .jfx-list-view .list-cell.reminder-on-list-cell  {
 	-fx-text-fill: -error;
+}
+
+.arrow {
+	-fx-background-color: -dark-text;
 }

@@ -3,7 +3,7 @@ package de.sopra.passwordmanager.controller;
 import de.sopra.passwordmanager.model.Category;
 import de.sopra.passwordmanager.model.Credentials;
 import de.sopra.passwordmanager.util.Path;
-import de.sopra.passwordmanager.util.Validate;
+import de.sopra.passwordmanager.util.ValidationUtil;
 
 import java.util.*;
 
@@ -70,7 +70,7 @@ public class CategoryController {
      *                             Dann wird die Referenz auf die zu Löschende Kategorie entfernt.
      */
     public void removeCategory(Path categoryPath, boolean removeCredentialsToo) {
-        Validate.notNull(categoryPath, "CategoryController: path to category is null");
+        ValidationUtil.notNull(categoryPath, "CategoryController: path to category is null");
         if (removeCredentialsToo) {
             Category categoryParent = getCategory(categoryPath.getParent());
             Category category = getCategory(categoryPath);
@@ -96,8 +96,8 @@ public class CategoryController {
      * @throws NullPointerException wenn einer der Pfade null ist, wird die Exception geworfen
      */
     public void moveCategory(Path oldPath, Path newPath) throws IllegalArgumentException {
-        Validate.notNull(oldPath, "CategoryController: oldpath to category is null");
-        Validate.notNull(oldPath, "CategoryController: newPath to category is null");
+        ValidationUtil.notNull(oldPath, "CategoryController: oldpath to category is null");
+        ValidationUtil.notNull(oldPath, "CategoryController: newPath to category is null");
         Category oldCategory = getCategory(oldPath);
         Category newCategory = getCategory(newPath);
         Category parentOfNew = getCategory(newPath.getParent());

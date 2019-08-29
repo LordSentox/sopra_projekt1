@@ -90,9 +90,6 @@ public class MasterPasswordViewController extends AbstractViewController impleme
     public void onPasswordChanged() {
         String password = passwordFieldSet.getText();
         if (password != null || !password.isEmpty()) {
-            //TODO change credentials to String in check Quality
-            //XXX entfernen?
-            CredentialsBuilder credBuilder = new CredentialsBuilder().withPassword(password);
             mainWindowViewController.getPasswordManagerController().getMasterPasswordController().checkQuality(password);
             buttonSave.setDisable(false);
         } else {

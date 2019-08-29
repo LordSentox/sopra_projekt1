@@ -1,5 +1,6 @@
 package de.sopra.passwordmanager.view;
 
+import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextField;
 import de.sopra.passwordmanager.model.Category;
@@ -11,6 +12,10 @@ import java.util.Map;
 public class CategoryEditViewController extends AbstractViewController {
     @FXML
     private JFXTextField textFieldCategoryName;
+
+    @FXML
+    private JFXButton buttonSave;
+
     @FXML
     private JFXComboBox<CategoryItem> comboBoxCategorySelection;
 
@@ -24,10 +29,11 @@ public class CategoryEditViewController extends AbstractViewController {
         //String categoryPath = comboBoxCategorySelection.getSelectionModel().getSelectedItem();
         //Category superCategory = mainWindowViewController.getPasswordManagerController().getPasswordManager().getRootCategory().getCategoryByPath(new Path(categoryPath));
         CategoryItem superCategory = comboBoxCategorySelection.getSelectionModel().getSelectedItem();
+        String text = textFieldCategoryName.getText().trim();
         if (current == null) {
-            mainWindowViewController.getPasswordManagerController().getCategoryController().createCategory(superCategory.getCategory(), textFieldCategoryName.getText());
+            mainWindowViewController.getPasswordManagerController().getCategoryController().createCategory(superCategory.getCategory(), text);
         } else {
-            mainWindowViewController.getPasswordManagerController().getCategoryController().moveCategory(current, superCategory.getPath().createChildPath(textFieldCategoryName.getText()));
+            mainWindowViewController.getPasswordManagerController().getCategoryController().moveCategory(current, superCategory.getPath().createChildPath(text));
         }
         stage.close();
     }
@@ -35,10 +41,12 @@ public class CategoryEditViewController extends AbstractViewController {
     public void onCancelCategoryEditClicked() {
         stage.close();
     }
+
     public void onCloseClicked() {
-    	stage.close();
+        stage.close();
     }
-    public void initComboBox() {
+
+    public void init() {
         Category root = mainWindowViewController.getPasswordManagerController().getPasswordManager().getRootCategory();
         Map<Path, Category> cats = root.createPathMap(new Path());
 
@@ -54,5 +62,15 @@ public class CategoryEditViewController extends AbstractViewController {
         } else {
             comboBoxCategorySelection.getSelectionModel().select(comboBoxCategorySelection.getItems().stream().filter(item -> item.getCategory().equals(root)).findFirst().get());
         }
+
+        if (current == null)
+            buttonSave.setDisable(true);
+
+        textFieldCategoryName.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue == null || newValue.trim().isEmpty())
+                buttonSave.setDisable(true);
+            else buttonSave.setDisable(false);
+        });
+
     }
 }

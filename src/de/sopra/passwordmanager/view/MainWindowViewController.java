@@ -330,7 +330,7 @@ public class MainWindowViewController extends AbstractViewController implements 
         categoryEditViewController = openModal("../view/Kategorie_anlegen-aendern.fxml",
                 CategoryEditViewController.class, preOpen ->
                 {
-                    preOpen.initComboBox();
+                    preOpen.init();
                     preOpen.setCurrentlyEdited(path);
                 });
     }

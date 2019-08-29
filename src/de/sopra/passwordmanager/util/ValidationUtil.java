@@ -7,7 +7,7 @@ package de.sopra.passwordmanager.util;
  * @version 26.08.2019
  * @since 26.08.2019
  */
-public class Validate {
+public class ValidationUtil {
 
     public static void notNull(Object object, String errorMessage) {
         if (object == null) {

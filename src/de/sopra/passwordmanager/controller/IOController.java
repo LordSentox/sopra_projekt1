@@ -5,7 +5,7 @@ import de.sopra.passwordmanager.model.Credentials;
 import de.sopra.passwordmanager.model.EncryptedString;
 import de.sopra.passwordmanager.model.SecurityQuestion;
 import de.sopra.passwordmanager.util.CredentialsBuilder;
-import de.sopra.passwordmanager.util.Validate;
+import de.sopra.passwordmanager.util.ValidationUtil;
 import org.w3c.dom.*;
 
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -91,12 +91,12 @@ public class IOController {
 
         Node treeNode = childNodes.stream().filter(node -> node.getNodeName().equals("tree")).findFirst().get();
         Node dataNode = childNodes.stream().filter(node -> node.getNodeName().equals("data")).findFirst().get();
-        Validate.notNull(treeNode, "TreeNode does not exist");
-        Validate.notNull(dataNode, "DataNode does not exist");
+        ValidationUtil.notNull(treeNode, "TreeNode does not exist");
+        ValidationUtil.notNull(dataNode, "DataNode does not exist");
 
         // Die entschlüsselten Daten auslesen.
         List<CredentialsBuilder> dataList = extractCredentials(dataNode, decryptionPassword);
-        Validate.notNull(dataList, "The credentials could not be read. Incorrect format");
+        ValidationUtil.notNull(dataList, "The credentials could not be read. Incorrect format");
 
         // Setzen des Masterpasswortes und Verschlüsselung der Daten
         // TODO: Sehr unschön, da man es bei dieser Methode nicht erwarten würde, wenn man setMasterPassword auf false setzt
