@@ -1,0 +1,44 @@
+* {
+    -primary-raw: #ffffff;
+    -primary: -primary-raw;
+    -light-text: #ffffff;
+    -dark-text: #000000;
+    -error: #aaaaaa;
+    -background: #202020;
+    -background-lighter: #404040;
+    -background-darker: #101010;
+    -analogous: #ffffff;
+}
+
+.background {
+    -fx-background-image: url('../textures/minecraft/spruce.png');
+    -fx-background-size: 64px;
+    -fx-background-repeat: repeat;
+    -fx-background-position: center;
+    -fx-background-radius: 0px;
+}
+
+.button {
+    -fx-background-image: url('../textures/minecraft/stone.png');
+    -fx-background-size: 64px;
+    -fx-background-repeat: repeat;
+    -fx-background-position: center;
+    -fx-background-radius: 0px;
+}
+
+.close-button {
+    -fx-background-image: url('../textures/minecraft/redstone_block.png');
+    -fx-background-size: 16px;
+    -fx-background-repeat: repeat;
+    -fx-background-position: center;
+    -fx-background-radius: 0px;
+}
+
+.progress-bar .bar {
+    -fx-background-image: url('../textures/minecraft/lava.png');
+    -fx-background-size: 800px 40px;
+    -fx-background-repeat: repeat;
+    -fx-background-position: center;
+    -fx-background-radius: 0px;
+    -fx-border-color: transparent;
+}

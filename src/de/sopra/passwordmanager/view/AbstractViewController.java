@@ -60,7 +60,7 @@ public abstract class AbstractViewController {
         Stage newStage = new Stage();
         Scene newScene = new Scene(categoryEditPane);
         newStage.initOwner(parent);
-        newStage.initStyle(StageStyle.UNDECORATED);
+        newStage.initStyle(StageStyle.TRANSPARENT);
         newStage.initModality(Modality.WINDOW_MODAL);
         newStage.setResizable(false);
         newScene.getStylesheets().add(getClass().getResource("/stylesheets/application.css").toExternalForm());

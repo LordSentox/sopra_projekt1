@@ -8,7 +8,7 @@
       <JFXButton fx:id="buttonImport" layoutX="27.0" layoutY="62.0" mnemonicParsing="false" prefWidth="171.0" text="Datensatz importieren" onAction="#onImportDataClicked"/>
       <JFXButton fx:id="buttonExport" layoutX="27.0" layoutY="98.0" mnemonicParsing="false" prefWidth="171.0" text="Datensatz exportieren" onAction="#onExportDataClicked"/>
   	  <JFXButton fx:id="buttonResetAll" layoutX="27.0" layoutY="134.0" mnemonicParsing="false" prefWidth="171.0" text="Zurücksetzen" onAction="#onResetDataClicked"/>
-      <JFXButton fx:id="buttonClose" layoutX="72.0" layoutY="170.0" mnemonicParsing="false" text="Schließen" onAction="#onCancelSettingsClicked"/>
       <JFXButton fx:id="buttonClose2" styleClass="close-button" layoutX="202.0" layoutY="10.0" prefHeight="10" prefWidth="10" text="x" onAction="#onCloseClicked"/>
+      <JFXComboBox fx:id="comboBoxSelectTheme" layoutX="27.0" layoutY="170.0" prefWidth="171.0"/>
    </children>
 </AnchorPane>

@@ -25,6 +25,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.*;
 import javafx.scene.control.TextFormatter.Change;
+import javafx.scene.media.MediaPlayer;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
 import javafx.util.converter.IntegerStringConverter;
@@ -66,6 +67,9 @@ public class MainWindowViewController extends AbstractViewController implements 
             return c;
         }
     };
+
+    public static MediaPlayer player = null;
+    public static String currentTheme = null;
 
     private final TextFormatter<Integer> spinnerTextFormatter =
             new TextFormatter<Integer>(new IntegerStringConverter(), 1, SPINNER_FILTER);
@@ -222,7 +226,6 @@ public class MainWindowViewController extends AbstractViewController implements 
                 currentCredentials.withPassword(newText);
                 changeState(START_EDITING_ENTRY, EDITED_ENTRY);
                 passwordManagerController.checkQuality(currentCredentials);
-                
             }
         });
         textFieldCredentialsNotes.textProperty().addListener((obs, oldText, newText) -> {
@@ -325,8 +328,7 @@ public class MainWindowViewController extends AbstractViewController implements 
         }
         try {
             /* Einstellungen öffnen */
-            openModal("/Einstellungen.fxml", SettingsViewController.class, identity -> {
-            });
+            openModal("/Einstellungen.fxml", SettingsViewController.class, SettingsViewController::init);
             mainWindowViewController.masterPasswordIsShit();
         } catch (Exception e) {
             showError(e);
@@ -334,7 +336,6 @@ public class MainWindowViewController extends AbstractViewController implements 
         }
     }
 
-    
     public void onSearchClicked() {
         mainWindowViewController.masterPassordIsShit();
         //STATE - soll unabhängig funktionieren
