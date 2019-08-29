@@ -13,5 +13,6 @@
       <JFXButton fx:id="buttonCancel" layoutX="484.0" layoutY="102.0" mnemonicParsing="false" text="Abbrechen" onAction="#onSecurityQuestionCancelClicked"/>
       <JFXTextField fx:id="textFieldQuestion" layoutX="231.0" layoutY="28.0" prefHeight="26.0" prefWidth="342.0" />
       <JFXTextField fx:id="textFieldAnswer" layoutX="231.0" layoutY="62.0" prefHeight="26.0" prefWidth="342.0" />
+      <JFXButton fx:id="buttonClose" styleClass="close-button" layoutX="575.0" layoutY="10.0" prefHeight="10" prefWidth="10" text="x" onAction="#onCloseClicked"/>
    </children>
 </AnchorPane>

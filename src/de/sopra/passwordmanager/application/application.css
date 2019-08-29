@@ -29,6 +29,23 @@
 .copy-button {
 	-fx-background-color: transparent;
 }
+.close-button {
+	-fx-background-color: -error;
+	-fx-background-radius: 90;
+	-fx-min-height: 15px;
+	-fx-max-height: 15px;
+	-fx-min-width: 15px;
+	-fx-max-width: 15px;
+}
+.button-settings {
+	-fx-background-color: -primary;
+	-fx-font-size: 13;
+	-fx-background-radius: 90;
+	-fx-min-height: 30px;
+	-fx-max-height: 30px;
+	-fx-min-width: 30px;
+	-fx-max-width: 30px;
+}
 .show-button .label{
 	-fx-text-fill: -dark-text;
 }

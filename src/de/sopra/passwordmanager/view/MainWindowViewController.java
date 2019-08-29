@@ -31,6 +31,7 @@ import javafx.util.converter.IntegerStringConverter;
 import java.io.IOException;
 import java.text.NumberFormat;
 import java.text.ParsePosition;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
@@ -189,14 +190,16 @@ public class MainWindowViewController extends AbstractViewController implements 
         textFieldCredentialsPassword.textProperty().bindBidirectional(passwordFieldCredentialsPassword.textProperty());
 
         textFieldCredentialsName.textProperty().addListener((obs, oldText, newText) -> {
-            if (oldText == null || newText == null) return;
+            if (newText == null) return;
+            if (oldText == null) oldText = "";
             if (Math.abs(oldText.length() - newText.length()) <= 1) {
                 currentCredentials.withName(newText);
                 changeState(START_EDITING_ENTRY, EDITED_ENTRY);
             }
         });
         textFieldCredentialsUserName.textProperty().addListener((obs, oldText, newText) -> {
-            if (oldText == null || newText == null) return;
+            if (newText == null) return;
+            if (oldText == null) oldText = "";
             if (Math.abs(oldText.length() - newText.length()) <= 1) {
                 currentCredentials.withUserName(newText);
                 changeState(START_EDITING_ENTRY, EDITED_ENTRY);
@@ -204,14 +207,16 @@ public class MainWindowViewController extends AbstractViewController implements 
             }
         });
         textFieldCredentialsWebsite.textProperty().addListener((obs, oldText, newText) -> {
-            if (oldText == null || newText == null) return;
+            if (newText == null) return;
+            if (oldText == null) oldText = "";
             if (Math.abs(oldText.length() - newText.length()) <= 1) {
                 currentCredentials.withWebsite(newText);
                 changeState(START_EDITING_ENTRY, EDITED_ENTRY);
             }
         });
         textFieldCredentialsPassword.textProperty().addListener((obs, oldText, newText) -> {
-            if (oldText == null || newText == null) return;
+            if (newText == null) return;
+            if (oldText == null) oldText = "";
             if (Math.abs(oldText.length() - newText.length()) <= 1) {
                 currentCredentials.withPassword(newText);
                 changeState(START_EDITING_ENTRY, EDITED_ENTRY);
@@ -219,7 +224,8 @@ public class MainWindowViewController extends AbstractViewController implements 
             }
         });
         textFieldCredentialsNotes.textProperty().addListener((obs, oldText, newText) -> {
-            if (oldText == null || newText == null) return;
+            if (newText == null) return;
+            if (oldText == null) oldText = "";
             if (Math.abs(oldText.length() - newText.length()) <= 1) {
                 currentCredentials.withNotes(newText);
                 changeState(START_EDITING_ENTRY, EDITED_ENTRY);
@@ -307,16 +313,20 @@ public class MainWindowViewController extends AbstractViewController implements 
         credentialsController.filterCredentials(new PatternSyntax(pattern));
     }
 
-    private void openCategoryEditWindow() throws IOException {
+    private void openCategoryEditWindow(Path path) throws IOException {
         categoryEditViewController = openModal("../view/Kategorie_anlegen-aendern.fxml",
-                CategoryEditViewController.class, CategoryEditViewController::initComboBox);
+                CategoryEditViewController.class, preOpen ->
+                {
+                    preOpen.initComboBox();
+                    preOpen.setCurrentlyEdited(path);
+                });
     }
 
     public void onAddCategoryClicked() {
         //STATE - soll unabhängig funktionieren
         try {
             /* Kategorie hinzufügen - leeres Fenster öffnen */
-            openCategoryEditWindow();
+            openCategoryEditWindow(null);
         } catch (Exception e) {
             showError(e);
             throw new RuntimeException(e);
@@ -336,7 +346,7 @@ public class MainWindowViewController extends AbstractViewController implements 
                 showError("Das Ändern der Hauptkategorie ist nicht erlaubt.");
                 return;
             }
-            openCategoryEditWindow();
+            openCategoryEditWindow(path);
             //aktuelle Auswahl zur Bearbeitung angeben
             categoryEditViewController.setCurrentlyEdited(path);
         } catch (Exception e) {
@@ -580,6 +590,11 @@ public class MainWindowViewController extends AbstractViewController implements 
         }
     }
 
+    public void onCloseClicked() {
+        //TODO Programm richtig beenden
+        stage.close();
+    }
+
     //endregion
 
     //region refreshes
@@ -624,6 +639,8 @@ public class MainWindowViewController extends AbstractViewController implements 
         }
 
         refreshEntryListWhenCategoryChosen();
+
+        listViewCredentialsList.getFocusModel().focus(-1);
 
     }
 
@@ -689,6 +706,16 @@ public class MainWindowViewController extends AbstractViewController implements 
             choiceBoxCredentialsCategories.setSelected(item, selected);
         }
 
+        if (currentCredentials.getPassword() != null)
+            passwordManagerController.checkQuality(currentCredentials);
+
+        if (currentCredentials.getCreatedAt() != null)
+            labelCredentialsCreated.setText(currentCredentials.getCreatedAt().format(DateTimeFormatter.ISO_DATE));
+        else labelCredentialsCreated.setText("");
+        if (currentCredentials.getLastChanged() != null)
+            labelCredentialsLastChanged.setText(currentCredentials.getLastChanged().format(DateTimeFormatter.ISO_DATE));
+        else labelCredentialsCreated.setText("");
+
         changeState(START_EDITING_ENTRY, EDITED_ENTRY);
 
     }
@@ -696,16 +723,16 @@ public class MainWindowViewController extends AbstractViewController implements 
     @Override
     public void refreshEntryPasswordQuality(int quality) {
         //XXX change quality to double between 0 and 1
-    	double progress = quality / 100.0;  
-    	progressBarCredentialsQuality.setProgress(progress); 
+        double progress = quality / 100.0;
+        progressBarCredentialsQuality.setProgress(progress);
 
-    	if (progress<0.3) {
-    		progressBarCredentialsQuality.setStyle("-fx-accent: red;");
-    	} else if (progress>=0.3 && progress <= 0.6){
-    		progressBarCredentialsQuality.setStyle("-fx-accent: yellow;");
-    	} else {
-    		progressBarCredentialsQuality.setStyle("-fx-accent: green;");
-    	}
+        if (progress < 0.3) {
+            progressBarCredentialsQuality.setStyle("-fx-accent: red;");
+        } else if (progress >= 0.3 && progress <= 0.6) {
+            progressBarCredentialsQuality.setStyle("-fx-accent: yellow;");
+        } else {
+            progressBarCredentialsQuality.setStyle("-fx-accent: green;");
+        }
     }
 
     //endregion

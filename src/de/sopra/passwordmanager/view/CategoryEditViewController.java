@@ -35,7 +35,9 @@ public class CategoryEditViewController extends AbstractViewController {
     public void onCancelCategoryEditClicked() {
         stage.close();
     }
-
+    public void onCloseClicked() {
+    	stage.close();
+    }
     public void initComboBox() {
         Category root = mainWindowViewController.getPasswordManagerController().getPasswordManager().getRootCategory();
         Map<Path, Category> cats = root.createPathMap(new Path());
