@@ -6,6 +6,7 @@ import com.jfoenix.controls.JFXTextField;
 import de.sopra.passwordmanager.model.Category;
 import de.sopra.passwordmanager.util.Path;
 import javafx.fxml.FXML;
+import javafx.scene.control.Label;
 
 import java.util.Map;
 
@@ -14,7 +15,10 @@ public class CategoryEditViewController extends AbstractViewController {
     private JFXTextField textFieldCategoryName;
 
     @FXML
-    private JFXButton buttonSave;
+    private JFXButton buttonSave,buttonCancel;
+
+    @FXML
+    private Label labelChooseCategory, labelCategoryName;
 
     @FXML
     private JFXComboBox<CategoryItem> comboBoxCategorySelection;

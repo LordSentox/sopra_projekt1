@@ -12,7 +12,10 @@ public class SecurityQuestionViewController extends AbstractViewController {
     @FXML
     private JFXTextField textFieldQuestion, textFieldAnswer;
     @FXML
-    private JFXButton buttonSave;
+    private JFXButton buttonSave, buttonCancel;
+    @FXML
+    private Label labelQuestion, labelAnswer;
+    
     
     public void init(){
     	textFieldQuestion.textProperty().addListener((obs, oldText, newText) -> {

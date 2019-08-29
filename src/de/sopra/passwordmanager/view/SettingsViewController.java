@@ -1,5 +1,6 @@
 package de.sopra.passwordmanager.view;
 
+import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import de.sopra.passwordmanager.view.dialog.SimpleConfirmation;
 import javafx.collections.FXCollections;
@@ -83,6 +84,9 @@ public class SettingsViewController extends AbstractViewController {
 
     @FXML
     private JFXComboBox<ThemeItem> comboBoxSelectTheme;
+
+    @FXML
+    private JFXButton buttonSetMP, buttonImport, buttonExport, buttonResetAll;
 
     public void onChangeMasterpasswordClicked() {
     		mainWindowViewController.masterPassordIsShit();
