@@ -151,9 +151,16 @@ public class MainWindowViewController extends AbstractViewController implements 
     @FXML
     private Label labelCredentialsSecurityAnswer, labelCredentialsLastChanged, labelCredentialsCreated;
 
+    @FXML
+    private Label labelReminderDays, labelCategories, labelSecurityQuestion, labelTextLastChanged, labelTextCreatedAt,
+            labelEntryName, labelUserName, labelPassword, labelNotes, buttonLabelShowPassword, labelWebsite;
+
     //endregion
 
     public void init() {
+
+        languageProvider.updateNodes(MainWindowViewController.class, this);
+
         currentCredentials = new CredentialsBuilder();
         updateView();
 
