@@ -31,6 +31,7 @@ import javafx.util.converter.IntegerStringConverter;
 import java.io.IOException;
 import java.text.NumberFormat;
 import java.text.ParsePosition;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
@@ -697,9 +698,9 @@ public class MainWindowViewController extends AbstractViewController implements 
             passwordManagerController.checkQuality(currentCredentials);
 
         if (currentCredentials.getCreatedAt() != null)
-            labelCredentialsCreated.setText(currentCredentials.getCreatedAt().toString());
+            labelCredentialsCreated.setText(currentCredentials.getCreatedAt().format(DateTimeFormatter.ISO_DATE));
         if (currentCredentials.getLastChanged() != null)
-            labelCredentialsLastChanged.setText(currentCredentials.getLastChanged().toString());
+            labelCredentialsLastChanged.setText(currentCredentials.getLastChanged().format(DateTimeFormatter.ISO_DATE));
 
         changeState(START_EDITING_ENTRY, EDITED_ENTRY);
 
