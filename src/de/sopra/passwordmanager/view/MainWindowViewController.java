@@ -30,6 +30,7 @@ import javafx.util.converter.IntegerStringConverter;
 
 import java.text.NumberFormat;
 import java.text.ParsePosition;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.function.UnaryOperator;
@@ -530,6 +531,8 @@ public class MainWindowViewController extends AbstractViewController implements 
         spinnerCredentialsReminderDays.setDisable(true);
 
         CredentialsController credController = passwordManagerController.getCredentialsController();
+        
+        currentCredentials.withLastChanged(LocalDateTime.now());
 
         updateCredentialsBuilderCopy();
 
