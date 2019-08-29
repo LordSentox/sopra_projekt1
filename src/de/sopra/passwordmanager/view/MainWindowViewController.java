@@ -25,6 +25,7 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.*;
 import javafx.scene.control.TextFormatter.Change;
 import javafx.stage.StageStyle;
+import javafx.util.Callback;
 import javafx.util.Duration;
 import javafx.util.converter.IntegerStringConverter;
 
@@ -251,6 +252,19 @@ public class MainWindowViewController extends AbstractViewController implements 
         orderStrategy = new AlphabeticOrderStrategy().nextOrder(new ReminderSecondaryStrategy()); //es wird nicht sortiert
 
         textFieldCredentialsNotes.setWrapText(true);
+
+        Callback<ListView<CredentialsItem>, ListCell<CredentialsItem>> factory = listViewCredentialsList.getCellFactory();
+
+        //visual color for active reminders
+        listViewCredentialsList.setCellFactory(new Callback<ListView<CredentialsItem>, ListCell<CredentialsItem>>() {
+            @Override
+            public ListCell<CredentialsItem> call(ListView<CredentialsItem> param) {
+                ListCell<CredentialsItem> cell = factory.call(param);
+                if (cell != null && cell.getItem() != null && cell.getItem().hasToBeChanged())
+                    cell.getStyleClass().add("reminder-on-list-cell");
+                return cell;
+            }
+        });
 
     }
 
@@ -662,7 +676,9 @@ public class MainWindowViewController extends AbstractViewController implements 
         Collection<Credentials> credentials = chosenCat2 == null ?
                 passwordManagerController.getPasswordManager().getRootCategory().getAllCredentials() : chosenCat2.getCategory().getAllCredentials();
         if (!credentials.isEmpty()) {
+            //select
             List<CredentialsItem> selection = selectionStrategy.select(new LinkedList<>(credentials));
+            //order
             List<CredentialsItem> ordered = orderStrategy.order(selection);
             ObservableList<CredentialsItem> credsToShow = new ObservableListWrapper<>(ordered);
             listViewCredentialsList.setItems(credsToShow);
