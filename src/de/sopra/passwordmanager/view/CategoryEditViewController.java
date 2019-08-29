@@ -21,6 +21,12 @@ public class CategoryEditViewController extends AbstractViewController {
 
     private Path current;
 
+    private boolean shouldAdd;
+
+    public void setShouldAdd(boolean shouldAdd) {
+        this.shouldAdd = shouldAdd;
+    }
+
     public void setCurrentlyEdited(Path current) {
         this.current = current;
     }
@@ -30,7 +36,7 @@ public class CategoryEditViewController extends AbstractViewController {
         //Category superCategory = mainWindowViewController.getPasswordManagerController().getPasswordManager().getRootCategory().getCategoryByPath(new Path(categoryPath));
         CategoryItem superCategory = comboBoxCategorySelection.getSelectionModel().getSelectedItem();
         String text = textFieldCategoryName.getText().trim();
-        if (current == null) {
+        if (shouldAdd) {
             mainWindowViewController.getPasswordManagerController().getCategoryController().createCategory(superCategory.getCategory(), text);
         } else {
             mainWindowViewController.getPasswordManagerController().getCategoryController().moveCategory(current, superCategory.getPath().createChildPath(text));
@@ -54,13 +60,14 @@ public class CategoryEditViewController extends AbstractViewController {
                 .map(path -> new CategoryItem(path, cats.get(path)))
                 .forEach(comboBoxCategorySelection.getItems()::add);
 
-        comboBoxCategorySelection.getItems().stream().filter(item -> item.getCategory().equals(root)).findFirst().get();
-        if (current != null) {
-            Category byPath = root.getCategoryByPath(current.getParent());
-            comboBoxCategorySelection.getSelectionModel().select(comboBoxCategorySelection.getItems().stream().filter(item -> item.getCategory().equals(byPath)).findAny().get());
-            textFieldCategoryName.setText(current.getName());
-        } else {
-            comboBoxCategorySelection.getSelectionModel().select(comboBoxCategorySelection.getItems().stream().filter(item -> item.getCategory().equals(root)).findFirst().get());
+        Category selecting = current == null ? root : (shouldAdd ? root.getCategoryByPath(current) : root.getCategoryByPath(current.getParent()));
+
+        CategoryItem select = comboBoxCategorySelection.getItems().stream()
+                .filter(item -> item.getCategory().equals(selecting)).findFirst().get();
+        comboBoxCategorySelection.getSelectionModel().select(select);
+
+        if (current != null && !shouldAdd) {
+            textFieldCategoryName.textProperty().set(current.getName());
         }
 
         if (current == null)
