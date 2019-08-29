@@ -190,14 +190,16 @@ public class MainWindowViewController extends AbstractViewController implements 
         textFieldCredentialsPassword.textProperty().bindBidirectional(passwordFieldCredentialsPassword.textProperty());
 
         textFieldCredentialsName.textProperty().addListener((obs, oldText, newText) -> {
-            if (oldText == null || newText == null) return;
+            if (newText == null) return;
+            if (oldText == null) oldText = "";
             if (Math.abs(oldText.length() - newText.length()) <= 1) {
                 currentCredentials.withName(newText);
                 changeState(START_EDITING_ENTRY, EDITED_ENTRY);
             }
         });
         textFieldCredentialsUserName.textProperty().addListener((obs, oldText, newText) -> {
-            if (oldText == null || newText == null) return;
+            if (newText == null) return;
+            if (oldText == null) oldText = "";
             if (Math.abs(oldText.length() - newText.length()) <= 1) {
                 currentCredentials.withUserName(newText);
                 changeState(START_EDITING_ENTRY, EDITED_ENTRY);
@@ -205,14 +207,16 @@ public class MainWindowViewController extends AbstractViewController implements 
             }
         });
         textFieldCredentialsWebsite.textProperty().addListener((obs, oldText, newText) -> {
-            if (oldText == null || newText == null) return;
+            if (newText == null) return;
+            if (oldText == null) oldText = "";
             if (Math.abs(oldText.length() - newText.length()) <= 1) {
                 currentCredentials.withWebsite(newText);
                 changeState(START_EDITING_ENTRY, EDITED_ENTRY);
             }
         });
         textFieldCredentialsPassword.textProperty().addListener((obs, oldText, newText) -> {
-            if (oldText == null || newText == null) return;
+            if (newText == null) return;
+            if (oldText == null) oldText = "";
             if (Math.abs(oldText.length() - newText.length()) <= 1) {
                 currentCredentials.withPassword(newText);
                 changeState(START_EDITING_ENTRY, EDITED_ENTRY);
@@ -220,7 +224,8 @@ public class MainWindowViewController extends AbstractViewController implements 
             }
         });
         textFieldCredentialsNotes.textProperty().addListener((obs, oldText, newText) -> {
-            if (oldText == null || newText == null) return;
+            if (newText == null) return;
+            if (oldText == null) oldText = "";
             if (Math.abs(oldText.length() - newText.length()) <= 1) {
                 currentCredentials.withNotes(newText);
                 changeState(START_EDITING_ENTRY, EDITED_ENTRY);
@@ -308,16 +313,20 @@ public class MainWindowViewController extends AbstractViewController implements 
         credentialsController.filterCredentials(new PatternSyntax(pattern));
     }
 
-    private void openCategoryEditWindow() throws IOException {
+    private void openCategoryEditWindow(Path path) throws IOException {
         categoryEditViewController = openModal("../view/Kategorie_anlegen-aendern.fxml",
-                CategoryEditViewController.class, CategoryEditViewController::initComboBox);
+                CategoryEditViewController.class, preOpen ->
+                {
+                    preOpen.initComboBox();
+                    preOpen.setCurrentlyEdited(path);
+                });
     }
 
     public void onAddCategoryClicked() {
         //STATE - soll unabhängig funktionieren
         try {
             /* Kategorie hinzufügen - leeres Fenster öffnen */
-            openCategoryEditWindow();
+            openCategoryEditWindow(null);
         } catch (Exception e) {
             showError(e);
             throw new RuntimeException(e);
@@ -337,7 +346,7 @@ public class MainWindowViewController extends AbstractViewController implements 
                 showError("Das Ändern der Hauptkategorie ist nicht erlaubt.");
                 return;
             }
-            openCategoryEditWindow();
+            openCategoryEditWindow(path);
             //aktuelle Auswahl zur Bearbeitung angeben
             categoryEditViewController.setCurrentlyEdited(path);
         } catch (Exception e) {
