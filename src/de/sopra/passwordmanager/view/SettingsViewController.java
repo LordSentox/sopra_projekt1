@@ -30,7 +30,7 @@ public class SettingsViewController extends AbstractViewController {
 
             loginStage = new Stage();
             Scene setMasterPasswordScene = new Scene(setMasterPasswordPane);
-            //setMasterPasswordScene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+            setMasterPasswordScene.getStylesheets().add(getClass().getResource("../application/application.css").toExternalForm());
             loginStage.setScene(setMasterPasswordScene);
             masterPasswordViewController.setStage(loginStage);
             masterPasswordViewController.setMainWindowViewController(mainWindowViewController);
@@ -79,6 +79,9 @@ public class SettingsViewController extends AbstractViewController {
 
     public void onCancelSettingsClicked() {
         settingsStage.close();
+    }
+    public void onCloseClicked() {
+    	settingsStage.close();
     }
 
     public void setStage(Stage settingsStage) {

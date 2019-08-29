@@ -68,6 +68,9 @@ public class MasterPasswordViewController extends AbstractViewController impleme
     public void onMasterPasswordCancelClicked(){
     	stage.close();
     }
+    public void onCloseClicked(){
+    	stage.close();
+    }
     @Override
     public void refreshQuality(int quality) {
     	double progress = quality / 100.0;  

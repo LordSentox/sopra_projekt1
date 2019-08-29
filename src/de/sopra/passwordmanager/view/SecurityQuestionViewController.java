@@ -17,6 +17,9 @@ public class SecurityQuestionViewController extends AbstractViewController {
     public void onSecurityQuestionCancelClicked() {
         stage.close();
     }
+    public void onCloseClicked(){
+    	stage.close();
+    }
 
     public void onSaveClicked() {
         CredentialsBuilder credBuilder = mainWindowViewController.getCredentialsBuilder();

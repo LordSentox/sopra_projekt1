@@ -27,7 +27,9 @@ public class LoginViewController extends AbstractViewController implements Login
     public void onCancelLoginClicked() {
         stage.close();
     }
-
+    public void onCloseClicked(){
+    	stage.close();
+    }
     @Override
     public void handleLoginResult(boolean result) {
         if (result) {
