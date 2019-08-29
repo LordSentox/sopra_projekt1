@@ -240,6 +240,9 @@ public class MainWindowViewController extends AbstractViewController implements 
             refreshEntryListWhenCategoryChosen();
         });
 
+        //connect both password fields
+        passwordFieldCredentialsPassword.disableProperty().bindBidirectional(textFieldCredentialsPassword.disableProperty());
+
         //Die ComboBox initialisieren - enthält zu Beginn nur die Root-Kategorie
         CategoryItem rootCategoryItem = new CategoryItem(Path.ROOT_CATEGORY_PATH, passwordManagerController.getPasswordManager().getRootCategory());
         comboBoxCategorySelectionMain.getItems().add(rootCategoryItem);
@@ -456,6 +459,7 @@ public class MainWindowViewController extends AbstractViewController implements 
             /* Sicherheitsfrage hinzufügen */
             openModal("../view/Sicherheitsfrage-und-Antwort.fxml",
                     SecurityQuestionViewController.class, identity -> {
+                    	identity.init();
                     });
         } catch (Exception e) {
             showError(e);
@@ -675,8 +679,7 @@ public class MainWindowViewController extends AbstractViewController implements 
         if (state.match(UNSET, VIEW_ENTRY, START_EDITING_ENTRY))
             refreshEntryListWhenCategoryChosen();
 
-        listViewCredentialsList.getFocusModel().focus(-1);
-
+        listViewCredentialsList.getSelectionModel().clearSelection();
     }
 
     //Die Liste der Credentials updaten, wenn eine Kategorie zum Filtern ausgewählt wird
@@ -694,7 +697,7 @@ public class MainWindowViewController extends AbstractViewController implements 
             ObservableList<CredentialsItem> credsToShow = new ObservableListWrapper<>(ordered);
             listViewCredentialsList.setItems(credsToShow);
             if (credsToShow.size() > 0)
-                listViewCredentialsList.getSelectionModel().select(0);
+                listViewCredentialsList.getSelectionModel().selectFirst();
         } else {
             listViewCredentialsList.setItems(new ObservableListWrapper<>(Collections.emptyList()));
             setState(UNSET);

@@ -22,11 +22,11 @@ public abstract class AbstractViewController {
     //Auf null setzen zum nicht verwenden
     public void setStyleSheet(String styleSheet) {
         if (this.styleSheet != null) {
-            scene.getStylesheets().remove(getClass().getResource("../application/" + this.styleSheet + ".css").toExternalForm());
+            scene.getStylesheets().remove(getClass().getResource("/stylesheets/" + this.styleSheet + ".css").toExternalForm());
         }
         this.styleSheet = styleSheet;
         if (this.styleSheet != null) {
-            scene.getStylesheets().add(getClass().getResource("../application/" + this.styleSheet + ".css").toExternalForm());
+            scene.getStylesheets().add(getClass().getResource("/stylesheets/" + this.styleSheet + ".css").toExternalForm());
         }
     }
 
@@ -63,7 +63,7 @@ public abstract class AbstractViewController {
         newStage.initStyle(StageStyle.UNDECORATED);
         newStage.initModality(Modality.WINDOW_MODAL);
         newStage.setResizable(false);
-        newScene.getStylesheets().add(getClass().getResource("../application/application.css").toExternalForm());
+        newScene.getStylesheets().add(getClass().getResource("/stylesheets/application.css").toExternalForm());
         newStage.setScene(newScene);
         controller.setStage(newStage);
         controller.setScene(newScene);
