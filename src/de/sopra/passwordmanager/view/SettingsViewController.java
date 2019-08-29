@@ -55,18 +55,23 @@ public class SettingsViewController extends AbstractViewController {
         }
 
         public void playMusic() {
-            if (player == null) {
-                if (musicPath == null) return;
-                Media media = new Media(ClassLoader.getSystemResource(musicPath).toString());
-                player = new MediaPlayer(media);
-                player.setAutoPlay(true);
-                player.setCycleCount(MediaPlayer.INDEFINITE);
-                player.play();
-                player.setVolume(1.0);
-            } else {
-                player.stop();
-                player = null;
-                playMusic();
+            try{                
+                if (player == null) {
+                    if (musicPath == null) return;
+                    Media media = new Media(ClassLoader.getSystemResource(musicPath).toString());
+                    player = new MediaPlayer(media);
+                    player.setAutoPlay(true);
+                    player.setCycleCount(MediaPlayer.INDEFINITE);
+                    player.play();
+                    player.setVolume(1.0);
+                } else {
+                    player.stop();
+                    player = null;
+                    playMusic();
+                }
+            } catch (Exception e) {
+                mainWindowViewController.showError(e); 
+                e.printStackTrace();
             }
         }
 
