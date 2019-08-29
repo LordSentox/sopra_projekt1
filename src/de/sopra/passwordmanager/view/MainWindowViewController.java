@@ -689,6 +689,14 @@ public class MainWindowViewController extends AbstractViewController implements 
             choiceBoxCredentialsCategories.setSelected(item, selected);
         }
 
+        if (currentCredentials.getPassword() != null)
+            passwordManagerController.checkQuality(currentCredentials);
+
+        if (currentCredentials.getCreatedAt() != null)
+            labelCredentialsCreated.setText(currentCredentials.getCreatedAt().toString());
+        if (currentCredentials.getLastChanged() != null)
+            labelCredentialsLastChanged.setText(currentCredentials.getLastChanged().toString());
+
         changeState(START_EDITING_ENTRY, EDITED_ENTRY);
 
     }
@@ -696,16 +704,16 @@ public class MainWindowViewController extends AbstractViewController implements 
     @Override
     public void refreshEntryPasswordQuality(int quality) {
         //XXX change quality to double between 0 and 1
-    	double progress = quality / 100.0;  
-    	progressBarCredentialsQuality.setProgress(progress); 
+        double progress = quality / 100.0;
+        progressBarCredentialsQuality.setProgress(progress);
 
-    	if (progress<0.3) {
-    		progressBarCredentialsQuality.setStyle("-fx-accent: red;");
-    	} else if (progress>=0.3 && progress <= 0.6){
-    		progressBarCredentialsQuality.setStyle("-fx-accent: yellow;");
-    	} else {
-    		progressBarCredentialsQuality.setStyle("-fx-accent: green;");
-    	}
+        if (progress < 0.3) {
+            progressBarCredentialsQuality.setStyle("-fx-accent: red;");
+        } else if (progress >= 0.3 && progress <= 0.6) {
+            progressBarCredentialsQuality.setStyle("-fx-accent: yellow;");
+        } else {
+            progressBarCredentialsQuality.setStyle("-fx-accent: green;");
+        }
     }
 
     //endregion

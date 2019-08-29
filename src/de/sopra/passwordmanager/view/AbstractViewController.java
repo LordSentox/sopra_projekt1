@@ -6,6 +6,7 @@ import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 import java.io.IOException;
 import java.util.function.Consumer;
@@ -59,7 +60,9 @@ public abstract class AbstractViewController {
         Stage newStage = new Stage();
         Scene newScene = new Scene(categoryEditPane);
         newStage.initOwner(parent);
+        newStage.initStyle(StageStyle.UNDECORATED);
         newStage.initModality(Modality.WINDOW_MODAL);
+        newStage.setResizable(false);
         newScene.getStylesheets().add(getClass().getResource("../application/application.css").toExternalForm());
         newStage.setScene(newScene);
         controller.setStage(newStage);
