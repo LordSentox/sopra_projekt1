@@ -275,7 +275,7 @@ public class MainWindowViewController extends AbstractViewController implements 
                 if (item != null && item.hasToBeChanged())
                     getStyleClass().add("reminder-on-list-cell");
                 else
-                    getStyleClass().remove("reminder-on-list-cell");
+                    getStyleClass().removeAll("reminder-on-list-cell");
             }
         });
 

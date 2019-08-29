@@ -44,6 +44,7 @@ public class CredentialsController {
      * @see Credentials
      */
     public void updateCredentials(Credentials oldCredentials, CredentialsBuilder newCredentials, Collection<Category> categories) throws NullPointerException {
+        ValidationUtil.notNull(oldCredentials, "Old credentials null");
         if (newCredentials == null) return;
         passwordManagerController.getPasswordManager().getRootCategory().removeCredentialsFromTree(oldCredentials);
         oldCredentials = newCredentials.build(passwordManagerController.getUtilityController());
@@ -151,6 +152,7 @@ public class CredentialsController {
     public void filterCredentials(PatternSyntax pattern) {
 
         //XXX: remove when program is finish, this is just the dev tool
+        System.out.println(pattern.getPatternFilter().name());
         if (pattern.getPatternFilter() == PatternSyntax.PatternSyntaxFilter.COMMAND) {
             DevUtil.fillWithData(passwordManagerController);
             passwordManagerController.getMainWindowAUI().refreshLists();

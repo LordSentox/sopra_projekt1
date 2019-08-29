@@ -70,6 +70,13 @@
 	-jfx-toggle-color: -analogous;
 }
 
+#buttonSearch {
+	-fx-background-image: url('../lupe.png');
+	-fx-background-size: 1.5em;
+	-fx-background-repeat: no-repeat;
+	-fx-background-position: center;
+}
+
 .background {
 	-fx-background-color: -primary,-background;
 	-fx-background-insets: 0, 3;
