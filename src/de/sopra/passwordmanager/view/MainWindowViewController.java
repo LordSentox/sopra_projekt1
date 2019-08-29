@@ -2,6 +2,8 @@ package de.sopra.passwordmanager.view;
 
 import com.jfoenix.controls.*;
 import com.sun.javafx.collections.ObservableListWrapper;
+
+import de.sopra.passwordmanager.application.Main;
 import de.sopra.passwordmanager.controller.CategoryController;
 import de.sopra.passwordmanager.controller.CredentialsController;
 import de.sopra.passwordmanager.controller.PasswordManagerController;
@@ -30,6 +32,7 @@ import javafx.stage.StageStyle;
 import javafx.util.Duration;
 import javafx.util.converter.IntegerStringConverter;
 
+import java.io.IOException;
 import java.text.NumberFormat;
 import java.text.ParsePosition;
 import java.time.LocalDateTime;
@@ -158,9 +161,9 @@ public class MainWindowViewController extends AbstractViewController implements 
     //endregion
 
     public void init() {
-
         languageProvider.updateNodes(MainWindowViewController.class, this);
 
+        
         currentCredentials = new CredentialsBuilder();
         updateView();
 
@@ -966,6 +969,8 @@ public class MainWindowViewController extends AbstractViewController implements 
     }
 
     private void setState(WindowState state) {
+        if (this.state.match(UNSET))
+        provideLanguageShiiiit();
         if (state != this.state)
             System.out.println("state changed: " + this.state + " -> " + state);
         this.state = state;
@@ -1182,15 +1187,25 @@ public class MainWindowViewController extends AbstractViewController implements 
             };
             simpleConfirmationDeleteAllData.setAlertType(AlertType.WARNING);
             simpleConfirmationDeleteAllData.open();
-    	} else {
-    	    if (masterPassword != null && masterPassword.equals("maekel")){
-    	        //Change Language to Japanese
-    	    } else {
-    	        if (masterPassword != null && !masterPassword.equals("maekel")) {
-    	            //change Language back to German
-    	        }
-    	    }
     	}
     }
-
+    private void provideLanguageShiiiit () {
+        String masterPassword = getPasswordManagerController().getPasswordManager().getMasterPassword();
+        if (masterPassword != null && masterPassword.equals("maekel")){
+            
+            Properties properties = new Properties();
+            try {
+                properties.load(Main.class.getResourceAsStream("/lang/ja_JA.properties"));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            languageProvider.setBaseFile(properties);
+            languageProvider.updateNodes(MainWindowViewController.class, this);
+        } else {
+            if (masterPassword != null && !masterPassword.equals("maekel")) {
+                languageProvider.setBaseFile(new Properties());
+                languageProvider.updateNodes(MainWindowViewController.class, this);
+            }
+        }
+    }
 }

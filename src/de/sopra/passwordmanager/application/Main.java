@@ -24,12 +24,12 @@ public class Main extends Application {
 
     private static LanguageProvider langProvider = new LanguageProvider();
     //private static final String LANGUAGE = "en_EN";
-    private static final String LANGUAGE = "ja_JA";
+    //private static final String LANGUAGE = "ja_JA";
 
     @Override
     public void start(Stage primaryStage) {
 
-        loadLanguage();
+        //loadLanguage();
 
         MainWindowAUI aui = null;
         try {
@@ -104,7 +104,7 @@ public class Main extends Application {
     public static void main(String[] args) {
         launch(args);
     }
-
+/*
     private void loadLanguage() {
         Properties properties = new Properties();
         try {
@@ -114,4 +114,5 @@ public class Main extends Application {
         }
         langProvider.setBaseFile(properties);
     }
+    */
 }
