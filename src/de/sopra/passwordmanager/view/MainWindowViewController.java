@@ -25,7 +25,6 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.*;
 import javafx.scene.control.TextFormatter.Change;
 import javafx.stage.StageStyle;
-import javafx.util.Callback;
 import javafx.util.Duration;
 import javafx.util.converter.IntegerStringConverter;
 
@@ -254,11 +253,15 @@ public class MainWindowViewController extends AbstractViewController implements 
         textFieldCredentialsNotes.setWrapText(true);
 
         //visual color for active reminders
-        Callback<ListView<CredentialsItem>, ListCell<CredentialsItem>> factory = listViewCredentialsList.getCellFactory();
         listViewCredentialsList.setCellFactory(param -> {
-            ListCell<CredentialsItem> cell = factory.call(param);
-            if (cell != null && cell.getItem() != null && cell.getItem().hasToBeChanged())
-                cell.getStyleClass().add("reminder-on-list-cell");
+            ListCell<CredentialsItem> cell = new JFXListCell<CredentialsItem>() {
+                @Override
+                public void updateItem(CredentialsItem item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (item != null && item.hasToBeChanged())
+                        getStyleClass().add("reminder-on-list-cell");
+                }
+            };
             return cell;
         });
 
