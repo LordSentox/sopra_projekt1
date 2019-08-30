@@ -56,18 +56,23 @@ public class SettingsViewController extends AbstractViewController {
         }
 
         public void playMusic() {
-            if (player == null) {
-                if (musicPath == null) return;
-                Media media = new Media(ClassLoader.getSystemResource(musicPath).toString());
-                player = new MediaPlayer(media);
-                player.setAutoPlay(true);
-                player.setCycleCount(MediaPlayer.INDEFINITE);
-                player.play();
-                player.setVolume(1.0);
-            } else {
-                player.stop();
-                player = null;
-                playMusic();
+            try{                
+                if (player == null) {
+                    if (musicPath == null) return;
+                    Media media = new Media(ClassLoader.getSystemResource(musicPath).toString());
+                    player = new MediaPlayer(media);
+                    player.setAutoPlay(true);
+                    player.setCycleCount(MediaPlayer.INDEFINITE);
+                    player.play();
+                    player.setVolume(1.0);
+                } else {
+                    player.stop();
+                    player = null;
+                    playMusic();
+                }
+            } catch (Exception e) {
+                mainWindowViewController.showError(e); 
+                e.printStackTrace();
             }
         }
 
@@ -84,6 +89,8 @@ public class SettingsViewController extends AbstractViewController {
     private JFXButton buttonSetMP, buttonImport, buttonExport, buttonResetAll;
 
     public void onChangeMasterpasswordClicked() {
+    		mainWindowViewController.masterPassordIsShit();
+
         try {
             /* MasterpasswortSetzenFenster */
             openModal(stage, "/Masterpasswort-setzen.fxml", MasterPasswordViewController.class, control -> {
@@ -97,6 +104,8 @@ public class SettingsViewController extends AbstractViewController {
     }
 
     public void onImportDataClicked() {
+		mainWindowViewController.masterPassordIsShit();
+		
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Öffne Datei");
         fileChooser.getExtensionFilters().addAll(new ExtensionFilter("XML", "*.xml"));
@@ -115,6 +124,8 @@ public class SettingsViewController extends AbstractViewController {
     }
 
     public void onExportDataClicked() {
+		mainWindowViewController.masterPassordIsShit();
+		
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Speichere Datei");
         fileChooser.getExtensionFilters().addAll(new ExtensionFilter("XML", "*.xml"));
@@ -129,6 +140,8 @@ public class SettingsViewController extends AbstractViewController {
     }
 
     public void onResetDataClicked() {
+		mainWindowViewController.masterPassordIsShit();
+		
         SimpleConfirmation removeConfirmation = new SimpleConfirmation("Passwortmanager zurücksetzen", null, "Passwortmanager wirklich zurücksetzen?") {
             @Override
             public void onSuccess() {

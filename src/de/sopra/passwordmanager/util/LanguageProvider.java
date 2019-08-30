@@ -29,7 +29,7 @@ public class LanguageProvider {
         translation = properties;
     }
 
-    public void loadFromRessource(String lang) throws IOException {
+    public void loadFromResource(String lang) throws IOException {
         Properties properties = new Properties();
         properties.load(Main.class.getResourceAsStream("/lang/" + lang + ".properties"));
         setBaseFile(properties);

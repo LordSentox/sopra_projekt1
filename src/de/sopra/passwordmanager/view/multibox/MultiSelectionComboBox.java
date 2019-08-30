@@ -62,7 +62,7 @@ public class MultiSelectionComboBox<T> extends ComboBox<SelectableComboItem<T>> 
     public List<T> getSelectedContentList() {
         return getListProvider().stream()
                 .filter(SelectableComboItem::isSelected)
-                .map(item -> item.getContent())
+                .map(SelectableComboItem::getContent)
                 .collect(Collectors.toList());
     }
 
@@ -110,8 +110,7 @@ public class MultiSelectionComboBox<T> extends ComboBox<SelectableComboItem<T>> 
     }
 
     private void updateProvider() {
-        List<SelectableComboItem<T>> listTemp = new ArrayList<>();
-        listTemp.addAll(getItems());
+        List<SelectableComboItem<T>> listTemp = new ArrayList<>(getItems());
         getItems().clear();
         setItems(FXCollections.observableArrayList(listTemp));
         //if none is selected, select the first entry

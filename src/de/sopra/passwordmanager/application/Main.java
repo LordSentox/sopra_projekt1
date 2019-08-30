@@ -53,7 +53,9 @@ public class Main extends Application {
                     System.out.println("Ooops, da war ja ein Fehler-chan unterwegs... Gaaar nicht bemeerkt..."));
 
             if (SAVE_FILE.exists()) {
-                /* Loginfenster */
+            
+
+            	/* Loginfenster */
                 LoginViewController login = mainWindowViewController.openModal("/Einloggen.fxml",
                         LoginViewController.class, preOpen ->
                         {
@@ -63,6 +65,7 @@ public class Main extends Application {
 
                 //set AUI link
                 passwordManagerController.setLoginViewAUI(login);
+
 
             } else {
                 /* Masterpasswort zum Erststart / Registrierung setzen */

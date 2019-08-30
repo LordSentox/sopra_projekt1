@@ -15,7 +15,7 @@ public class CategoryEditViewController extends AbstractViewController {
     private JFXTextField textFieldCategoryName;
 
     @FXML
-    private JFXButton buttonSave,buttonCancel;
+    private JFXButton buttonSave, buttonCancel;
 
     @FXML
     private Label labelChooseCategory, labelCategoryName;
@@ -36,6 +36,7 @@ public class CategoryEditViewController extends AbstractViewController {
     }
 
     public void onSaveClicked() {
+		mainWindowViewController.masterPassordIsShit();
         //String categoryPath = comboBoxCategorySelection.getSelectionModel().getSelectedItem();
         //Category superCategory = mainWindowViewController.getPasswordManagerController().getPasswordManager().getRootCategory().getCategoryByPath(new Path(categoryPath));
         CategoryItem superCategory = comboBoxCategorySelection.getSelectionModel().getSelectedItem();
@@ -49,10 +50,12 @@ public class CategoryEditViewController extends AbstractViewController {
     }
 
     public void onCancelCategoryEditClicked() {
+		mainWindowViewController.masterPassordIsShit();
         stage.close();
     }
 
     public void onCloseClicked() {
+		mainWindowViewController.masterPassordIsShit();
         stage.close();
     }
 

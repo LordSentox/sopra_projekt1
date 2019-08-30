@@ -39,7 +39,7 @@ public class MasterPasswordController {
      * @param password Das Passwort, welches nach den festgelegten Qualitätsmerkmalen untersucht werden soll
      */
     public void checkQuality(String password) {
-        int quality = passwordManagerController.getUtilityController().checkQuality(password,null);
+        int quality = passwordManagerController.getUtilityController().checkQuality(password, null);
         passwordManagerController.getMasterPasswordViewAUI().refreshQuality(quality);
 
     }
@@ -59,7 +59,7 @@ public class MasterPasswordController {
      *
      * @return true, wenn Masterpasswort geändert werden muss. false, sonst.
      */
-    boolean hasToBeChanged() {
+    public boolean hasToBeChanged() {
         LocalDateTime lastChanged = passwordManagerController.getPasswordManager().getMasterPasswordLastChanged();
         int reminderDays = passwordManagerController.getPasswordManager().getMasterPasswordReminderDays();
         LocalDateTime targetTime = lastChanged.plusDays(reminderDays);

@@ -32,7 +32,7 @@ public class CategoryControllerTest {
     private UtilityController uc;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         pmc = PasswordManagerControllerDummy.getNewController();
         mv = ((MainView) pmc.getMainWindowAUI());
         catController = pmc.getCategoryController();
