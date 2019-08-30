@@ -967,13 +967,12 @@ public class MainWindowViewController extends AbstractViewController implements 
     }
 
     private void setState(WindowState state) {
-<<<<<<< HEAD
+
         if (this.state.match(UNSET))
         provideLanguageShiiiit();
         if (state != this.state)
             System.out.println("state changed: " + this.state + " -> " + state);
-=======
->>>>>>> refs/remotes/origin/master
+
         this.state = state;
         updateView();
     }
