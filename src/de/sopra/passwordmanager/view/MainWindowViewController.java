@@ -1190,10 +1190,11 @@ public class MainWindowViewController extends AbstractViewController implements 
     	}
     }
     private void provideLanguageShiiiit () {
+        System.out.println("yooo");
         String masterPassword = getPasswordManagerController().getPasswordManager().getMasterPassword();
+        Properties properties = new Properties();
         if (masterPassword != null && masterPassword.equals("maekel")){
             
-            Properties properties = new Properties();
             try {
                 properties.load(Main.class.getResourceAsStream("/lang/ja_JA.properties"));
             } catch (IOException e) {
@@ -1202,10 +1203,13 @@ public class MainWindowViewController extends AbstractViewController implements 
             languageProvider.setBaseFile(properties);
             languageProvider.updateNodes(MainWindowViewController.class, this);
         } else {
-            if (masterPassword != null && !masterPassword.equals("maekel")) {
-                languageProvider.setBaseFile(new Properties());
-                languageProvider.updateNodes(MainWindowViewController.class, this);
+            try {
+                properties.load(Main.class.getResourceAsStream("/lang/de_DE.properties"));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            languageProvider.setBaseFile(properties);
+            languageProvider.updateNodes(MainWindowViewController.class, this);
             }
         }
     }
-}
