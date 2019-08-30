@@ -30,7 +30,7 @@ public class CredentialsControllerTreeTest {
     private UtilityController uc;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         pmc = PasswordManagerControllerDummy.getNewController();
         cc = pmc.getCredentialsController();
         pm = pmc.getPasswordManager();

@@ -16,8 +16,10 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
-import java.util.List;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * <h1>projekt1</h1>
@@ -36,7 +38,7 @@ public class CredentialsControllerTest {
     private UtilityController uc;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         pmc = PasswordManagerControllerDummy.getNewController();
         cc = pmc.getCredentialsController();
         pm = pmc.getPasswordManager();
@@ -192,8 +194,6 @@ public class CredentialsControllerTest {
                 .withPassword("wanken")
                 .build(uc);
 
-        List<Credentials> credentialsList = new ArrayList<>();
-        credentialsList.add(credentials);
         pm.getRootCategory().addCredentials(credentials);
         mainView.refreshLists();
 
@@ -216,8 +216,6 @@ public class CredentialsControllerTest {
                 .withPassword("wnken")
                 .build(uc);
 
-        List<Credentials> credentialsList = new ArrayList<>();
-        credentialsList.add(credentials);
         pm.getRootCategory().addCredentials(credentials);
         mainView.refreshLists();
 
@@ -248,8 +246,6 @@ public class CredentialsControllerTest {
                 .withPassword("Warum")
                 .build(uc);
 
-        List<Credentials> credentialsList = new ArrayList<>();
-        credentialsList.add(credentials1);
         pm.getRootCategory().addCredentials(credentials1);
         mainView.refreshLists();
 

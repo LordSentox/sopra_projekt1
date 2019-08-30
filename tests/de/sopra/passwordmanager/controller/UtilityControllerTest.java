@@ -9,7 +9,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * @authors Niklas Falke, Mengcheng Jin
+ * @author Niklas Falke, Mengcheng Jin
  */
 
 public class UtilityControllerTest {
@@ -20,7 +20,7 @@ public class UtilityControllerTest {
 	private PasswordManager passwordManager;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
     	passwordManagerController = PasswordManagerControllerDummy.getNewController();
     	utilityController = passwordManagerController.getUtilityController();
     	ioController = passwordManagerController.getIOController();

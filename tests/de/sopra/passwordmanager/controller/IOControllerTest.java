@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 public class IOControllerTest {
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
     }
 
     @Test

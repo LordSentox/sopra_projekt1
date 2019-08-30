@@ -16,7 +16,7 @@ public class MasterPasswordControllerTest {
     private MasterPasswordController masterPasswordController;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         this.passwordManagerController = PasswordManagerControllerDummy.getNewController();
         this.passwordManager = this.passwordManagerController.getPasswordManager();
         this.masterPasswordController = this.passwordManagerController.getMasterPasswordController();

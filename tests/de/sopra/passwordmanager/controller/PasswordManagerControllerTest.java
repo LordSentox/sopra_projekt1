@@ -18,7 +18,7 @@ public class PasswordManagerControllerTest {
     private UtilityController uc;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         this.passwordManagerController = PasswordManagerControllerDummy.getNewController();
         this.passwordManager = this.passwordManagerController.getPasswordManager();
         uc = passwordManagerController.getUtilityController();
