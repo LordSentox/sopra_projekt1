@@ -1,8 +1,10 @@
 package de.sopra.passwordmanager.util;
 
+import de.sopra.passwordmanager.application.Main;
 import de.sopra.passwordmanager.view.AbstractViewController;
 import javafx.scene.control.Labeled;
 
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.List;
@@ -25,6 +27,12 @@ public class LanguageProvider {
 
     public void setBaseFile(Properties properties) {
         translation = properties;
+    }
+
+    public void loadFromResource(String lang) throws IOException {
+        Properties properties = new Properties();
+        properties.load(Main.class.getResourceAsStream("/lang/" + lang + ".properties"));
+        setBaseFile(properties);
     }
 
     public <T extends AbstractViewController> void updateNodes(Class<T> clazz, T controller) {
@@ -51,12 +59,12 @@ public class LanguageProvider {
         if (hasTranslation(fieldName)) {
             node.setText(getTranslationOrDefault(fieldName, fieldName));
             return true;
-        } else System.out.println(fieldName);
+        } else System.out.println("no translation: " + fieldName);
         return false;
     }
 
     public boolean hasTranslation(String identifier) {
-        return translation.getProperty(identifier) != null;
+        return translation.containsKey(identifier);
     }
 
     public String getTranslationOrDefault(String identifier, String def) {

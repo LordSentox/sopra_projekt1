@@ -633,8 +633,6 @@ public class MainWindowViewController extends AbstractViewController implements 
 
         CredentialsItem selectedEntry = listViewCredentialsList.getSelectionModel().getSelectedItem();
 
-        System.out.println(selectedEntry.getCredentials().getName());
-
         //Wenn Eingaben vorliegen, nach Verwerfung dieser Eingaben fragen
         if (selectedEntry != null && !selectedEntry.getCredentials().equals(oldCredentials)) {
             if (state.match(EDITED_ENTRY, CREATING_NEW_ENTRY)) {
@@ -969,10 +967,13 @@ public class MainWindowViewController extends AbstractViewController implements 
     }
 
     private void setState(WindowState state) {
+<<<<<<< HEAD
         if (this.state.match(UNSET))
         provideLanguageShiiiit();
         if (state != this.state)
             System.out.println("state changed: " + this.state + " -> " + state);
+=======
+>>>>>>> refs/remotes/origin/master
         this.state = state;
         updateView();
     }
