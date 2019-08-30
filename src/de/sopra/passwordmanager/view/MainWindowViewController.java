@@ -1190,14 +1190,6 @@ public class MainWindowViewController extends AbstractViewController implements 
             }
             languageProvider.setBaseFile(properties);
             languageProvider.updateNodes(MainWindowViewController.class, this);
-        } else {
-            try {
-                properties.load(Main.class.getResourceAsStream("/lang/de_DE.properties"));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            languageProvider.setBaseFile(properties);
-            languageProvider.updateNodes(MainWindowViewController.class, this);
         }
     }
 }
