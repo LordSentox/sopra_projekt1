@@ -64,7 +64,7 @@ public class DialogPack {
         alert.getButtonTypes().setAll(buttons.stream().map(ButtonType::new).collect(Collectors.toList()));
 
         Optional<ButtonType> result = alert.showAndWait();
-        Runnable run = functions.get(buttons.indexOf(result));
+        Runnable run = functions.get(buttons.indexOf(result.get()));
         run.run();
     }
 

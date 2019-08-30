@@ -23,8 +23,3 @@ public class SelectAllStrategy implements EntryListSelectionStrategy {
         return items;
     }
 }
-/***********************************************************************************************
- *
- *                  All rights reserved, SpaceParrots UG (c) copyright 2019
- *
- ***********************************************************************************************/

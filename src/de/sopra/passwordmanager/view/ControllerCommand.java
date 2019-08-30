@@ -93,7 +93,7 @@ public enum ControllerCommand implements Consumer<PasswordManagerController> {
             DialogPack pack2 = new DialogPack("Hartmuts neues Passwort", "Das neue Masterpasswort lautet:", "IschBinDaHartmuht");
             pack2.addButton("Ok", null);
             pack.setNext(pack2);
-            pack.openChained();
+            pack.open();
 
         }
     };

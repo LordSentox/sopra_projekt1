@@ -160,6 +160,7 @@ public class Category {
         subCategories.forEach(category -> theseCredentials.addAll(category.getAllCredentials()));
         return theseCredentials;
     }
+
     /**
      * Durchsucht alle untergeordneten Kategorien nach Kategorien mit dem gegebenen Namen
      *
@@ -178,6 +179,6 @@ public class Category {
 
     @Override
     public String toString() {
-    	return getName();
+        return getName();
     }
 }

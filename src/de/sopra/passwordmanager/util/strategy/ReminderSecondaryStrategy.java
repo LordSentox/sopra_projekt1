@@ -31,14 +31,8 @@ public class ReminderSecondaryStrategy implements EntryListOrderStrategy {
                 return 1;
             return 0;
         };
-        if (ordered != null)
-            ordered.sort(comparator);
+        ordered.sort(comparator);
         return ordered;
     }
 
 }
-/***********************************************************************************************
- *
- *                  All rights reserved, SpaceParrots UG (c) copyright 2019
- *
- ***********************************************************************************************/
