@@ -66,6 +66,7 @@ public class LoginViewController extends AbstractViewController implements Login
 							        MasterPasswordViewController.class, preOpen ->
 							        {
 							            preOpen.setBackTo(backTo);
+							            preOpen.setOpenedByLoginOrMain();
 							            preOpen.init();
 							        });
 	                        //set AUI link
