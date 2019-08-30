@@ -89,7 +89,6 @@ public class UtilityController {
      * Generiert ein Passwort, welches den Sicherheitsanforderungen entspricht
      * und dieses wird dann in der GUI angezeigt
      */
-    // TODO: Benutze den PasswordGenerator aus der Bibliothek
     public void generatePassword(CredentialsBuilder credentials) {
         Random random = new Random();
         String password = null;
@@ -232,10 +231,10 @@ public class UtilityController {
     /**
      * Diese Methode überprüft die Qualität eines Passwortes und gibt eine Zahl zwischen 0 und 100 zurück ,wobei mehr besser ist
      *
-     * @param  Das zu überprüfende Passwort
+     * @param password Das zu überprüfende Passwort
+     * @param username Der Name des Nutzers
      * @return Es wird ein Wert von 0 bis 100 geliefert, der die Qualität des Passwortes angibt, dabei steht 0 für sehr schlecht und 100 für sehr sicher
      */
-    // TODO: Sollte noch den Nutzernamen bekommen, um es mit dem Passwort zu vergleichen
     int checkQuality(String password, String username) {
         if (password == null || password.isEmpty()) {
             return 0;

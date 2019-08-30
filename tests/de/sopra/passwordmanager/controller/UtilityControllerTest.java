@@ -1,17 +1,12 @@
 package de.sopra.passwordmanager.controller;
 
 import de.sopra.passwordmanager.controller.PasswordManagerControllerDummy.MainView;
-import de.sopra.passwordmanager.model.Category;
-import de.sopra.passwordmanager.model.Credentials;
 import de.sopra.passwordmanager.model.EncryptedString;
 import de.sopra.passwordmanager.model.PasswordManager;
 import de.sopra.passwordmanager.util.CredentialsBuilder;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.io.File;
-import java.time.LocalDateTime;
 
 /**
  * @authors Niklas Falke, Mengcheng Jin
@@ -64,6 +59,6 @@ public class UtilityControllerTest {
 
     @Test
     public void checkQuality() {
-        //TODO:Braucht jetzt nicht.
+        //TOODO:Braucht jetzt nicht.
     }
 }

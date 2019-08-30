@@ -100,11 +100,9 @@ class Importer {
         ValidationUtil.notNull(dataList, "The credentials could not be read. Incorrect format");
 
         // Setzen des Masterpasswortes und Verschlüsselung der Daten
-        // TODO: Sehr unschön, da man es bei dieser Methode nicht erwarten würde, wenn man setMasterPassword auf false setzt
         this.passwordManagerController.getPasswordManager().setMasterPassword(encryptionPassword);
         Map<String, Credentials> credentials = dataList.stream().collect(Collectors.toMap(CredentialsBuilder::getName, builder -> builder.build(passwordManagerController.getUtilityController())));
 
-        // TODO: Merge into the old MasterPasswordController instead of resetting the root
         this.passwordManagerController.getPasswordManager().clearAll();
         extractAndFillCategories(this.passwordManagerController.getPasswordManager().getRootCategory(), treeNode, credentials);
     }
@@ -232,7 +230,7 @@ class Importer {
 
             // Die Attribute sollten Frage und Antwort enthalten
             NamedNodeMap attributes = securityQuestion.getAttributes();
-            // TODO: Hier braucht es noch Fehlerbehandlung
+
             String question = UtilityController.decryptText(new EncryptedString(attributes.getNamedItem("question").getNodeValue()), decryptionPassword);
             String answer = UtilityController.decryptText(new EncryptedString(attributes.getNamedItem("answer").getNodeValue()), decryptionPassword);
 

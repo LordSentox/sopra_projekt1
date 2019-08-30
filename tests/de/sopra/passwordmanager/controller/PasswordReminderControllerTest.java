@@ -27,11 +27,6 @@ public class PasswordReminderControllerTest {
     }
 
 	@Test
-	public void testPasswordReminderController() {
-		//TODO: testPasswordReminderController
-	}
-
-	@Test
 	public void testHasToBeChanged() {
 		//legt Passworteintrag an sowie Datum
 		Credentials credentials = new CredentialsBuilder("Name", "Benutzername", "Hello_world", "URL")

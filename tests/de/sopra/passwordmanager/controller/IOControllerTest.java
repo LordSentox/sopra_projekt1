@@ -11,8 +11,6 @@ import org.junit.Test;
 import java.io.File;
 import java.time.LocalDateTime;
 
-import static org.junit.Assert.*;
-
 public class IOControllerTest {
 
     @Before
@@ -30,7 +28,7 @@ public class IOControllerTest {
         UtilityController utilityController = passwordManagerController.getUtilityController();
         IOController ioController = passwordManagerController.getIOController();
         //daten in das Modell eintragen
-        File file = new File("importExportTest.xml"); //FIXME: Dateipfad festlegen
+        File file = new File("importExportTest.xml");
         String masterPassword = "test";
         passwordManager.setMasterPassword(masterPassword);
         passwordManager.setMasterPasswordReminderDays(5);

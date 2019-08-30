@@ -499,10 +499,6 @@ public class MainWindowViewController extends AbstractViewController implements 
         updateCredentialsBuilderCopy();
         refreshEntry();
 
-        //CredentialsController credController = passwordManagerController.getCredentialsController();
-        //String question = comboBoxCredentialsSecurityQuestion.getValue();
-        //FIXME: Direkte Änderungen sollen nicht vorgenommen werden. erst am current, beim save am tatsächlichen objekt
-        //credController.removeSecurityQuestion(question, currentCredentials.getSecurityQuestions().get(question), currentCredentials);
     }
 
     public void onAddCredentialsClicked() {
@@ -661,7 +657,6 @@ public class MainWindowViewController extends AbstractViewController implements 
     }
 
     public void onCloseClicked() {
-        //TODO Programm richtig beenden
         stage.close();
     }
 
