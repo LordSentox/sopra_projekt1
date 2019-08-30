@@ -2,6 +2,7 @@ package de.sopra.passwordmanager.view;
 
 import com.jfoenix.controls.*;
 import com.sun.javafx.collections.ObservableListWrapper;
+import de.sopra.passwordmanager.application.Main;
 import de.sopra.passwordmanager.controller.CategoryController;
 import de.sopra.passwordmanager.controller.CredentialsController;
 import de.sopra.passwordmanager.controller.PasswordManagerController;
@@ -30,6 +31,7 @@ import javafx.stage.StageStyle;
 import javafx.util.Duration;
 import javafx.util.converter.IntegerStringConverter;
 
+import java.io.IOException;
 import java.text.NumberFormat;
 import java.text.ParsePosition;
 import java.time.LocalDateTime;
@@ -158,7 +160,6 @@ public class MainWindowViewController extends AbstractViewController implements 
     //endregion
 
     public void init() {
-
         languageProvider.updateNodes(MainWindowViewController.class, this);
 
         currentCredentials = new CredentialsBuilder();
@@ -337,6 +338,7 @@ public class MainWindowViewController extends AbstractViewController implements 
         try {
             /* Einstellungen öffnen */
             openModal("/Einstellungen.fxml", SettingsViewController.class, SettingsViewController::init);
+            mainWindowViewController.masterPasswordIsShit();
         } catch (Exception e) {
             showError(e);
             throw new RuntimeException(e);
@@ -344,6 +346,7 @@ public class MainWindowViewController extends AbstractViewController implements 
     }
 
     public void onSearchClicked() {
+        mainWindowViewController.masterPassordIsShit();
         //STATE - soll unabhängig funktionieren
         CredentialsController credentialsController = passwordManagerController.getCredentialsController();
         String pattern = textFieldSearch.getText();
@@ -371,6 +374,7 @@ public class MainWindowViewController extends AbstractViewController implements 
     }
 
     public void onEditCategoryClicked() {
+        mainWindowViewController.masterPassordIsShit();
         //STATE - soll nur in UNSET und VIEW_ENTRY funktionieren
         if (!state.match(UNSET, VIEW_ENTRY)) {
             showError("Du kannst die Kategorien aktuell nicht editieren");
@@ -397,6 +401,7 @@ public class MainWindowViewController extends AbstractViewController implements 
     }
 
     public void onCancelEditCredentialsClicked() {
+        mainWindowViewController.masterPassordIsShit();
         this.currentCredentials = null;
         refreshEntry();
         setState(VIEW_ENTRY);
@@ -431,6 +436,7 @@ public class MainWindowViewController extends AbstractViewController implements 
     }
 
     public void onCopyPasswordClicked() {
+        mainWindowViewController.masterPassordIsShit();
         //STATE - soll NICHT in UNSET funktionieren
         if (state.match(UNSET)) {
             showError("Du kannst aktuell kein Password kopieren");
@@ -447,6 +453,7 @@ public class MainWindowViewController extends AbstractViewController implements 
     }
 
     public void onGeneratePasswordClicked() {
+        mainWindowViewController.masterPassordIsShit();
         //STATE - soll NICHT in UNSET und VIEW_ENTRY funktionieren
         if (state.match(UNSET, VIEW_ENTRY)) {
             showError("Du kannst aktuell kein Password generieren");
@@ -457,6 +464,7 @@ public class MainWindowViewController extends AbstractViewController implements 
     }
 
     public void onCheckBoxClicked() {
+        mainWindowViewController.masterPassordIsShit();
         //STATE - soll NICHT in UNSET und VIEW_ENTRY funktionieren
         if (state.match(UNSET, VIEW_ENTRY)) {
             showError("Du kannst aktuell den Änderungswecker nicht ändern");
@@ -466,7 +474,7 @@ public class MainWindowViewController extends AbstractViewController implements 
     }
 
     public void onAddSecurityQuestionClicked() {
-
+        mainWindowViewController.masterPassordIsShit();
         //STATE - soll NICHT in UNSET und VIEW_ENTRY funktionieren
         if (state.match(UNSET, VIEW_ENTRY)) {
             showError("Du kannst aktuell keine Sicherheitsfragen hinzufügen");
@@ -485,6 +493,7 @@ public class MainWindowViewController extends AbstractViewController implements 
     }
 
     public void onRemoveSecurityQuestionClicked() {
+        mainWindowViewController.masterPassordIsShit();
         //STATE - soll NICHT in UNSET und VIEW_ENTRY funktionieren
         if (state.match(UNSET, VIEW_ENTRY)) {
             showError("Du kannst aktuell keine Sicherheitsfragen entfernen");
@@ -500,6 +509,7 @@ public class MainWindowViewController extends AbstractViewController implements 
     }
 
     public void onAddCredentialsClicked() {
+        mainWindowViewController.masterPassordIsShit();
         //STATE - soll nur in UNSET und VIEW_ENTRY funktionieren
         if (!state.match(UNSET, VIEW_ENTRY)) {
             showError("Du kannst aktuell keine neuen Einträge erstellen");
@@ -516,6 +526,7 @@ public class MainWindowViewController extends AbstractViewController implements 
     }
 
     public void onRemoveCredentialsClicked() {
+        mainWindowViewController.masterPassordIsShit();
         //STATE - soll nur in und VIEW_ENTRY funktionieren
         if (!state.match(VIEW_ENTRY)) {
             showError("Du kannst aktuell keine Einträge entfernen");
@@ -542,6 +553,7 @@ public class MainWindowViewController extends AbstractViewController implements 
     }
 
     public void onStartEditCredentialsClicked() {
+        mainWindowViewController.masterPassordIsShit();
         //STATE - soll nur in VIEW_ENTRY funktionieren
         if (!state.match(VIEW_ENTRY)) {
             showError("Du kannst aktuell keinen Eintrag bearbeiten.\nEs muss ein Eintrag ausgewählt sein, um ihn bearbeiten zu können.");
@@ -552,6 +564,7 @@ public class MainWindowViewController extends AbstractViewController implements 
     }
 
     public void onSaveCredentialsClicked() {
+        mainWindowViewController.masterPassordIsShit();
         //STATE - soll nur in CREATING_NEW_ENTRY und EDITED_ENTRY funktionieren
         if (!state.match(CREATING_NEW_ENTRY, EDITED_ENTRY)) {
             showError("Du kannst aktuell keine Einträge speichern");
@@ -580,10 +593,12 @@ public class MainWindowViewController extends AbstractViewController implements 
     }
 
     public void onChooseCategoryClicked() {
+        mainWindowViewController.masterPassordIsShit();
         refreshLists();
     }
 
     public void onChooseQuestionClicked() {
+        mainWindowViewController.masterPassordIsShit();
 
         //Wenn es geleert wurde, einfach die Ansicht zurücksetzen
         if (comboBoxCredentialsSecurityQuestion.getSelectionModel().getSelectedIndex() == -1) {
@@ -655,10 +670,105 @@ public class MainWindowViewController extends AbstractViewController implements 
     }
 
     public void onCloseClicked() {
+        mainWindowViewController.masterPassordIsShit();
         stage.close();
     }
 
     //endregion
+
+    private void masterPasswordIsShit() {
+        String masterPassword = getPasswordManagerController().getPasswordManager().getMasterPassword();
+        if (masterPassword != null && masterPassword.length() < PasswordManagerController.SHITTY_LENGTH) {
+            System.out.println(masterPassword);
+
+            SimpleConfirmation simpleConfirmation = new SimpleConfirmation("Das Masterpasswort " + masterPassword + " ist scheiße", "", "Das MasterPasswort " + masterPassword + " ist Mist bitte ändere es") {
+
+                @Override
+                public void onSuccess() {
+                    getSettingsViewController().onChangeMasterpasswordClicked();
+                }
+
+                @Override
+                public void onCancel() {
+                    // do nothing
+                }
+            };
+            simpleConfirmation.open();
+            simpleConfirmation.setButtonOk("Ja");
+            simpleConfirmation.setButtonCancel("Ja");
+            SimpleConfirmation simpleConfirmationNo2 = new SimpleConfirmation("Das Masterpasswort ist scheiße", "", "Du solltest dein Passwort ehrlich ändern.") {
+
+                @Override
+                public void onSuccess() {
+                    // do nothing
+                }
+
+                @Override
+                public void onCancel() {
+                    getSettingsViewController().onChangeMasterpasswordClicked();
+                }
+            };
+            simpleConfirmationNo2.open();
+            simpleConfirmationNo2.setButtonOk("Ja");
+            simpleConfirmationNo2.setButtonCancel("Ja");
+            SimpleConfirmation simpleConfirmationAgain = new SimpleConfirmation("Das Masterpasswort ist scheiße", "", "Jetzt hör doch zu und leg ein neues MasterPasswort an.") {
+
+                @Override
+                public void onSuccess() {
+                    // do nothing
+                }
+
+                @Override
+                public void onCancel() {
+                    getSettingsViewController().onChangeMasterpasswordClicked();
+                }
+            };
+            simpleConfirmationAgain.open();
+            simpleConfirmationAgain.setButtonOk("Ja");
+            simpleConfirmationAgain.setButtonCancel("Ja");
+            SimpleConfirmation simpleConfirmationYes = new SimpleConfirmation("Das Masterpasswort ist scheiße", "", "Dein Passwort " + masterPassword + " ist wirklich, wirklicht brutalster Bullshit.") {
+
+                @Override
+                public void onSuccess() {
+                    getSettingsViewController().onChangeMasterpasswordClicked();
+                }
+
+                @Override
+                public void onCancel() {
+                    //getSettingsViewController().onChangeMasterpasswordClicked();
+                }
+            };
+            simpleConfirmationYes.open();
+            simpleConfirmationYes.setButtonOk("Ja");
+            simpleConfirmationYes.setButtonCancel("Ja");
+            SimpleConfirmation simpleConfirmationForReal = new SimpleConfirmation("Das Masterpasswort ist scheiße", "", "Nein wirklich. Ändere dein Passwort. Jetzt.") {
+
+                @Override
+                public void onSuccess() {
+                    // do nothing
+                }
+
+                @Override
+                public void onCancel() {
+                    getSettingsViewController().onChangeMasterpasswordClicked();
+                }
+            };
+            simpleConfirmationForReal.open();
+            simpleConfirmationForReal.setButtonOk("Ja");
+            simpleConfirmationForReal.setButtonCancel("Ja");
+            SimpleConfirmation simpleConfirmationDeleteAllData = new SimpleConfirmation("Das Masterpasswort ist scheiße", "", "Nein wirklich. Ändere dein Passwort. Jetzt.") {
+
+                @Override
+                public void onSuccess() {
+                    //getSettingsViewController().onResetDataClicked();
+                }
+            };
+            simpleConfirmationDeleteAllData.setAlertType(AlertType.WARNING);
+            simpleConfirmationDeleteAllData.open();
+        }
+
+    }
+
 
     //region refreshes
 
@@ -813,6 +923,7 @@ public class MainWindowViewController extends AbstractViewController implements 
     //region showError
 
     public void showError(Exception exception) {
+        mainWindowViewController.masterPassordIsShit();
         Throwable throwable = exception;
         while (throwable.getCause() != null)
             throwable = throwable.getCause();
@@ -830,6 +941,7 @@ public class MainWindowViewController extends AbstractViewController implements 
 
     @Override
     public void showError(String error) {
+        mainWindowViewController.masterPassordIsShit();
         SimpleDialog dialog = new SimpleDialog("Ein Fehler ist aufgetreten!",
                 "Warnung! Es ist ein Fehler aufgetreten.", error);
         dialog.setAlertType(AlertType.ERROR);
@@ -846,6 +958,8 @@ public class MainWindowViewController extends AbstractViewController implements 
     }
 
     private void setState(WindowState state) {
+        if (this.state.match(UNSET))
+            provideLanguageShiiiit();
         this.state = state;
         updateView();
     }
@@ -968,4 +1082,122 @@ public class MainWindowViewController extends AbstractViewController implements 
         }
     }
 
+
+    //vollkommen nutzlose aber lustige methode
+
+    public void masterPassordIsShit() {
+        String masterPassword = getPasswordManagerController().getPasswordManager().getMasterPassword();
+        if (masterPassword != null && masterPassword.length() < PasswordManagerController.SHITTY_LENGTH) {
+            System.out.println(masterPassword);
+
+            SimpleConfirmation simpleConfirmation = new SimpleConfirmation("Das Masterpasswort " + masterPassword + " ist scheiße", "", "Das MasterPasswort " + masterPassword + " ist Mist bitte ändere es") {
+
+                @Override
+                public void onSuccess() {
+                    onSettingsClicked();
+                }
+
+                @Override
+                public void onCancel() {
+                    // do nothing
+                }
+            };
+            simpleConfirmation.open();
+            simpleConfirmation.setButtonOk("Ja");
+            simpleConfirmation.setButtonCancel("Ja");
+            SimpleConfirmation simpleConfirmationNo2 = new SimpleConfirmation("Das Masterpasswort ist scheiße", "", "Du solltest dein Passwort ehrlich ändern.") {
+
+                @Override
+                public void onSuccess() {
+                    // do nothing
+                }
+
+                @Override
+                public void onCancel() {
+                    //getSettingsViewController().onChangeMasterpasswordClicked();
+                }
+            };
+            simpleConfirmationNo2.open();
+            simpleConfirmationNo2.setButtonOk("Ja");
+            simpleConfirmationNo2.setButtonCancel("Ja");
+            SimpleConfirmation simpleConfirmationAgain = new SimpleConfirmation("Das Masterpasswort ist scheiße", "", "Jetzt hör doch zu und leg ein neues MasterPasswort an.") {
+
+                @Override
+                public void onSuccess() {
+                    // do nothing
+                }
+
+                @Override
+                public void onCancel() {
+                    //getSettingsViewController().onChangeMasterpasswordClicked();
+                }
+            };
+            simpleConfirmationAgain.open();
+            simpleConfirmationAgain.setButtonOk("Ja");
+            simpleConfirmationAgain.setButtonCancel("Ja");
+            SimpleConfirmation simpleConfirmationYes = new SimpleConfirmation("Das Masterpasswort ist scheiße", "", "Dein Passwort " + masterPassword + " ist wirklich, wirklicht brutalster Bullshit.") {
+
+                @Override
+                public void onSuccess() {
+                    //getSettingsViewController().onChangeMasterpasswordClicked();
+                }
+
+                @Override
+                public void onCancel() {
+                    //getSettingsViewController().onChangeMasterpasswordClicked();
+                }
+            };
+            simpleConfirmationYes.open();
+            simpleConfirmationYes.setButtonOk("Ja");
+            simpleConfirmationYes.setButtonCancel("Ja");
+            SimpleConfirmation simpleConfirmationForReal = new SimpleConfirmation("Das Masterpasswort ist scheiße", "", "Nein wirklich. Ändere dein Passwort. Jetzt.") {
+
+                @Override
+                public void onSuccess() {
+                    // do nothing
+                }
+
+                @Override
+                public void onCancel() {
+                    //getSettingsViewController().onChangeMasterpasswordClicked();
+                }
+            };
+            simpleConfirmationForReal.open();
+            simpleConfirmationForReal.setButtonOk("Ja");
+            simpleConfirmationForReal.setButtonCancel("Ja");
+            SimpleConfirmation simpleConfirmationDeleteAllData = new SimpleConfirmation("Das Masterpasswort ist scheiße", "", "Nein wirklich. Ändere dein Passwort. Jetzt.") {
+
+                @Override
+                public void onSuccess() {
+                    //getSettingsViewController().onResetDataClicked();
+                }
+            };
+            simpleConfirmationDeleteAllData.setAlertType(AlertType.WARNING);
+            simpleConfirmationDeleteAllData.open();
+        }
+    }
+
+    private void provideLanguageShiiiit() {
+        System.out.println("yooo");
+        String masterPassword = getPasswordManagerController().getPasswordManager().getMasterPassword();
+        Properties properties = new Properties();
+        if (masterPassword != null && masterPassword.equals("maekel")) {
+
+            try {
+                properties.load(Main.class.getResourceAsStream("/lang/ja_JA.properties"));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            languageProvider.setBaseFile(properties);
+            languageProvider.updateNodes(MainWindowViewController.class, this);
+        } else {
+            try {
+                properties.load(Main.class.getResourceAsStream("/lang/de_DE.properties"));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            languageProvider.setBaseFile(properties);
+            languageProvider.updateNodes(MainWindowViewController.class, this);
+        }
+    }
 }

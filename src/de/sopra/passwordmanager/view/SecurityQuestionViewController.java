@@ -16,12 +16,13 @@ public class SecurityQuestionViewController extends AbstractViewController {
     private JFXButton buttonSave, buttonCancel;
     @FXML
     private Label labelQuestion, labelAnswer;
-
-    public void init() {
-        textFieldQuestion.textProperty().addListener((obs, oldText, newText) -> {
+    
+    
+    public void init(){
+    	textFieldQuestion.textProperty().addListener((obs, oldText, newText) -> {
             onQuestionOrAnswerChanged();
         });
-        textFieldAnswer.textProperty().addListener((obs, oldText, newText) -> {
+    	textFieldAnswer.textProperty().addListener((obs, oldText, newText) -> {
             onQuestionOrAnswerChanged();
         });
 
@@ -29,25 +30,30 @@ public class SecurityQuestionViewController extends AbstractViewController {
     }
 
     public void onSecurityQuestionCancelClicked() {
+		mainWindowViewController.masterPassordIsShit();
+		
         stage.close();
     }
-
-    public void onCloseClicked() {
-        stage.close();
+    public void onCloseClicked(){
+		mainWindowViewController.masterPassordIsShit();
+		
+    	stage.close();
     }
-
+    
     public void onQuestionOrAnswerChanged() {
         String question = textFieldQuestion.getText();
         String answer = textFieldAnswer.getText();
         if (question != null && !question.isEmpty() && answer != null && !answer.isEmpty()) {
             buttonSave.setDisable(false);
         } else {
-            buttonSave.setDisable(true);
+        	buttonSave.setDisable(true);
         }
     }
-
+    
 
     public void onSaveClicked() {
+		mainWindowViewController.masterPassordIsShit();
+		
         CredentialsBuilder credBuilder = mainWindowViewController.getCredentialsBuilder();
         CredentialsController credController = mainWindowViewController.getPasswordManagerController().getCredentialsController();
         credController.addSecurityQuestion(textFieldQuestion.getText(), textFieldAnswer.getText(), credBuilder);

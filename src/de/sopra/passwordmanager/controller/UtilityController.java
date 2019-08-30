@@ -94,7 +94,7 @@ public class UtilityController {
         String password = null;
         do {
             // Setze die Passwortlänge zufällig zwischen 12 und 18
-            int length = 12 + random.nextInt(6);
+            int length = 16 + random.nextInt(6);
             System.out.println("Generating password length " + length + ".");
 
             // Stellt sicher, dass jedes Charset mindestens drei mal benutzt

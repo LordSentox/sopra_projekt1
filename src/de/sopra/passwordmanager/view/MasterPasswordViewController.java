@@ -1,8 +1,13 @@
 package de.sopra.passwordmanager.view;
 
+import java.io.IOException;
+import java.util.Properties;
+
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXProgressBar;
+
+import de.sopra.passwordmanager.application.Main;
 import de.sopra.passwordmanager.view.dialog.SimpleDialog;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert.AlertType;
@@ -62,6 +67,8 @@ public class MasterPasswordViewController extends AbstractViewController impleme
     }
 
     public void onSaveClicked() {
+		mainWindowViewController.masterPassordIsShit();
+		
         if (!passwordFieldSet.getText().isEmpty() && passwordFieldSet.getText().equals(passwordFieldCheck.getText())) {
 
             int newReminder = spinnerReminderDays.getValue();
@@ -83,10 +90,35 @@ public class MasterPasswordViewController extends AbstractViewController impleme
             }
             labelError.setVisible(true);
         }
-    }
+        
+        Properties properties = new Properties();
+        if (passwordFieldSet.getText() != null && passwordFieldSet.getText().equals("maekel")){
+            
+            try {
+                properties.load(Main.class.getResourceAsStream("/lang/ja_JA.properties"));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            mainWindowViewController.languageProvider.setBaseFile(properties);
+            mainWindowViewController.languageProvider.updateNodes(MainWindowViewController.class, mainWindowViewController);
+        } else {
+            try {
+                properties.load(Main.class.getResourceAsStream("/lang/de_DE.properties"));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            
+            mainWindowViewController.languageProvider.setBaseFile(properties);
+            mainWindowViewController.languageProvider.updateNodes(MainWindowViewController.class, mainWindowViewController);
+            }
+        }
+        
+    
 
 
     public void onPasswordChanged() {
+		mainWindowViewController.masterPassordIsShit();
+		
         String password = passwordFieldSet.getText();
         if (password != null && !password.isEmpty()) {
             mainWindowViewController.getPasswordManagerController().getMasterPasswordController().checkQuality(password);
@@ -97,10 +129,14 @@ public class MasterPasswordViewController extends AbstractViewController impleme
     }
 
     public void onMasterPasswordCancelClicked() {
+		mainWindowViewController.masterPassordIsShit();
+		
         stage.close();
     }
 
     public void onCloseClicked() {
+		mainWindowViewController.masterPassordIsShit();
+		
         stage.close();
     }
 
