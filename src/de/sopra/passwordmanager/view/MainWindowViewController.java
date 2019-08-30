@@ -72,7 +72,7 @@ public class MainWindowViewController extends AbstractViewController implements 
     public static String currentTheme = null;
 
     private final TextFormatter<Integer> spinnerTextFormatter =
-            new TextFormatter<Integer>(new IntegerStringConverter(), 1, SPINNER_FILTER);
+            new TextFormatter<>(new IntegerStringConverter(), 1, SPINNER_FILTER);
 
     //controller attributes
     private PasswordManagerController passwordManagerController;
@@ -151,9 +151,16 @@ public class MainWindowViewController extends AbstractViewController implements 
     @FXML
     private Label labelCredentialsSecurityAnswer, labelCredentialsLastChanged, labelCredentialsCreated;
 
+    @FXML
+    private Label labelReminderDays, labelCategories, labelSecurityQuestion, labelTextLastChanged, labelTextCreatedAt,
+            labelEntryName, labelUserName, labelPassword, labelNotes, buttonLabelShowPassword, labelWebsite;
+
     //endregion
 
     public void init() {
+
+        languageProvider.updateNodes(MainWindowViewController.class, this);
+
         currentCredentials = new CredentialsBuilder();
         updateView();
 
@@ -470,9 +477,7 @@ public class MainWindowViewController extends AbstractViewController implements 
             updateCredentialsBuilderCopy();
             /* Sicherheitsfrage hinzufügen */
             openModal("/Sicherheitsfrage-und-Antwort.fxml",
-                    SecurityQuestionViewController.class, identity -> {
-                        identity.init();
-                    });
+                    SecurityQuestionViewController.class, SecurityQuestionViewController::init);
         } catch (Exception e) {
             showError(e);
             throw new RuntimeException(e);
@@ -492,10 +497,6 @@ public class MainWindowViewController extends AbstractViewController implements 
         updateCredentialsBuilderCopy();
         refreshEntry();
 
-        //CredentialsController credController = passwordManagerController.getCredentialsController();
-        //String question = comboBoxCredentialsSecurityQuestion.getValue();
-        //FIXME: Direkte Änderungen sollen nicht vorgenommen werden. erst am current, beim save am tatsächlichen objekt
-        //credController.removeSecurityQuestion(question, currentCredentials.getSecurityQuestions().get(question), currentCredentials);
     }
 
     public void onAddCredentialsClicked() {
@@ -609,8 +610,6 @@ public class MainWindowViewController extends AbstractViewController implements 
 
         CredentialsItem selectedEntry = listViewCredentialsList.getSelectionModel().getSelectedItem();
 
-        System.out.println(selectedEntry.getCredentials().getName());
-
         //Wenn Eingaben vorliegen, nach Verwerfung dieser Eingaben fragen
         if (selectedEntry != null && !selectedEntry.getCredentials().equals(oldCredentials)) {
             if (state.match(EDITED_ENTRY, CREATING_NEW_ENTRY)) {
@@ -656,7 +655,6 @@ public class MainWindowViewController extends AbstractViewController implements 
     }
 
     public void onCloseClicked() {
-        //TODO Programm richtig beenden
         stage.close();
     }
 
@@ -823,10 +821,10 @@ public class MainWindowViewController extends AbstractViewController implements 
         for (StackTraceElement trace : exception.getStackTrace()) {
             count++;
             if (count <= 15)
-                builder.append("\n" + trace.toString());
+                builder.append("\n").append(trace.toString());
         }
         if (count > 15)
-            builder.append("\n...and " + (count - 25) + " more...");
+            builder.append("\n...and ").append(count - 25).append(" more...");
         showError(builder.toString());
     }
 
@@ -848,8 +846,6 @@ public class MainWindowViewController extends AbstractViewController implements 
     }
 
     private void setState(WindowState state) {
-        if (state != this.state)
-            System.out.println("state changed: " + this.state + " -> " + state);
         this.state = state;
         updateView();
     }

@@ -1,6 +1,7 @@
 package de.sopra.passwordmanager.view;
 
 
+import de.sopra.passwordmanager.util.LanguageProvider;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
@@ -18,6 +19,8 @@ public abstract class AbstractViewController {
 
     protected String styleSheet;
 
+    protected LanguageProvider languageProvider;
+
     //Nur der Name der Datei: "application/style.css" -> "style"
     //Auf null setzen zum nicht verwenden
     public void setStyleSheet(String styleSheet) {
@@ -28,6 +31,18 @@ public abstract class AbstractViewController {
         if (this.styleSheet != null) {
             scene.getStylesheets().add(getClass().getResource("/stylesheets/" + this.styleSheet + ".css").toExternalForm());
         }
+    }
+
+    public void setLanguageProvider(LanguageProvider languageProvider) {
+        this.languageProvider = languageProvider;
+    }
+
+    protected final String t(String identifier, String def) {
+        return languageProvider.getTranslationOrDefault(identifier, def);
+    }
+
+    protected final String t(String identifier) {
+        return t(identifier, identifier);
     }
 
     public void setScene(Scene scene) {
@@ -67,6 +82,8 @@ public abstract class AbstractViewController {
         newStage.setScene(newScene);
         controller.setStage(newStage);
         controller.setScene(newScene);
+        controller.setLanguageProvider(languageProvider);
+        languageProvider.updateNodes(clazz, controller);
         controller.setStyleSheet(styleSheet);
         controller.setMainWindowViewController(mainWindowViewController);
         preOpen.accept(controller);

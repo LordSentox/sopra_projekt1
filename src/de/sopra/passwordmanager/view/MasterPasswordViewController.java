@@ -3,9 +3,6 @@ package de.sopra.passwordmanager.view;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXProgressBar;
-import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
-
-import de.sopra.passwordmanager.util.CredentialsBuilder;
 import de.sopra.passwordmanager.view.dialog.SimpleDialog;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert.AlertType;
@@ -24,13 +21,13 @@ public class MasterPasswordViewController extends AbstractViewController impleme
     @FXML
     private Spinner<Integer> spinnerReminderDays;
     @FXML
-    private Label labelError;
+    private Label labelError, labelPasswordInsert, labelPasswordRepeat, labelTextReminder, labelReminderDays;
     @FXML
     private JFXProgressBar progressBarQuality;
     @FXML
-    private JFXButton buttonSave;
+    private JFXButton buttonSave, buttonCancel;
 
-    private final TextFormatter<Integer> spinnerTextFormatter = new TextFormatter<Integer>(
+    private final TextFormatter<Integer> spinnerTextFormatter = new TextFormatter<>(
             new IntegerStringConverter(), 1, MainWindowViewController.SPINNER_FILTER);
 
     private Stage backTo;
@@ -52,8 +49,8 @@ public class MasterPasswordViewController extends AbstractViewController impleme
         spinnerReminderDays.getEditor().setTextFormatter(spinnerTextFormatter);
 
         passwordFieldSet.textProperty().addListener((obs, oldText, newText) -> {
-            if ( newText == null || newText.isEmpty()){
-            	buttonSave.setDisable(true);
+            if (newText == null || newText.isEmpty()) {
+                buttonSave.setDisable(true);
             }
             onPasswordChanged();
         });
@@ -79,12 +76,9 @@ public class MasterPasswordViewController extends AbstractViewController impleme
             }
 
         } else {
-            if(passwordFieldSet.getText().isEmpty())
-            {
+            if (passwordFieldSet.getText().isEmpty()) {
                 labelError.setText("Das Passwort darf nicht leer sein");
-            }
-            else
-            {
+            } else {
                 labelError.setText("Die Passwörter sind nicht gleich");
             }
             labelError.setVisible(true);
@@ -98,7 +92,7 @@ public class MasterPasswordViewController extends AbstractViewController impleme
             mainWindowViewController.getPasswordManagerController().getMasterPasswordController().checkQuality(password);
             buttonSave.setDisable(false);
         } else {
-        	buttonSave.setDisable(true);
+            buttonSave.setDisable(true);
         }
     }
 

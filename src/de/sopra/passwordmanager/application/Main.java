@@ -1,6 +1,7 @@
 package de.sopra.passwordmanager.application;
 
 import de.sopra.passwordmanager.controller.PasswordManagerController;
+import de.sopra.passwordmanager.util.LanguageProvider;
 import de.sopra.passwordmanager.view.LoginViewController;
 import de.sopra.passwordmanager.view.MainWindowAUI;
 import de.sopra.passwordmanager.view.MainWindowViewController;
@@ -18,8 +19,11 @@ import static de.sopra.passwordmanager.controller.PasswordManagerController.SAVE
 
 public class Main extends Application {
 
+    private static LanguageProvider langProvider = new LanguageProvider();
+
     @Override
     public void start(Stage primaryStage) {
+
         MainWindowAUI aui = null;
         try {
             /* Hauptfenster */
@@ -30,17 +34,19 @@ public class Main extends Application {
             passwordManagerController.setMainWindowAUI(mainWindowViewController);
             aui = mainWindowViewController;
             mainWindowViewController.setPasswordManagerController(passwordManagerController);
-            mainWindowViewController.init();
 
             Stage mainStage = new Stage();
             Scene mainScene = new Scene(mainPane);
             mainScene.getStylesheets().add(getClass().getResource("/stylesheets/application.css").toExternalForm());
             mainStage.setScene(mainScene);
             mainWindowViewController.setMainWindowViewController(mainWindowViewController);
+            mainWindowViewController.setLanguageProvider(langProvider);
             mainWindowViewController.setStage(mainStage);
             mainWindowViewController.setScene(mainScene);
             mainStage.setResizable(false);
             mainStage.initStyle(StageStyle.UNDECORATED);
+
+            mainWindowViewController.init();
 
             //Für clearSelection, das irgendwie komische Fehler wirft
             Thread.currentThread().setUncaughtExceptionHandler((t, e) ->
@@ -88,4 +94,5 @@ public class Main extends Application {
     public static void main(String[] args) {
         launch(args);
     }
+
 }

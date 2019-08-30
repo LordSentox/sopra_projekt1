@@ -16,7 +16,7 @@ public class MasterPasswordControllerTest {
     private MasterPasswordController masterPasswordController;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         this.passwordManagerController = PasswordManagerControllerDummy.getNewController();
         this.passwordManager = this.passwordManagerController.getPasswordManager();
         this.masterPasswordController = this.passwordManagerController.getMasterPasswordController();
@@ -45,7 +45,6 @@ public class MasterPasswordControllerTest {
         List<String> passwords = Arrays.asList("123", "", "Hello, there", "142aB5][9p5assw15ort!5xD", "aA53]@`");
 
         for (String password: passwords) {
-            // TODO: Sollten hier feste Werte angegeben werden, statt einen Aufruf auf checkQuality zu tätigen?
             int passwordQuality = this.passwordManagerController.getUtilityController().checkQuality(password,null);
 
             this.masterPasswordController.checkQuality(password);

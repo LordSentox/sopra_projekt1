@@ -18,7 +18,7 @@ public class PasswordManagerControllerTest {
     private UtilityController uc;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         this.passwordManagerController = PasswordManagerControllerDummy.getNewController();
         this.passwordManager = this.passwordManagerController.getPasswordManager();
         uc = passwordManagerController.getUtilityController();
@@ -77,13 +77,11 @@ public class PasswordManagerControllerTest {
         // Neue Credentials, da das Masterpasswort sich geändert hat.
         credentials = new CredentialsBuilder("Masterpasswort", "Ich", masterPassword, "MoePse-secure.de").build(uc);
 
-        // TODO: Versuche mit dem falschen Passwort zu laden. Der Login muss richtig abgelehnt werden.
         // Dies geht aber erst, wenn geklärt ist, wie genau festgestellt wird, wann ein Erststart erfolgt ist und damit
         // der MasterPasswordViewController geöffnet ist und wann es sich um einen Import oder Normalstart handelt, in
         // welchem Fall der LoginViewController zuständig ist.
         this.passwordManagerController.requestLogin(newMasterPassword, file);
 
-        // TODO: Versuche mit dem richtigen Passwort zu laden. Der Login muss richtig angenommen werden und die Daten
         // sollen geladen werden.
         this.passwordManagerController.requestLogin(masterPassword, file);
 
@@ -108,7 +106,6 @@ public class PasswordManagerControllerTest {
         List<String> passwords = Arrays.asList("Stratzenbl1tz", "123", "", "Hello, there", "142aB5][9p5assw15ort!5xD", "aA53]@`");
 
         for (String password : passwords) {
-            // TODO: Sollten hier feste Werte angegeben werden, statt einen Aufruf auf checkQuality zu tätigen?
             int passwordQuality = this.passwordManagerController.getUtilityController().checkQuality(password,"passwort");
 
             builder.withPassword(password);

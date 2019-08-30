@@ -1,6 +1,5 @@
 package de.sopra.passwordmanager.controller;
 
-import de.sopra.passwordmanager.controller.PasswordManagerController;
 import de.sopra.passwordmanager.model.Category;
 import de.sopra.passwordmanager.model.Credentials;
 import de.sopra.passwordmanager.model.SecurityQuestion;

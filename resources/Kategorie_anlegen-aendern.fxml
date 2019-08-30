@@ -6,8 +6,8 @@
 <AnchorPane styleClass="background" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="164.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.sopra.passwordmanager.view.CategoryEditViewController">
    <children>
       <JFXComboBox fx:id="comboBoxCategorySelection" layoutX="293.0" layoutY="37.0" prefHeight="26.0" prefWidth="219.0" />
-      <Label layoutX="89.0" layoutY="42.0" text="Oberkategorie auswählen" />
-      <Label layoutX="89.0" layoutY="77.0" text="Kategorie Name" />
+      <Label fx:id="labelChooseCategory" layoutX="89.0" layoutY="42.0" text="Oberkategorie auswählen" />
+      <Label fx:id="labelCategoryName" layoutX="89.0" layoutY="77.0" text="Kategorie Name" />
       <JFXTextField fx:id="textFieldCategoryName" layoutX="293.0" layoutY="72.0" prefHeight="26.0" prefWidth="219.0" />
       <JFXButton fx:id="buttonSave" layoutX="377.0" layoutY="108.0" mnemonicParsing="false" text="OK" onAction="#onSaveClicked"/>
       <JFXButton fx:id="buttonCancel" cancelButton="true" layoutX="423.0" layoutY="108.0" mnemonicParsing="false" text="Abbrechen" onAction="#onCancelCategoryEditClicked"/>
