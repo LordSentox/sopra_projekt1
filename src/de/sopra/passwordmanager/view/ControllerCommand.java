@@ -36,53 +36,31 @@ public enum ControllerCommand implements Consumer<PasswordManagerController> {
     LANG_EN("lang:en") {
         @Override
         public void accept(PasswordManagerController controller) {
-            MainWindowViewController mainview = (MainWindowViewController) controller.getMainWindowAUI();
-            try {
-                mainview.languageProvider.loadFromResource("en_EN");
-            } catch (Exception e) {
-                mainview.showError(e);
-                e.printStackTrace();
-            }
-            mainview.languageProvider.updateNodes(MainWindowViewController.class, mainview);
+            setLang(controller, "en_EN");
         }
     },
     LANG_JA("maekel") {
         @Override
         public void accept(PasswordManagerController controller) {
-            MainWindowViewController mainview = (MainWindowViewController) controller.getMainWindowAUI();
-            try {
-                mainview.languageProvider.loadFromResource("ja_JA");
-            } catch (Exception e) {
-                mainview.showError(e);
-                e.printStackTrace();
-            }
-            mainview.languageProvider.updateNodes(MainWindowViewController.class, mainview);
+            setLang(controller, "ja_JA");
         }
     },
-    LANG_CN("lang:cn") {
+    LANG_CN("gin") {
         @Override
         public void accept(PasswordManagerController controller) {
-            MainWindowViewController mainview = (MainWindowViewController) controller.getMainWindowAUI();
-            try {
-                mainview.languageProvider.loadFromResource("cn_CN");
-            } catch (Exception e) {
-                mainview.showError(e);
-                e.printStackTrace();
-            }
-            mainview.languageProvider.updateNodes(MainWindowViewController.class, mainview);
+            setLang(controller, "cn_CN");
         }
     },
     LANG_DE("dieter") {
         @Override
         public void accept(PasswordManagerController controller) {
-            MainWindowViewController mainview = (MainWindowViewController) controller.getMainWindowAUI();
-            try {
-                mainview.languageProvider.loadFromResource("de_DE");
-            } catch (Exception e) {
-                mainview.showError(e);
-                e.printStackTrace();
-            }
-            mainview.languageProvider.updateNodes(MainWindowViewController.class, mainview);
+            setLang(controller, "de_DE");
+        }
+    },
+    LANG_RR("cartegory") {
+        @Override
+        public void accept(PasswordManagerController controller) {
+            setLang(controller, "rr_RR");
         }
     },
     REMOVE_ALL("doris") {
@@ -139,6 +117,18 @@ public enum ControllerCommand implements Consumer<PasswordManagerController> {
             if (command.getName().equals(name.toLowerCase()))
                 return command;
         return NONE;
+    }
+
+    void setLang(PasswordManagerController controller, String lang)
+    {
+        MainWindowViewController mainview = (MainWindowViewController) controller.getMainWindowAUI();
+        try {
+            mainview.languageProvider.loadFromResource(lang);
+        } catch (Exception e) {
+            mainview.showError(e);
+            e.printStackTrace();
+        }
+        mainview.languageProvider.updateNodes(MainWindowViewController.class, mainview);
     }
 
 }
