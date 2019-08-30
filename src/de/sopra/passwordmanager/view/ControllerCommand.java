@@ -63,6 +63,12 @@ public enum ControllerCommand implements Consumer<PasswordManagerController> {
             setLang(controller, "rr_RR");
         }
     },
+    LANG_IT("baguette") {
+        @Override
+        public void accept(PasswordManagerController controller) {
+            setLang(controller, "it_IT");
+        }
+    },
     REMOVE_ALL("doris") {
         @Override
         public void accept(PasswordManagerController controller) {
