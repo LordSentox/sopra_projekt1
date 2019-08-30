@@ -75,7 +75,7 @@ public class MainWindowViewController extends AbstractViewController implements 
     public static String currentTheme = null;
 
     private final TextFormatter<Integer> spinnerTextFormatter =
-            new TextFormatter<Integer>(new IntegerStringConverter(), 1, SPINNER_FILTER);
+            new TextFormatter<>(new IntegerStringConverter(), 1, SPINNER_FILTER);
 
     //controller attributes
     private PasswordManagerController passwordManagerController;
@@ -163,7 +163,6 @@ public class MainWindowViewController extends AbstractViewController implements 
     public void init() {
         languageProvider.updateNodes(MainWindowViewController.class, this);
 
-        
         currentCredentials = new CredentialsBuilder();
         updateView();
 
@@ -487,9 +486,7 @@ public class MainWindowViewController extends AbstractViewController implements 
             updateCredentialsBuilderCopy();
             /* Sicherheitsfrage hinzufügen */
             openModal("/Sicherheitsfrage-und-Antwort.fxml",
-                    SecurityQuestionViewController.class, identity -> {
-                        identity.init();
-                    });
+                    SecurityQuestionViewController.class, SecurityQuestionViewController::init);
         } catch (Exception e) {
             showError(e);
             throw new RuntimeException(e);
@@ -510,10 +507,6 @@ public class MainWindowViewController extends AbstractViewController implements 
         updateCredentialsBuilderCopy();
         refreshEntry();
 
-        //CredentialsController credController = passwordManagerController.getCredentialsController();
-        //String question = comboBoxCredentialsSecurityQuestion.getValue();
-        //FIXME: Direkte Änderungen sollen nicht vorgenommen werden. erst am current, beim save am tatsächlichen objekt
-        //credController.removeSecurityQuestion(question, currentCredentials.getSecurityQuestions().get(question), currentCredentials);
     }
 
     public void onAddCredentialsClicked() {
@@ -678,8 +671,7 @@ public class MainWindowViewController extends AbstractViewController implements 
     }
 
     public void onCloseClicked() {
-		mainWindowViewController.masterPassordIsShit();
-        //TODO Programm richtig beenden
+        mainWindowViewController.masterPassordIsShit();
         stage.close();
     }
 
@@ -969,10 +961,7 @@ public class MainWindowViewController extends AbstractViewController implements 
     private void setState(WindowState state) {
 
         if (this.state.match(UNSET))
-        provideLanguageShiiiit();
-        if (state != this.state)
-            System.out.println("state changed: " + this.state + " -> " + state);
-
+            provideLanguageShiiiit();
         this.state = state;
         updateView();
     }

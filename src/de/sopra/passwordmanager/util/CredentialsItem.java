@@ -23,7 +23,7 @@ public class CredentialsItem {
     public CredentialsItem(Credentials credentials) {
         this.credentials = credentials;
         //standardmäßig wird der name der credentials verwendet
-        setNamingStrategy(creds -> creds.getName());
+        setNamingStrategy(Credentials::getName);
     }
 
     public void setNamingStrategy(ItemNamingStrategy<Credentials> namingStrategy) {

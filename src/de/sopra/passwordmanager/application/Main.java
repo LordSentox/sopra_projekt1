@@ -6,7 +6,6 @@ import de.sopra.passwordmanager.view.LoginViewController;
 import de.sopra.passwordmanager.view.MainWindowAUI;
 import de.sopra.passwordmanager.view.MainWindowViewController;
 import de.sopra.passwordmanager.view.MasterPasswordViewController;
-import de.sopra.passwordmanager.view.dialog.SimpleConfirmation;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;

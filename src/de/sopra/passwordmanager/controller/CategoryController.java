@@ -11,7 +11,7 @@ import java.util.*;
 /**
  * sorgt für das Erstellen, Bearbeiten und Löschen. Intern kann nach Kategorien gesucht werden.
  *
- * @authors Max, Lisa
+ * @author Max, Lisa
  */
 public class CategoryController {
 

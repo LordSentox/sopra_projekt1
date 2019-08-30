@@ -15,7 +15,7 @@ public class CategoryEditViewController extends AbstractViewController {
     private JFXTextField textFieldCategoryName;
 
     @FXML
-    private JFXButton buttonSave,buttonCancel;
+    private JFXButton buttonSave, buttonCancel;
 
     @FXML
     private Label labelChooseCategory, labelCategoryName;

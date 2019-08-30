@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 /**
  * In PasswordreminderController werden die Passwörter, bei denen der Timer abgelaufen ist, verwaltet.
  *
- * @author
+ * @author Gruppe 4
  */
 
 public class PasswordReminderController {
