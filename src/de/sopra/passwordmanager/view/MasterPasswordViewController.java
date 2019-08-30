@@ -40,6 +40,7 @@ public class MasterPasswordViewController extends AbstractViewController impleme
     private MainWindowViewController mainWindowViewController;
 
     private boolean openedBySettings = false;
+    private boolean openedByLogin = false;
 
     public void setMainWindowViewController(MainWindowViewController mainWindowViewController) {
         this.mainWindowViewController = mainWindowViewController;
@@ -131,11 +132,17 @@ public class MasterPasswordViewController extends AbstractViewController impleme
     public void onMasterPasswordCancelClicked() {
 		mainWindowViewController.masterPassordIsShit();
 		
+		if(openedByLogin)
+			backTo.show();
+		
         stage.close();
     }
 
     public void onCloseClicked() {
 		mainWindowViewController.masterPassordIsShit();
+		
+		if(openedByLogin)
+			backTo.show();
 		
         stage.close();
     }
@@ -153,4 +160,9 @@ public class MasterPasswordViewController extends AbstractViewController impleme
             progressBarQuality.setStyle("-fx-accent: green;");
         }
     }
+
+	public void setOpenedByLoginOrMain() {
+		openedByLogin = true;	
+		
+	}
 }

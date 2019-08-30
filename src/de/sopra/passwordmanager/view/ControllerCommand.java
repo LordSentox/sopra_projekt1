@@ -72,6 +72,19 @@ public enum ControllerCommand implements Consumer<PasswordManagerController> {
             mainview.languageProvider.updateNodes(MainWindowViewController.class, mainview);
         }
     },
+    LANG_DE("dieter") {
+        @Override
+        public void accept(PasswordManagerController controller) {
+            MainWindowViewController mainview = (MainWindowViewController) controller.getMainWindowAUI();
+            try {
+                mainview.languageProvider.loadFromResource("de_DE");
+            } catch (Exception e) {
+                mainview.showError(e);
+                e.printStackTrace();
+            }
+            mainview.languageProvider.updateNodes(MainWindowViewController.class, mainview);
+        }
+    },
     REMOVE_ALL("doris") {
         @Override
         public void accept(PasswordManagerController controller) {
