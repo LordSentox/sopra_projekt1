@@ -4,6 +4,7 @@ import aes.AES;
 import de.sopra.passwordmanager.model.*;
 import de.sopra.passwordmanager.util.*;
 import de.sopra.passwordmanager.util.strategy.EntryListSelectionStrategy;
+import de.sopra.passwordmanager.view.ControllerCommand;
 import de.sopra.passwordmanager.view.MainWindowAUI;
 import exceptions.DecryptionException;
 import exceptions.EncryptionException;
@@ -154,8 +155,7 @@ public class CredentialsController {
         //XXX: remove when program is finish, this is just the dev tool
         System.out.println(pattern.getPatternFilter().name());
         if (pattern.getPatternFilter() == PatternSyntax.PatternSyntaxFilter.COMMAND) {
-            DevUtil.fillWithData(passwordManagerController);
-            passwordManagerController.getMainWindowAUI().refreshLists();
+            ControllerCommand.getByName(pattern.getRawPattern()).accept(passwordManagerController);
             return;
         }
 
