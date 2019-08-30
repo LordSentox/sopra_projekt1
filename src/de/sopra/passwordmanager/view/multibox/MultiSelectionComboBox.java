@@ -62,7 +62,7 @@ public class MultiSelectionComboBox<T> extends ComboBox<SelectableComboItem<T>> 
     public List<T> getSelectedContentList() {
         return getListProvider().stream()
                 .filter(SelectableComboItem::isSelected)
-                .map(item -> item.getContent())
+                .map(SelectableComboItem::getContent)
                 .collect(Collectors.toList());
     }
 

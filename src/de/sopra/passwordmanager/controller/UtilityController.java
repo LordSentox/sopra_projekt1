@@ -239,17 +239,17 @@ public class UtilityController {
         if (password == null || password.isEmpty()) {
             return 0;
         }
-        
+
         String text = new String();
-        char previous = password.charAt(password.length()-1);
-        
-        for(char current : password.toCharArray()) {
+        char previous = password.charAt(password.length() - 1);
+
+        for (char current : password.toCharArray()) {
             if (current != previous) {
                 text = text + current;
                 previous = current;
             }
         }
-        
+
         PasswordData pwData = new PasswordData(text);
         boolean checkUsername = username != null;
         if (checkUsername) {

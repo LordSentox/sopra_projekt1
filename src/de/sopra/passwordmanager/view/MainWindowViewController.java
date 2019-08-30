@@ -72,7 +72,7 @@ public class MainWindowViewController extends AbstractViewController implements 
     public static String currentTheme = null;
 
     private final TextFormatter<Integer> spinnerTextFormatter =
-            new TextFormatter<Integer>(new IntegerStringConverter(), 1, SPINNER_FILTER);
+            new TextFormatter<>(new IntegerStringConverter(), 1, SPINNER_FILTER);
 
     //controller attributes
     private PasswordManagerController passwordManagerController;
@@ -477,9 +477,7 @@ public class MainWindowViewController extends AbstractViewController implements 
             updateCredentialsBuilderCopy();
             /* Sicherheitsfrage hinzufügen */
             openModal("/Sicherheitsfrage-und-Antwort.fxml",
-                    SecurityQuestionViewController.class, identity -> {
-                        identity.init();
-                    });
+                    SecurityQuestionViewController.class, SecurityQuestionViewController::init);
         } catch (Exception e) {
             showError(e);
             throw new RuntimeException(e);

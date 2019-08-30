@@ -27,7 +27,7 @@ public class MasterPasswordViewController extends AbstractViewController impleme
     @FXML
     private JFXButton buttonSave, buttonCancel;
 
-    private final TextFormatter<Integer> spinnerTextFormatter = new TextFormatter<Integer>(
+    private final TextFormatter<Integer> spinnerTextFormatter = new TextFormatter<>(
             new IntegerStringConverter(), 1, MainWindowViewController.SPINNER_FILTER);
 
     private Stage backTo;

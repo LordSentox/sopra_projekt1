@@ -30,7 +30,6 @@ class Importer {
     /**
      * @param file               Die zu importierende Datei
      * @param decryptionPassword das Masterpasswort des zu importierenden Projektes
-     *
      */
     Importer(File file, String decryptionPassword, PasswordManagerController passwordManagerController) {
         this.passwordManagerController = passwordManagerController;
