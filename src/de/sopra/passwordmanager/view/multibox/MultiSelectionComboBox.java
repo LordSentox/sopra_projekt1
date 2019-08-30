@@ -110,8 +110,7 @@ public class MultiSelectionComboBox<T> extends ComboBox<SelectableComboItem<T>> 
     }
 
     private void updateProvider() {
-        List<SelectableComboItem<T>> listTemp = new ArrayList<>();
-        listTemp.addAll(getItems());
+        List<SelectableComboItem<T>> listTemp = new ArrayList<>(getItems());
         getItems().clear();
         setItems(FXCollections.observableArrayList(listTemp));
         //if none is selected, select the first entry

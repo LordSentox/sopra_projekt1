@@ -821,10 +821,10 @@ public class MainWindowViewController extends AbstractViewController implements 
         for (StackTraceElement trace : exception.getStackTrace()) {
             count++;
             if (count <= 15)
-                builder.append("\n" + trace.toString());
+                builder.append("\n").append(trace.toString());
         }
         if (count > 15)
-            builder.append("\n...and " + (count - 25) + " more...");
+            builder.append("\n...and ").append(count - 25).append(" more...");
         showError(builder.toString());
     }
 

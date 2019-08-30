@@ -240,7 +240,7 @@ public class UtilityController {
             return 0;
         }
 
-        String text = new String();
+        String text = "";
         char previous = password.charAt(password.length() - 1);
 
         for (char current : password.toCharArray()) {
