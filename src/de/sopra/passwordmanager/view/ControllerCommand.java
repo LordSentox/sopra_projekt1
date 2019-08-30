@@ -69,6 +69,16 @@ public enum ControllerCommand implements Consumer<PasswordManagerController> {
             setLang(controller, "it_IT");
         }
     },
+//    HELP("help") {
+//        @Override
+//        public void accept(PasswordManagerController controller) {
+//            try {
+//                Desktop.getDesktop().browse(Main.class.getResource("product-description").toURI());
+//            } catch (IOException | URISyntaxException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//    },
     REMOVE_ALL("doris") {
         @Override
         public void accept(PasswordManagerController controller) {
@@ -125,8 +135,7 @@ public enum ControllerCommand implements Consumer<PasswordManagerController> {
         return NONE;
     }
 
-    void setLang(PasswordManagerController controller, String lang)
-    {
+    void setLang(PasswordManagerController controller, String lang) {
         MainWindowViewController mainview = (MainWindowViewController) controller.getMainWindowAUI();
         try {
             mainview.languageProvider.loadFromResource(lang);

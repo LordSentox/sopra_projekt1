@@ -292,6 +292,8 @@ public class MainWindowViewController extends AbstractViewController implements 
             }
         });
 
+        refreshEntry();
+
     }
 
     //region controller
