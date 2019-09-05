@@ -1,6 +1,6 @@
 [Projekt1]
 # Einkommentieren, um die Ordner zu aendern
-model = "src/de/sopra/passwordmanager/model"
-controller = "src/de/sopra/passwordmanager/controller"
-additional="src/de/sopra/passwordmanager/util"
+model = "src/de/sopra/javagame/model"
+controller = "src/de/sopra/javagame/control"
+additional="src/de/sopra/javagame/util"
 # filter = ""
